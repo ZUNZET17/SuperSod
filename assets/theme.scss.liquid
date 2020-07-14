@@ -1284,6 +1284,17 @@ svg:not(:root) {
 }
 
 /*============================================================================
+  Gutterless grids have all the properties of regular grids, minus any spacing.
+==============================================================================*/
+.grid--full {
+  margin-left:0;
+
+  > .grid__item {
+      padding-left:0;
+  }
+}
+
+/*============================================================================
   Grid Columns
     - Create width classes, prepended by the breakpoint name.
 ==============================================================================*/
@@ -1516,7 +1527,10 @@ html {
 
 .site-wrapper--head {
   @media (min-width: 1100px) {
-    margin-right: calc(340px - 5px);
+    margin-right: calc(20% - 5px);
+  }
+  @media (min-width: 1920px) {
+    margin-right: auto;
   }
 }
 

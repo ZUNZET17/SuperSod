@@ -1,0 +1,58 @@
+$border-color: #B7B7B7;
+$text-color: #333333;
+$white: #FFFFFF;
+
+.full-width {
+  display: block;
+  width: 100%;
+}
+
+.form {
+  margin-bottom: 20px;
+}
+
+.form--sign-in-up {
+  max-width: 465px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 50px;
+  padding-right: 50px;
+}
+
+.form--featured {
+  background-color: #F4F4F4;
+  padding-bottom: 62px;
+  padding-top: 62px;
+}
+
+.form--not-featured {
+  border-left: 1px solid $border-color;
+}
+
+.form__title {
+  color: $text-color;
+  font-weight: bold;
+  font-size: 28px;
+  line-height: 32px;
+  margin-bottom: 10px;
+  margin-top: 0;
+}
+
+.form__label {
+  color: $text-color;
+  font-size: 16px;
+  font-weight: normal;
+  line-height: 18px;
+}
+
+.form__input {
+  background-color: $white;
+  border: 1px solid $border-color;
+  color: #808080;
+  display: block;
+  font-size: 16px;
+  line-height: 18px;
+  padding: 16px;
+  margin-bottom: 13px;
+  margin-top: 8px;
+}

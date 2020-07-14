@@ -44,12 +44,12 @@
           </span>
         </div>
 
-        <form class="cart-form" action="{{ routes.cart_url }}" method="post">
+        <div class="cart-form">
           {% if section.settings.enable_cart_notes != blank %}
-            <div class="cart-summary__notes cart-summary__section">
+            <!-- <div class="cart-summary__notes cart-summary__section">
               <label class="cart-note-label" for="cart-summary-note">{{ 'cart.general.note' | t }}</label>
               <textarea id="cart-summary-note" name="note" rows="10" cols="50">{{ cart.note }}</textarea>
-            </div>
+            </div> -->
           {% endif %}
 
           {% if section.settings.show_tax_and_shipping %}
@@ -69,10 +69,10 @@
           {% endif %}
 
           <div class="cart-summary__buttons cart-summary__section border-bottom">
-            <button type="submit" name="checkout" class="btn wide" href="{{ routes.cart_url }}">
+            <a class="btn wide" href="{{ routes.cart_url }}">
               <span class="button-text">{{ 'cart.cart_summary.checkout' | t }}</span>
-              <div class="loading-spinner"></div>
-            </button>
+              <!-- <div class="loading-spinner"></div> -->
+            </a>
 
             {% if section.settings.show_additional_checkout_buttons and additional_checkout_buttons %}
               <div class="additional-checkout-buttons">
@@ -80,7 +80,7 @@
               </div>
             {% endif %}
           </div>
-        </form>
+        </div>
 
         <div class="cart-summary__item-list-header cart-summary__section cart-accordion-btn-container">
           <h6 class="cart-summary__item-list-header__title">{{ 'cart.cart_summary.products_header' | t }}</h6>

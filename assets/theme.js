@@ -1178,6 +1178,8 @@ theme.Product = (function() {
               $addToCartBtn.prop('disabled', false);
               $addToCartBtn.removeClass('btn--ajax-disabled');
               addToCartflip($addToCartBtn);
+              // update canopy sidebar cart
+              theme.updateCartSummaries(true);
             },
             error: function(XMLHttpRequest) {
               var data = eval('(' + XMLHttpRequest.responseText + ')');
