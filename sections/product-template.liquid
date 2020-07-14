@@ -118,12 +118,12 @@
               {%- endif -%}
             </div>
           {%- endif -%}
-          {%- assign productClasses = 'product-form' -%}
+          {%- assign productClasses = 'js-product-form product-form' -%}
           {%- if product.has_only_default_variant -%}
             {%- assign productClasses = productClasses | append: ' product-form--default-variant-only' -%}
           {%- endif -%}
 
-          {% form 'product', product, class: productClasses %}
+          {% form 'product', product, class: productClasses, data-ajax-add-to-cart: true, data-product-id: product.id, data-enable-history-state: history_state_data %}
             <select name="id" id="ProductSelect-{{ section.id }}" class="product-single__variants">
               {% for variant in product.variants %}
                 {% if variant.available %}

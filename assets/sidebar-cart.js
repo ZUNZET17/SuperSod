@@ -370,6 +370,18 @@ $(document).on('click', '.toggle-cart-summary', function (ev) {
   }
 });
 
+theme.loadCartNoteMonitor = function (container) {
+  $('.cart-form [name="note"]', container).on('change.themeLoadCartNoteMonitor', function () {
+    $.post(theme.routes.cart_url + '/update.js', {
+      note: $(this).val()
+    }, function (data) {}, 'json');
+  });
+};
+
+theme.unloadCartNoteMonitor = function (container) {
+  $('.cart-form [name="note"]', container).off('change.themeLoadCartNoteMonitor');
+};
+
 if (typeof theme.readCookie('theme_added_to_cart') != 'undefined' && theme.readCookie('theme_added_to_cart') == 'justnow') {
   theme.eraseCookie('theme_added_to_cart');
   theme.updateCartSummaries(false);
