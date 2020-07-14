@@ -33,8 +33,7 @@
       }
     }
   </script>
-
-  <link rel="preload" as="style" href="{{ 'theme.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="stylesheet" href="{{ 'theme.scss.css' | asset_url }}">
   <link rel="preload" as="style" href="{{ 'sidebar-cart.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
 </head>
 
@@ -102,7 +101,20 @@
       cart_clear_url: '{{ routes.cart_clear_url }}'
     };
   </script>
-  {{ content_for_header }}
+  <!-- Shopify marketing and plugin stuff -->
+  {%- capture shopify_scripts -%}
+    {{ content_for_header }}
+  {%- endcapture -%}
+  {%- assign shopify_scripts = shopify_scripts | replace: 'var setCookieIfThankYouPage', ';var setCookieIfThankYouPage'
+    | replace: 'var trekkie = window', ';var trekkie = window'
+    | strip_newlines | replace: '  ', '' | replace: '	', '' | strip -%}
+  {%- assign shopify_scripts = shopify_scripts
+    | replace: "getElementsByTagName('script')[0]", "getElementsByClassName('js-last-defer')[0]"
+    | replace: "getElementsByTagName('head')[0]", "getElementsByClassName('js-last-defer')[0].parentNode"
+    | replace: '.async = true', '.defer = true' -%}
+  {{ shopify_scripts | strip }}
+  {% comment %} {{ shopify_scripts | replace: 'previewBarInjector.init();', '' | strip }} {% endcomment %}
+  <!-- End shopify marketing and plugin stuff -->
   <script src="{{ 'lazysizes.min.js' | asset_url }}" defer></script>
   {% if request.page_type contains 'customers/' %}
     <script src="{{ 'shopify_common.js' | shopify_asset_url }}" defer></script>

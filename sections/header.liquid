@@ -1,6 +1,6 @@
+{%- assign use_full_wrapper = false -%}
+{%- if request.page_type == 'cart' -%}
 {%- assign use_full_wrapper = true -%}
-{%- if template != 'cart' -%}
-  {%- assign use_full_wrapper = false -%}
 {%- endif -%}
 
 {%- unless section.settings.logo == blank -%}
