@@ -186,7 +186,8 @@
       "forgot_password": "Forgot your password?",
       "sign_in": "Sign In",
       "guest_title": "Continue as a guest",
-      "guest_continue": "Continue"
+      "guest_continue": "Continue",
+      "page_title": "Customer Account"
     },
     "orders": {
       "title": "Order History",

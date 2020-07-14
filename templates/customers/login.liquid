@@ -1,4 +1,5 @@
 <!-- /templates/customers/login.liquid -->
+<h1 class="sign-in-title">{{ 'customer.login.page_title' | t }}</h1>
 <div class="grid">
 
   <div class="grid__item">
@@ -8,7 +9,7 @@
     <div id="CustomerLoginForm" class="grid grid--full">
       <div class="grid__item medium-up--one-half">
         {% form 'customer_login', class: 'form form--sign-in-up form--sign-in form--featured' %}
-          <h1 class="form__title text-center">{{ 'customer.login.title' | t }}</h1>
+          <h2 class="form__title text-center">{{ 'customer.login.title' | t }}</h2>
           {{ form.errors | default_errors }}
           <label for="CustomerEmail" class="form__label">{{ 'customer.login.email' | t }}</label>
           <input type="email" name="customer[email]" id="CustomerEmail" class="form__input full-width{% if form.errors contains 'email' %} input--error{% endif %}" autocorrect="off" autocapitalize="off" autofocus>
@@ -27,7 +28,7 @@
       </div>
       <div class="grid__item medium-up--one-half">
         {% form 'create_customer', class: 'form form--sign-in-up form--sign-up form--not-featured' %}
-          <h1 class="form__title text-center">{{ 'customer.register.title' | t }}</h1>
+          <h2 class="form__title text-center">{{ 'customer.register.title' | t }}</h2>
           {{ form.errors | default_errors }}
           <label for="FirstName" class="form__label">{{ 'customer.register.first_name' | t }}</label>
           <input type="text" name="customer[first_name]" id="FirstName" class="form__input full-width" {% if form.first_name %}value="{{ form.first_name }}"{% endif %} autocapitalize="words" autofocus>

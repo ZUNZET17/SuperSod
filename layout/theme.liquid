@@ -34,13 +34,30 @@
     }
   </script>
   <link rel="stylesheet" href="{{ 'theme.scss.css' | asset_url }}">
-  <link rel="preload" as="style" href="{{ 'sidebar-cart.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
+  {%- unless request.page_type == 'cart' -%}
+    <link rel="preload" as="style" href="{{ 'sidebar-cart.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
+  {%- endunless -%}
   {%- if template.name == 'login' or template.name == 'register' -%}
     <link rel="stylesheet" href="{{ 'forms.scss.css' | asset_url }}">
     <link rel="preload" as="style" href="{{ 'sign-in-up.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
   {%- endif -%}
 </head>
-
+{%- assign show_breadcrumb = true -%}
+{%- assign show_hr = true -%}
+{%- assign show_sidebar = true -%}
+{%- if settings.show_breadcrumb_nav -%}
+  {%- if template.name == 'login' -%}
+    {%- assign show_breadcrumb = false -%}
+    {%- assign show_hr = false -%}
+    {%- assign show_sidebar = false -%}
+  {%- elsif template.name == 'register' -%}
+    {%- assign show_breadcrumb = false -%}
+    {%- assign show_hr = false -%}
+    {%- assign show_sidebar = false -%}
+  {%- elsif request.page_type == 'index' -%}
+    {%- assign show_breadcrumb = false -%}
+  {%- endif -%}
+{%- endif -%}
 <body id="{{ page_title | handle }}" class="{% if customer %}customer-logged-in {% endif %}template-{{ request.page_type | handle }}">
 
   <a class="in-page-link visually-hidden skip-link" href="#MainContent">{{ 'general.accessibility.skip_to_content' | t }}</a>
@@ -51,27 +68,27 @@
   {% section "header" %}
   <div id="page-wrap" class="site-wrapper">
     <div class="grid">
-      {% section "sidebar" %}
-      <main class="main-content grid__item medium-up--four-fifths" id="MainContent" role="main">
-        {% unless request.page_type == 'index' %}
+      {%- if show_sidebar -%}
+        {% section "sidebar" %}
+      {%- endif -%}
+      <main class="main-content grid__item{% if show_sidebar %} medium-up--four-fifths{% endif %}" id="MainContent" role="main">
+        {%- if show_hr == true -%}
           <hr class="hr--border-top small--hide">
-        {% endunless %}
-        {% if settings.show_breadcrumb_nav and request.page_type != 'index' %}
+          {%- endif -%}
+        {%- if show_breadcrumb == true -%}
           {% include 'breadcrumb-nav' %}
-        {% endif %}
+        {%- endif -%}
         {{ content_for_layout }}
       </main>
       {% section 'cart-drawer' %}
     </div>
-    <hr>
-    {% section "footer" %}
-    {%- if request.page_type == 'index' -%}
-      <p id="slideshow-info" class="visually-hidden" aria-hidden="true">
-        {{- 'homepage.slideshow.navigation_instructions' | t -}}
-      </p>
-    {%- endif -%}
   </div>
-
+  {% section "footer" %}
+  {%- if request.page_type == 'index' -%}
+    <p id="slideshow-info" class="visually-hidden" aria-hidden="true">
+      {{- 'homepage.slideshow.navigation_instructions' | t -}}
+    </p>
+  {%- endif -%}
   {% if request.page_type == 'product' or request.page_type == 'index' %}
     {{ 'option_selection.js' | shopify_asset_url | script_tag }}
     <script>
