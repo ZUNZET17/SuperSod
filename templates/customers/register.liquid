@@ -1,26 +1,91 @@
 <!-- /templates/customers/register.liquid -->
-<h1 class="small--text-center">{{ 'customer.register.title' | t }}</h1>
+<div class="grid">
 
-<div class="form-register form-vertical">
-  {% form 'create_customer' %}
+  <div class="grid__item">
+    <div class="form--success hide" id="ResetSuccess">
+      {{ 'customer.recover_password.success' | t }}
+    </div>
+    <div id="CustomerLoginForm" class="grid grid--full">
+      <div class="grid__item medium-up--one-half">
+        {% form 'customer_login', class: 'form form--sign-in-up form--sign-in form--featured' %}
+          <h1 class="form__title text-center">{{ 'customer.login.title' | t }}</h1>
+          {{ form.errors | default_errors }}
+          <label for="CustomerEmail" class="form__label">{{ 'customer.login.email' | t }}</label>
+          <input type="email" name="customer[email]" id="CustomerEmail" class="form__input full-width{% if form.errors contains 'email' %} input--error{% endif %}" autocorrect="off" autocapitalize="off" autofocus>
+  
+          {% if form.password_needed %}
+            <label for="CustomerPassword" class="form__label">{{ 'customer.login.password' | t }}</label>
+            <input type="password" value="" name="customer[password]" id="CustomerPassword" class="form__input full-width{% if form.errors contains 'password' %} input--error{% endif %}">
+          {% endif %}
+          <p>
+            <input type="submit" class="btn full-width" value="{{ 'customer.login.sign_in' | t }}">
+          </p>
+          {% if form.password_needed %}
+            <p class="text-center"><a href="#recover" id="RecoverPassword">{{ 'customer.login.forgot_password' | t }}</a></p>
+          {% endif %}
+        {% endform %}
+      </div>
+      <div class="grid__item medium-up--one-half">
+        {% form 'create_customer', class: 'form form--sign-in-up form--sign-up form--not-featured' %}
+          <h1 class="form__title text-center">{{ 'customer.register.title' | t }}</h1>
+          {{ form.errors | default_errors }}
+          <label for="FirstName" class="form__label">{{ 'customer.register.first_name' | t }}</label>
+          <input type="text" name="customer[first_name]" id="FirstName" class="form__input full-width" {% if form.first_name %}value="{{ form.first_name }}"{% endif %} autocapitalize="words" autofocus>
 
-    {{ form.errors | default_errors }}
+          <label for="LastName" class="form__label">{{ 'customer.register.last_name' | t }}</label>
+          <input type="text" name="customer[last_name]" id="LastName" class="form__input full-width" {% if form.last_name %}value="{{ form.last_name }}"{% endif %} autocapitalize="words">
 
-    <label for="FirstName" class="label--hidden">{{ 'customer.register.first_name' | t }}</label>
-    <input type="text" name="customer[first_name]" id="FirstName" placeholder="{{ 'customer.register.first_name' | t }}" {% if form.first_name %}value="{{ form.first_name }}"{% endif %} autocapitalize="words" autofocus>
+          <label for="Email" class="form__label">{{ 'customer.register.email' | t }}</label>
+          <input type="email" name="customer[email]" id="Email" class="form__input full-width{% if form.errors contains 'email' %} input--error{% endif %}" {% if form.email %} value="{{ form.email }}"{% endif %} autocorrect="off" autocapitalize="off">
 
-    <label for="LastName" class="label--hidden">{{ 'customer.register.last_name' | t }}</label>
-    <input type="text" name="customer[last_name]" id="LastName" placeholder="{{ 'customer.register.last_name' | t }}" {% if form.last_name %}value="{{ form.last_name }}"{% endif %} autocapitalize="words">
+          <label for="CreatePassword" class="form__label">{{ 'customer.register.password' | t }}</label>
+          <input type="password" name="customer[password]" id="CreatePassword" class="form__input full-width{% if form.errors contains 'password' %} input--error{% endif %}" >
 
-    <label for="Email" class="label--hidden">{{ 'customer.register.email' | t }}</label>
-    <input type="email" name="customer[email]" id="Email" class="{% if form.errors contains 'email' %} input--error{% endif %}" placeholder="{{ 'customer.register.email' | t }}" {% if form.email %} value="{{ form.email }}"{% endif %} autocorrect="off" autocapitalize="off">
+          <p>
+            <input type="submit" value="{{ 'customer.register.submit' | t }}" class="btn full-width">
+          </p>
+        {% endform %}
+      </div>
+    </div>
 
-    <label for="CreatePassword" class="label--hidden">{{ 'customer.register.password' | t }}</label>
-    <input type="password" name="customer[password]" id="CreatePassword" class="{% if form.errors contains 'password' %} input--error{% endif %}" placeholder="{{ 'customer.register.password' | t }}">
+    {% comment %}
+      JS shows/hides this form in Slate.loginForms()
+    {% endcomment %}
+    <div id="RecoverPasswordForm" class="hide">
+      {% form 'recover_customer_password', class: 'form form--sign-in-up form--featured' %}
+        <h2 class="form__title text-center">{{ 'customer.recover_password.title' | t }}</h2>
+        <p class="text-center">{{ 'customer.recover_password.subtext' | t }}</p>
+        {{ form.errors | default_errors }}
 
-    <p>
-      <input type="submit" value="{{ 'customer.register.submit' | t }}" class="btn">
-    </p>
+        {% comment %}
+          Add a hidden span to indicate the form was submitted succesfully.
+        {% endcomment %}
+        {% if form.posted_successfully? %}
+          <span class="hide reset-password-success"></span>
+        {% endif %}
 
-  {% endform %}
+        <label for="RecoverEmail" class="form__label">{{ 'customer.recover_password.email' | t }}</label>
+        <input type="email" value="" name="email" id="RecoverEmail" class="form__input full-width" autocorrect="off" autocapitalize="off">
+
+        <p>
+          <input type="submit" class="btn full-width" value="{{ 'customer.recover_password.submit' | t }}">
+        </p>
+
+        <button type="button" id="HideRecoverPasswordLink" class="btn--link">{{ 'customer.recover_password.cancel' | t }}</button>
+      {% endform %}
+    </div>
+
+    {% comment %}
+      If accounts are set as optional, the following will be shown as an option
+      during checkout, not on the default /login page.
+    {% endcomment %}
+    {% if shop.checkout.guest_login %}
+      <h2>{{ 'customer.login.guest_title' | t }}</h2>
+
+      {% form 'guest_login' %}
+        <input type="submit" class="btn" value="{{ 'customer.login.guest_continue' | t }}">
+      {% endform %}
+    {% endif %}
+  </div>
+
 </div>

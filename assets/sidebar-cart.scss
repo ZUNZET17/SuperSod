@@ -1,4 +1,4 @@
-$color_primary: #008355;
+$color_primary: #54a45b;
 
 .show-cart-summary {
   overflow: hidden;
@@ -668,6 +668,7 @@ $color_primary: #008355;
 @media (min-width: 1100px) {
   .cart-summary {
     border-left: 1px solid $color_primary;
+    border-top: 5px solid $color_primary;
   }
 
   body:not(.template-cart):not(.template-dir-customers) #page-wrap {
@@ -701,7 +702,6 @@ $color_primary: #008355;
     display: none;
   }
   body:not(.template-cart):not(.template-dir-customers) .cart-summary {
-    margin-top: 5px;
     margin-bottom: 5px;
     // border-right: 5px solid $color_primary;
     height: calc(100vh - 5px * 2);

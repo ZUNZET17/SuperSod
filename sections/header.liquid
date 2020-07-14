@@ -84,8 +84,8 @@
             {{ 'layout.customer.log_out' | t | customer_logout_link }}
           {% else %}
             {{ 'layout.customer.log_in' | t | customer_login_link }}
-            <span class="vertical-divider"></span>
-            {{ 'layout.customer.create_account' | t | customer_register_link }}
+            {%- comment -%}<span class="vertical-divider"></span>
+            {{ 'layout.customer.create_account' | t | customer_register_link }}{%- endcomment -%}
           {% endif %}
         </span>
       </div>

@@ -35,6 +35,10 @@
   </script>
   <link rel="stylesheet" href="{{ 'theme.scss.css' | asset_url }}">
   <link rel="preload" as="style" href="{{ 'sidebar-cart.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
+  {%- if template.name == 'login' or template.name == 'register' -%}
+    <link rel="stylesheet" href="{{ 'forms.scss.css' | asset_url }}">
+    <link rel="preload" as="style" href="{{ 'sign-in-up.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
+  {%- endif -%}
 </head>
 
 <body id="{{ page_title | handle }}" class="{% if customer %}customer-logged-in {% endif %}template-{{ request.page_type | handle }}">
