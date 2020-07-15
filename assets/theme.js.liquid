@@ -259,6 +259,9 @@ Slate.customerAddressForm = function() {
   $('.address-edit-toggle').on('click', function() {
     var formId = $(this).data('form-id');
     $('#EditAddress_' + formId).toggleClass('hide');
+    $('.js-addresses-list').toggleClass('hide');
+    $('.js-addresses-title').toggleClass('hide');
+    $('.js-addresses-new-toggle').toggleClass('hide');
   });
 
   $('.address-delete').on('click', function() {

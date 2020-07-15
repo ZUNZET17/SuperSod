@@ -1,0 +1,100 @@
+$tablet: 768px;
+$desk: 1100px;
+$border-color: #B7B7B7;
+$box-color: #F4F4F4;
+
+.account-pages-title {
+  border-bottom: 1px solid $border-color;
+  color: #C4C4C4;
+  font-size: 16px;
+  font-weight: normal;
+  line-height: 18px;
+  margin-bottom: 15px;
+  margin-top: 0;
+  padding-bottom: 6px;
+}
+
+.account-title {
+  font-weight: bold;
+  font-size: 28px;
+  line-height: 32px;
+}
+
+.account-title--add-address {
+  margin-top: 30px;
+}
+
+.account-subtitle {
+  font-weight: bold;
+  font-size: 20px;
+  line-height: 23px;
+}
+
+.account-sidebar {
+  @media (min-width: #{$tablet}) {
+    margin-top: -16px;
+  }
+}
+
+.breadcrumb-nav--account {
+  @media (min-width: #{$tablet}) {
+    margin-top: 5px;
+  }
+}
+
+.data-table {
+  border-color: $border-color;
+
+  thead th {
+    background-color: $box-color;
+    font-size: 18px;
+    line-height: 21px;
+  }
+
+  td, th {
+    border-color: $border-color;
+
+    @media (min-width: #{$desk}) {
+      padding-bottom: 25px;
+      padding-left: 25px;
+      padding-right: 25px;
+      padding-top: 24px;
+    }
+  }
+
+  td {
+    font-size: 16px;
+    line-height: 18px;
+
+    @media (min-width: #{$tablet}) {
+      text-align: center;
+    }
+  }
+}
+
+.address-box {
+  background-color: $box-color;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  margin-bottom: 20px;
+  padding: 23px 22px;
+}
+
+.address-box__title {
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 21px; 
+}
+
+.address-box__title-spacer {
+  @media (min-width: #{$tablet}) {
+    padding-top: 35px;
+  }
+}
+
+.manage-address-link {
+  @media (min-width: #{$tablet}) {
+    padding-left: 22px;
+  }
+}

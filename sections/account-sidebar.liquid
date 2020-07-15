@@ -1,0 +1,136 @@
+<div data-section-id="{{ section.id }}" data-section-type="sidebar-section">
+  <nav class="grid__item small--text-center medium-up--one-fifth account-sidebar" role="navigation">
+    <hr class="hr--small medium-up--hide">
+    <button id="ToggleMobileMenu" class="mobile-menu-icon medium-up--hide" aria-haspopup="true" aria-owns="SiteNav">
+      <span class="line"></span>
+      <span class="line"></span>
+      <span class="line"></span>
+      <span class="line"></span>
+      <span class="icon__fallback-text">{{ 'layout.navigation.menu' | t }}</span>
+    </button>
+    <div id="SiteNav" class="site-nav" role="menu">
+      <ul class="list--nav">
+        {% for link in menus[section.settings.main_menu_link_list].links %}
+          {% assign outer_index = forloop.index %}
+          {% if link.links != blank %}
+            {% assign has_active_link = false %}
+
+            {% if link.active or link.child_active %}
+              {% assign has_active_link = true %}
+            {% endif %}
+
+            <li class="site-nav--has-submenu site-nav__item">
+              <button class="site-nav__link btn--link{% if has_active_link %} site-nav__collapse{% else %} site-nav__expand{% endif %}" aria-expanded="{{ has_active_link }}" aria-controls="Collapsible-{{ forloop.index }}">
+                {{ link.title | escape }}
+                <span class="site-nav__link__text" aria-hidden="true">{% if has_active_link %}-{% else %}+{% endif %}</span>
+              </button>
+              <ul id="Collapsible-{{ forloop.index }}" class="site-nav__submenu{% if has_active_link %} site-nav__submenu--expanded{% else %} site-nav__submenu--collapsed{% endif %}" aria-hidden="{% if has_active_link %}false{% else %}true{% endif %}"{% unless has_active_link %} style="display: none;"{% endunless %}>
+                {% for childlink in link.links %}
+                  {% if childlink.links != blank %}
+                    {% assign has_active_childlink = false %}
+
+                    {% if childlink.active or childlink.child_active %}
+                      {% assign has_active_childlink = true %}
+                    {% endif %}
+
+                    <li class="site-nav--has-submenu">
+                      <button class="site-nav__link btn--link{% if has_active_childlink %} site-nav__collapse{% else %} site-nav__expand{% endif %}" aria-expanded="{{ has_active_childlink }}" aria-controls="Collapsible-{{ outer_index }}-{{ forloop.index }}">
+                        {{ childlink.title | escape }}
+                        <span class="site-nav__link__text" aria-hidden="true">{% if has_active_childlink %}-{% else %}+{% endif %}</span>
+                      </button>
+                      <ul id="Collapsible-{{ outer_index }}-{{ forloop.index }}" class="site-nav__submenu site-nav__submenu--grandchild{% if has_active_childlink %} site-nav__submenu--expanded{% else %} site-nav__submenu--collapsed{% endif %}" aria-hidden="{% if has_active_childlink %}false{% else %}true{% endif %}"{% unless has_active_childlink %} style="display: none;"{% endunless %}>
+                        {% for grandchildlink in childlink.links %}
+                          <li class="site-nav__grandchild{% if grandchildlink.active or collection.current_type == grandchildlink.title or collection.current_vendor == grandchildlink.title %}{% unless forloop.first and grandchildlink.title contains 'All' and current_tags.size > 0 %} site-nav--active{% endunless %}{% endif %}">
+                            <a href="{{ grandchildlink.url }}" class="site-nav__link"{% if grandchildlink.active %} aria-current="page"{% endif %}>{{ grandchildlink.title | escape }}</a>
+                          </li>
+                        {% endfor %}
+                      </ul>
+                    </li>
+                  {% else %}
+                    <li {% if childlink.active %}class="site-nav--active"{% endif %}>
+                      <a href="{{ childlink.url }}" class="site-nav__link"{% if childlink.active %} aria-current="page"{% endif %}>{{ childlink.title | escape }}</a>
+                    </li>
+                  {% endif %}
+                {% endfor %}
+              </ul>
+            </li>
+          {% else %}
+            <li class="site-nav__item{% if link.active %} site-nav--active{% endif %}">
+              <a href="{{ link.url }}" class="site-nav__link"{% if link.active %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
+            </li>
+          {% endif %}
+        {% endfor %}
+        {% if shop.customer_accounts_enabled %}
+          {% if customer %}
+            <li>
+              <a href="{{ routes.account_url }}" class="site-nav__link site-nav--account medium-up--hide">{{ 'layout.customer.account' | t }}</a>
+            </li>
+            <li>
+              <a href="{{ routes.account_logout_url }}" class="site-nav__link site-nav--account medium-up--hide">{{ 'layout.customer.log_out' | t }}</a>
+            </li>
+          {% else %}
+            <li>
+              <a href="{{ routes.account_login_url }}" class="site-nav__link site-nav--account medium-up--hide">{{ 'layout.customer.log_in' | t }}</a>
+            </li>
+            <li>
+              <a href="{{ routes.account_register_url }}" class="site-nav__link site-nav--account medium-up--hide">{{ 'layout.customer.create_account' | t }}</a>
+            </li>
+          {% endif %}
+        {% endif %}
+      </ul>
+    </div>
+    <hr class="medium-up--hide hr--small {% if request.page_type == 'index' %}hr--border-bottom{% endif %}">
+  </nav>
+</div>
+
+{% schema %}
+{
+  "name": {
+    "da": "Sidebjælke",
+    "de": "Seitenleiste",
+    "en": "Customer Account Sidebar",
+    "es": "Barra lateral para cuenta",
+    "fi": "Sivupalkki",
+    "fr": "Barre latérale",
+    "hi": "साइडबार",
+    "it": "Sidebar",
+    "ja": "サイドバー",
+    "ko": "사이드바",
+    "nb": "Sidefelt",
+    "nl": "Zijbalk",
+    "pt-BR": "Barra Lateral",
+    "pt-PT": "Barra lateral",
+    "sv": "Sidofält",
+    "th": "แถบด้านข้าง",
+    "zh-CN": "侧边栏",
+    "zh-TW": "側邊欄"
+  },
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "main_menu_link_list",
+      "label": {
+        "da": "Menu",
+        "de": "Menü",
+        "en": "Menu",
+        "es": "Menú",
+        "fi": "Valikko",
+        "fr": "Menu",
+        "hi": "मेनू",
+        "it": "Menu",
+        "ja": "メニュー",
+        "ko": "메뉴",
+        "nb": "Meny",
+        "nl": "Menu",
+        "pt-BR": "Menu",
+        "pt-PT": "Menu",
+        "sv": "Meny",
+        "th": "เมนู",
+        "zh-CN": "菜单",
+        "zh-TW": "選單"
+      },
+      "default": "main-menu"
+    }
+  ]
+}
+{% endschema %}

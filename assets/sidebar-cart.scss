@@ -656,6 +656,10 @@ $color_primary: #54a45b;
   display: none;
 }
 
+.site-nav--active a {
+  color: $color_primary;
+}
+
 @media (max-width: 360px) {
   .cart-summary__section,
   .cart-summary__close,

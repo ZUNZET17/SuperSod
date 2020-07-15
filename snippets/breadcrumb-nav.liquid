@@ -1,4 +1,8 @@
-<nav class="breadcrumb-nav small--text-center{% if request.page_type == blank %} breadcrumb-nav--no-template{% endif %}" aria-label="{{ 'general.breadcrumbs.you_are_here' | t }}">
+{%- assign show_account_sidebar = false -%}
+{%- if template.name == 'account' or template.name == 'order' or template.name == 'addresses' -%}
+  {%- assign show_account_sidebar = true -%}
+{%- endif -%}
+<nav class="breadcrumb-nav{% if show_account_sidebar == true%} breadcrumb-nav--account{% endif %} small--text-center{% if request.page_type == blank %} breadcrumb-nav--no-template{% endif %}" aria-label="{{ 'general.breadcrumbs.you_are_here' | t }}">
   <span itemscope itemtype="http://schema.org/BreadcrumbList">
     <span itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
       <a href="{{ routes.root_url }}" itemprop="item" title="{{ 'general.breadcrumbs.home_link_title' | t }}">

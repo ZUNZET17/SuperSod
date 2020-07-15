@@ -1,12 +1,14 @@
 .form--sign-in {
   @media (min-width: 1100px) {
-    margin-right: 25px;
+    margin-right: 40px;
   }
 }
 
 .form--sign-up {
   @media (min-width: 1100px) {
-    margin-left: 25px;
+    margin-left: 40px;
+    padding-left: 80px;
+    padding-right: 20px;
   }
 }
 
