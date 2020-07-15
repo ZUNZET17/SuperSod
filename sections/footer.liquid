@@ -1,81 +1,121 @@
+{%- assign use_full_wrapper = false -%}
+{%- if request.page_type == 'cart' -%}
+  {%- assign use_full_wrapper = true -%}
+{%- endif -%}
 <footer class="site-footer" role="contentinfo" data-section-id="{{ section.id }}" data-section-type="footer-section">
+  <div class="site-wrapper{% unless use_full_wrapper %} site-wrapper--head{% endunless %}">
+    <div class="grid site-footer__menus">
 
-  <div class="grid">
+      {% case section.blocks.size %}
+        {% when 0 %}
+        {% when 1 %}
+          {% assign column_width = 'text-left' %}
+        {% when 2 %}
+          {% assign column_width = 'medium-up--one-half small--one-whole' %}
+        {% when 3 %}
+          {% assign column_width = 'medium-up--one-third small--one-whole' %}
+        {% when 4 %}
+          {% assign column_width = 'medium-up--one-quarter small--one-whole' %}
+      {% endcase %}
+      {%- assign first_menu_processed = false -%}
+      {% for block in section.blocks %}
+        {% case block.type %}
+          {% when 'menu' %}
+            <div class="grid__item {{ column_width }}">
+              {% if block.settings.title %}
+                <h3 class="site-footer__section-title">{{ block.settings.title | escape }}</h3>
+              {% endif %}
+              <ul class="site-footer__menu">
+                {%- unless first_menu_processed -%}
+                  {%- assign first_menu_processed = true -%}
+                  <li class="site-footer__list-item">
+                    {%- assign networks = 'facebook;twitter;youtube;pinterest;instagram;snapchat;google_plus;tumblr;vimeo;fancy' -%}
+                    {%- assign networks = networks | split: ';' -%}
+                    <ul class="list--inline site-footer__social-links">
+                      {%- for network in networks -%}
+                        {%- assign network_link_name = 'social_' | append: network | append: '_link' -%}
+                        {%- if settings[network_link_name] != blank -%}
+                          {%- assign network_icon_name = 'icon-' | append: network -%}
+                          {%- assign network_name = network | camelcase -%}
+                          <li>
+                            <a href="{{settings[network_link_name]}}" title="{{ 'layout.footer.social_platform' | t: name: shop.name, platform: network_name }}">
+                              {% include network_icon_name %}
+                              <span class="icon__fallback-text">{{ network_name }}</span>
+                            </a>
+                          </li>
+                        {%- endif -%}
+                      {%- endfor -%}
+                    </ul>
+                  </li>
+                {%- endunless -%}
+                {% for link in linklists[block.settings.menu].links %}
+                  <li class="site-footer__list-item"><a class="site-footer__link" href="{{ link.url }}">{{ link.title }}</a></li>
+                {% endfor %}
+              </ul>
+            </div>
+  
+          {% when 'text' %}
+            <div class="grid__item {{ column_width }}">
+              {% if block.settings.title %}
+                <h3 class="site-footer__section-title">{{ block.settings.title | escape }}</h3>
+              {% endif %}
+              <div class="rte">{{ block.settings.richtext }}</div>
+            </div>
+  
+          {% when 'newsletter' %}
+            <div class="grid__item {{ column_width }}">
+              {% if block.settings.title %}
+                <h3 class="site-footer__section-title">{{ block.settings.title | escape }}</h3>
+              {% endif %}
+              <h3 class="site-footer__section-title">{{ 'general.newsletter_form.newsletter_heading' | t }}</h3>
+              {% include 'newsletter', label: block.settings.subtext %}
+            </div>
+  
+        {% endcase %}
+      {% endfor %}
+    </div>
 
-    {% case section.blocks.size %}
-      {% when 0 %}
-      {% when 1 %}
-        {% assign column_width = 'text-left' %}
-      {% when 2 %}
-        {% assign column_width = 'medium-up--one-half small--one-whole' %}
-      {% when 3 %}
-        {% assign column_width = 'medium-up--one-third small--one-whole' %}
-      {% when 4 %}
-        {% assign column_width = 'medium-up--one-quarter small--one-whole' %}
-    {% endcase %}
-
-    {% for block in section.blocks %}
-      {% case block.type %}
-        {% when 'menu' %}
-          <div class="grid__item {{ column_width }}">
-            {% if block.settings.title %}
-              <h3 class="site-footer__section-title">{{ block.settings.title | escape }}</h3>
-            {% endif %}
-            <ul class="site-footer__menu">
-              {% for link in linklists[block.settings.menu].links %}
-                <li><a href="{{ link.url }}">{{ link.title }}</a></li>
-              {% endfor %}
+    <div class="grid medium-up--grid--table sub-footer small--text-center">
+      <div class="grid__item medium-up--one-half">
+        <p> &copy; {{ 'now' | date: '%Y' }} {{ section.settings.copyright_name }}</p>
+      </div>
+      {%- if section.settings.show_payment_icons -%}
+        {%- unless shop.enabled_payment_types == empty -%}
+          <div class="grid__item medium-up--one-half medium-up--text-right">
+            <span class="visually-hidden">{{ 'general.payment.method' | t }}</span>
+            <ul class="list--inline payment-icons">
+              {%- for type in shop.enabled_payment_types -%}
+                <li>
+                  {{ type | payment_type_svg_tag: class: 'icon icon--full-color' }}
+                </li>
+              {%- endfor -%}
             </ul>
           </div>
-
-        {% when 'text' %}
-          <div class="grid__item {{ column_width }}">
-            {% if block.settings.title %}
-              <h3 class="site-footer__section-title">{{ block.settings.title | escape }}</h3>
-            {% endif %}
-            <div class="rte">{{ block.settings.richtext }}</div>
-          </div>
-
-        {% when 'newsletter' %}
-          <div class="grid__item {{ column_width }}">
-            {% if block.settings.title %}
-              <h3 class="site-footer__section-title">{{ block.settings.title | escape }}</h3>
-            {% endif %}
-            <h3 class="site-footer__section-title">{{ 'general.newsletter_form.newsletter_heading' | t }}</h3>
-            {% include 'newsletter', label: block.settings.subtext %}
-          </div>
-
-      {% endcase %}
-    {% endfor %}
-
+        {%- endunless -%}
+      {%- endif -%}
     </div>
-
-  {% if section.blocks.size > 0 %}
-    <hr>
-  {% endif %}
-
-  <div class="grid medium-up--grid--table sub-footer small--text-center">
-    <div class="grid__item medium-up--one-half">
-      <small>{{ 'layout.footer.copyright' | t }} &copy; {{ 'now' | date: '%Y' }}, {{ shop.name | link_to: routes.root_url }}. {{ powered_by_link }}</small>
-    </div>
-    {%- if section.settings.show_payment_icons -%}
-      {%- unless shop.enabled_payment_types == empty -%}
-        <div class="grid__item medium-up--one-half medium-up--text-right">
-          <span class="visually-hidden">{{ 'general.payment.method' | t }}</span>
-          <ul class="list--inline payment-icons">
-            {%- for type in shop.enabled_payment_types -%}
-              <li>
-                {{ type | payment_type_svg_tag: class: 'icon icon--full-color' }}
-              </li>
-            {%- endfor -%}
-          </ul>
-        </div>
-      {%- endunless -%}
-    {%- endif -%}
   </div>
 </footer>
-
-
+{%- if section.settings.bg_color != blank -%}
+<style>
+  .site-footer {
+    background-color: {{section.settings.bg_color}};
+    color: {{section.settings.text_color}};
+  }
+  .sub-footer {
+    color: {{section.settings.text_color}};
+  }
+  .site-footer__section-title {
+    color: {{section.settings.text_color}};
+  }
+  .site-footer__link {
+    color: {{section.settings.text_color}};
+  }
+  .site-footer a {
+    color: {{section.settings.text_color}};
+  }
+</style>
+{%- endif -%}
 
 {% schema %}
 {
@@ -125,6 +165,32 @@
         "zh-TW": "顯示付款圖示"
       },
       "default": true
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": {
+        "en": "Background color",
+        "es": "Color de fondo"
+      },
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": {
+        "en": "Text color",
+        "es": "Color de texto"
+      },
+      "default": "#000000"
+    },
+    {
+      "type": "text",
+      "id": "copyright_name",
+      "label": {
+        "en": "Text to show in copyright",
+        "es": "Texto para mostrar en copyright"
+      }
     }
   ],
   "blocks": [

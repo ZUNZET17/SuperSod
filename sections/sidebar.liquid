@@ -78,7 +78,7 @@
           {% endif %}
         {% endif %}
       </ul>
-      <ul class="list--inline social-links">
+      {%- comment -%}<ul class="list--inline social-links">
         {% if settings.social_facebook_link != blank %}
           <li>
             <a href="{{ settings.social_facebook_link | escape }}" title="{{ 'layout.footer.social_platform' | t: name: shop.name, platform: 'Facebook' }}">
@@ -167,7 +167,7 @@
             </a>
           </li>
         {% endif %}
-      </ul>
+      </ul>{%- endcomment -%}
     </div>
     <hr class="medium-up--hide hr--small {% if request.page_type == 'index' %}hr--border-bottom{% endif %}">
   </nav>

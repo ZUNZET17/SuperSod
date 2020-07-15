@@ -34,6 +34,7 @@
     }
   </script>
   <link rel="stylesheet" href="{{ 'theme.scss.css' | asset_url }}">
+  <link rel="preload" as="style" href="{{ 'site-footer.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
   {%- unless request.page_type == 'cart' -%}
     <link rel="preload" as="style" href="{{ 'sidebar-cart.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
   {%- endunless -%}
