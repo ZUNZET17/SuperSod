@@ -43,7 +43,7 @@
   {%- endunless -%}
   {%- if template.name == 'login' 
     or template.name == 'register' or template.name == 'addresses'
-    or template.name == 'reset_password' -%}
+    or template.name == 'reset_password' or template.name == 'account' -%}
     <link rel="stylesheet" href="{{ 'forms.scss.css' | asset_url }}">
   {%- endif -%}
   {%- if template.name == 'login' or template.name == 'register' -%}
@@ -162,5 +162,8 @@
   <script src="{{ 'modernizr.min.js' | asset_url }}" defer></script>
   <script src="{{ 'theme.js' | asset_url }}" defer></script>
   <script src="{{ 'sidebar-cart.js' | asset_url }}" defer></script>
+  {%- if template.name == 'account' -%}
+    <script src="{{ 'account.js' | asset_url }}" defer></script>
+  {%- endif -%}
 </body>
 </html>

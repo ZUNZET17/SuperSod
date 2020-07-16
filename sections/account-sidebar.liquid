@@ -55,7 +55,7 @@
               </ul>
             </li>
           {% else %}
-            <li class="site-nav__item{% if link.active %} site-nav--active{% endif %}">
+            <li class="site-nav__item{% if link.active %} site-nav--active{% endif %} js-sidebar-item">
               <a href="{{ link.url }}" class="site-nav__link"{% if link.active %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
             </li>
           {% endif %}
