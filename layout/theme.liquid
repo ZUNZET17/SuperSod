@@ -41,7 +41,9 @@
   {%- unless request.page_type == 'cart' -%}
     <link rel="preload" as="style" href="{{ 'sidebar-cart.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
   {%- endunless -%}
-  {%- if template.name == 'login' or template.name == 'register' or template.name == 'addresses' -%}
+  {%- if template.name == 'login' 
+    or template.name == 'register' or template.name == 'addresses'
+    or template.name == 'reset_password' -%}
     <link rel="stylesheet" href="{{ 'forms.scss.css' | asset_url }}">
   {%- endif -%}
   {%- if template.name == 'login' or template.name == 'register' -%}
@@ -142,13 +144,13 @@
   {%- capture shopify_scripts -%}
     {{ content_for_header }}
   {%- endcapture -%}
-  {%- assign shopify_scripts = shopify_scripts | replace: 'var setCookieIfThankYouPage', ';var setCookieIfThankYouPage'
+  {% comment %}{%- assign shopify_scripts = shopify_scripts | replace: 'var setCookieIfThankYouPage', ';var setCookieIfThankYouPage'
     | replace: 'var trekkie = window', ';var trekkie = window'
     | strip_newlines | replace: '  ', '' | replace: '	', '' | strip -%}
   {%- assign shopify_scripts = shopify_scripts
     | replace: "getElementsByTagName('script')[0]", "getElementsByClassName('js-last-defer')[0]"
     | replace: "getElementsByTagName('head')[0]", "getElementsByClassName('js-last-defer')[0].parentNode"
-    | replace: '.async = true', '.defer = true' -%}
+    | replace: '.async = true', '.defer = true' -%}{% endcomment %}
   {{ shopify_scripts | strip }}
   {% comment %} {{ shopify_scripts | replace: 'previewBarInjector.init();', '' | strip }} {% endcomment %}
   <!-- End shopify marketing and plugin stuff -->
