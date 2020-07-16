@@ -492,6 +492,16 @@ html {
 
 body {
   margin: 0;
+  background-image: url({{ 'textured-background.jpg' | asset_url }});
+  background-repeat: repeat;
+}
+
+@media
+(-webkit-min-device-pixel-ratio: 2), 
+(min-resolution: 192dpi) {
+  body {
+    background-image: url({{ 'textured-background-2x.jpg' | asset_url }});
+  }
 }
 
 /* HTML5 display definitions
