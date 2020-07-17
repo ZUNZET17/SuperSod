@@ -1,0 +1,60 @@
+$tablet: 750px;
+$desk: 1100px;
+
+$dark: #398159;
+
+[role="tab"] {
+  background-color: transparent;
+  border: 0;
+  color: #808080;
+  cursor: pointer;
+  display: block;
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0;
+  overflow: visible;
+  padding: 8px 0;
+  position: relative;
+  text-align: center;
+  width: 100%;
+
+  @media all and (min-width: #{$tablet}) {
+    font-size: 20px;
+    line-height: 23px;
+    padding: 8px 10px;
+  }
+}
+
+[role="tab"][aria-selected="true"] {
+  color: $dark;
+  outline: 0;
+
+  svg path {
+    fill: $dark;
+  }
+}
+
+[role="tab"]:hover,
+[role="tab"]:focus,
+[role="tab"]:active {
+  color: $dark;
+  outline: 0;
+
+  svg path {
+    fill: $dark;
+  }
+}
+
+[role="tabpanel"] {
+  padding: 10px 0;
+  position: relative;
+  z-index: 2;
+
+  @media all and (min-width: #{$tablet}) {
+    padding: 10px 25px;
+  }
+}
+
+[role="tabpanel"]:focus {
+  outline: 0;
+}

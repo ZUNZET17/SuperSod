@@ -1,0 +1,50 @@
+<div class="product-featured-banner text-center" style="background-image: url({{banner_image | img_url }});">
+  <div class="site-wrapper site-wrapper--head">
+    <h2 class="product-featured-banner__title">{{ section.settings.banner_title }}</h2>
+    <a href="{{ section.settings.banner_link }}" class="btn btn--terciary">{{ section.settings.banner_link_text }}</a>
+  </div>
+</div>
+{% schema %}
+{
+  "name": {
+    "en": "Sod footer banner",
+    "es": "Banner de pié de pagina para césped"
+  },
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "banner_image",
+      "label": {
+        "en": "Banner image",
+        "es": "Imagen"
+      }
+    },
+    {
+      "type": "text",
+      "id": "banner_title",
+      "label": {
+        "en": "Banner title",
+        "es": "Título del banner"
+      },
+      "default": "Title"
+    },
+    {
+      "type": "text",
+      "id": "banner_link_text",
+      "label": {
+        "en": "Banner button text",
+        "es": "Texto del botón"
+      },
+      "default": "Button"
+    },
+    {
+      "type": "url",
+      "id": "banner_link",
+      "label": {
+        "en": "Banner button link",
+        "es": "Enlace del botón"
+      }
+    }
+  ]
+}
+{% endschema %}

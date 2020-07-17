@@ -1860,6 +1860,9 @@ th {
   }
 }
 
+/*================ Variables ================*/
+$button-size: 50px;
+
 // make buttons look like links
 .btn--link {
   padding: 0;
@@ -1872,6 +1875,10 @@ th {
   &:focus {
     opacity: $opacity-link-hover;
   }
+}
+
+.primary-text {
+  color: $color-primary;
 }
 
 /*================ Default link styles ================*/
@@ -1937,7 +1944,7 @@ a[href^="tel"] {
   white-space: nowrap;
   cursor: pointer;
   text-transform: uppercase;
-  min-height: 44px;
+  min-height: $button-size;
   line-height: 1.9;
 
   // Set primary button colors - can override later
@@ -2267,9 +2274,6 @@ th {
 .slideshow-container:focus {
   outline: 5px auto -webkit-focus-ring-color;
 }
-
-/*================ Variables ================*/
-$button-size: 44px;
 
 /*============================================================================
   #FlexSlider

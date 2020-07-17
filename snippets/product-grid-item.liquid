@@ -22,6 +22,19 @@
 
 <div class="product grid__item {{ grid_item_width }} slide-up-animation animated" role="listitem">
   {% unless product.featured_image == blank %}
+    <div class="product__block-image" style="background-image: url({{product.featured_image | img_url: '200x'}});">
+      <a href="{{ product.url | within: collection }}" class="product__block-link" title="{{ product.title | escape }}" data-image-link>
+        <img class="product__image lazyload"
+             alt="{{ product.featured_image.alt | escape }}"
+             style="max-width: {{ 600 | times: product.featured_image.aspect_ratio | round }}px; max-height: 600px;"
+             data-src="{{ img_url }}"
+             data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+             data-aspectratio="{{ product.featured_image.aspect_ratio }}"
+             data-sizes="auto"
+             data-image>
+      </a>
+    </div>
+    {%- comment -%}
     <div class="supports-js" style="max-width: {{ 600 | times: product.featured_image.aspect_ratio | round }}px; margin: 0 auto;">
       <a href="{{ product.url | within: collection }}" class="product__image-wrapper product__image-wrapper--loading" style="padding-top:{{ 1 | divided_by: product.featured_image.aspect_ratio | times: 100}}%;" title="{{ product.title | escape }}" data-image-link>
         <img class="product__image lazyload"
@@ -33,10 +46,10 @@
              data-sizes="auto"
              data-image>
       </a>
-    </div>
+    </div>{%- endcomment -%}
   {% else %}
     <a href="{{ product.url | within: collection }}" class=" supports-js product__image-wrapper" title="{{ product.title | escape }}">
-      <img src="{{ product.featured_image.src | img_url: 'grande' }}" alt="{{ product.featured_image.alt | escape }}">
+      <img src="{{ product.featured_image.src | img_url: '200x' }}" alt="{{ product.featured_image.alt | escape }}">
     </a>
   {% endunless %}
 

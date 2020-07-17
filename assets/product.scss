@@ -1,0 +1,139 @@
+$border-color: #B7B7B7;
+$text-color: #333333;
+$white: #FFFFFF;
+$color_primary: #54A45B;
+$tablet: 750px;
+$desk: 1100px;
+
+.product-single__meta {
+  max-width: 398px;
+}
+
+.product-single__price--pallet {
+  font-size: 16px;
+  line-height: 18px;
+}
+
+.product-single__cart-submit-wrapper {
+  margin-top: 32px;
+}
+
+.form--product {
+  margin-top: 30px;
+}
+
+.product-single__pallet-msg {
+  background-color: #F9FFF9;
+  border: 1px solid $color_primary;
+  font-size: 16px;
+  line-height: 18px;
+  margin-top: 30px;
+  padding: 10px 11px;
+}
+
+.product-single__pallet-msg--unavailable {
+  background-color: #fff8f8;
+  border-color: #D20000;
+}
+
+.selector-wrapper {
+  display: block;
+
+  label {
+    color: $text-color;
+    font-size: 16px;
+    font-weight: normal;
+    line-height: 18px;
+  }
+}
+
+.single-option-selector {
+  background-color: $white;
+  border: 1px solid $border-color;
+  color: #808080;
+  display: block;
+  font-size: 16px;
+  line-height: 18px;
+  padding: 16px;
+  margin-bottom: 13px;
+  margin-top: 8px;
+  width: 100%;
+
+  @media (min-width: 750px) {
+    width: 50%;
+  }
+}
+
+.product-single__description {
+  font-size: 15px;
+  line-height: 17px;
+}
+
+.recommendations-separator {
+  margin-top: 0;
+  margin-bottom: 48px;
+}
+
+.recommendations-title {
+  font-weight: bold;
+  font-size: 28px;
+  line-height: 32px;
+  margin-bottom: 43px;
+}
+
+.product-tabs {
+  margin-top: 40px;
+}
+
+.product-tabs__tablist {
+  border-bottom: 1px solid $border-color;
+}
+
+.product-tabs__button {
+  @media all and (min-width: #{$tablet}) {
+    text-align: left;
+  }
+}
+
+.product-tabs__tab {
+  margin: 30px 0;
+  padding: 0;
+
+  .product-single__description {
+    margin: 0;
+  }
+
+  ul {
+    list-style-type: initial;
+  }
+
+  li + li {
+    margin-top: 15px;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: bold;
+  }
+}
+
+.product-featured-banner {
+  background-position: center;
+  background-size: cover;
+  margin-bottom: -35px;
+  padding-bottom: 40px;
+  padding-top: 40px;
+
+  @media all and (min-width: #{$desk}) {
+    margin-bottom: -75px;
+    padding-bottom: 85px;
+    padding-top: 85px;
+  }
+}
+
+.product-featured-banner__title {
+  color: $white;
+  font-size: 28px;
+  font-weight: bold;
+  line-height: 32px;
+  margin-bottom: 20px;
+}

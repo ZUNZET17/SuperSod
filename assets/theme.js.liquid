@@ -1121,6 +1121,9 @@ theme.Product = (function() {
           this.selectors.$addToCartText.html(theme.strings.soldOut);
           this.selectors.$shopifyPaymentButton.hide();
         }
+        if (typeof isProductLimitedByZip !== 'undefined') {
+          this.selectors.$addToCartBtn.prop('disabled', true);
+        }
         // Show SKU
         this.selectors.$SKU.html(variant.sku);
 
@@ -1181,6 +1184,7 @@ theme.Product = (function() {
               $addToCartBtn.prop('disabled', false);
               $addToCartBtn.removeClass('btn--ajax-disabled');
               addToCartflip($addToCartBtn);
+              theme.updateCartSummaries(true);
             },
             error: function(XMLHttpRequest) {
               var data = eval('(' + XMLHttpRequest.responseText + ')');

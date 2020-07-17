@@ -308,7 +308,9 @@
       "view_cart": "View cart",
       "continue_shopping": "Continue shopping",
       "description": "Description",
-      "full_details": "Full details"
+      "full_details": "Full details",
+      "pallet_text_html": "Currently there is a <b>minimum</b> order of 1 pallet (500 sq ft) and <b>maximum</b> order of 6 pallets (3,000 sq ft) when ordering online.<br><br>If you wish to purchase less than 1 pallet or more than 6 pallets, then please visit our <a href='https://info.supersod.com/sod-prices-free-sod-quote'>sod quote page.</a>",
+      "pallet_unavailable_html": "This sod is not available online for your area. But have no fear! You can fill out our <a href='https://info.supersod.com/sod-prices-free-sod-quote'>quick sod quote form</a> and someone will be in touch with you."
     },
       "zoom": {
       "next": "Next (Right arrow key)",

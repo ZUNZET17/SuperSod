@@ -33,6 +33,10 @@
       }
     }
   </script>
+  {%- assign use_pallet = false -%}
+  {%- if template.name == 'product' and product.tags contains 'pallet' -%}
+    {%- assign use_pallet = true -%}
+  {%- endif -%}
   <link rel="stylesheet" href="{{ 'theme.scss.css' | asset_url }}">
   {%- if template.name == 'account' or template.name == 'order' or template.name == 'addresses' -%}
     <link rel="stylesheet" href="{{'account.scss.css' | asset_url}}">
@@ -43,11 +47,19 @@
   {%- endunless -%}
   {%- if template.name == 'login' 
     or template.name == 'register' or template.name == 'addresses'
-    or template.name == 'reset_password' or template.name == 'account' -%}
+    or template.name == 'reset_password' or template.name == 'account'
+    or template.name == 'product' -%}
     <link rel="stylesheet" href="{{ 'forms.scss.css' | asset_url }}">
   {%- endif -%}
   {%- if template.name == 'login' or template.name == 'register' -%}
     <link rel="preload" as="style" href="{{ 'sign-in-up.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
+  {%- endif -%}
+  {%- if template.name == 'product' or template.name == 'collection' -%}
+    <link rel="preload" as="style" href="{{ 'products-collections.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
+  {%- endif -%}
+  {%- if template.name == 'product' -%}
+    <link rel="preload" as="style" href="{{ 'tabs.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" as="style" href="{{ 'product.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
   {%- endif -%}
 </head>
 {%- assign show_breadcrumb = true -%}
@@ -83,6 +95,9 @@
     {%- if show_account_sidebar == true -%}
       <p class="account-pages-title">{{ 'customer.login.page_title' | t }}</p>
     {%- endif -%}
+    {%- if template.name == 'product' or template.name == 'collection' -%}
+      <p class="product-pages-title">{{ 'cart.cart_summary.products_header' | t }}</p>
+    {%- endif -%}
     <div class="grid">
       {%- if show_sidebar == true -%}
         {% section "sidebar" %}
@@ -101,6 +116,9 @@
       {% section 'cart-drawer' %}
     </div>
   </div>
+  {%- if use_pallet == true -%}
+    {% section 'product-pallet-banner' %}
+  {%- endif -%}
   {% section "footer" %}
   {%- if request.page_type == 'index' -%}
     <p id="slideshow-info" class="visually-hidden" aria-hidden="true">
@@ -164,6 +182,10 @@
   <script src="{{ 'sidebar-cart.js' | asset_url }}" defer></script>
   {%- if template.name == 'account' -%}
     <script src="{{ 'account.js' | asset_url }}" defer></script>
+  {%- endif -%}
+  {%- if template.name == 'product' -%}
+    <script src="{{ 'product.js' | asset_url }}" defer></script>
+    <script src="{{ 'tabs.js' | asset_url }}" defer></script>
   {%- endif -%}
 </body>
 </html>

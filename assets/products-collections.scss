@@ -1,0 +1,51 @@
+$tablet: 750px;
+$desk: 1100px;
+$color_primary: #54A45B;
+
+.product-pages-title {
+  color: #B7B7B7;
+  font-size: 16px;
+  line-height: 18px;
+}
+
+.product__block-image {
+  padding: 75px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+
+  @media (min-width: #{$tablet}) {
+    padding: 106px;
+  }
+
+  img {
+    display: none;
+  }
+}
+
+.product__block-link {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 1;
+}
+
+.product__title--card {
+  margin-bottom: 8px;
+  margin-top: 20px;
+
+  a {
+    color: $color_primary;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 16px;
+  }
+}
+
+.product__price {
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 18px;
+}
