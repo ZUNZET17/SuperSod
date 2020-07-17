@@ -3,7 +3,7 @@
 
 <div data-section-id="{{ section.id }}" data-section-type="collection-template" data-sort-enabled="{{ section.settings.collection_sort_enable }}" data-tags-enabled="{{ section.settings.collection_tag_enable }}">
   <header class="grid">
-    <h1 class="grid__item small--text-center {% if section.settings.collection_sort_enable or section.settings.collection_tag_enable %}medium-up--one-third{% endif %}">{% if current_tags.size > 0 %}{{ current_tags.first }}{% else %}{{ collection.title }}{% endif %}</h1>
+    <h1 class="grid__item collection-title small--text-center {% if section.settings.collection_sort_enable or section.settings.collection_tag_enable %}medium-up--one-third{% endif %}">{% if current_tags.size > 0 %}{{ current_tags.first }}{% else %}{{ collection.title }}{% endif %}</h1>
 
     {% if section.settings.collection_sort_enable or section.settings.collection_tag_enable %}
       <div class="collection-sorting grid__item medium-up--two-thirds medium-up--text-right small--text-center">
@@ -24,10 +24,10 @@
           </div>
         {% endif %}
         {% if section.settings.collection_sort_enable and collection.products.size > 1 %}
-          <div class="collection-sorting__dropdown">
+          <div class="collection-sorting__dropdown form">
             <label for="SortBy" class="label--hidden">{{ 'collections.sorting.title' | t }}</label>
             {% assign sort_by = collection.sort_by | default: collection.default_sort_by %}
-            <select name="sort_by" id="SortBy" aria-describedby="a11y-refresh-page-message a11y-selection-message">
+            <select name="sort_by" id="SortBy" aria-describedby="a11y-refresh-page-message a11y-selection-message" class="form__input">
               {% for option in collection.sort_options %}
                 <option value="{{ option.value }}"{% if sort_by == option.value %} selected="selected"{% endif %}>{{ option.name }}</option>
               {% endfor %}
@@ -103,7 +103,23 @@
 
 {% endpaginate %}
 
-
+{%- if collection.handle contains 'sod' -%}
+  <div class="collection-extra">
+    <h2 class="collection-extra__title">{{ section.settings.sod_extra_title }}</h2>
+    <div class="grid">
+      {%- for i in (1..4) -%}
+        {%- assign image_str = 'sod_extra_image_' | append: i -%}
+        {%- assign title_str = 'sod_extra_subtitle_' | append: i -%}
+        {%- assign link_str = 'sod_extra_link_' | append: i -%}
+        <div class="grid__item medium-up--one-quarter">
+          <div class="collection-extra__box text-center"{% if section.settings[image_str] != blank %} style="background-image: url({{section.settings[image_str] | img_url }});"{% endif %}>
+            <a href="{{ section.settings[link_str] }}" class="collection-extra__link">{{ section.settings[title_str] }}</a>
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+{%- endif -%}
 
 {% schema %}
 {
@@ -201,6 +217,118 @@
         "zh-TW": "啟用產品標籤篩選功能"
       },
       "default": false
+    },
+    {
+      "type": "header",
+      "content": {
+        "en": "Sod extras",
+        "es": "Extras para césped"
+      }
+    },
+    {
+      "type": "text",
+      "id": "sod_extra_title",
+      "label": {
+        "en": "Sod extras title",
+        "es": "Titulo de extras para césped"
+      },
+      "default": "Important to know"
+    },
+    {
+      "type": "text",
+      "id": "sod_extra_subtitle_1",
+      "label": {
+        "en": "Sod extras box 1 title",
+        "es": "Titulo de caja 1 extras para césped"
+      }
+    },
+    {
+      "type": "url",
+      "id": "sod_extra_link_1",
+      "label": {
+        "en": "Sod extras box 1 link",
+        "es": "Enlace de caja 1 extras para césped"
+      }
+    },
+    {
+      "type": "image_picker",
+      "id": "sod_extra_image_1",
+      "label": {
+        "en": "Sod extras box 1 image",
+        "es": "Imagen de caja 1 extras para césped"
+      }
+    },
+    {
+      "type": "text",
+      "id": "sod_extra_subtitle_2",
+      "label": {
+        "en": "Sod extras box 2 title",
+        "es": "Titulo de caja 2 extras para césped"
+      }
+    },
+    {
+      "type": "url",
+      "id": "sod_extra_link_2",
+      "label": {
+        "en": "Sod extras box 2 link",
+        "es": "Enlace de caja 2 extras para césped"
+      }
+    },
+    {
+      "type": "image_picker",
+      "id": "sod_extra_image_2",
+      "label": {
+        "en": "Sod extras box 2 image",
+        "es": "Imagen de caja 2 extras para césped"
+      }
+    },
+    {
+      "type": "text",
+      "id": "sod_extra_subtitle_3",
+      "label": {
+        "en": "Sod extras box 3 title",
+        "es": "Titulo de caja 3 extras para césped"
+      }
+    },
+    {
+      "type": "url",
+      "id": "sod_extra_link_3",
+      "label": {
+        "en": "Sod extras box 3 link",
+        "es": "Enlace de caja 3 extras para césped"
+      }
+    },
+    {
+      "type": "image_picker",
+      "id": "sod_extra_image_3",
+      "label": {
+        "en": "Sod extras box 3 image",
+        "es": "Imagen de caja 3 extras para césped"
+      }
+    },
+    {
+      "type": "text",
+      "id": "sod_extra_subtitle_4",
+      "label": {
+        "en": "Sod extras box 4 title",
+        "es": "Titulo de caja 4 extras para césped"
+      }
+    },
+    {
+      "type": "url",
+      "id": "sod_extra_link_4",
+      "label": {
+        "en": "Sod extras box 4 link",
+        "es": "Enlace de caja 4 extras para césped"
+      }
+    },
+    {
+      "type": "image_picker",
+      "id": "sod_extra_image_4",
+      "label": {
+        "en": "Sod extras box 4 image",
+        "es": "Imagen de caja 4 extras para césped"
+      }
     }
   ]
 }

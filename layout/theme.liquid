@@ -48,7 +48,7 @@
   {%- if template.name == 'login' 
     or template.name == 'register' or template.name == 'addresses'
     or template.name == 'reset_password' or template.name == 'account'
-    or template.name == 'product' -%}
+    or template.name == 'product' or template.name == 'collection' -%}
     <link rel="stylesheet" href="{{ 'forms.scss.css' | asset_url }}">
   {%- endif -%}
   {%- if template.name == 'login' or template.name == 'register' -%}
@@ -60,6 +60,9 @@
   {%- if template.name == 'product' -%}
     <link rel="preload" as="style" href="{{ 'tabs.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
     <link rel="preload" as="style" href="{{ 'product.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
+  {%- endif -%}
+  {%- if template.name == 'collection' -%}
+    <link rel="preload" as="style" href="{{ 'collection.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
   {%- endif -%}
 </head>
 {%- assign show_breadcrumb = true -%}

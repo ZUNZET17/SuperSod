@@ -492,16 +492,8 @@ html {
 
 body {
   margin: 0;
-  background-image: url({{ 'textured-background.jpg' | asset_url }});
+  background-image: url({{ 'textured-bg-1.jpg' | asset_url }});
   background-repeat: repeat;
-}
-
-@media
-(-webkit-min-device-pixel-ratio: 2), 
-(min-resolution: 192dpi) {
-  body {
-    background-image: url({{ 'textured-background-2x.jpg' | asset_url }});
-  }
 }
 
 /* HTML5 display definitions
@@ -1991,6 +1983,15 @@ a[href^="tel"] {
     background-color: transparent;
     color: $color-btn-primary-bg;
     border: 2px solid $color-btn-primary-bg;
+  }
+}
+
+.btn--terciary {
+  background-color: #FFF23F;
+  color: #635137;
+
+  &:hover {
+    opacity: 0.8;
   }
 }
 
