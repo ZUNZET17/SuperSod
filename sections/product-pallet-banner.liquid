@@ -1,9 +1,10 @@
-<div class="product-featured-banner text-center" style="background-image: url({{banner_image | img_url }});">
+<div class="product-featured-banner text-center" style="background-image: url({{section.settings.banner_image | img_url: 'master' }});">
   <div class="site-wrapper site-wrapper--head">
     <h2 class="product-featured-banner__title">{{ section.settings.banner_title }}</h2>
     <a href="{{ section.settings.banner_link }}" class="btn btn--terciary">{{ section.settings.banner_link_text }}</a>
   </div>
 </div>
+
 {% schema %}
 {
   "name": {

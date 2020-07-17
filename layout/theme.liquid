@@ -48,7 +48,7 @@
   {%- if template.name == 'login' 
     or template.name == 'register' or template.name == 'addresses'
     or template.name == 'reset_password' or template.name == 'account'
-    or template.name == 'product' or template.name == 'collection' -%}
+    or template.name == 'product' -%}
     <link rel="stylesheet" href="{{ 'forms.scss.css' | asset_url }}">
   {%- endif -%}
   {%- if template.name == 'login' or template.name == 'register' -%}

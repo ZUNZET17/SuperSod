@@ -29,6 +29,10 @@ $desk: 1100px;
   line-height: 18px;
   margin-top: 30px;
   padding: 10px 11px;
+
+  a {
+    text-decoration: underline;
+  }
 }
 
 .product-single__pallet-msg--unavailable {
@@ -127,6 +131,13 @@ $desk: 1100px;
     margin-bottom: -75px;
     padding-bottom: 85px;
     padding-top: 85px;
+  }
+
+  .btn {
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 18px;
+    padding: 16px 45px;
   }
 }
 
