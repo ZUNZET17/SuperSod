@@ -62,7 +62,7 @@
   {%- endif -%}
 </head>
 {%- assign show_breadcrumb = true -%}
-{%- assign show_hr = true -%}
+{%- assign show_hr = false -%}
 {%- assign show_sidebar = true -%}
 {%- assign show_account_sidebar = false -%}
 {%- if settings.show_breadcrumb_nav -%}
@@ -91,12 +91,6 @@
     {% endcomment %}
   {% section "header" %}
   <div id="page-wrap" class="site-wrapper">
-    {%- if show_account_sidebar == true -%}
-      <p class="account-pages-title">{{ 'customer.login.page_title' | t }}</p>
-    {%- endif -%}
-    {%- if template.name == 'product' or template.name == 'collection' -%}
-      <p class="product-pages-title">{{ 'cart.cart_summary.products_header' | t }}</p>
-    {%- endif -%}
     <div class="grid">
       {%- if show_sidebar == true -%}
         {% section "sidebar" %}

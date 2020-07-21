@@ -3,20 +3,6 @@ $desk: 1100px;
 $border-color: #B7B7B7;
 $box-color: #FBFBFB;
 
-.account-pages-title {
-  color: #C4C4C4;
-  font-size: 16px;
-  font-weight: normal;
-  line-height: 18px;
-  margin-top: 0;
-
-  @media all and (min-width: #{$tablet}) {
-    border-bottom: 1px solid $border-color;
-    margin-bottom: 15px;
-    padding-bottom: 6px;
-  }
-}
-
 .account-title {
   font-weight: bold;
   font-size: 28px;
@@ -35,7 +21,7 @@ $box-color: #FBFBFB;
 
 .account-sidebar {
   @media (min-width: #{$tablet}) {
-    margin-top: -16px;
+    margin-top: 0;
   }
 }
 

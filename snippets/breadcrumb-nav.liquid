@@ -17,7 +17,7 @@
         {% assign collection_url = current_tags.first | link_to_remove_tag: current_tags.first | split: 'href="' | last | split: '"' | first %}
         <span itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
           <a href="{{ collection_url }}" itemprop="item">
-            <span itemprop="name">{{ collection.title }}</span>
+            <span itemprop="name">{{ collection.title | strip_html }}</span>
           </a>
           <span itemprop="position" hidden>2</span>
         </span>
@@ -28,7 +28,7 @@
         </span>
       {% else %}
         <span itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-          <span itemprop="name">{{ collection.title }}</span>
+          <span itemprop="name">{{ collection.title | strip_html }}</span>
           <span itemprop="position" hidden>2</span>
         </span>
       {% endif %}
@@ -36,14 +36,14 @@
       {% if collection %}
         <span itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
           <a href="{{ collection.url }}" itemprop="item">
-            <span itemprop="name">{{ collection.title }}</span>
+            <span itemprop="name">{{ collection.title | strip_html }}</span>
           </a>
           <span itemprop="position" hidden>2</span>
         </span>
         <span class="breadcrumb-nav__separator" aria-hidden="true">›</span>
       {% endif %}
       <span itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-        <span itemprop="name">{{ product.title }}</span>
+        <span itemprop="name">{{ product.title | strip_html }}</span>
         {% assign item_prop_position = 2 %}
         {% if request.path contains 'collections' %}
           {% assign item_prop_position = 3 %}
@@ -83,12 +83,12 @@
       </span>
     {% when 'page' %}
       <span itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-        <span itemprop="name">{{ page.title }}</span>
+        <span itemprop="name">{{ page.title | strip_html }}</span>
         <span itemprop="position" hidden>2</span>
       </span>
   {% else %}
     <span itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-      <span itemprop="name">{{ page_title }}</span>
+      <span itemprop="name">{{ page_title | strip_html }}</span>
       <span itemprop="position" hidden>2</span>
     </span>
   {% endcase %}

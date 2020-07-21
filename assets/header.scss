@@ -4,6 +4,26 @@ $white: #FFFFFF;
 
 $tablet: 750px;
 
+#HeaderLogoWrapper {
+  @media all and (min-width: #{$tablet}) {
+    margin-bottom: 51px;
+    margin-left: 25px;
+    margin-top: 51px;
+  }
+}
+
+.site-header {
+  @media all and (min-width: #{$tablet}) {
+    height: 198px;
+    margin-bottom: 25px;
+  }
+}
+
+.site-header__container {
+  background-position: center;
+  background-size: cover;
+}
+
 .search-bar {
   @media all and (min-width: #{$tablet}) {
     background-color: $white;
@@ -67,4 +87,10 @@ $tablet: 750px;
   position: absolute;
   right: 22px;
   top: 12px;
+}
+
+.breadcrumb-nav {
+  @media (min-width: #{$tablet}) {
+    margin-top: 5px;
+  }
 }

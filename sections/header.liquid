@@ -117,65 +117,85 @@
   </div>
 
   <header class="site-header" role="banner">
+    {%- assign show_banner_image = false -%}
+    {%- assign banner_image_url = value -%}
+    {%- if template.name == 'product' or template.name == 'collection' -%}
+      {%- assign show_banner_image = true -%}
+      {%- if collection == blank and product != blank -%}
+        {%- if product.collections.size > 0 -%}
+          {%- assign collection = product.collections[0] -%}
+        {%- else -%}
+          {%- assign collection = collections['all'] -%}
+        {%- endif -%}
+      {%- endif -%}
+      {%- if collection.image != blank -%}
+        {%- assign banner_image_url = collection.image | img_url: 'master' -%}
+      {%- endif -%}
+    {%- elsif section.settings.banner_image != blank -%}
+      {%- assign show_banner_image = true -%}
+      {%- assign banner_image_url = section.settings.banner_image | img_url: 'master' -%}
+    {%- endif -%}
     <div class="site-wrapper{% unless use_full_wrapper %} site-wrapper--head{% endunless %}">
-      <div class="grid medium-up--grid--table">
-        <div class="grid__item small--text-center">
-          <div itemscope itemtype="http://schema.org/Organization">
-            {% comment %}
-              Use the uploaded logo from theme settings if enabled.
-              Site name uses `h1` tag on homepage, div on other pages.
-            {% endcomment %}
-            {%- assign img_url = section.settings.logo | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
-    
-            {% if section.settings.logo %}
-              <div id="HeaderLogoWrapper" class="supports-js">
-                <a href="{{ routes.root_url }}" itemprop="url" style="padding-top:{{ 1 | divided_by: section.settings.logo.aspect_ratio | times: 100}}%; display: block;">
-                  <img id="HeaderLogo"
-                       class="lazyload"
-                       src="{{ section.settings.logo | img_url: '150x150' }}"
-                       data-src="{{ img_url }}"
-                       data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
-                       data-aspectratio="{{ product.featured_image.aspect_ratio }}"
-                       data-sizes="auto"
-                       alt="{{ section.settings.logo.alt | default: shop.name }}"
-                       itemprop="logo">
-                </a>
-              </div>
-              <noscript>
-                {% capture image_size %}{{ section.settings.logo_max_width | escape }}x{% endcapture %}
-                <a href="{{ routes.root_url }}" itemprop="url">
-                  <img class="site-header__logo" src="{{ section.settings.logo | img_url: image_size }}"
-                  srcset="{{ section.settings.logo | img_url: image_size }} 1x, {{ section.settings.logo | img_url: image_size, scale: 2 }} 2x"
-                  alt="{{ section.settings.logo.alt | default: shop.name }}"
-                  itemprop="logo">
-                </a>
-              </noscript>
-              {% if request.page_type == 'index' %}
-                <h1 class="visually-hidden">{{ shop.name }}</h1>
-              {% endif %}
-            {% else %}
-              {% if request.page_type == 'index' %}
-                <h1 class="site-header__site-name">
-                  <a href="{{ routes.root_url }}" itemprop="url">{{ shop.name }}</a>
-                </h1>
-              {% else %}
-                <a href="{{ routes.root_url }}" class="site-header__site-name h1" itemprop="url">
-                  {{ shop.name }}
-                </a>
+      <div class="site-header__container"{% if show_banner_image == true %} style="background-image: url({{ banner_image_url }});" {% endif %}>
+        <div class="grid medium-up--grid--table">
+          <div class="grid__item small--text-center">
+            <div itemscope itemtype="http://schema.org/Organization">
+              {% comment %}
+                Use the uploaded logo from theme settings if enabled.
+                Site name uses `h1` tag on homepage, div on other pages.
+              {% endcomment %}
+              {%- assign img_url = section.settings.logo | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+      
+              {% if section.settings.logo %}
+                <div id="HeaderLogoWrapper" class="supports-js">
+                  <a href="{{ routes.root_url }}" itemprop="url" style="padding-top:{{ 1 | divided_by: section.settings.logo.aspect_ratio | times: 100}}%; display: block;">
+                    <img id="HeaderLogo"
+                         class="lazyload"
+                         src="{{ section.settings.logo | img_url: '150x150' }}"
+                         data-src="{{ img_url }}"
+                         data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+                         data-aspectratio="{{ product.featured_image.aspect_ratio }}"
+                         data-sizes="auto"
+                         alt="{{ section.settings.logo.alt | default: shop.name }}"
+                         itemprop="logo">
+                  </a>
+                </div>
+                <noscript>
+                  {% capture image_size %}{{ section.settings.logo_max_width | escape }}x{% endcapture %}
+                  <a href="{{ routes.root_url }}" itemprop="url">
+                    <img class="site-header__logo" src="{{ section.settings.logo | img_url: image_size }}"
+                    srcset="{{ section.settings.logo | img_url: image_size }} 1x, {{ section.settings.logo | img_url: image_size, scale: 2 }} 2x"
+                    alt="{{ section.settings.logo.alt | default: shop.name }}"
+                    itemprop="logo">
+                  </a>
+                </noscript>
                 {% if request.page_type == 'index' %}
                   <h1 class="visually-hidden">{{ shop.name }}</h1>
                 {% endif %}
+              {% else %}
+                {% if request.page_type == 'index' %}
+                  <h1 class="site-header__site-name">
+                    <a href="{{ routes.root_url }}" itemprop="url">{{ shop.name }}</a>
+                  </h1>
+                {% else %}
+                  <a href="{{ routes.root_url }}" class="site-header__site-name h1" itemprop="url">
+                    {{ shop.name }}
+                  </a>
+                  {% if request.page_type == 'index' %}
+                    <h1 class="visually-hidden">{{ shop.name }}</h1>
+                  {% endif %}
+                {% endif %}
               {% endif %}
-            {% endif %}
-          </div>
-        </div>
-        {% unless section.settings.tagline == blank %}
-          <div class="grid__item medium-up--text-right small--text-center">
-            <div class="rte tagline">
-              {{ section.settings.tagline }}
             </div>
           </div>
-        {% endunless %}
+          {% unless section.settings.tagline == blank %}
+            <div class="grid__item medium-up--text-right small--text-center">
+              <div class="rte tagline">
+                {{ section.settings.tagline }}
+              </div>
+            </div>
+          {% endunless %}
+        </div>
       </div>
     </div>
   </header>
@@ -281,6 +301,14 @@
       "max": 250,
       "step": 5,
       "unit": "px"
+    },
+    {
+      "type": "image_picker",
+      "id": "banner_image",
+      "label": {
+        "en": "Header image banner",
+        "es": "Imagen de encabezado"
+      }
     },
     {
       "type": "header",
