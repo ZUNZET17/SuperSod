@@ -1,7 +1,7 @@
 $tablet: 768px;
 $desk: 1100px;
 $border-color: #B7B7B7;
-$box-color: #F4F4F4;
+$box-color: #FBFBFB;
 
 .account-pages-title {
   border-bottom: 1px solid $border-color;
@@ -62,7 +62,13 @@ $box-color: #F4F4F4;
     }
   }
 
+  tbody th,
+  tfoot th {
+    background-color: #FFFFFF;
+  }
+
   td {
+    background-color: #FFFFFF;
     font-size: 16px;
     line-height: 18px;
 
