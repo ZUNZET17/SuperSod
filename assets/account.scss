@@ -4,14 +4,17 @@ $border-color: #B7B7B7;
 $box-color: #FBFBFB;
 
 .account-pages-title {
-  border-bottom: 1px solid $border-color;
   color: #C4C4C4;
   font-size: 16px;
   font-weight: normal;
   line-height: 18px;
-  margin-bottom: 15px;
   margin-top: 0;
-  padding-bottom: 6px;
+
+  @media all and (min-width: #{$tablet}) {
+    border-bottom: 1px solid $border-color;
+    margin-bottom: 15px;
+    padding-bottom: 6px;
+  }
 }
 
 .account-title {

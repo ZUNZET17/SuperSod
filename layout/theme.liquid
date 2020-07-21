@@ -38,6 +38,8 @@
     {%- assign use_pallet = true -%}
   {%- endif -%}
   <link rel="stylesheet" href="{{ 'theme.scss.css' | asset_url }}">
+  <link rel="stylesheet" href="{{ 'header.scss.css' | asset_url }}">
+  <link rel="stylesheet" href="{{ 'forms.scss.css' | asset_url }}">
   {%- if template.name == 'account' or template.name == 'order' or template.name == 'addresses' -%}
     <link rel="stylesheet" href="{{'account.scss.css' | asset_url}}">
   {%- endif -%}
@@ -45,12 +47,6 @@
   {%- unless request.page_type == 'cart' -%}
     <link rel="preload" as="style" href="{{ 'sidebar-cart.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
   {%- endunless -%}
-  {%- if template.name == 'login' 
-    or template.name == 'register' or template.name == 'addresses'
-    or template.name == 'reset_password' or template.name == 'account'
-    or template.name == 'product' or template.name == 'collection' -%}
-    <link rel="stylesheet" href="{{ 'forms.scss.css' | asset_url }}">
-  {%- endif -%}
   {%- if template.name == 'login' or template.name == 'register' -%}
     <link rel="preload" as="style" href="{{ 'sign-in-up.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
   {%- endif -%}

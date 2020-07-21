@@ -529,7 +529,7 @@ $color_primary: #54a45b;
 }
 
 .toolbar-cart {
-  margin-left: 2em;
+  // margin-left: 2em;
   line-height: 38px;
   position: relative;
   white-space: nowrap;
@@ -702,9 +702,9 @@ $color_primary: #54a45b;
   //   width: 20%;
   //   background: #ffffff;
   // }
-  body:not(.template-cart):not(.template-dir-customers) .toolbar-cart {
-    display: none;
-  }
+  // body:not(.template-cart):not(.template-dir-customers) .toolbar-cart {
+  //   display: none;
+  // }
   body:not(.template-cart):not(.template-dir-customers) .cart-summary {
     margin-bottom: 5px;
     // border-right: 5px solid $color_primary;
