@@ -1,7 +1,7 @@
 <div class="collection-list collection-list--{{ section.id }}" data-section-id="{{ section.id }}">
 
   {% if section.settings.title != blank %}
-    <h2 class="small--text-center">{{ section.settings.title | escape }}</h2>
+    <h2 class="collection-list__title small--text-center">{{ section.settings.title | escape }}</h2>
   {% endif %}
 
   {% case section.settings.grid %}

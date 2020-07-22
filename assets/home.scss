@@ -8,6 +8,11 @@ $tablet: 750px;
   font-weight: bold;
   font-size: 28px;
   line-height: 32px;
+  margin-top: 30px;
+
+  @media all and (min-width: #{$tablet}) {
+    margin-top: 0;
+  }
 }
 
 .rich-text {
@@ -25,6 +30,7 @@ $tablet: 750px;
   font-weight: bold;
   font-size: 18px;
   line-height: 21px;
+  margin-bottom: 16px;
 }
 
 hr.hr--rich-text-bottom {
@@ -53,6 +59,7 @@ hr.hr--rich-text-bottom {
   font-weight: bold;
   font-size: 20px;
   line-height: 23px;
+  margin-bottom: 22px;
 }
 
 .feature-row__text {

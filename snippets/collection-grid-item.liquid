@@ -13,14 +13,11 @@
   <a href="{% if collection.products == empty %}#{% else %}{{ collection.url }}{% endif %}" class="collection-grid-item__link text-center">
     {% if collection.title == blank %}{{ 'homepage.onboarding.collection_title' | t }}{% else %}{{ collection.title }}{% endif %}
   </a>
-  <div class="collection-grid-item__items">
-    <picture>
-      <source media="(min-width: 750px)" srcset="{{ collection_image | img_url: 'master' }}">
-      <img src="{{ collection_image | img_url: '75x' }}" alt="featured image for {{collection.title}}" class="collection-grid-item__image">
-    </picture>
-    <p class="collection-grid-item__title">{% if collection.title == blank %}{{ 'homepage.onboarding.collection_title' | t }}{% else %}{{ collection.title }}{% endif %}</p>
+  <div class="collection-grid-item__image" style="background-image: url({{ collection_image | img_url: 'master' }});">
+    <img src="{{ collection_image | img_url: 'master' }}" alt="featured image for {{collection.title}}">
   </div>
-  <!-- <a href="{% if collection.products == empty %}#{% else %}{{ collection.url }}{% endif %}" class="collection-grid-item__link">
+  <p class="collection-grid-item__title">{% if collection.title == blank %}{{ 'homepage.onboarding.collection_title' | t }}{% else %}{{ collection.title }}{% endif %}</p>
+  {%- comment -%} <a href="{% if collection.products == empty %}#{% else %}{{ collection.url }}{% endif %}" class="collection-grid-item__link">
     {% unless collection_image == blank %}
       <div class="collection-grid-item__overlay lazyload"
         data-bgset="{% render 'bgset', image: collection_image %}"
@@ -49,5 +46,5 @@
         {% endif %}
       </h3>
     </div>
-  </a> -->
+  </a> {%- endcomment -%}
 </div>
