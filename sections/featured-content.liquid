@@ -1,10 +1,22 @@
-<hr class="medium-up--hide hr--clear hr--small">
+<hr class="hr--small">
 
 <div class="rich-text" data-section-id="{{ section.id }}" data-section-type="featured-content-section">
   {% if section.settings.section_title != blank %}
-    <h2 class="small--text-center h1 rich-text__heading--{{ section.settings.text_size }}">{{ section.settings.section_title | escape }}</h2>
+    {%- assign align_title = 'small--text-center' -%}
+    {%- if section.settings.title_align == 'center' -%}
+      {%- assign align_title = 'text-center' -%}
+    {%- elsif section.settings.title_align == 'right' -%}
+      {%- assign align_title = 'text-right' -%}
+    {%- endif -%}
+    <h2 class="{{align_title}} h1 rich-text__heading rich-text__heading--{{ section.settings.text_size }}">{{ section.settings.section_title | escape }}</h2>
   {% endif %}
-  <div class="rte rich-text__text--{{ section.settings.text_size }}">
+  {%- assign align_text = '' -%}
+  {%- if section.settings.text_align == 'center' -%}
+    {%- assign align_text = ' text-center' -%}
+  {%- elsif section.settings.text_align == 'right' -%}
+    {%- assign align_text = ' text-right' -%}
+  {%- endif -%}
+  <div class="rte rich-text__text--{{ section.settings.text_size }}{{align_text}}">
     {% if section.settings.text != blank %}
       {{ section.settings.text }}
     {% else %}
@@ -13,7 +25,7 @@
   </div>
 </div>
 
-
+<hr class="hr--small hr--rich-text-bottom">
 
 {% schema %}
 {
@@ -83,6 +95,37 @@
       }
     },
     {
+      "type": "select",
+      "id": "title_align",
+      "label": {
+        "en": "Title alignment",
+        "es": "Alineación de título"
+      },
+      "default": "left",
+      "options": [
+        {
+          "value": "left",
+          "label": {
+            "en": "Left",
+            "es": "Izquierda"
+          }
+        },{
+          "value": "center",
+          "label": {
+            "en": "Center",
+            "es": "Centrado"
+          }
+        },
+        {
+          "value": "right",
+          "label": {
+            "en": "Right",
+            "es": "Derecha"
+          }
+        }
+      ]
+    },
+    {
       "type": "richtext",
       "id": "text",
       "label": {
@@ -125,6 +168,37 @@
         "zh-CN": "<p>使用此文本与您的客户分享有关您品牌的信息。描述产品、分享公告或欢迎客户访问您的商店。</p>",
         "zh-TW": "<p>您可以用這段文字和顧客分享品牌資訊、描述產品、分享公告，或歡迎顧客光臨您的商店。</p>"
       }
+    },
+    {
+      "type": "select",
+      "id": "text_align",
+      "label": {
+        "en": "Text alignment",
+        "es": "Alineación de texto"
+      },
+      "default": "left",
+      "options": [
+        {
+          "value": "left",
+          "label": {
+            "en": "Left",
+            "es": "Izquierda"
+          }
+        },{
+          "value": "center",
+          "label": {
+            "en": "Center",
+            "es": "Centrado"
+          }
+        },
+        {
+          "value": "right",
+          "label": {
+            "en": "Right",
+            "es": "Derecha"
+          }
+        }
+      ]
     },
     {
       "type": "select",

@@ -43,6 +43,9 @@
   {%- if template.name == 'account' or template.name == 'order' or template.name == 'addresses' -%}
     <link rel="stylesheet" href="{{'account.scss.css' | asset_url}}">
   {%- endif -%}
+  {%- if template.name == 'index' -%}
+    <link rel="preload" as="style" href="{{ 'home.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
+  {%- endif -%}
   <link rel="preload" as="style" href="{{ 'site-footer.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
   {%- unless request.page_type == 'cart' -%}
     <link rel="preload" as="style" href="{{ 'sidebar-cart.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
@@ -59,6 +62,9 @@
   {%- endif -%}
   {%- if template.name == 'collection' -%}
     <link rel="preload" as="style" href="{{ 'collection.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
+  {%- endif -%}
+  {%- if template.name == 'index' -%}
+    <link rel="preload" as="style" href="{{ 'collection-grid-item.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
   {%- endif -%}
 </head>
 {%- assign show_breadcrumb = true -%}

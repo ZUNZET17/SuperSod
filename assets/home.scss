@@ -1,0 +1,24 @@
+$tablet: 750px;
+
+.rich-text {
+  color: #808080;
+  padding-bottom: 35px;
+  padding-top: 35px;
+
+  @media all and (min-width: #{$tablet}) {
+    margin: 0 auto;
+    max-width: 650px;
+  }
+}
+
+.rich-text__heading {
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 21px;
+}
+
+hr.hr--rich-text-bottom {
+  @media all and (min-width: #{$tablet}) {
+    margin-bottom: 60px;
+  }
+}
