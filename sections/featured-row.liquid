@@ -1,60 +1,61 @@
-<div class="wrapper">
-  <div class="page-width feature-row">
-    {% capture image_layout %}
-      <div class="feature-row__item">
-        {% if section.settings.image != blank %}
-          {%- assign img_url = section.settings.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
-          <div class="supports-js" style="max-width: {{ 600 | times: section.settings.image.aspect_ratio | round }}px; margin: 0 auto;">
-            <div class="feature-row__image-wrapper" style="padding-top:{{ 1 | divided_by: section.settings.image.aspect_ratio | times: 100}}%;">
-              <img class="feature-row__image lazyload"
-                   src="{{ section.settings.image | img_url: '300x300' }}"
-                   data-src="{{ img_url }}"
-                   data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
-                   data-aspectratio="{{ section.settings.image.aspect_ratio }}"
-                   data-sizes="auto"
-                   alt="{{ section.settings.image.alt }}"
-                   style="max-width: {{ 600 | times: section.settings.image.aspect_ratio | round }}px; max-height: 600px;">
-            </div>
+{% capture image_layout %}
+  <div class="feature-row__item">
+    {% if section.settings.image != blank %}
+      {%- if section.settings.use_color_box == true -%}
+        <div class="feature-row__image-container text-{{section.settings.layout}}">
+          <img src="{{ section.settings.image | img_url: '350x262' }}" alt="featured image for {{ section.settings.image.alt }}" class="feature-row__box-image{% if section.settings.layout == 'right' %} feature-row__box-image--right{% endif %} lazyload" loading="lazy">
+          <div class="feature-row__color-box{% if section.settings.layout == 'right' %} feature-row__color-box--right{% endif %}"></div>
+        </div>
+      {%- else -%}
+        {%- assign img_url = section.settings.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+        <div class="supports-js" style="max-width: {{ 600 | times: section.settings.image.aspect_ratio | round }}px; margin: 0 auto;">
+          <div class="feature-row__image-wrapper" style="padding-top:{{ 1 | divided_by: section.settings.image.aspect_ratio | times: 100}}%;">
+            <img class="feature-row__image lazyload"
+                  src="{{ section.settings.image | img_url: '300x300' }}"
+                  data-src="{{ img_url }}"
+                  data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+                  data-aspectratio="{{ section.settings.image.aspect_ratio }}"
+                  data-sizes="auto"
+                  alt="{{ section.settings.image.alt }}"
+                  style="max-width: {{ 600 | times: section.settings.image.aspect_ratio | round }}px; max-height: 600px;">
           </div>
+        </div>
 
-          <noscript>
-            <div style="max-width: {{ 600 | times: section.settings.image.aspect_ratio | round }}px; margin: 0 auto;">
-              {{ section.settings.image | img_url: '600x600' | img_tag: section.settings.image.alt, 'feature-row__image' }}
-            </div>
-          </noscript>
-        {% else %}
-          {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
-        {% endif %}
-      </div>
-    {% endcapture %}
-
-    <div class="feature-row">
-      {% if section.settings.layout == 'left' %}
-        {{ image_layout }}
-      {% endif %}
-
-      <div class="feature-row__item feature-row__text feature-row__text--{{ section.settings.layout }}">
-        {% if section.settings.title != blank %}
-          <h2 class="small--text-center">{{ section.settings.title | escape }}</h2>
-        {% endif %}
-        {% if section.settings.text != blank %}
-          <div class="rte-setting featured-row__subtext">{{ section.settings.text }}</div>
-        {% endif %}
-        {% if section.settings.button_label != blank and section.settings.button_link != blank %}
-          <a href="{{ section.settings.button_link }}" class="btn">
-            {{ section.settings.button_label | escape }}
-          </a>
-        {% endif %}
-      </div>
-
-      {% if section.settings.layout == 'right' %}
-        {{ image_layout }}
-      {% endif %}
-    </div>
+        <noscript>
+          <div style="max-width: {{ 600 | times: section.settings.image.aspect_ratio | round }}px; margin: 0 auto;">
+            {{ section.settings.image | img_url: '600x600' | img_tag: section.settings.image.alt, 'feature-row__image' }}
+          </div>
+        </noscript>
+      {%- endif -%}
+    {% else %}
+      {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+    {% endif %}
   </div>
+{% endcapture %}
+
+<div class="feature-row">
+  {% if section.settings.layout == 'left' %}
+    {{ image_layout }}
+  {% endif %}
+
+  <div class="feature-row__item feature-row__text feature-row__text--{{ section.settings.layout }}">
+    {% if section.settings.title != blank %}
+      <h2 class="feature-row__title small--text-center">{{ section.settings.title | escape }}</h2>
+    {% endif %}
+    {% if section.settings.text != blank %}
+      <div class="rte-setting feature-row__subtext">{{ section.settings.text }}</div>
+    {% endif %}
+    {% if section.settings.button_label != blank and section.settings.button_link != blank %}
+      <a href="{{ section.settings.button_link }}" class="btn">
+        {{ section.settings.button_label | escape }}
+      </a>
+    {% endif %}
+  </div>
+
+  {% if section.settings.layout == 'right' %}
+    {{ image_layout }}
+  {% endif %}
 </div>
-
-
 
 {% schema %}
 {
@@ -175,6 +176,15 @@
           }
         }
       ]
+    },
+    {
+      "type": "checkbox",
+      "id": "use_color_box",
+      "label": {
+        "en": "Use colored box behind the image",
+        "es": "Usar caja de color detrás de la imagen"
+      },
+      "default": false
     },
     {
       "type": "text",
