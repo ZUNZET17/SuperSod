@@ -11,10 +11,10 @@ $desk: 1100px;
 }
 
 .site-footer__menus {
-  padding-bottom: 39px;
+  padding-bottom: 30px;
 
   @media (min-width: #{$desk}) {
-    padding-bottom: 78px;
+    padding-bottom: 25px;
   }
 }
 
@@ -57,5 +57,5 @@ $desk: 1100px;
 }
 
 .sub-footer {
-  padding-bottom: 36px;
+  padding-bottom: 20px;
 }
