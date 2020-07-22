@@ -22,7 +22,7 @@
       {% for block in section.blocks limit: section.blocks.size %}
         <div class="grid__item {{ grid_item_width }} slide-up-animation animated" {{ block.shopify_attributes }} role="listitem">
           {%- assign collection = collections[block.settings.collection] -%}
-          {% include 'collection-grid-item' %}
+          {% render 'collection-grid-item', collection: collection, custom_collection_image: block.settings.collection_image %}
         </div>
       {% endfor %}
     </div>
@@ -181,6 +181,14 @@
             "th": "คอลเลกชัน",
             "zh-CN": "收藏",
             "zh-TW": "商品系列"
+          }
+        },
+        {
+          "type": "image_picker",
+          "id": "collection_image",
+          "label": {
+            "en": "Collection image",
+            "es": "Imagen de la colección"
           }
         }
       ]
