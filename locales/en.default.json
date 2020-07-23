@@ -310,9 +310,9 @@
       "description": "Description",
       "full_details": "Full details",
       "pallet_text_html": "Currently there is a <b>minimum</b> order of 1 pallet (500 sq ft) and <b>maximum</b> order of 6 pallets (3,000 sq ft) when ordering online.<br><br>If you wish to purchase less than 1 pallet or more than 6 pallets, then please visit our <a href='https://info.supersod.com/sod-prices-free-sod-quote'><b>sod quote page.</b></a>",
-      "pallet_unavailable_html": "This sod is not available online for your area. But have no fear! You can fill out our <a href='https://info.supersod.com/sod-prices-free-sod-quote'>quick sod quote form</a> and someone will be in touch with you.",
-      "sod_picker_text_html": "<b>You don't know how much to order?</b><br>Use our <a href='https://www.supersod.com/diy/how-to-sod-yard-area-calculator'><b>Sod Picker Tool</b></a>",
-      "soil_calculator_text_html": "<b>You don't know how much to order?</b><br>Use our <a href='https://soil3.com/how-much-soil3-to-use/#calculator'><b>Soil Calculator</b></a>"
+      "pallet_unavailable_html": "This sod is not available online for your area. But have no fear! You can fill out our <a target='_blank' rel='noopener' href='https://info.supersod.com/sod-prices-free-sod-quote' aria-describedby='new-window-2'>quick sod quote form</a> and someone will be in touch with you.",
+      "sod_picker_text_html": "<b>You don't know how much to order?</b><br>Use our <a target='_blank' rel='noopener' href='https://www.supersod.com/diy/how-to-sod-yard-area-calculator' aria-describedby='new-window-2'><b>Yard Area Calculator</b></a>",
+      "soil_calculator_text_html": "<b>You don't know how much to order?</b><br>Use our <a target='_blank' rel='noopener' href='https://soil3.com/how-much-soil3-to-use/#calculator' aria-describedby='new-window-2'><b>Soil Calculator</b></a>"
     },
       "zoom": {
       "next": "Next (Right arrow key)",
