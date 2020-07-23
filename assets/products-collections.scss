@@ -18,9 +18,15 @@ $color_primary: #54A45B;
     padding: 106px;
   }
 
-  img {
+  .product__image {
     display: none;
   }
+}
+
+.product__brand-image {
+  bottom: 12px;
+  position: absolute;
+  right: 12px;
 }
 
 .product__block-link {

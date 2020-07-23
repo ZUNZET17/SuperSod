@@ -33,6 +33,10 @@
              data-sizes="auto"
              data-image>
       </a>
+      {%- assign brand_handle_name = product.vendor | handleize -%}
+      {%- assign brand_image_name = brand_handle_name | append: '-logo.jpg' -%}
+      {%- assign brand_image_name_2x = brand_handle_name | append: '-logo-2x.jpg' -%}
+      <img src="{{ brand_image_name | asset_url }}" alt="{{ product.vendor }}" srcset="{{ brand_image_name_2x | asset_url }} 2x" class="product__brand-image" loading="lazy" onerror="this.style.display='none'">
     </div>
     {%- comment -%}
     <div class="supports-js" style="max-width: {{ 600 | times: product.featured_image.aspect_ratio | round }}px; margin: 0 auto;">

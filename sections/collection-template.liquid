@@ -24,7 +24,7 @@
           </div>
         {% endif %}
         {% if section.settings.collection_sort_enable and collection.products.size > 1 %}
-          <div class="collection-sorting__dropdown form">
+          <div class="collection-sorting__dropdown">
             <label for="SortBy" class="label--hidden">{{ 'collections.sorting.title' | t }}</label>
             {% assign sort_by = collection.sort_by | default: collection.default_sort_by %}
             <select name="sort_by" id="SortBy" aria-describedby="a11y-refresh-page-message a11y-selection-message" class="form__input">

@@ -12,6 +12,12 @@ $desk: 1100px;
   line-height: 32px;
 }
 
+.collection-sorting__dropdown {
+  @media all and (min-width: #{$tablet}) {
+    margin-top: -40px;
+  }
+}
+
 .collection-extra {
   border-top: 1px solid $border-color;
   margin-top: 45px;
