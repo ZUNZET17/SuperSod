@@ -42,6 +42,29 @@
           {% endif %}
         </div>
       {% endfor %}
+      {%- for media in product.media -%}
+        {%- if media.media_type == 'external_video' -%}
+          {%- capture wrapper_id -%}ProductImageWrapper-{{ media.id }}{%- endcapture -%}
+          {% capture img_id %}ProductImage-{{ media.id }}{% endcapture %}
+          {%- assign img_url = media | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+          <div id="{{ wrapper_id }}" class="product-single__featured-image-wrapper supports-js hidden" data-image-id="{{ media.id }}">
+            <div class="product-single__photos" data-image-id="{{ media.id }}" style="padding-top:74.24297%;">
+              {%- assign filtered_url = media | external_video_url | split: '?controls=' -%}
+              <a href="{{ filtered_url[0] | replace: 'embed/', 'watch?v=' }}" class="js-show-youtube-popup">
+                <img id="{{ img_id }}"
+                  class="product-single__photo lazyload lazypreload js-show-video"
+                  src="{{ media | img_url: '200x200' }}"
+                  data-src="{{ img_url }}"
+                  data-widths="[180, 360, 470, 600, 750, 940, 1080, 1296, 1512, 1728, 2048]"
+                  data-aspectratio="{{ media.aspect_ratio }}"
+                  data-sizes="auto"
+                  alt="{{ media.alt | escape }}">
+                <img src="{{ 'yt-play.png' | asset_url }}" srcset="{{ 'yt-play-2x.png' | asset_url }} 2x" alt="play button" class="product-single__play" loading="lazy">
+              </a>
+            </div>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
 
       <noscript>
         <img src="{{ featured_image | img_url: 'grande' }}" alt="{{ featured_image.alt | escape }}">
@@ -66,6 +89,16 @@
               </a>
             </li>
           {% endfor %}
+          {%- for media in product.media -%}
+            {%- if media.media_type == 'external_video' -%}
+              <li class="grid__item small--one-half medium-up--one-third">
+                <a href="{{ media | img_url: 'grande' }}" class="product-single__thumbnail" data-image-id="{{ media.id }}">
+                  <img src="{{ media | img_url: 'compact' }}" alt="{{ media.alt | escape }}" loading="lazy">
+                  <img src="{{ 'yt-play.png' | asset_url }}" srcset="{{ 'yt-play-2x.png' | asset_url }} 2x" alt="play button" class="product-single__play" loading="lazy">
+                </a>
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
         </ul>
       {% endif %}
 

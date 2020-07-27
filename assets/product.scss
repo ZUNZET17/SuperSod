@@ -148,3 +148,24 @@ $desk: 1100px;
   line-height: 32px;
   margin-bottom: 20px;
 }
+
+.product-single__thumbnail {
+  position: relative;
+
+  .product-single__play {
+    max-width: 43px;
+  }
+}
+
+.product-single__photos {
+  .product-single__play {
+    max-width: 110px;
+  }
+}
+
+.product-single__play {
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+}

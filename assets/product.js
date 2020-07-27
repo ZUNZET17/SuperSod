@@ -5,6 +5,7 @@ const Product = (function () {
 
   const setEvents = function () {
     $(document).on('change', '.js-zip-code', checkZipCode);
+    $('.js-show-youtube-popup').magnificPopup( { type:'iframe' } );
   };
 
   const checkZipCode = function (ev) {
