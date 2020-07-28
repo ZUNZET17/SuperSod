@@ -187,7 +187,7 @@
               {% if section.settings.product_quantity_enable %}
                 <div class="grid__item medium-up--one-third">
                   <label for="Quantity" class="form__label">{{ 'products.product.quantity' | t }}{% if use_pallet == true %} (sq ft){% endif %}</label>
-                  <input type="number" id="Quantity" name="quantity" value="1" min="1"{% if use_pallet == true %} max="3000"{% endif %} class="form__input full-width">
+                  <input type="number" id="Quantity" name="quantity" value="1" min="1" class="form__input full-width">
                 </div>
               {% endif %}
               <div class="grid__item medium-up--two-thirds">
@@ -206,7 +206,6 @@
           {%- if use_pallet == true -%}
             <p class="product-single__pallet-msg product-single__pallet-msg--unavailable js-not-available-text hide">{{ 'products.product.pallet_unavailable_html' | t }}</p>
             <p class="product-single__pallet-msg">{{ 'products.product.sod_picker_text_html' | t }}</p>
-            <p class="product-single__pallet-msg">{{ 'products.product.pallet_text_html' | t }}</p>
           {%- elsif product.type == 'Soil' -%}
             <p class="product-single__pallet-msg">{{ 'products.product.soil_calculator_text_html' | t }}</p>
           {%- endif -%}
