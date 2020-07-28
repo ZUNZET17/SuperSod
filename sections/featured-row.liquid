@@ -3,7 +3,7 @@
     {% if section.settings.image != blank %}
       {%- if section.settings.use_color_box == true -%}
         <div class="feature-row__image-container text-{{section.settings.layout}}">
-          <img src="{{ section.settings.image | img_url: '350x262' }}" alt="featured image for {{ section.settings.image.alt }}" class="feature-row__box-image{% if section.settings.layout == 'right' %} feature-row__box-image--right{% endif %} lazyload" loading="lazy">
+          <img src="{{ section.settings.image | img_url: '350x262' }}" alt="{{ section.settings.title }}" class="feature-row__box-image{% if section.settings.layout == 'right' %} feature-row__box-image--right{% endif %} lazyload" loading="lazy">
           <div class="feature-row__color-box{% if section.settings.layout == 'right' %} feature-row__color-box--right{% endif %}"></div>
         </div>
       {%- else -%}
