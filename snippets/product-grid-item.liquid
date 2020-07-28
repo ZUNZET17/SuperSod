@@ -22,7 +22,7 @@
 
 <div class="product grid__item {{ grid_item_width }} slide-up-animation animated" role="listitem">
   {% unless product.featured_image == blank %}
-    <div class="product__block-image" style="background-image: url({{product.featured_image | img_url: '200x'}});">
+    <div class="product__block-image" style="background-image: url({{product.featured_image | img_url: '300x'}});">
       <a href="{{ product.url | within: collection }}" class="product__block-link" title="{{ product.title | escape }}" data-image-link>
         <img class="product__image lazyload"
              alt="{{ product.featured_image.alt | escape }}"
