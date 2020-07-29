@@ -92,7 +92,8 @@
           {%- for media in product.media -%}
             {%- if media.media_type == 'external_video' -%}
               <li class="grid__item small--one-half medium-up--one-third">
-                <a href="{{ media | img_url: 'grande' }}" class="product-single__thumbnail" data-image-id="{{ media.id }}">
+                {%- assign filtered_url = media | external_video_url | split: '?controls=' -%}
+                <a href="{{ filtered_url[0] | replace: 'embed/', 'watch?v=' }}" class="js-show-youtube-popup product-single__thumbnail" data-image-id="{{ media.id }}">
                   <img src="{{ media | img_url: 'compact' }}" alt="{{ media.alt | escape }}" loading="lazy">
                   <img src="{{ 'yt-play.png' | asset_url }}" srcset="{{ 'yt-play-2x.png' | asset_url }} 2x" alt="play button" class="product-single__play" loading="lazy">
                 </a>
