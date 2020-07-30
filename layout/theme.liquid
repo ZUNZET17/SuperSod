@@ -66,6 +66,9 @@
   {%- if template.name == 'index' -%}
     <link rel="preload" as="style" href="{{ 'collection-grid-item.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
   {%- endif -%}
+  {%- if template.name == 'cart' -%}
+    <link rel="preload" as="style" href="{{ 'cart.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
+  {%- endif -%}
 </head>
 {%- assign show_breadcrumb = true -%}
 {%- assign show_hr = false -%}
@@ -112,7 +115,9 @@
         {%- endif -%}
         {{ content_for_layout }}
       </main>
-      {% section 'cart-drawer' %}
+      {%- if template.name != 'cart' -%}
+        {% section 'cart-drawer' %}
+      {%- endif -%}
     </div>
   </div>
   {%- if use_pallet == true -%}

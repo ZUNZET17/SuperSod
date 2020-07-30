@@ -3,14 +3,14 @@
 <div class="grid">
   <div class="grid__item">
     {% if cart.item_count > 0 %}
-      <h1 class="h2 visually-hidden">{{ 'cart.general.title' | t }}</h1>
-      <form action="{{ routes.cart_url }}" method="post" novalidate class="cart">
+      <h1 class="h2 cart-title">{{ 'cart.general.title' | t }}</h1>
+      <form action="{{ routes.cart_url }}" method="post" novalidate class="cart form">
         <table class="cart-table responsive-table table--no-border">
           <thead class="cart__row cart__header-labels small--hide">
             <th class="text-left cart__table-cell--image">{{ 'cart.label.product' | t }}</th>
             <th class="text-center cart__table-cell--meta"></th>
             <th class="text-right cart__table-cell--price">{{ 'cart.label.price' | t }}</th>
-            <th class="text-right cart__table-cell--quantity">{{ 'cart.label.quantity' | t }}</th>
+            <th class="text-center cart__table-cell--quantity">{{ 'cart.label.quantity' | t }}</th>
             <th class="text-right cart__table-cell--line-price">{{ 'cart.label.total' | t }}</th>
           </thead>
           <tbody>
@@ -49,32 +49,12 @@
                 </td>
                 <td class="cart__table-cell--meta text-center large-up--text-left">
                   <p>
-                    <a href="{{ item.url }}">{{ item.product.title }}</a>
+                    <a href="{{ item.url }}" class="cart__product-title">{{ item.product.title }}</a>
                     {% unless item.variant.title contains 'Default' %}
-                      <br /><small>{{ item.variant.title }}</small>
+                      <div class="visually-hidden">
+                        <small>{{ item.variant.title }}</small>
+                      </div>
                     {% endunless %}
-
-                    {% assign property_size = item.properties | size %}
-                    {% if property_size > 0 %}
-                      <br />
-                      {% for p in item.properties %}
-                          {% assign first_character_in_key = p.first | truncate: 1, '' %}
-                          {% unless p.last == blank or first_character_in_key == '_' %}
-                            <small>
-                              {{ p.first }}:
-
-                              {% comment %}
-                                Check if there was an uploaded file associated
-                              {% endcomment %}
-                              {% if p.last contains '/uploads/' %}
-                                <a href="{{ p.last }}">{{ p.last | split: '/' | last }}</a>
-                              {% else %}
-                                {{ p.last }}
-                              {% endif %}
-                            </small><br />
-                          {% endunless %}
-                      {% endfor %}
-                    {% endif %}
                   </p>
 
                   <p class="txt--minor">
@@ -103,18 +83,18 @@
                     </ul>
                   {%- endif -%}
                 </td>
-                <td data-label="{{ 'cart.label.quantity' | t }}" class="medium-up--text-right cart__table-cell--quantity">
+                <td data-label="{{ 'cart.label.quantity' | t }}" class="cart__table-cell--quantity">
                   <label class="visually-hidden" for="updates_{{ item.key }}">{{ 'cart.label.quantity' | t }}</label>
-                  <input class="quantity-selector" type="number" name="updates[]" id="updates_{{ item.key }}" value="{{ item.quantity }}" min="0">
+                  <input class="quantity-selector form__input" type="number" name="updates[]" id="updates_{{ item.key }}" value="{{ item.quantity }}" min="0">
                 </td>
                 <td data-label="{{ 'cart.label.total' | t }}" class="text-right cart__table-cell--line-price">
                   {%- if item.original_line_price != item.final_line_price -%}
                     <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
                     <del>{{ item.original_line_price | money }}</del>
                     <span class="visually-hidden">{{ 'products.product.sale_price' | t }}</span>
-                    <span class="order-discount">{{ item.final_line_price | money }}</span>
+                    <span class="order-discount"><b>{{ item.final_line_price | money }}</b></span>
                   {%- else -%}
-                    {{ item.original_line_price | money }}
+                    <b>{{ item.original_line_price | money }}</b>
                   {%- endif -%}
                 </td>
               </tr>
@@ -124,11 +104,11 @@
 
         <footer class="cart__footer">
           <div class="grid">
-            <div class="grid__item large-up--one-half">
-              <label for="CartSpecialInstructions" class="label--block">{{ 'cart.general.note' | t }}</label>
-              <textarea name="note" id="CartSpecialInstructions" class="input--block cart__note">{{ cart.note }}</textarea>
+            <div class="grid__item large-up--two-thirds">
+              <label for="CartSpecialInstructions" class="cart__note-label label--block">{{ 'cart.general.note' | t }}</label>
+              <textarea name="note" id="CartSpecialInstructions" class="input--block cart__note form__input">{{ cart.note }}</textarea>
             </div>
-            <div class="grid__item text-center large-up--one-half large-up--text-right">
+            <div class="grid__item text-center large-up--one-third large-up--text-right">
 
               {%- if cart.cart_level_discount_applications != blank -%}
                 <div class="order-discount-cart-wrapper">
@@ -141,7 +121,7 @@
                 </div>
               {%- endif -%}
 
-              <p>
+              <p class="cart__subtotal-container">
                 <span class="cart__subtotal-title h3">{{ 'cart.general.subtotal' | t }}</span>
                 <span class="cart__subtotal h3">{{ cart.total_price | money }}</span>
               </p>
@@ -159,15 +139,22 @@
               {%- endcapture -%}
 
               <p class="cart__policies txt--emphasis rte">{{ taxes_shipping_checkout }}</p>
-              <p>
-                <button type="submit" name="update" class="btn btn--secondary update-cart">
-                  {% include 'icon-update' %}
-                  <span class="icon__fallback-text">{{ 'cart.general.update' | t }}</span>
-                </button>
-                <a class="btn btn--secondary" href="{{ routes.all_products_collection_url }}">{{ 'cart.general.continue_shopping' | t }}</a>
-              </p>
-              <p>
-                <button type="submit" name="checkout" class="btn">{{ 'cart.general.checkout' | t }}</button>
+              <div class="grid">
+                <div class="grid__item one-fifth">
+                  <button type="submit" name="update" class="btn btn--secondary update-cart">
+                    {% include 'icon-update' %}
+                    <span class="icon__fallback-text">{{ 'cart.general.update' | t }}</span>
+                  </button>
+                </div>
+                <div class="grid__item four-fifths">
+                  <button type="submit" name="checkout" class="btn full-width">{{ 'cart.general.checkout' | t }}</button>
+                </div>
+              </div>
+              <p class="cart__continue-shopping">
+                <a href="{{ routes.all_products_collection_url }}">
+                  {% render 'arrow-left' %}
+                  {{ 'cart.general.continue_shopping' | t }}
+                </a>
               </p>
             </div>
           </div>
