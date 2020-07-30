@@ -235,34 +235,35 @@
             {% render 'icon-features' %} Features
           </button>
         </div>
-        {%- if product.metafields.global.uses != blank -%}
-          <div class="grid__item medium-up--one-eighth">
-            <button class="product-tabs__button" role="tab" aria-selected="false" aria-controls="uses-tab" id="uses-tab-button" tabindex="-1">
-              {% render 'icon-info' %} Uses
-            </button>
-          </div>
-        {%- endif -%}
-        {%- if product.metafields.global.guides != blank -%}
-          <div class="grid__item medium-up--one-sixth">
-            <button class="product-tabs__button" role="tab" aria-selected="false" aria-controls="guides-tab" id="guides-tab-button" tabindex="-1">
-              {% render 'icon-guides' %} Guides
-            </button>
-          </div>
-        {%- endif -%}
+        {%- assign metafield_names = 'uses,specs,guides,automower-app' | split: ',' -%}
+        {%- assign metafield_titles = 'Uses,Specs,Guides,Automower App' | split: ',' -%}
+        {%- for metafield_title in metafield_titles -%}
+          {%- assign metafield_key = metafield_names[forloop.index0] -%}
+          {%- if product.metafields.global[metafield_key] != blank -%}
+            <div class="grid__item medium-up--one-{% if metafield_title.size > 8 %}quarter{% else %}eighth{% endif %}">
+              <button class="product-tabs__button" role="tab" aria-selected="false" aria-controls="{{metafield_key}}-tab" id="{{metafield_key}}-tab-button" tabindex="-1">
+                {% if metafield_key == 'guides' %}
+                  {% render 'icon-guides' %}
+                {% else %}
+                  {% render 'icon-info' %}
+                {% endif %}
+                {{ metafield_title }}
+              </button>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
       </div>
       <div class="product-tabs__tab" tabindex="0" role="tabpanel" id="details-tab" aria-labelledby="details-tab-button">
         {% include 'product-description' %}
       </div>
-      {%- if product.metafields.global.uses != blank  -%}
-        <div class="product-tabs__tab" tabindex="0" role="tabpanel" id="uses-tab" aria-labelledby="uses-tab-button" hidden>
-          {{product.metafields.global.uses}}
-        </div>
-      {%- endif -%}
-      {%- if product.metafields.global.guides != blank  -%}
-        <div class="product-tabs__tab" tabindex="0" role="tabpanel" id="guides-tab" aria-labelledby="guides-tab-button" hidden>
-          {{product.metafields.global.guides}}
-        </div>
-      {%- endif -%}
+      {%- for metafield_name in metafield_names -%}
+        {%- if product.metafields.global[metafield_name] != blank -%}
+          {%- assign metafield_key = metafield_names[forloop.index0] -%}
+          <div class="product-tabs__tab" tabindex="0" role="tabpanel" id="{{metafield_key}}-tab" aria-labelledby="{{metafield_key}}-tab-button" hidden>
+            {{product.metafields.global[metafield_name]}}
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
     </div>
   {% endif %}
 </div>
