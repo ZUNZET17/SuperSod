@@ -53,7 +53,7 @@
   {%- if template.name == 'login' or template.name == 'register' -%}
     <link rel="preload" as="style" href="{{ 'sign-in-up.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
   {%- endif -%}
-  {%- if template.name == 'product' or template.name == 'collection' -%}
+  {%- if template.name == 'product' or template.name == 'collection' or template.name == 'search' -%}
     <link rel="preload" as="style" href="{{ 'products-collections.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
   {%- endif -%}
   {%- if template.name == 'product' -%}
