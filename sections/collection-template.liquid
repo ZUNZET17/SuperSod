@@ -104,21 +104,37 @@
 {% endpaginate %}
 
 {%- if collection.handle contains 'sod' -%}
-  <div class="collection-extra">
+  <section class="collection-extra">
     <h2 class="collection-extra__title">{{ section.settings.sod_extra_title }}</h2>
     <div class="grid">
       {%- for i in (1..4) -%}
         {%- assign image_str = 'sod_extra_image_' | append: i -%}
         {%- assign title_str = 'sod_extra_subtitle_' | append: i -%}
         {%- assign link_str = 'sod_extra_link_' | append: i -%}
-        <div class="grid__item medium-up--one-quarter">
-          <div class="collection-extra__box text-center"{% if section.settings[image_str] != blank %} style="background-image: url({{section.settings[image_str] | img_url }});"{% endif %}>
+        <div class="grid__item medium-up--one-half large-up--one-quarter">
+          <div class="collection-extra__box text-center{% if section.settings[image_str] != blank %} collection-extra__box--{{forloop.index}}{% endif %}">
             <a href="{{ section.settings[link_str] }}" class="collection-extra__link">{{ section.settings[title_str] }}</a>
           </div>
         </div>
+        {%- if section.settings[image_str] != blank -%}
+          {%- assign block_image = section.settings[image_str] -%}
+          {%- capture sod_extra_styles -%}
+            {{sod_extra_styles}}
+            .collection-extra__box--{{forloop.index}} {background-image: url({{block_image | img_url:'345x95' }});}
+            @media only screen and (min-width: 750px) {
+              .collection-extra__box--{{forloop.index}} {background-image: url({{block_image | img_url:'265x95' }});}
+            }
+            @media only screen and (min-width: 1100px) {
+              .collection-extra__box--{{forloop.index}} {background-image: url({{block_image | img_url:'220x95' }});}
+            }
+          {%- endcapture -%}
+        {%- endif -%}
       {%- endfor -%}
     </div>
-  </div>
+    {%- if sod_extra_styles != blank -%}
+      <style>{{sod_extra_styles | strip_newlines | strip | replace: '  ', ''}}</style>
+    {%- endif -%}
+  </section>
 {%- endif -%}
 
 {% schema %}
