@@ -6,6 +6,7 @@
       <h1 class="h2 cart-title">{{ 'cart.general.title' | t }}</h1>
       <form action="{{ routes.cart_url }}" method="post" novalidate class="cart form">
         <table class="cart-table responsive-table table--no-border">
+          <h2 class="sr-only">{{ 'cart.cart_summary.products_header' | t }}</h2>
           <thead class="cart__row cart__header-labels small--hide">
             <th class="text-left cart__table-cell--image">{{ 'cart.label.product' | t }}</th>
             <th class="text-center cart__table-cell--meta"></th>

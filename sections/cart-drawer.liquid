@@ -19,7 +19,7 @@
       </a>
 
       <div class="cart-summary__header cart-summary__section">
-        <h5 class="cart-summary__title">{{ 'cart.cart_summary.title' | t }}</h5>
+        <h2 class="h5 cart-summary__title">{{ 'cart.cart_summary.title' | t }}</h2>
         {% if cart.item_count > 0 %}
           <a class="cart-summary__cart-link" href="{{ routes.cart_url }}">{{ 'cart.cart_summary.cart' | t }}</a>
         {% endif %}
@@ -96,7 +96,8 @@
                   <a href="{{ item.url }}">
                     <img src="{{ item | img_url: '60x' }}" alt="{{ item.title | escape }}"
                         srcset="{{ item | img_url: '60x' }} 60w,
-                                {{ item | img_url: '120x' }} 120w" sizes="60px"/>
+                                {{ item | img_url: '120x' }} 120w" sizes="60px"
+                        alt="photo for {{ item.product.title | strip_html }}">
                   </a>
                 </div>
                 <div class="cart-summary-item__detail">
@@ -158,7 +159,7 @@
       {% if section.settings.promo_products_show %}
         {%- capture promo_products -%}
           <div class="cart-summary__promo-products-title cart-summary__section {% if cart.item_count > 0 %}cart-accordion-btn-container{% endif %} border-top">
-            <h6 class="cart-summary__item-list-header__title">{{ section.settings.promo_products_heading }}</h6>
+            <h3 class="h6 cart-summary__item-list-header__title">{{ section.settings.promo_products_heading }}</h3>
             {% if cart.item_count > 0 %}<button class="cart-accordion-btn btn plain-text cart-accordion-btn--collapsed">{% render 'svg-chevron-down' %}</button>{% endif %}
           </div>
 
@@ -202,7 +203,8 @@
                             <a href="{{ promo_product.url }}">
                               <img src="{{ promo_product.featured_media.preview_image | img_url: '50x' }}" alt="{{ item.title | escape }}"
                                   srcset="{{ promo_product.featured_media.preview_image | img_url: '50x' }} 50w,
-                                          {{ promo_product.featured_media.preview_image | img_url: '100x' }} 100w" sizes="50px"/>
+                                          {{ promo_product.featured_media.preview_image | img_url: '100x' }} 100w" sizes="50px"
+                                  alt="photo for {{ promo_product.title | strip_html }}">
                             </a>
                           </div>
                           <div class="cart-summary-item__detail">
