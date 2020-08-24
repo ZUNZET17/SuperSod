@@ -1631,6 +1631,15 @@
           "zh-CN": "显示页面路径网站地图栏",
           "zh-TW": "顯示頁面路徑導覽"
         }
+      },
+      {
+        "type": "checkbox",
+        "id": "show_brand_logo",
+        "label": {
+          "en": "Show brand logo in collection",
+          "es": "Mostrar logo de marca en colecciones"
+        },
+        "default": false
       }
     ]
   },

@@ -22,7 +22,15 @@
       {% for block in section.blocks limit: section.blocks.size %}
         <div class="grid__item {{ grid_item_width }} slide-up-animation animated" {{ block.shopify_attributes }} role="listitem">
           {%- assign collection = collections[block.settings.collection] -%}
-          {% render 'collection-grid-item', collection: collection, custom_collection_image: block.settings.collection_image %}
+          {%- assign custom_class = '' -%}
+          {%- assign difference_from_last = section.blocks.size | minus: forloop.index  -%}
+          {%- if difference_from_last < 3 -%}
+            {%- assign custom_class = ' collection-grid-item--last-items' -%}
+          {%- endif -%}
+          {%- if difference_from_last < 2 -%}
+            {%- assign custom_class = custom_class | append: ' collection-grid-item--last-two-items' -%}
+          {%- endif -%}
+          {% render 'collection-grid-item', collection: collection, custom_collection_image: block.settings.collection_image, custom_class: custom_class %}
         </div>
       {% endfor %}
     </div>

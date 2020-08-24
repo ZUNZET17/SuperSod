@@ -9,15 +9,23 @@ $tablet: 750px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  min-height: 270px;
+  min-height: 180px;
   padding-bottom: 0;
 
-  @media all and (min-width: #{$tablet}) {
-    min-height: 220px;
-  }
-
   @media all and (min-width: #{$desk}) {
-    min-height: 302px;
+    margin-bottom: 50px;
+  }
+}
+
+.collection-grid-item--last-items {
+  @media all and (min-width: #{$desk}) {
+    margin-bottom: 20px;
+  }
+}
+
+.collection-grid-item--last-two-items {
+  @media all and (max-width: #{$desk}) {
+    margin-bottom: 0;
   }
 }
 
@@ -35,11 +43,11 @@ $tablet: 750px;
   margin-left: auto;
   margin-right: auto;
   margin-top: 35px;
-  padding: 80px 75px;
+  padding: 46px;
 
   @media all and (min-width: #{$tablet}) {
     background-size: cover;
-    padding: 62.5px;
+    // padding: 62.5px;
   }
 
   img {

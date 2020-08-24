@@ -9,7 +9,10 @@
 {%- else -%}
   {%- assign collection_image = custom_collection_image -%}
 {%- endif -%}
-<div class="collection-grid-item">
+{%- unless custom_class -%}
+  {%- assign custom_class = '' -%}
+{%- endunless -%}
+<div class="collection-grid-item{{ custom_class }}">
   <a href="{% if collection.products == empty %}#{% else %}{{ collection.url }}{% endif %}" class="collection-grid-item__link text-center">
     {% if collection.title == blank %}{{ 'homepage.onboarding.collection_title' | t }}{% else %}{{ collection.title }}{% endif %}
   </a>

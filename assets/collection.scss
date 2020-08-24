@@ -39,7 +39,7 @@ $desk: 1100px;
 .collection-extra__box {
   background-position: center;
   background-size: cover;
-  padding: 35px 16px;
+  padding: 35px 5px;
   margin-bottom: 15px;
 
   @media all and (min-width: #{$desk}) {
@@ -51,4 +51,10 @@ $desk: 1100px;
   color: $white;
   font-size: 16px;
   line-height: 18px;
+}
+
+.pagination {
+  .page {
+    margin-right: 5px;
+  }
 }

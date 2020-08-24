@@ -201,5 +201,18 @@
     <script src="{{ 'product.js' | asset_url }}" defer></script>
     <script src="{{ 'tabs.js' | asset_url }}" defer></script>
   {%- endif -%}
+  <script>
+    const loadPreloadedStyles = function () {
+      let elements = document.querySelectorAll('link[as=style]');
+      if (elements.length < 1) {
+        return;
+      }
+      elements.forEach(function (element) {
+        element.rel = 'stylesheet';
+        element.onload = null;
+      });
+    };
+    loadPreloadedStyles();
+  </script>
 </body>
 </html>

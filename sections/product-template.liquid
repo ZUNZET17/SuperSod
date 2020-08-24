@@ -230,7 +230,7 @@
     {%- assign position = 'below' -%}
     <div class="product-tabs">
       <div class="grid grid--full product-tabs__tablist" role="tablist" aria-label="More product information">
-        <div class="grid__item medium-up--one-sixth">
+        <div class="grid__item one-third large-up--one-sixth">
           <button class="product-tabs__button" role="tab" aria-selected="true" aria-controls="details-tab" id="details-tab-button">
             {% render 'icon-features' %} Features
           </button>
@@ -240,7 +240,7 @@
         {%- for metafield_title in metafield_titles -%}
           {%- assign metafield_key = metafield_names[forloop.index0] -%}
           {%- if product.metafields.global[metafield_key] != blank -%}
-            <div class="grid__item medium-up--one-{% if metafield_title.size > 8 %}quarter{% else %}eighth{% endif %}">
+            <div class="grid__item one-third large-up--one-{% if metafield_title.size > 8 %}quarter{% else %}eighth{% endif %}">
               <button class="product-tabs__button" role="tab" aria-selected="false" aria-controls="{{metafield_key}}-tab" id="{{metafield_key}}-tab-button" tabindex="-1">
                 {% if metafield_key == 'guides' %}
                   {% render 'icon-guides' %}

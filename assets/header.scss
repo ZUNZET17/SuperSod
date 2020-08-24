@@ -70,6 +70,10 @@ $tablet: 750px;
 }
 
 .top-bar {
+  @media all and (min-width: #{$tablet}) {
+    padding-top: 0;
+  }
+
   input {
     background-color: $light-gray;
     @media all and (min-width: #{$tablet}) {
