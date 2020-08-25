@@ -39,9 +39,9 @@
     }
   </script>
   {%- assign use_pallet = false -%}
-  {%- if template.name == 'product' and product.tags contains 'pallet' -%}
+  {%- comment -%}{%- if template.name == 'product' and product.tags contains 'pallet' -%}
     {%- assign use_pallet = true -%}
-  {%- endif -%}
+  {%- endif -%}{%- endcomment -%}
   <link rel="stylesheet" href="{{ 'theme.scss.css' | asset_url }}">
   <link rel="stylesheet" href="{{ 'header.scss.css' | asset_url }}">
   <link rel="stylesheet" href="{{ 'forms.scss.css' | asset_url }}">

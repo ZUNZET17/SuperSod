@@ -16,8 +16,11 @@
           {% assign column_width = 'medium-up--one-third small--one-whole' %}
         {% when 4 %}
           {% assign column_width = 'medium-up--one-quarter small--one-whole' %}
+        {%- else -%}
+          {% assign column_width = 'medium-up--one-quarter small--one-half' %}
       {% endcase %}
       {%- assign first_menu_processed = false -%}
+      {%- assign badges_html = '' -%}
       {% for block in section.blocks %}
         {% case block.type %}
           {% when 'menu' %}
@@ -70,15 +73,46 @@
               <h3 class="site-footer__section-title">{{ 'general.newsletter_form.newsletter_heading' | t }}</h3>
               {% include 'newsletter', label: block.settings.subtext %}
             </div>
-  
+
+          {%- when 'badge' -%}
+            {%- capture badges_html -%}
+              {{badges_html}}
+              <li class="badge-list__item">
+                {%- if block.settings.badge_url != blank -%}
+                  <a href="{{block.settings.badge_url}}"{% if block.settings.badge_alt != blank %} title="{{block.settings.badge_alt}}"{% endif %}>
+                {%- endif -%}
+                {%- if block.settings.badge_image != blank -%}
+                  <img src="{{block.settings.badge_image | img_url: 'master'}}"
+                    {% if block.settings.badge_image_2x != blank %} srcset="{{block.settings.badge_image_2x | img_url: 'master'}} 2x"{% endif %}
+                    {% if block.settings.badge_alt != blank %} alt="{{block.settings.badge_alt}}"{% endif %} loading="lazy">
+                {%- endif -%}
+                {%- if block.settings.badge_url != blank -%}
+                  </a>
+                {%- endif -%}
+              </li>
+            {%- endcapture -%}
         {% endcase %}
       {% endfor %}
     </div>
 
     <div class="grid medium-up--grid--table sub-footer small--text-center">
-      <div class="grid__item medium-up--one-half">
-        <p> &copy; {{ 'now' | date: '%Y' }} {{ section.settings.copyright_name }}</p>
+      <div class="grid__item medium-up--one-half large-up--seven-twelfths">
+        <p class="site-footer__copyright-text"> &copy; {{ 'now' | date: '%Y' }} {{ section.settings.copyright_name }}</p>
+        {%- if section.settings.privacy_text != blank -%}
+          {%- if section.settings.privacy_link != blank -%}
+            <a href="{{section.settings.privacy_link}}">
+          {%- endif -%}
+            <span>{{section.settings.privacy_text}}</span>
+          {%- if section.settings.privacy_link != blank -%}
+            </a>
+          {%- endif -%}
+        {%- endif -%}
       </div>
+      {%- if badges_html != '' -%}
+        <div class="grid__item medium-up--one-half large-up--five-twelfths">
+          <ul class="badge-list">{{badges_html | strip_newlines | replace: '  ', ''}}</ul>
+        </div>
+      {%- endif -%}
       {%- if section.settings.show_payment_icons -%}
         {%- unless shop.enabled_payment_types == empty -%}
           <div class="grid__item medium-up--one-half medium-up--text-right">
@@ -139,7 +173,7 @@
     "zh-CN": "页脚",
     "zh-TW": "頁尾"
   },
-  "max_blocks": 4,
+  "max_blocks": 10,
   "settings": [
     {
       "type": "checkbox",
@@ -190,6 +224,22 @@
       "label": {
         "en": "Text to show in copyright",
         "es": "Texto para mostrar en copyright"
+      }
+    },
+    {
+      "type": "text",
+      "id": "privacy_text",
+      "label": {
+        "en": "Text to show in privacy link",
+        "es": "Texto para enlace de política de privacidad"
+      }
+    },
+    {
+      "type": "url",
+      "id": "privacy_link",
+      "label": {
+        "en": "Privacy link",
+        "es": "Enlace a política de privacidad"
       }
     }
   ],
@@ -509,6 +559,47 @@
             "th": "ระบบจะสร้างบัญชีผู้ใช้ใน Shopify ให้แก่ลูกค้ารายใดก็ตามที่ลงทะเบียน [ดูลูกค้า](/admin/customers?query=&accepts_marketing=1)",
             "zh-CN": "任何注册用户都将在 Shopify 中拥有一个为他们创建的账户。[查看客户](/admin/customers?query=&accepts_marketing=1)",
             "zh-TW": "顧客註冊後就可以擁有 Shopify 的帳戶。[檢視顧客](/admin/customers?query=&accepts_marketing=1)"
+          }
+        }
+      ]
+    },
+    {
+      "type": "badge",
+      "name": {
+        "en": "Badge",
+        "es": "Sello"
+      },
+      "settings": [
+        {
+          "id": "badge_alt",
+          "type": "text",
+          "label": {
+            "en": "Badge alt text",
+            "es": "Texto alternativo del sello"
+          }
+        },
+        {
+          "id": "badge_url",
+          "type": "url",
+          "label": {
+            "en": "Badge link",
+            "es": "Enlace del sello"
+          }
+        },
+        {
+          "id": "badge_image",
+          "type": "image_picker",
+          "label": {
+            "en": "Badge image",
+            "es": "Imagen del sello"
+          }
+        },
+        {
+          "id": "badge_image_2x",
+          "type": "image_picker",
+          "label": {
+            "en": "Badge image (2x)",
+            "es": "Imagen del sello (2x)"
           }
         }
       ]

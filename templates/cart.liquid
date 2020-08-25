@@ -151,6 +151,13 @@
                   <button type="submit" name="checkout" class="btn full-width">{{ 'cart.general.checkout' | t }}</button>
                 </div>
               </div>
+              <ul class="list--inline payment-icons">
+                {%- for type in shop.enabled_payment_types -%}
+                  <li>
+                    {{ type | payment_type_svg_tag: class: 'icon icon--full-color' }}
+                  </li>
+                {%- endfor -%}
+              </ul>
               <p class="cart__continue-shopping">
                 <a href="{{ routes.all_products_collection_url }}">
                   {% render 'arrow-left' %}

@@ -83,7 +83,7 @@
           {% endcase %}
 
           {% for image in product.images %}
-            <li class="grid__item small--one-half medium-up--one-third">
+            <li class="grid__item small--one-third medium-up--one-third">
               <a href="{{ image.src | img_url: 'grande' }}" class="product-single__thumbnail" data-image-id="{{ image.id }}">
                 <img src="{{ image.src | img_url: 'compact' }}" alt="{{ image.alt | escape }}">
               </a>
@@ -91,7 +91,7 @@
           {% endfor %}
           {%- for media in product.media -%}
             {%- if media.media_type == 'external_video' -%}
-              <li class="grid__item small--one-half medium-up--one-third">
+              <li class="grid__item small--one-third medium-up--one-third">
                 {%- assign filtered_url = media | external_video_url | split: '?controls=' -%}
                 <a href="{{ filtered_url[0] | replace: 'embed/', 'watch?v=' }}" class="js-show-youtube-popup product-single__thumbnail" data-image-id="{{ media.id }}">
                   <img src="{{ media | img_url: 'compact' }}" alt="{{ media.alt | escape }}" loading="lazy">
@@ -203,6 +203,14 @@
               </div>
             </div>
 
+            <ul class="list--inline payment-icons">
+              {%- for type in shop.enabled_payment_types -%}
+                <li>
+                  {{ type | payment_type_svg_tag: class: 'icon icon--full-color' }}
+                </li>
+              {%- endfor -%}
+            </ul>
+
           {% endform %}
           {%- if use_pallet == true -%}
             <p class="product-single__pallet-msg product-single__pallet-msg--unavailable js-not-available-text hide">{{ 'products.product.pallet_unavailable_html' | t }}</p>
@@ -240,7 +248,7 @@
         {%- for metafield_title in metafield_titles -%}
           {%- assign metafield_key = metafield_names[forloop.index0] -%}
           {%- if product.metafields.global[metafield_key] != blank -%}
-            <div class="grid__item one-third large-up--one-{% if metafield_title.size > 8 %}quarter{% else %}eighth{% endif %}">
+            <div class="grid__item one-third large-up--one-{% if metafield_title.size > 5 %}quarter{% else %}eighth{% endif %}">
               <button class="product-tabs__button" role="tab" aria-selected="false" aria-controls="{{metafield_key}}-tab" id="{{metafield_key}}-tab-button" tabindex="-1">
                 {% if metafield_key == 'guides' %}
                   {% render 'icon-guides' %}
