@@ -52,7 +52,7 @@
       {% else %}
         {% assign grid_item_width = 'medium-up--one-third small--one-half' %}
       {% endif %}
-      {% include 'product-grid-item' %}
+      {% include 'product-grid-item', collection_handle: collection.handle %}
     {% else %}
       {% comment %}
         Add default products to help with onboarding for collections/all only.
