@@ -128,7 +128,8 @@
           <p class="product-single__prices">
             {%- if use_pallet == true -%}
               <span class="product-single__price js-current-price" itemprop="price" content="{{ current_variant.price | divided_by: 100.00 }}"></span>
-              <span class="product-single__price product-single__price--pallet js-current-price-text"><span class="primary-text">Shipping</span> calculated at checkout.</span>
+              <span class="product-single__price js-current-price-unit hide">/ sq ft</span>
+              <p class="product-single__price product-single__price--pallet js-current-price-text"><a href="/pages/shipping-policy" class="primary-text">Shipping</a> calculated at checkout.</p>
             {%- else -%}
               {% if product.compare_at_price_max > product.price %}
                 <span id="ComparePriceA11y" class="visually-hidden">{{ 'products.product.sale_price' | t }}</span>
