@@ -9,7 +9,14 @@
         {%- assign grid_item_width = 'medium-up--one-quarter small--one-half' -%}
 
         {%- for product in recommendations.products -%}
-          {% include 'product-grid-item' %}
+          {%- if collection -%}
+            {%- assign product_collection = collection -%}
+          {%- elsif product.collections.size > 0 -%}
+            {%- assign product_collection = product.collections[0] -%}
+          {%- else -%}
+            {%- assign product_collection = collections['all'] -%}
+          {%- endif -%}
+          {% include 'product-grid-item', collection_handle: product_collection.handle %}
         {%- endfor -%}
       </div>
     {%- endif -%}

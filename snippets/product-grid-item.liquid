@@ -81,8 +81,13 @@
       {{ product.vendor }}
     </div>
   {% endif %}
-
-  <div class="product__prices text-center">
+  {%- assign show_price = true -%}
+  {%- unless product.tags contains 'Bundle' -%}
+    {%- if collection_handle == 'sod' -%}
+      {%- assign show_price = false -%}
+    {%- endif -%}
+  {%- endunless -%}
+  <div class="product__prices text-center{% unless show_price %} hide{% endunless %}">
     {% if product.compare_at_price > product.price %}
 
       <span class="product__price--on-sale">
