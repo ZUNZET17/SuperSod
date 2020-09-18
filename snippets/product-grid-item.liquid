@@ -47,6 +47,9 @@
         </picture>
       {%- endif -%}
     </div>
+    {%- if product.metafields.global.card_data != blank -%}
+      <p class="product__card-data">{{product.metafields.global.card_data}}</p>
+    {%- endif -%}
     {%- comment -%}
     <div class="supports-js" style="max-width: {{ 600 | times: product.featured_image.aspect_ratio | round }}px; margin: 0 auto;">
       <a href="{{ product.url | within: collection }}" class="product__image-wrapper product__image-wrapper--loading" style="padding-top:{{ 1 | divided_by: product.featured_image.aspect_ratio | times: 100}}%;" title="{{ product.title | escape }}" data-image-link>

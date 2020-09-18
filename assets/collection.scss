@@ -58,3 +58,17 @@ $desk: 1100px;
     margin-right: 5px;
   }
 }
+
+.product__card-data {
+  background-color: rgba($white, 0.7);
+  font-size: 13px;
+  margin-top: -20px;
+  margin: 0;
+  position: relative;
+  text-align: center;
+
+  @media all and (min-width: #{$desk}) {
+    font-size: 16px;
+    margin-top: -25px;
+  }
+}
