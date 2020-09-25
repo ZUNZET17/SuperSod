@@ -22,6 +22,10 @@ $desk: 1100px;
   margin-top: 30px;
 }
 
+.form--product--pallet {
+  margin-top: 0;
+}
+
 .product-single__pallet-msg {
   background-color: #F9FFF9;
   border: 1px solid $color_primary;
@@ -39,6 +43,10 @@ $desk: 1100px;
 .product-single__pallet-msg--unavailable {
   background-color: #fff8f8;
   border-color: #D20000;
+}
+
+.product-single__pallet-msg--wrong-quantity {
+  margin-top: 0;
 }
 
 .selector-wrapper {
@@ -169,6 +177,10 @@ $desk: 1100px;
   position: absolute;
   top: 50%;
   transform: translateX(-50%) translateY(-50%);
+}
+
+.product-single__methods {
+  margin-bottom: 10px;
 }
 
 .payment-icons {

@@ -2383,5 +2383,29 @@
         }
       }
     ]
+  },
+  {
+    "name": {
+      "en": "Integrations",
+      "es": "Integraciones"
+    },
+    "settings": [
+      {
+        "id": "validation_tool_url",
+        "type": "url",
+        "label": {
+          "en": "Validation tool url",
+          "es": "Url de herramienta de validación"
+        }
+      },
+      {
+        "id": "validation_tool_shop",
+        "type": "text",
+        "label": {
+          "en": "Validation tool shop",
+          "es": "Tienda de herramienta de validación"
+        }
+      }
+    ]
   }
 ]

@@ -129,7 +129,6 @@
             {%- if use_pallet == true -%}
               <span class="product-single__price js-current-price" itemprop="price" content="{{ current_variant.price | divided_by: 100.00 }}"></span>
               <span class="product-single__price js-current-price-unit hide">/ sq ft</span>
-              <p class="product-single__price product-single__price--pallet js-current-price-text"><a href="/pages/shipping-policy" class="primary-text">Shipping</a> calculated at checkout.</p>
             {%- else -%}
               {% if product.compare_at_price_max > product.price %}
                 <span id="ComparePriceA11y" class="visually-hidden">{{ 'products.product.sale_price' | t }}</span>
@@ -150,6 +149,9 @@
               {% include 'product-unit-price', variant: current_variant, available: true %}
             {%- endif -%}
           </p>
+          {%- if use_pallet == true -%}
+            <p class="product-single__price product-single__price--pallet js-current-price-text"><a href="/pages/shipping-policy" class="primary-text">Shipping</a> calculated at checkout.</p>
+          {%- endif -%}
 
           {%- if shop.taxes_included or shop.shipping_policy.body != blank -%}
             <div class="product-single__policies rte">
@@ -161,12 +163,15 @@
               {%- endif -%}
             </div>
           {%- endif -%}
-          {%- assign productClasses = 'js-product-form form form--product' -%}
+          {%- assign product_classes = 'js-product-form form form--product' -%}
           {%- if product.has_only_default_variant -%}
-            {%- assign productClasses = productClasses | append: ' product-form--default-variant-only' -%}
+            {%- assign product_classes = product_classes | append: ' product-form--default-variant-only' -%}
+          {%- endif -%}
+          {%- if use_pallet == true -%}
+            {%- assign product_classes = product_classes | append: 'form--product--pallet' -%}
           {%- endif -%}
 
-          {% form 'product', product, class: productClasses, data-ajax-add-to-cart: true, data-product-id: product.id, data-enable-history-state: history_state_data %}
+          {% form 'product', product, class: product_classes, data-ajax-add-to-cart: true, data-product-id: product.id, data-enable-history-state: history_state_data %}
             <select name="id" id="ProductSelect-{{ section.id }}" class="product-single__variants js-product-variants">
               {% for variant in product.variants %}
                 {% if variant.available %}
@@ -181,15 +186,35 @@
               {% endfor %}
             </select>
             {%- if use_pallet == true -%}
+              <div class="product-single__methods">
+                <input type="radio" name="properties[_method]" class="toggle-input hide js-delivery-method" id="delivery-method" value="delivery" checked>
+                <label for="delivery-method" class="toggle-label">Delivery</label>
+                <input type="radio" name="properties[_method]" class="toggle-input hide js-delivery-method" id="pickup-method" value="pickup">
+                <label for="pickup-method" class="toggle-label">Pickup</label>
+              </div>
               <label for="zip_code" class="form__label">{{ 'customer.addresses.zip' | t }}</label>
-              <input type="number" name="zip" id="zip_code" class="form__input full-width js-zip-code">
+              <input type="text" pattern="[0-9]{5}" name="properties[_zip]" id="zip_code" class="form__input full-width js-zip-code" value="{{cart.attributes['zip_code']}}" required>
             {%- endif -%}
 
             <div class="grid">
               {% if section.settings.product_quantity_enable %}
                 <div class="grid__item medium-up--one-third">
-                  <label for="Quantity" class="form__label">{{ 'products.product.quantity' | t }}{% if use_pallet == true %} (sq ft){% endif %}</label>
-                  <input type="number" id="Quantity" name="quantity" value="1" min="1" class="form__input full-width">
+                  {%- if use_pallet -%}
+                    <input type="hidden" name="quantity" class="js-product-quantity">
+                    <div class="js-quantity-block js-delivery-quantity-block">
+                      <label for="delivery-quantity" class="form__label">{{ 'products.product.quantity' | t }} (sq ft)</label>
+                      <input type="number" id="delivery-quantity" name="quantity-delivery" value="500"
+                        min="500" step="500" class="form__input full-width js-quantity-input js-quantity-input-delivery" required>
+                    </div>
+                    <div class="js-quantity-block js-pickup-quantity-block hide">
+                      <label for="pickup-uantity" class="form__label">{{ 'products.product.quantity' | t }} (sq ft)</label>
+                      <input type="number" id="pickup-uantity" name="quantity-pickup" value="10"
+                        min="10" step="10" class="form__input full-width js-quantity-input js-quantity-input-pickup" required>
+                    </div>
+                  {%- else -%}
+                    <label for="Quantity" class="form__label">{{ 'products.product.quantity' | t }}{% if use_pallet == true %} (sq ft){% endif %}</label>
+                    <input type="number" id="Quantity" name="quantity" value="1" class="form__input full-width" required>
+                  {%- endif -%}
                 </div>
               {% endif %}
               <div class="grid__item medium-up--two-thirds">
@@ -203,6 +228,9 @@
                 </div>
               </div>
             </div>
+            {%- if section.settings.product_quantity_enable and use_pallet -%}
+              <p class="product-single__pallet-msg product-single__pallet-msg--unavailable product-single__pallet-msg--wrong-quantity js-wrong-quantity hide">Please enter a quantity that is multiple of <span class="js-multiple-number">500</span></p>
+            {%- endif -%}
 
             <ul class="list--inline payment-icons">
               {%- for type in shop.enabled_payment_types -%}
