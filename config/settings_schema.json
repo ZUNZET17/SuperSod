@@ -2407,5 +2407,27 @@
         }
       }
     ]
+  },
+  {
+    "name": "Checkout",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "checkout_background_image",
+        "label": {
+          "en": "Background image",
+          "es": "Imagen de fondo"
+        }
+      },
+      {
+        "type": "color",
+        "id": "checkout_link_color",
+        "label": {
+          "en": "Links color",
+          "es": "Color de enlaces"
+        },
+        "default": "#54a45b"
+      }
+    ]
   }
 ]
