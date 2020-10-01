@@ -217,7 +217,7 @@ theme.applyAjaxToProductForm = function ($form_param) {
         //Some unknown error? Disable ajax and submit the old-fashioned way.
         $form.attr('ajax-add-to-cart', 'false').submit();
       }
-    }).complete(function () {
+    }).always(function () {
       theme.cartLoadingFinished();
     });
   });
@@ -263,7 +263,7 @@ theme.updateCartSummaries = function (showCartSummary) {
 
       $('.cart-summary.updating, .cart-summary .updating').removeClass('updating');
     }
-  }).complete(function () {
+  }).always(function () {
     theme.cartLoadingFinished();
   });
 };
@@ -296,7 +296,7 @@ $(document).on('change', '.qty-adjuster--ajax .qty-adjuster__value', function (e
       theme.updateCartSummaries(false);
       theme.loadInPlaceQuantityAdjustment($('body'), data);
       qtyAdjustXhttp = null;
-    }, 'json').complete(function () {
+    }, 'json').always(function () {
       theme.cartLoadingFinished();
     });
   }.bind(this), qtyAdjustDebounceTime));
