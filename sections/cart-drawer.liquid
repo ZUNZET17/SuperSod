@@ -103,20 +103,27 @@
                 <div class="cart-summary-item__detail">
                   <div class="cart-summary-item__title-variant">
                     <a class="cart-summary-item__title" href="{{ item.url }}">{{ item.product.title }}</a>
-                    {% unless item.product.has_only_default_variant %}<div class="cart-summary-item__variant">{{ item.variant.title }}</div>{% endunless %}
+                    {% unless item.product.has_only_default_variant %}
+                      <div class="cart-summary-item__variant">
+                        {% if item.properties._method == 'pickup' %}Pickup in {{ item.variant.title }}{% endif %}
+                      </div>
+                    {% endunless %}
                   </div>
                   <div class="cart-summary-item__price">
-                    {% if item.original_line_price != item.final_line_price %}
-                      <span class="reduced-price cart-summary-item__price-current theme-money">{{ item.final_line_price | money }}</span>
-                      <span class="theme-money struck-out-price">{{ item.original_line_price | money }}</span>
-                    {% elsif item.variant.compare_at_price != blank and item.variant.price < item.variant.compare_at_price %}
-                      <span class="reduced-price cart-summary-item__price-current theme-money">{{ item.final_line_price | money }}</span>
-                      <span class="theme-money struck-out-price">{{ item.variant.compare_at_price | times: item.quantity | money }}</span>
-                    {% else %}
-                      <span class="cart-summary-item__price-current theme-money">{{ item.final_line_price | money }}</span>
-                    {% endif %}
-
-                    {% render 'unit-price', variant: item %}
+                    {%- if item.properties._custom_price != blank -%}
+                      <span class="cart-summary-item__price-current theme-money">{{item.properties._custom_price | times: 100 | money}}</span>
+                    {%- else -%}
+                      {% if item.original_line_price != item.final_line_price %}
+                        <span class="reduced-price cart-summary-item__price-current theme-money">{{ item.final_line_price | money }}</span>
+                        <span class="theme-money struck-out-price">{{ item.original_line_price | money }}</span>
+                      {% elsif item.variant.compare_at_price != blank and item.variant.price < item.variant.compare_at_price %}
+                        <span class="reduced-price cart-summary-item__price-current theme-money">{{ item.final_line_price | money }}</span>
+                        <span class="theme-money struck-out-price">{{ item.variant.compare_at_price | times: item.quantity | money }}</span>
+                      {% else %}
+                        <span class="cart-summary-item__price-current theme-money">{{ item.final_line_price | money }}</span>
+                      {% endif %}
+                      {% render 'unit-price', variant: item %}
+                    {%- endif -%}
                   </div>
 
                   {% if item.line_level_discount_allocations.size > 0 %}
@@ -133,7 +140,17 @@
                     <div class="qty-adjuster qty-adjuster--with-remove qty-adjuster--ajax" data-line-item-id="{{ item.id }}" {% if item.variant.inventory_management == 'shopify' and item.variant.inventory_policy == 'deny' %}data-limit="{{ item.variant.inventory_quantity }}"{% endif %}>
                       <div class="qty-adjuster__inner">
                         <button class="qty-adjuster__down">{% render 'svg-minus' %}</button>
-                        <input class="qty-adjuster__value" type="text" pattern="[0-9]*" name="updates[]" value="{{ item.quantity }}" aria-label="{{ 'cart.label.quantity' | t | escape }}">
+                        <input class="qty-adjuster__value"
+                          type="text" pattern="[0-9]*" name="updates[]" value="{{ item.quantity }}"
+                          aria-label="{{ 'cart.label.quantity' | t | escape }}"
+                          {% if cart.attributes.customer_latitude != blank %} data-latitude="{{cart.attributes.customer_latitude}}"{% endif %}
+                          {% if cart.attributes.customer_longitude != blank %} data-longitude="{{cart.attributes.customer_longitude}}"{% endif %}
+                          data-original-price="{{item.original_price | money_without_currency}}"
+                          data-product-id="{{item.product.id}}"
+                          data-line="{{forloop.index}}"
+                          data-properties='{{item.properties | json}}'
+                          {% if item.properties._zip != blank %} data-zip="{{item.properties._zip}}"{% endif %}
+                          {% if item.properties._custom_increment != blank %} step="{{item.properties._custom_increment}}"{% endif %}>
                         <button class="qty-adjuster__up"
                             {% if item.variant.inventory_management == 'shopify' and item.variant.inventory_policy == 'deny' and item.variant.inventory_quantity == item.quantity %}disabled{% endif %}
                             >

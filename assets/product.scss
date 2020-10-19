@@ -14,6 +14,11 @@ $desk: 1100px;
   line-height: 18px;
 }
 
+.product-single__price--pallet-price {
+  color: $color_primary;
+  font-size: 20px;
+}
+
 .product-single__cart-submit-wrapper {
   margin-top: 32px;
 }

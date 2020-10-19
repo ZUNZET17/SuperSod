@@ -51,7 +51,7 @@ $cart_desk: 990px;
 
 .quantity-selector {
   display: inline-block;
-  width: 65px;
+  width: 100px;
 }
 
 .cart .cart__note-label {
@@ -91,6 +91,7 @@ $cart_desk: 990px;
 .cart__policies {
   color: #747474;
   margin-bottom: 25px;
+  text-transform: capitalize;
 }
 
 .cart__continue-shopping {

@@ -268,6 +268,22 @@ theme.updateCartSummaries = function (showCartSummary) {
   });
 };
 
+const transformPropertiesToJSON = function (properties) {
+  let array = properties.map(function (item) {
+    let object = {}
+    object[item[0]] = item[1];
+    return object;
+  });
+
+  const result = array.reduce(function (acc, curr) {
+    let object = JSON.parse(JSON.stringify(acc));
+    object[Object.keys(curr)[0]] = curr[Object.keys(curr)[0]];
+    return object;
+  }, {});
+
+  return result;
+};
+
 var qtyAdjustXhttp = null,
     qtyAdjustDebounceTime = 700;
 $(document).on('change', '.qty-adjuster--ajax .qty-adjuster__value', function (e) {
@@ -282,9 +298,10 @@ $(document).on('change', '.qty-adjuster--ajax .qty-adjuster__value', function (e
 
   theme.cartLoadingStarted();
   $(this).data('postTimeout', setTimeout(function () {
-    var postData = {
-      quantity: $(this).val(),
-      id: $(this).closest('.qty-adjuster').data('line-item-id')
+    const input = $(this);
+    const postData = {
+      quantity: input.val(),
+      id: input.closest('.qty-adjuster').data('line-item-id')
     };
 
     if (qtyAdjustXhttp) {
@@ -292,6 +309,42 @@ $(document).on('change', '.qty-adjuster--ajax .qty-adjuster__value', function (e
     }
 
     theme.cartLoadingStarted();
+
+    if (input.data('latitude')) {
+      const productData = {
+        latitude: input.data('latitude'),
+        longitude: input.data('longitude'),
+        product_id: input.data('product-id'),
+        quantity: input.val(),
+        shop_domain: theme.routes.validation_tool_shop,
+        unit_price: input.data('original-price'),
+        zipcode: input.data('zip')
+      }
+      const properties = transformPropertiesToJSON(input.data('properties'));
+      postData.line = input.data('line');
+
+      const ajax = $.ajax({
+        type: 'GET',
+        url: theme.routes.validation_tool_url + 'pricing_info',
+        data: productData,
+        timeout: 3000
+      });
+  
+      ajax.done(function (data) {
+        properties._custom_price = data.total_price;
+        postData.properties = properties;
+  
+        qtyAdjustXhttp = $.post(theme.routes.cart_url + '/change.js', postData, function (data) {
+          theme.updateCartSummaries(false);
+          theme.loadInPlaceQuantityAdjustment($('body'), data);
+          qtyAdjustXhttp = null;
+        }, 'json').always(function () {
+          theme.cartLoadingFinished();
+        });
+      });
+      return;
+    }
+
     qtyAdjustXhttp = $.post(theme.routes.cart_url + '/change.js', postData, function (data) {
       theme.updateCartSummaries(false);
       theme.loadInPlaceQuantityAdjustment($('body'), data);
@@ -324,6 +377,25 @@ function fixedNavWebkitHack() {
     }, 500);
   }
 }
+
+$(document).on('click', '.qty-adjuster__down, .qty-adjuster__up', function (e) {
+  let $adjusterContainer = $(this).closest('.qty-adjuster');
+  let $valueInput = $adjusterContainer.find('.qty-adjuster__value');
+  let adjust = $valueInput.prop('step') ? $valueInput.prop('step') : 1;
+  adjust *= $(this).hasClass('qty-adjuster__down') ? -1 : 1;
+
+  let $adjusterDown = $adjusterContainer.find('.qty-adjuster__down');
+  let newValue = parseInt($valueInput.val()) + adjust;
+  $valueInput.val(newValue).trigger('change');
+
+  if (newValue > 1) {
+    $adjusterDown.removeAttr('disabled');
+  } else {
+    $adjusterDown.attr('disabled', 'disabled');
+  }
+
+  return false;
+});
 
 $(document).on('click', '.qty-adjuster--ajax .qty-adjuster__remove', function (e) {
   e.preventDefault();

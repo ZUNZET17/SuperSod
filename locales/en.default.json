@@ -311,7 +311,7 @@
       "full_details": "Full details",
       "pallet_text_html": "Currently there is a <b>maximum</b> order of 6 pallets (3,000 sq ft) when ordering online.<br><br>If you wish to purchase more than 6 pallets, then please visit our <a target='_blank' rel='noopener' href='https://info.supersod.com/sod-prices-free-sod-quote'><b>sod quote page.</b></a>",
       "pallet_unavailable_html": "Oops! It looks like you might be outside of our standard delivery area. Please <a href='tel:+1-1888-360-1125'><b>call us</b></a> to discuss options, or fill out this <a target='_blank' rel='noopener' href='https://info.supersod.com/sod-prices-free-sod-quote' aria-describedby='new-window-2'><b>quick sod quote form</b></a> for pick-up at our closest location.",
-      "sod_picker_text_html": "<b>You don't know how much to order?</b><br>Use our <a target='_blank' rel='noopener' href='https://www.supersod.com/diy/how-to-sod-yard-area-calculator' aria-describedby='new-window-2'><b>Yard Area Calculator</b></a>",
+      "sod_picker_text_html": "<b>You don't know how much to order?</b><br>Use our <a target='_blank' rel='noopener' href='https://www.supersod.com/yard-area-calculator' aria-describedby='new-window-2'><b>Yard Area Calculator</b></a>",
       "soil_calculator_text_html": "<b>You don't know how much to order?</b><br>Use our <a target='_blank' rel='noopener' href='https://soil3.com/how-much-soil3-to-use/#calculator' aria-describedby='new-window-2'><b>Soil Calculator</b></a>"
     },
       "zoom": {

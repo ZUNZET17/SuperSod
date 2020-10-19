@@ -128,7 +128,6 @@
           <p class="product-single__prices">
             {%- if use_pallet == true -%}
               <span class="product-single__price js-current-price" itemprop="price" content="{{ current_variant.price | divided_by: 100.00 }}"></span>
-              <span class="product-single__price js-current-price-unit hide">/ sq ft</span>
             {%- else -%}
               {% if product.compare_at_price_max > product.price %}
                 <span id="ComparePriceA11y" class="visually-hidden">{{ 'products.product.sale_price' | t }}</span>
@@ -149,9 +148,9 @@
               {% include 'product-unit-price', variant: current_variant, available: true %}
             {%- endif -%}
           </p>
-          {%- if use_pallet == true -%}
+          {%- unless use_pallet -%}
             <p class="product-single__price product-single__price--pallet js-current-price-text"><a href="/pages/shipping-policy" class="primary-text">Shipping</a> calculated at checkout.</p>
-          {%- endif -%}
+          {%- endunless -%}
 
           {%- if shop.taxes_included or shop.shipping_policy.body != blank -%}
             <div class="product-single__policies rte">
@@ -170,21 +169,10 @@
           {%- if use_pallet == true -%}
             {%- assign product_classes = product_classes | append: 'form--product--pallet' -%}
           {%- endif -%}
+          <input type="hidden" class="js-address-latitude" value="{{cart.attributes.customer_latitude}}">
+          <input type="hidden" class="js-address-longitude" value="{{cart.attributes.customer_longitude}}">
 
           {% form 'product', product, class: product_classes, data-ajax-add-to-cart: true, data-product-id: product.id, data-enable-history-state: history_state_data %}
-            <select name="id" id="ProductSelect-{{ section.id }}" class="product-single__variants js-product-variants">
-              {% for variant in product.variants %}
-                {% if variant.available %}
-                  <option {% if variant == product.selected_or_first_available_variant %} selected="selected" {% endif %} 
-                    {% if use_pallet == true %} data-sod-zips="{{ variant.metafields.sod.zips }}" data-price="{{ variant.price | money_with_currency }}"{% endif %}
-                    data-sku="{{ variant.sku }}" value="{{ variant.id }}">{{ variant.title }} - {{ variant.price | money_with_currency }}</option>
-                {% else %}
-                  <option disabled="disabled">
-                    {{ variant.title }} - {{ 'products.product.sold_out' | t }}
-                  </option>
-                {% endif %}
-              {% endfor %}
-            </select>
             {%- if use_pallet == true -%}
               <div class="product-single__methods">
                 <input type="radio" name="properties[_method]" class="toggle-input hide js-delivery-method" id="delivery-method" value="delivery" checked>
@@ -192,15 +180,49 @@
                 <input type="radio" name="properties[_method]" class="toggle-input hide js-delivery-method" id="pickup-method" value="pickup">
                 <label for="pickup-method" class="toggle-label">Pickup</label>
               </div>
-              <label for="zip_code" class="form__label">{{ 'customer.addresses.zip' | t }}</label>
-              <input type="text" pattern="[0-9]{5}" name="properties[_zip]" id="zip_code" class="form__input full-width js-zip-code" value="{{cart.attributes['zip_code']}}" required>
+              <label for="customer-address-product">Your address</label>
+              <input class="form__input full-width js-autocomplete-address" type="text" name="properties[_address]" value="{{cart.attributes['customer_address']}}" id="customer-address-product">
+              <div class="js-quantity-block js-delivery-quantity-block">
+                <label for="zip_code" class="form__label">{{ 'customer.addresses.zip' | t }}</label>
+                <input type="text" pattern="[0-9]{5}" name="properties[_zip]" id="postal_code" class="form__input full-width js-zip-code" value="{{cart.attributes['zip_code']}}" required readonly>
+              </div>
             {%- endif -%}
+
+            <div{% if use_pallet == true %} class="hide"{% endif %}>
+              <select name="id" id="ProductSelect-{{ section.id }}" class="form__input full-width js-product-variants{% if use_pallet == true %} hide{% endif %}">
+                {% for variant in product.variants %}
+                  {% if variant.available %}
+                    <option {% if variant == product.selected_or_first_available_variant %} selected="selected" {% endif %} 
+                      {% if use_pallet == true %} data-sod-zips="{{ variant.metafields.sod.zips }}" data-price="{{ variant.price | money_with_currency }}"{% endif %}
+                      data-sku="{{ variant.sku }}" value="{{ variant.id }}" data-price-val="{{ variant.price | money_without_currency }}">{{ variant.title }}</option>
+                  {% endif %}
+                {% endfor %}
+              </select>
+            </div>
+            {% if use_pallet == true %}
+              <div class="js-quantity-block js-pickup-quantity-block hide">
+                <label for="pickup-select" class="js-product-pickup-variants-title hide">Store</label>
+                <select name="pickup" id="pickup-select" class="form__input full-width js-product-pickup-variants hide">
+                  {% for variant in product.variants %}
+                    {% if variant.available %}
+                      {%- unless variant.title contains 'delivery' -%}
+                        <option {% if variant == product.selected_or_first_available_variant %} selected="selected" {% endif %} 
+                        {% if use_pallet == true %} data-sod-zips="{{ variant.metafields.sod.zips }}" data-price="{{ variant.price | money_with_currency }}"{% endif %}
+                        data-sku="{{ variant.sku }}" value="{{ variant.id }}" data-price-val="{{ variant.price | money_without_currency }}">{{ variant.title }}</option>
+                      {%- endunless -%}
+                    {% endif %}
+                  {% endfor %}
+                </select>
+              </div>
+            {% endif %}
 
             <div class="grid">
               {% if section.settings.product_quantity_enable %}
                 <div class="grid__item medium-up--one-third">
                   {%- if use_pallet -%}
                     <input type="hidden" name="quantity" class="js-product-quantity">
+                    <input type="hidden" name="properties[_custom_price]" value="0" class="js-custom-value">
+                    <input type="hidden" name="properties[_custom_increment]" value="0" class="js-increment-value">
                     <div class="js-quantity-block js-delivery-quantity-block">
                       <label for="delivery-quantity" class="form__label">{{ 'products.product.quantity' | t }} (sq ft)</label>
                       <input type="number" id="delivery-quantity" name="quantity-delivery" value="500"
@@ -219,26 +241,35 @@
               {% endif %}
               <div class="grid__item medium-up--two-thirds">
                 <div class="product-single__cart-submit-wrapper{% if section.settings.enable_payment_button %} product-single__shopify-payment-btn{% endif %}{% if section.settings.add_to_cart_width == 'full_width' %} product-form--full{% endif %}">
-                  <button type="submit" name="add" id="AddToCart"{% if use_pallet == true %} disabled{% endif %} class="js-product-submit btn product-single__cart-submit btn--full{% if section.settings.enable_payment_button %} shopify-payment-btn btn--secondary{% endif %}" data-cart-url="{{ routes.cart_url }}">
-                    <span id="AddToCartText">{{ 'products.product.add_to_cart' | t }}</span>
-                  </button>
-                  {% if section.settings.enable_payment_button %}
-                    {{ form | payment_button }}
-                  {% endif %}
+                  {%- if use_pallet == true -%}
+                    <div class="js-quantity-block js-delivery-quantity-block">
+                      <button type="button" class="btn product-single__cart-submit btn--full js-product-price-check" disabled>Check delivery price</button>
+                    </div>
+                    <div class="js-quantity-block js-pickup-quantity-block hide">
+                      <button type="button" class="btn product-single__cart-submit btn--full js-product-price-check">Check pickup price</button>
+                    </div>
+                  {%- else -%}
+                    <button type="submit" name="add" id="AddToCart" class="js-product-submit btn product-single__cart-submit btn--full{% if section.settings.enable_payment_button %} shopify-payment-btn btn--secondary{% endif %}" data-cart-url="{{ routes.cart_url }}">
+                      <span id="AddToCartText">{{ 'products.product.add_to_cart' | t }}</span>
+                    </button>
+                  {%- endif -%}
                 </div>
               </div>
             </div>
+            <div>
+              {%- if use_pallet == true -%}
+                <button type="submit" name="add" id="AddToCart"{% if use_pallet == true %} disabled{% endif %} class="js-product-submit {% if use_pallet == true %}hide {% endif %}btn product-single__cart-submit btn--full{% if section.settings.enable_payment_button %} shopify-payment-btn btn--secondary{% endif %}" data-cart-url="{{ routes.cart_url }}">
+                  <span id="AddToCartText">{{ 'products.product.add_to_cart' | t }}</span>
+                </button>
+              {%- endif -%}
+              {% if section.settings.enable_payment_button %}
+                {{ form | payment_button }}
+              {% endif %}
+            </div>
             {%- if section.settings.product_quantity_enable and use_pallet -%}
+              <span class="product-single__price product-single__price--pallet-price js-current-price-unit hide"></span>
               <p class="product-single__pallet-msg product-single__pallet-msg--unavailable product-single__pallet-msg--wrong-quantity js-wrong-quantity hide">Please enter a quantity that is multiple of <span class="js-multiple-number">500</span></p>
             {%- endif -%}
-
-            <ul class="list--inline payment-icons">
-              {%- for type in shop.enabled_payment_types -%}
-                <li>
-                  {{ type | payment_type_svg_tag: class: 'icon icon--full-color' }}
-                </li>
-              {%- endfor -%}
-            </ul>
 
           {% endform %}
           {%- if use_pallet == true -%}
@@ -247,6 +278,14 @@
           {%- elsif product.type == 'Soil' -%}
             <p class="product-single__pallet-msg">{{ 'products.product.soil_calculator_text_html' | t }}</p>
           {%- endif -%}
+
+          <ul class="list--inline payment-icons">
+            {%- for type in shop.enabled_payment_types -%}
+              <li>
+                {{ type | payment_type_svg_tag: class: 'icon icon--full-color' }}
+              </li>
+            {%- endfor -%}
+          </ul>
 
         </div>
 
@@ -323,6 +362,10 @@
     soldOut: {{ 'products.product.sold_out' | t | json }},
     unavailable: {{ 'products.product.unavailable' | t | json }}
   }
+  const cartAttributes = {{cart.attributes | json}};
+  const productData = {
+    id: {{product.id}}
+  };
 </script>
 
 

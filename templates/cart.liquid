@@ -1,5 +1,6 @@
 <!-- /templates/cart.liquid -->
-
+{%- assign fulfillment_method = '' -%}
+{%- assign invalid_fulfillment = false -%}
 <div class="grid">
   <div class="grid__item">
     {% if cart.item_count > 0 %}
@@ -15,6 +16,7 @@
             <th class="text-right cart__table-cell--line-price">{{ 'cart.label.total' | t }}</th>
           </thead>
           <tbody>
+            {%- assign subtotal = 0 -%}
             {% for item in cart.items %}
               <tr class="cart__row responsive-table__row">
                 <td class="cart__table-cell--image small--text-center">
@@ -52,18 +54,30 @@
                   <p>
                     <a href="{{ item.url }}" class="cart__product-title">{{ item.product.title }}</a>
                     {% unless item.variant.title contains 'Default' %}
-                      <div class="visually-hidden">
-                        <small>{{ item.variant.title }}</small>
-                      </div>
+                      <small class="visually-hidden">{{ item.variant.title }}</small>
                     {% endunless %}
+                    <br>
+                    {% if item.properties._method == 'pickup' %}
+                      <span class="txt--minor cart__policies">{{item.properties._method}} in {{ item.variant.title }}</span>
+                    {% endif %}
                   </p>
-
+                  {%- if item.properties._method != blank -%}
+                    {%- if fulfillment_method == '' -%}
+                      {%- assign fulfillment_method = item.properties._method -%}
+                    {%- elsif item.properties._method != fulfillment_method -%}
+                      {%- assign invalid_fulfillment = true -%}
+                    {%- endif -%}
+                  {%- endif -%}
                   <p class="txt--minor">
                     <a href="{{ routes.cart_change_url }}?line={{ forloop.index }}&amp;quantity=0" class="cart__remove">{{ 'cart.general.remove' | t }}</a>
                   </p>
                 </td>
                 <td class="cart__table-cell--price medium-up--text-right" data-label="{{ 'cart.label.price' | t }}">
-                  {%- if item.original_price != item.final_price -%}
+                  {%- if item.properties._custom_price != blank -%}
+                    {%- assign item_value = item.properties._custom_price | times: 100 -%}
+                    {%- assign item_value = item_value | divided_by: item.quantity -%}
+                    {{item_value | money}}
+                  {%- elsif item.original_price != item.final_price -%}
                     <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
                     <del>{{ item.original_price | money }}</del>
                     <span class="visually-hidden">{{ 'products.product.sale_price' | t }}</span>
@@ -89,13 +103,19 @@
                   <input class="quantity-selector form__input" type="number" name="updates[]" id="updates_{{ item.key }}" value="{{ item.quantity }}" min="0">
                 </td>
                 <td data-label="{{ 'cart.label.total' | t }}" class="text-right cart__table-cell--line-price">
-                  {%- if item.original_line_price != item.final_line_price -%}
+                  {%- if item.properties._custom_price != blank -%}
+                    {%- assign item_value = item.properties._custom_price | times: 100 -%}
+                    {%- assign subtotal = subtotal | plus: item_value -%}
+                    {{item_value | money}}
+                  {%- elsif item.original_line_price != item.final_line_price -%}
                     <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
                     <del>{{ item.original_line_price | money }}</del>
                     <span class="visually-hidden">{{ 'products.product.sale_price' | t }}</span>
                     <span class="order-discount"><b>{{ item.final_line_price | money }}</b></span>
+                    {%- assign subtotal = subtotal | plus: item.final_line_price -%}
                   {%- else -%}
                     <b>{{ item.original_line_price | money }}</b>
+                    {%- assign subtotal = subtotal | plus: item.original_line_price -%}
                   {%- endif -%}
                 </td>
               </tr>
@@ -124,7 +144,7 @@
 
               <p class="cart__subtotal-container">
                 <span class="cart__subtotal-title h3">{{ 'cart.general.subtotal' | t }}</span>
-                <span class="cart__subtotal h3">{{ cart.total_price | money }}</span>
+                <span class="cart__subtotal h3">{{ subtotal | money }}</span>
               </p>
 
               {%- capture taxes_shipping_checkout -%}
@@ -140,6 +160,10 @@
               {%- endcapture -%}
 
               <p class="cart__policies txt--emphasis rte">{{ taxes_shipping_checkout }}</p>
+              {%- if fulfillment_method == '' -%}
+                {%- assign fulfillment_method = 'delivery' -%}
+              {%- endif -%}
+              <input type="hidden" name="attributes[method]" value="{{fulfillment_method}}">
               <div class="grid">
                 <div class="grid__item one-fifth">
                   <button type="submit" name="update" class="btn btn--secondary update-cart">
@@ -148,7 +172,11 @@
                   </button>
                 </div>
                 <div class="grid__item four-fifths">
-                  <button type="submit" name="checkout" class="btn full-width">{{ 'cart.general.checkout' | t }}</button>
+                  {%- if invalid_fulfillment -%}
+                    <p>You cannot mix fulfillment methods</p>
+                  {%- else -%}
+                    <button type="submit" name="checkout" class="btn full-width">{{ 'cart.general.checkout' | t }}</button>
+                  {%- endif -%}
                 </div>
               </div>
               <ul class="list--inline payment-icons">
@@ -167,6 +195,7 @@
             </div>
           </div>
         </footer>
+        {%- comment -%}{% render 'shipping-calculator' %}{%- endcomment -%}
       </form>
     {% else %}
     {% comment %}

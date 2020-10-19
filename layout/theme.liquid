@@ -63,6 +63,8 @@
   {%- endif -%}
   {%- if template.name == 'product' -%}
     <link rel="preload" as="style" href="{{ 'tabs.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
+  {%- endif -%}
+  {%- if template.name == 'product' or template.name == 'cart' -%}
     <link rel="preload" as="style" href="{{ 'product.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
   {%- endif -%}
   {%- if template.name == 'collection' -%}
@@ -189,10 +191,11 @@
   {% comment %} {{ shopify_scripts | replace: 'previewBarInjector.init();', '' | strip }} {% endcomment %}
   <!-- End shopify marketing and plugin stuff -->
   <script src="{{ 'lazysizes.min.js' | asset_url }}" defer></script>
-  {% if request.page_type contains 'customers/' %}
+  {% if request.page_type contains 'customers/'  or template.name == 'cart' %}
     <script src="{{ 'shopify_common.js' | shopify_asset_url }}" defer></script>
+    <script src="{{ 'customer_area.js' | shopify_asset_url }}" defer></script>
   {% endif %}
-  <script src="{{ 'jquery-1.11.0.min.js' | asset_url }}" defer></script>
+  <script src="{{ 'jquery.js' | asset_url }}" defer></script>
   <script src="{{ 'modernizr.min.js' | asset_url }}" defer></script>
   <script src="{{ 'theme.js' | asset_url }}" defer></script>
   <script src="{{ 'sidebar-cart.js' | asset_url }}" defer></script>
@@ -200,6 +203,7 @@
     <script src="{{ 'account.js' | asset_url }}" defer></script>
   {%- endif -%}
   {%- if template.name == 'product' -%}
+    <script src="https://maps.googleapis.com/maps/api/js?libraries=places,geometry&key=AIzaSyBDNbFA4quUVSMGdxSn_lqnZVcp72c5K9k" defer></script>
     <script src="{{ 'product.js' | asset_url }}" defer></script>
     <script src="{{ 'tabs.js' | asset_url }}" defer></script>
   {%- endif -%}
