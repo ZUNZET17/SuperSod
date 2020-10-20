@@ -176,15 +176,20 @@
             {%- if use_pallet == true -%}
               <div class="product-single__methods">
                 <input type="radio" name="properties[_method]" class="toggle-input hide js-delivery-method" id="delivery-method" value="delivery" checked>
-                <label for="delivery-method" class="toggle-label">Delivery</label>
+                <label for="delivery-method" class="toggle-label">{{ 'layout.product.delivery' | t }}</label>
                 <input type="radio" name="properties[_method]" class="toggle-input hide js-delivery-method" id="pickup-method" value="pickup">
-                <label for="pickup-method" class="toggle-label">Pickup</label>
+                <label for="pickup-method" class="toggle-label">{{ 'layout.product.pickup' | t }}</label>
               </div>
-              <label for="customer-address-product">Your address</label>
+              <div class="js-quantity-block js-delivery-quantity-block">
+                <label for="customer-address-product">{{ 'layout.product.your_address_delivery' | t }}</label>
+              </div>
+              <div class="js-quantity-block js-pickup-quantity-block hide">
+                <label for="customer-address-product">{{ 'layout.product.your_address_pickup' | t }}</label>
+              </div>
               <input class="form__input full-width js-autocomplete-address" type="text" name="properties[_address]" value="{{cart.attributes['customer_address']}}" id="customer-address-product">
               <div class="js-quantity-block js-delivery-quantity-block">
                 <label for="zip_code" class="form__label">{{ 'customer.addresses.zip' | t }}</label>
-                <input type="text" pattern="[0-9]{5}" name="properties[_zip]" id="postal_code" class="form__input full-width js-zip-code" value="{{cart.attributes['zip_code']}}" required readonly>
+                <input type="text" pattern="[0-9]{5}" name="properties[_zip]" id="postal_code" class="form__input full-width js-zip-code" value="{{cart.attributes['zip_code']}}" required>
               </div>
             {%- endif -%}
 
@@ -201,7 +206,7 @@
             </div>
             {% if use_pallet == true %}
               <div class="js-quantity-block js-pickup-quantity-block hide">
-                <label for="pickup-select" class="js-product-pickup-variants-title hide">Store</label>
+                <label for="pickup-select" class="js-product-pickup-variants-title hide">{{ 'layout.product.location' | t }}</label>
                 <select name="pickup" id="pickup-select" class="form__input full-width js-product-pickup-variants hide">
                   {% for variant in product.variants %}
                     {% if variant.available %}

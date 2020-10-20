@@ -285,6 +285,13 @@
     "footer": {
       "social_platform": "{{ name }} on {{ platform }}",
       "copyright": "Copyright"
+    },
+    "product": {
+      "delivery": "Delivery",
+      "pickup": "Pickup",
+      "location": "Choose your nearest location to pickup",
+      "your_address_delivery": "Please enter your address",
+      "your_address_pickup": "Please enter your address to know your nearest pickup location"
     }
   },
   "products": {
