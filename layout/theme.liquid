@@ -76,6 +76,8 @@
   {%- if template.name == 'cart' -%}
     <link rel="preload" as="style" href="{{ 'cart.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
   {%- endif -%}
+  {%- render 'bold-common' -%}
+  {%- render 'bold-ro-init' -%} 
 </head>
 {%- assign show_breadcrumb = true -%}
 {%- assign show_hr = false -%}
