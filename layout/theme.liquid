@@ -76,8 +76,6 @@
   {%- if template.name == 'cart' -%}
     <link rel="preload" as="style" href="{{ 'cart.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
   {%- endif -%}
-  {%- render 'bold-common' -%}
-  {%- render 'bold-ro-init' -%} 
 </head>
 {%- assign show_breadcrumb = true -%}
 {%- assign show_hr = false -%}
@@ -208,7 +206,12 @@
     <script src="https://maps.googleapis.com/maps/api/js?libraries=places,geometry&key=AIzaSyBDNbFA4quUVSMGdxSn_lqnZVcp72c5K9k" defer></script>
     <script src="{{ 'product.js' | asset_url }}" defer></script>
     <script src="{{ 'tabs.js' | asset_url }}" defer></script>
+    {%- render 'bold-ro-init' -%} 
   {%- endif -%}
+  {%- if template.name != 'index' and template.name != 'collection' and template.name != 'cart' and template.name != 'account'-%}
+    {%- render 'bold-common' -%}
+  {%- endif -%}
+
   <script>
     const loadPreloadedStyles = function () {
       let elements = document.querySelectorAll('link[as=style]');
