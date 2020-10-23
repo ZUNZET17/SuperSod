@@ -206,7 +206,12 @@
     <script src="https://maps.googleapis.com/maps/api/js?libraries=places,geometry&key=AIzaSyBDNbFA4quUVSMGdxSn_lqnZVcp72c5K9k" defer></script>
     <script src="{{ 'product.js' | asset_url }}" defer></script>
     <script src="{{ 'tabs.js' | asset_url }}" defer></script>
+    {%- render 'bold-ro-init' -%} 
   {%- endif -%}
+  {%- if template.name != 'index' and template.name != 'collection' and template.name != 'cart' and template.name != 'account'-%}
+    {%- render 'bold-common' -%}
+  {%- endif -%}
+
   <script>
     const loadPreloadedStyles = function () {
       let elements = document.querySelectorAll('link[as=style]');
