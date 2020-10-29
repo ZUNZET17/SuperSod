@@ -279,14 +279,18 @@
       "first_off_truck": "Before 9AM",
       "pickup": "Pickup in store",
       "check_available_dates": "Check available dates",
-      "choose_delivery_type": "Choose your delivery type",
+      "choose_delivery_type_html": "Step 1:<br>Choose your delivery type",
       "standard_delivery_explanation": "(Between 7AM and 5PM)",
       "before_noon_explanation": "(Guaranteed before 12PM)",
       "first_off_truck_explanation": "(Guaranteed before 9AM)",
       "no_date_available": "There are no available dates for your choice",
-      "delivery_title": "Preferred Delivery/Pickup Dates",
-      "delivery_message": "Note: Fluctuations in demand (time of year) and weather can play a key role in our ability to meet one of your preferred dates",
+      "delivery_title_html": "Step 2:<br>Preferred Delivery/Pickup Dates",
+      "delivery_message": "Note: Fluctuations in demand (time of year) and weather can play a key role in our ability to meet one of your preferred dates.  After our online sales team processes your order (typically within 2 hours), you will receive a confirmation email with your pickup or delivery date. Our online sales team processes orders Monday through Friday 8AM to 5PM. Orders placed on Saturday and Sunday will be processed the following Monday.",
       "invalid_dates": "Selected dates are not valid",
+      "same_dates": "Cannot select two of the same dates",
+      "empty_dates": "Please select 3 preferred Delivery/Pickup dates",
+      "delivery_soil_level_mix": "Your order will be delivered within the next 7-10, and you'll receive a text message from us the day before your delivery with your delivery time.",
+      "notes_placeholder": "example: product placement if delivered, narrow roads, dead ends, gate code, etc.",
       "no_checkout_available": "An error ocurred while processing your request"
     },
     "customer": {
@@ -305,7 +309,9 @@
       "pickup": "Pickup",
       "location": "Choose your nearest location to pickup",
       "your_address_delivery": "Please enter your address",
-      "your_address_pickup": "Please enter your address to know your nearest pickup location"
+      "your_address_pickup": "Please enter your address to know your nearest pickup location",
+      "minimum_quantity": "There is a minimum order amount of %placeholder% to deliver to your address",
+      "multiples_value": "Please enter a quantity that is multiple of"
     }
   },
   "products": {
@@ -332,7 +338,7 @@
       "full_details": "Full details",
       "pallet_text_html": "Currently there is a <b>maximum</b> order of 6 pallets (3,000 sq ft) when ordering online.<br><br>If you wish to purchase more than 6 pallets, then please visit our <a target='_blank' rel='noopener' href='https://info.supersod.com/sod-prices-free-sod-quote'><b>sod quote page.</b></a>",
       "pallet_unavailable_html": "Oops! It looks like you might be outside of our standard delivery area. Please <a href='tel:+1-1888-360-1125'><b>call us</b></a> to discuss options, or fill out this <a target='_blank' rel='noopener' href='https://info.supersod.com/sod-prices-free-sod-quote' aria-describedby='new-window-2'><b>quick sod quote form</b></a> for pick-up at our closest location.",
-      "sod_picker_text_html": "<b>You don't know how much to order?</b><br>Use our <a target='_blank' rel='noopener' href='https://www.supersod.com/yard-area-calculator' aria-describedby='new-window-2'><b>Yard Area Calculator</b></a>",
+      "sod_picker_text_html": "10 sq. ft. = 1 Roll (2 ft. x 5 ft.)<br>500 sq. ft. = 50 Rolls = 1 Pallet (~2,500 lbs.)<br><br><b>You don't know how much to order?</b><br>Use our <a target='_blank' rel='noopener' href='https://www.supersod.com/yard-area-calculator' aria-describedby='new-window-2'><b>Yard Area Calculator</b></a>",
       "soil_calculator_text_html": "<b>You don't know how much to order?</b><br>Use our <a target='_blank' rel='noopener' href='https://soil3.com/how-much-soil3-to-use/#calculator' aria-describedby='new-window-2'><b>Soil Calculator</b></a>"
     },
       "zoom": {

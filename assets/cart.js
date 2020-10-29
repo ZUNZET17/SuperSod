@@ -80,7 +80,8 @@ const Cart = (function () {
   };
 
   const searchAvailableDates = function (ev) {
-    const button = $(ev.target);
+    const input = $(ev.target);
+    const button = $('.js-checking-dates');
     if (typeof hasCustomPricing === 'undefined') {
       return;
     }
@@ -91,7 +92,7 @@ const Cart = (function () {
     const ajaxData = {
       latitude: $('.js-address-latitude').val(),
       longitude: $('.js-address-longitude').val(),
-      type_delivery_pickup: $('.js-delivery-type:checked').val(),
+      type_delivery_pickup: input.val(),
       shop_domain: theme.routes.validation_tool_shop,
       zipcode: $('.js-address-zip').val()
     };
@@ -112,7 +113,6 @@ const Cart = (function () {
       }
       for (let index = 0; index < data.available_dates.length; index++) {
         if (typeof data.available_dates[index] !== 'undefined') {
-          $('.js-tail-datetime-field-' + (index + 1)).val(data.available_dates[index]);
           const modifiedDate = data.available_dates[index].replace(/T.+/g, '');
           const milliseconds = dateStringToMilliseconds(modifiedDate + ' 00:00:00');
           availableDates.push(milliseconds);
@@ -148,6 +148,8 @@ const Cart = (function () {
 
   const validateCheckout = function (ev) {
     $('.js-dates-invalid').addClass('hide');
+    $('.js-dates-empty').addClass('hide');
+    $('.js-dates-same').addClass('hide');
     $('.js-no-response').addClass('hide');
     const button = $(ev.target);
     const originalText = button.html();
@@ -156,17 +158,47 @@ const Cart = (function () {
     let dates = document.querySelectorAll('input[class*="js-tail-datetime-field-');
     dates = Array.prototype.slice.call(dates);
     const filledDates = dates.length;
+    const validIndexes = [true, true, true];
 
+    for (let i = 0; i < validIndexes.length; i++) {
+      $('.js-tail-datetime-field-' + (i + 1)).removeClass('form__input--date-missing');
+    }
+
+    let containsEmpty = false;
     dates = dates.map(function (input) {
       return input.value;
     }).filter(function (value, index, self) {
+      if (self.indexOf(value) !== index || value === '') {
+        validIndexes[index] = false;
+        containsEmpty = true;
+      }
       return self.indexOf(value) === index;
     });
-    console.log(dates);
 
-    if (dates.length < filledDates) {
-      $('.js-dates-invalid').removeClass('hide');
+    const datesAreValid = validIndexes.reduce(function (acc, item) {
+      return acc && item;
+    }, true);
+
+    let invalidTextSelector = '';
+    if (dates.length === 0) {
+      invalidTextSelector = '.js-dates-empty';
       button.html(originalText);
+    } else if (filledDates > dates.length && !containsEmpty) {
+      invalidTextSelector = '.js-dates-same';
+    } else if (!datesAreValid) {
+      invalidTextSelector = '.js-dates-invalid';
+    }
+
+    if (invalidTextSelector !== '') {
+      $(invalidTextSelector).removeClass('hide');
+      button.html(originalText);
+
+      for (let i = 0; i < validIndexes.length; i++) {
+        const isValid = validIndexes[i];
+        if (!isValid) {
+          $('.js-tail-datetime-field-' + (i + 1)).addClass('form__input--date-missing');
+        }
+      }
       return;
     }
 
@@ -201,7 +233,7 @@ const Cart = (function () {
         '&products[]product_id=' + item.product_id +
         '&products[]product_type=' + item.product_type
     }, '');
-    const ajaxData = 
+    const ajaxData =
       'delivery_type=' + $('.js-delivery-type:checked').val() +
       '&shop_domain=' + theme.routes.validation_tool_shop +
       '&' + cartItemsString;
@@ -232,6 +264,10 @@ const Cart = (function () {
     }
   };
 
+  const highlightUpdateButton = function (ev) {
+    $('.js-update-cart-message').removeClass('hide');
+  };
+
   const init = function () {
     setEvents();
   };
@@ -240,7 +276,8 @@ const Cart = (function () {
     $(document)
       .on('click', '.js-check-dates', searchAvailableDates)
       .on('change', '.js-delivery-type', resetCheckoutForm)
-      .on('click', '.js-go-to-checkout', validateCheckout);
+      .on('click', '.js-go-to-checkout', validateCheckout)
+      .on('change keyup input', '.js-cart-quantity-selector', highlightUpdateButton);
     for (let index = 0; index < 3; index++) {
       const fieldSelector = '.js-tail-datetime-field-' + (index + 1);
       $(document).on('click', fieldSelector, function () {

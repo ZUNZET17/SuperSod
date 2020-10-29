@@ -39,8 +39,18 @@
           {%- endif -%}
 
           <span class="cart-summary__subtotal-label">{{ 'cart.cart_summary.subtotal' | t }}</span>
+          {%- for item in cart.items -%}
+            {%- if item.properties._custom_price != blank -%}
+              {%- assign item_value = item.properties._custom_price | times: 100 -%}
+              {%- assign subtotal = subtotal | plus: item_value -%}
+            {%- elsif item.original_line_price != item.final_line_price -%}
+              {%- assign subtotal = subtotal | plus: item.final_line_price -%}
+            {%- else -%}
+              {%- assign subtotal = subtotal | plus: item.original_line_price -%}
+            {%- endif -%}
+          {%- endfor -%}
           <span class="amount">
-            <span class="theme-money">{{ cart.total_price | money }}</span>
+            <span class="theme-money">{{ subtotal | money }}</span>
           </span>
         </div>
 

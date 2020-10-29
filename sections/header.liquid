@@ -77,10 +77,9 @@
               <div class="toolbar-cart">
                 <a class="current-cart {% if template != 'cart' %}toggle-cart-summary{% endif %}" href="{{ routes.cart_url }}">
                   {%- comment -%}<span class="beside-svg"><span class="theme-money">{{ cart.total_price | money }}</span></span>{%- endcomment -%}
-                  <span class="current-cart-icon">
-                    {% render 'icon-cart' %}
-                    {{ 'layout.cart.title' | t }} ({{ cart.item_count }})
-                  </span>
+                  <span class="sr-only">{{ 'layout.cart.title' | t }}</span>
+                  <span class="current-cart-icon">{% render 'icon-cart' %}</span>
+                  <span>({{ cart.item_count }})</span>
                 </a>
               </div>
               {%- comment -%} <a href="{{ routes.cart_url }}" class="site-header__cart">
