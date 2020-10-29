@@ -481,6 +481,7 @@ const Product = (function () {
       if (document.getElementById(addressType) && componentForm[addressType]) {
         const val = component[componentForm[addressType]];
         document.getElementById(addressType).value = val;
+        $('#' + addressType).trigger('change');
         if (addressType === 'postal_code') {
           parameters.push({parameter: 'zip_code', value: val});
         }

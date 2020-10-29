@@ -273,7 +273,21 @@
       "menu": "Menu"
     },
     "cart": {
-      "title": "Cart"
+      "title": "Cart",
+      "standard_delivery": "Standard",
+      "before_noon": "Before Noon",
+      "first_off_truck": "Before 9AM",
+      "pickup": "Pickup in store",
+      "check_available_dates": "Check available dates",
+      "choose_delivery_type": "Choose your delivery type",
+      "standard_delivery_explanation": "(Between 7AM and 5PM)",
+      "before_noon_explanation": "(Guaranteed before 12PM)",
+      "first_off_truck_explanation": "(Guaranteed before 9AM)",
+      "no_date_available": "There are no available dates for your choice",
+      "delivery_title": "Preferred Delivery/Pickup Dates",
+      "delivery_message": "Note: Fluctuations in demand (time of year) and weather can play a key role in our ability to meet one of your preferred dates",
+      "invalid_dates": "Selected dates are not valid",
+      "no_checkout_available": "An error ocurred while processing your request"
     },
     "customer": {
       "account": "Account",

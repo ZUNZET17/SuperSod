@@ -191,3 +191,7 @@ $desk: 1100px;
 .payment-icons {
   margin-top: 20px;
 }
+
+button[class*="bold-ro__custombutton-"] + .btn--full {
+  margin-left: 0;
+}

@@ -105,7 +105,7 @@
                     <a class="cart-summary-item__title" href="{{ item.url }}">{{ item.product.title }}</a>
                     {% unless item.product.has_only_default_variant %}
                       <div class="cart-summary-item__variant">
-                        {% if item.properties._method == 'pickup' %}Pickup in {{ item.variant.title }}{% endif %}
+                        {% if item.properties._method == 'pickup' %}{{ 'layout.cart.pickup' | t }}{% endif %}
                       </div>
                     {% endunless %}
                   </div>

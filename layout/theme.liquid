@@ -74,6 +74,7 @@
     <link rel="preload" as="style" href="{{ 'collection-grid-item.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
   {%- endif -%}
   {%- if template.name == 'cart' -%}
+    <link rel="preload" as="style" href="{{ 'tail.datetime-harx-light.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
     <link rel="preload" as="style" href="{{ 'cart.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
   {%- endif -%}
 </head>
@@ -228,6 +229,11 @@
   </script>
   <!-- end olark code -->
   
+
+  {%- if template.name == 'cart' -%}
+    <script src="{{ 'tail.datetime.min.js' | asset_url }}" defer></script>
+    <script src="{{ 'cart.js' | asset_url }}" defer></script>
+  {%- endif -%}
   <script>
     const loadPreloadedStyles = function () {
       let elements = document.querySelectorAll('link[as=style]');
