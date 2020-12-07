@@ -15,6 +15,16 @@ $cart_desk: 990px;
   }
 }
 
+.cart {
+  .cart__method-label {
+    font-size: 14px;
+
+    @media only screen and (min-width: #{$cart_desk}) {
+      font-size: 16px;
+    }
+  }
+}
+
 .cart__header-labels {
   th {
     font-size: 18px;
@@ -88,6 +98,12 @@ $cart_desk: 990px;
   }
 }
 
+.cart__note--full {
+  @media only screen and (min-width: #{$cart_desk}) {
+    max-width: 100%;
+  }
+}
+
 .cart__policies {
   color: #747474;
   margin-bottom: 25px;
@@ -102,17 +118,88 @@ $cart_desk: 990px;
   }
 }
 
-.sr-only {
-  border: 0 ;
-  clip: rect(0,0,0,0);
-  height: 1px;
-  margin: -1px;
-  overflow: hidden;
-  padding: 0;
-  position: absolute;
-  width: 1px;
-}
-
 .payment-icons {
   margin-top: 20px;
+}
+
+.cart__delivery-method {
+  text-align: left;
+}
+
+.btn--check-dates {
+  margin: 10px 0;
+}
+
+.cart__date-picker-container {
+  .tail-datetime-calendar {
+    margin-left: 0;
+  }
+}
+
+.cart__delivery-title {
+  font-weight: bold;
+}
+
+.cart__delivery-message {
+  font-size: 14px;
+}
+
+.tail-datetime-calendar .calendar-datepicker table tr td.date-disabled:after {
+  display: none;
+}
+
+.tail-datetime-calendar .calendar-datepicker table tr td.calendar-day.date-select,
+.tail-datetime-calendar .calendar-datepicker table tr td.calendar-decade.date-select,
+.tail-datetime-calendar .calendar-datepicker table tr td.calendar-month.date-select,
+.tail-datetime-calendar .calendar-datepicker table tr td.calendar-year.date-select {
+  border-color: #54a45b;
+  background-color: #54a45b;
+}
+
+.cart__error-message {
+  background-color: #fff8f8;
+  border: 1px solid #D20000;
+  color: #D20000;
+  font-size: 16px;
+  line-height: 18px;
+  margin-top: 15px;
+  padding: 10px 11px;
+  text-align: left;
+}
+
+.cart__error-message--warning {
+  background-color: #fffde4;
+  border-color: #928800;
+  color: #928800;
+  display: inline-block;
+  line-height: 1;
+  margin-top: 0;
+  padding: 16px 11px;
+  vertical-align: top;
+}
+
+.form__input--date {
+  background-image: url(./calendar.svg);
+  background-repeat: no-repeat;
+  background-position: 95% center;
+  background-size: 20px;
+}
+
+.form__input--date-missing {
+  border: 1px solid #D20000;
+}
+
+.update-cart {
+  margin-bottom: 16px;
+}
+
+.arrow {
+  border: solid ;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+}
+
+.arrow--right {
+  transform: rotate(-45deg);
 }

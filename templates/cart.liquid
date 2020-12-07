@@ -1,6 +1,8 @@
 <!-- /templates/cart.liquid -->
 {%- assign fulfillment_method = '' -%}
 {%- assign invalid_fulfillment = false -%}
+{%- assign has_custom_pricing = false -%}
+{%- assign contains_soil_level_mix = false -%}
 <div class="grid">
   <div class="grid__item">
     {% if cart.item_count > 0 %}
@@ -18,6 +20,9 @@
           <tbody>
             {%- assign subtotal = 0 -%}
             {% for item in cart.items %}
+              {%- if item.type contains 'Soil' -%}
+                {%- assign contains_soil_level_mix = true -%}
+              {%- endif -%}
               <tr class="cart__row responsive-table__row">
                 <td class="cart__table-cell--image small--text-center">
                   {% unless item.image == blank %}
@@ -58,7 +63,7 @@
                     {% endunless %}
                     <br>
                     {% if item.properties._method == 'pickup' %}
-                      <span class="txt--minor cart__policies">{{item.properties._method}} in {{ item.variant.title }}</span>
+                      <span class="txt--minor cart__policies">{{ 'layout.product.pickup' | t }}: {{ item.properties.pickup_location }}</span>
                     {% endif %}
                   </p>
                   {%- if item.properties._method != blank -%}
@@ -74,6 +79,7 @@
                 </td>
                 <td class="cart__table-cell--price medium-up--text-right" data-label="{{ 'cart.label.price' | t }}">
                   {%- if item.properties._custom_price != blank -%}
+                    {%- assign has_custom_pricing = true -%}
                     {%- assign item_value = item.properties._custom_price | times: 100 -%}
                     {%- assign item_value = item_value | divided_by: item.quantity -%}
                     {{item_value | money}}
@@ -100,7 +106,10 @@
                 </td>
                 <td data-label="{{ 'cart.label.quantity' | t }}" class="cart__table-cell--quantity">
                   <label class="visually-hidden" for="updates_{{ item.key }}">{{ 'cart.label.quantity' | t }}</label>
-                  <input class="quantity-selector form__input" type="number" name="updates[]" id="updates_{{ item.key }}" value="{{ item.quantity }}" min="0">
+                  <input class="quantity-selector form__input js-cart-quantity-selector" type="number" name="updates[]"
+                    id="updates_{{ item.key }}" value="{{ item.quantity }}"
+                    {% if item.properties._custom_increment %}step="{{item.properties._custom_increment}}" {% endif %}
+                    min="{% if item.properties._custom_increment %}{{item.properties._custom_increment}}{% else %}0{% endif %}">
                 </td>
                 <td data-label="{{ 'cart.label.total' | t }}" class="text-right cart__table-cell--line-price">
                   {%- if item.properties._custom_price != blank -%}
@@ -124,13 +133,91 @@
         </table>
 
         <footer class="cart__footer">
+          <div class="text-right">
+            <span class="cart__error-message cart__error-message--warning js-update-cart-message hide">Please update your cart <span class="arrow arrow--right"></span></span>
+            <button type="submit" name="update" class="btn btn--secondary update-cart js-update-cart-button">
+              {% include 'icon-update' %}
+              <span>{{ 'cart.general.update' | t }}</span>
+            </button>
+          </div>
           <div class="grid">
+            {%- if invalid_fulfillment == false and has_custom_pricing == true -%}
+              <div class="grid__item medium-up--one-third">
+                <p class="cart__delivery-title">{{ 'layout.cart.choose_delivery_type_html' | t }}</p>
+                {%- if fulfillment_method == 'delivery' -%}
+                  <label for="standard-method" class="cart__method-label">
+                    <input type="radio" name="attributes[_method]" class="js-delivery-type js-check-dates" id="standard-method" value="standard_delivery">
+                    {{ 'layout.cart.standard_delivery' | t }}
+                  </label>
+                  <p>
+                    <dfn class="sr-only">{{ 'layout.cart.standard_delivery' | t }}</dfn>
+                    {{ 'layout.cart.standard_delivery_explanation' | t }}
+                  </p>
+                  <label for="noon-method" class="cart__method-label">
+                    <input type="radio" name="attributes[_method]" class="js-delivery-type js-check-dates" id="noon-method" value="before_noon">
+                    {{ 'layout.cart.before_noon' | t }}
+                  </label>
+                  <p>
+                    <dfn class="sr-only">{{ 'layout.cart.before_noon' | t }}</dfn>
+                    {{ 'layout.cart.before_noon_explanation' | t }}
+                  </p>
+                  <label for="truck-method" class="cart__method-label">
+                    <input type="radio" name="attributes[_method]" class="js-delivery-type js-check-dates" id="truck-method" value="first_off_truck">
+                    {{ 'layout.cart.first_off_truck' | t }}
+                  </label>
+                  <p>
+                    <dfn class="sr-only">{{ 'layout.cart.first_off_truck' | t }}</dfn>
+                    {{ 'layout.cart.first_off_truck_explanation' | t }}
+                  </p>
+                  {%- if contains_soil_level_mix -%}
+                    <p class="cart__delivery-message">{{ 'layout.cart.delivery_soil_level_mix' | t }}</p>
+                  {%- endif -%}
+                {%- else -%}
+                  <label for="pickup-method" class="cart__method-label">
+                    <input type="radio" name="attributes[_method]" class="js-delivery-type js-check-dates" id="pickup-method" value="pickup">
+                    {{ 'layout.cart.pickup' | t }}
+                  </label>
+                {%- endif -%}
+                <span class="js-checking-dates"></span>
+                <p class="cart__error-message hide js-no-dates">{{ 'layout.cart.no_date_available' | t }}</p>
+              </div>
+            {%- endif -%}
             <div class="grid__item large-up--two-thirds">
+              {%- assign textarea_extra_class = '' -%}
+              {%- if invalid_fulfillment == false and has_custom_pricing == true -%}
+                {%- assign textarea_extra_class = ' cart__note--full' -%}
+                <p class="cart__delivery-title">{{ 'layout.cart.delivery_title_html' | t }}</p>
+                <p class="cart__delivery-message">{{ 'layout.cart.delivery_message' | t }}</p>
+                <div class="grid">
+                  <div class="grid__item medium-up--one-third">
+                    <label for="delivery-date-1">Date 1</label>
+                    <input id="delivery-date-1" type="text" name="attributes[_date_1]" class="form__input form__input--date js-tail-datetime-field-1" readonly required>
+                    <div class="cart__date-picker-container js-tail-datetime-holder-1"></div>
+                  </div>
+                  <div class="grid__item medium-up--one-third">
+                    <label for="delivery-date-2">Date 2</label>
+                    <input id="delivery-date-2" type="text" name="attributes[_date_2]" class="form__input form__input--date js-tail-datetime-field-2" readonly required>
+                    <div class="cart__date-picker-container js-tail-datetime-holder-2"></div>
+                  </div>
+                  <div class="grid__item medium-up--one-third">
+                    <label for="delivery-date-3">Date 3</label>
+                    <input id="delivery-date-3" type="text" name="attributes[_date_3]" class="form__input form__input--date js-tail-datetime-field-3" readonly required>
+                    <div class="cart__date-picker-container js-tail-datetime-holder-3"></div>
+                  </div>
+                </div>
+                <p class="cart__error-message hide js-dates-empty">{{ 'layout.cart.empty_dates' | t }}</p>
+                <p class="cart__error-message hide js-dates-same">{{ 'layout.cart.same_dates' | t }}</p>
+                <p class="cart__error-message hide js-dates-invalid">{{ 'layout.cart.invalid_dates' | t }}</p>
+              {%- endif -%}
               <label for="CartSpecialInstructions" class="cart__note-label label--block">{{ 'cart.general.note' | t }}</label>
-              <textarea name="note" id="CartSpecialInstructions" class="input--block cart__note form__input">{{ cart.note }}</textarea>
+              <textarea name="note" id="CartSpecialInstructions" class="input--block form__input cart__note{{textarea_extra_class}}" placeholder="{{ 'layout.cart.notes_placeholder' | t }}">{{ cart.note }}</textarea>
             </div>
-            <div class="grid__item text-center large-up--one-third large-up--text-right">
-
+            {%- assign push_class = '' -%}
+            {%- if invalid_fulfillment == false and has_custom_pricing == true  -%}
+              {%- assign push_class = ' large-up--push-two-thirds' -%}
+              </div><div class="grid">
+            {%- endif -%}
+            <div class="grid__item text-center large-up--one-third large-up--text-right{{push_class}}">
               {%- if cart.cart_level_discount_applications != blank -%}
                 <div class="order-discount-cart-wrapper">
                   {%- for discount_application in cart.cart_level_discount_applications -%}
@@ -147,38 +234,18 @@
                 <span class="cart__subtotal h3">{{ subtotal | money }}</span>
               </p>
 
-              {%- capture taxes_shipping_checkout -%}
-                {%- if shop.taxes_included and shop.shipping_policy.body != blank -%}
-                  {{ 'cart.general.taxes_included_and_shipping_policy_html' | t: link: shop.shipping_policy.url }}
-                {%- elsif shop.taxes_included -%}
-                  {{ 'cart.general.taxes_included_but_shipping_at_checkout' | t }}
-                {%- elsif shop.shipping_policy.body != blank -%}
-                  {{ 'cart.general.taxes_and_shipping_policy_at_checkout_html' | t: link: shop.shipping_policy.url }}
+              <div>
+                {%- if invalid_fulfillment -%}
+                  <p class="cart__error-message">You cannot mix fulfillment methods</p>
                 {%- else -%}
-                  {{ 'cart.general.taxes_and_shipping_at_checkout' | t }}
-                {%- endif -%}
-              {%- endcapture -%}
-
-              <p class="cart__policies txt--emphasis rte">{{ taxes_shipping_checkout }}</p>
-              {%- if fulfillment_method == '' -%}
-                {%- assign fulfillment_method = 'delivery' -%}
-              {%- endif -%}
-              <input type="hidden" name="attributes[method]" value="{{fulfillment_method}}">
-              <div class="grid">
-                <div class="grid__item one-fifth">
-                  <button type="submit" name="update" class="btn btn--secondary update-cart">
-                    {% include 'icon-update' %}
-                    <span class="icon__fallback-text">{{ 'cart.general.update' | t }}</span>
-                  </button>
-                </div>
-                <div class="grid__item four-fifths">
-                  {%- if invalid_fulfillment -%}
-                    <p>You cannot mix fulfillment methods</p>
+                  {%- if invalid_fulfillment == false and has_custom_pricing == true -%}
+                    <button type="button" name="checkout" class="btn full-width js-go-to-checkout" disabled>{{ 'cart.general.checkout' | t }}</button>
                   {%- else -%}
                     <button type="submit" name="checkout" class="btn full-width">{{ 'cart.general.checkout' | t }}</button>
                   {%- endif -%}
-                </div>
+                {%- endif -%}
               </div>
+              <p class="cart__error-message hide js-no-response">{{ 'layout.cart.no_checkout_available' | t }}</p>
               <ul class="list--inline payment-icons">
                 {%- for type in shop.enabled_payment_types -%}
                   <li>
@@ -196,6 +263,11 @@
           </div>
         </footer>
         {%- comment -%}{% render 'shipping-calculator' %}{%- endcomment -%}
+        {%- if invalid_fulfillment == false and has_custom_pricing == true -%}
+          <input type="hidden" name="attributes[customer_latitude]" class="js-address-latitude" value="{{cart.attributes.customer_latitude}}">
+          <input type="hidden" name="attributes[customer_longitude]" class="js-address-longitude" value="{{cart.attributes.customer_longitude}}">
+          <input type="hidden" name="attributes[zip_code]" class="js-address-zip" value="{{cart.attributes.zip_code}}">
+        {%- endif -%}
       </form>
     {% else %}
     {% comment %}
@@ -210,3 +282,22 @@
     {% endif %}
   </div>
 </div>
+{%- if cart.item_count > 0 -%}
+  <script>
+    {%- if invalid_fulfillment == false and has_custom_pricing == true -%}
+      const hasCustomPricing = true;
+      const cartItems = [{% for item in cart.items %}{
+        {%- assign item_value = 0 -%}
+        {%- if item.properties._custom_price != blank -%}
+          {%- assign item_value = item.properties._custom_price | times: 100 -%}
+        {%- elsif item.original_price != item.final_price -%}
+          {%- assign item_value = item.final_price -%}
+        {%- else -%}
+          {%- assign item_value = item.original_price -%}
+        {%- endif -%}
+        variant_id: {{item.id}}, quantity: {{item.quantity}}, price: {{item_value | money_without_currency | replace: ',', ''}},
+        product_type: {{item.product.type | downcase | json}}, product_id: {{item.product.id}}
+      }{%- unless forloop.last -%},{%- endunless -%}{% endfor %}];
+    {%- endif -%}
+  </script>
+{%- endif -%}

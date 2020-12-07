@@ -9,16 +9,6 @@ $desk: 1100px;
   max-width: 398px;
 }
 
-.product-single__price--pallet {
-  font-size: 16px;
-  line-height: 18px;
-}
-
-.product-single__price--pallet-price {
-  color: $color_primary;
-  font-size: 20px;
-}
-
 .product-single__cart-submit-wrapper {
   margin-top: 32px;
 }
@@ -52,6 +42,16 @@ $desk: 1100px;
 
 .product-single__pallet-msg--wrong-quantity {
   margin-top: 0;
+}
+
+.product-single__price--pallet {
+  font-size: 16px;
+  line-height: 18px;
+}
+
+.product-single__price--pallet-price {
+  color: $color_primary;
+  font-size: 20px;
 }
 
 .selector-wrapper {
@@ -190,4 +190,8 @@ $desk: 1100px;
 
 .payment-icons {
   margin-top: 20px;
+}
+
+button[class*="bold-ro__custombutton-"] + .btn--full {
+  margin-left: 0;
 }

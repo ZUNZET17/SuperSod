@@ -174,6 +174,7 @@
 
           {% form 'product', product, class: product_classes, data-ajax-add-to-cart: true, data-product-id: product.id, data-enable-history-state: history_state_data %}
             {%- if use_pallet == true -%}
+              <input type="hidden" name="properties[pickup_location]" class="js-pickup-location" value="">
               <div class="product-single__methods">
                 <input type="radio" name="properties[_method]" class="toggle-input hide js-delivery-method" id="delivery-method" value="delivery" checked>
                 <label for="delivery-method" class="toggle-label">{{ 'layout.product.delivery' | t }}</label>
@@ -197,29 +198,13 @@
               <select name="id" id="ProductSelect-{{ section.id }}" class="form__input full-width js-product-variants{% if use_pallet == true %} hide{% endif %}">
                 {% for variant in product.variants %}
                   {% if variant.available %}
-                    <option {% if variant == product.selected_or_first_available_variant %} selected="selected" {% endif %} 
+                    <option {% if variant == product.selected_or_first_available_variant %} selected="selected" {% endif %}
                       {% if use_pallet == true %} data-sod-zips="{{ variant.metafields.sod.zips }}" data-price="{{ variant.price | money_with_currency }}"{% endif %}
                       data-sku="{{ variant.sku }}" value="{{ variant.id }}" data-price-val="{{ variant.price | money_without_currency }}">{{ variant.title }}</option>
                   {% endif %}
                 {% endfor %}
               </select>
             </div>
-            {% if use_pallet == true %}
-              <div class="js-quantity-block js-pickup-quantity-block hide">
-                <label for="pickup-select" class="js-product-pickup-variants-title hide">{{ 'layout.product.location' | t }}</label>
-                <select name="pickup" id="pickup-select" class="form__input full-width js-product-pickup-variants hide">
-                  {% for variant in product.variants %}
-                    {% if variant.available %}
-                      {%- unless variant.title contains 'delivery' -%}
-                        <option {% if variant == product.selected_or_first_available_variant %} selected="selected" {% endif %} 
-                        {% if use_pallet == true %} data-sod-zips="{{ variant.metafields.sod.zips }}" data-price="{{ variant.price | money_with_currency }}"{% endif %}
-                        data-sku="{{ variant.sku }}" value="{{ variant.id }}" data-price-val="{{ variant.price | money_without_currency }}">{{ variant.title }}</option>
-                      {%- endunless -%}
-                    {% endif %}
-                  {% endfor %}
-                </select>
-              </div>
-            {% endif %}
 
             <div class="grid">
               <div class="grid__item">
@@ -254,7 +239,7 @@
                       <button type="button" class="btn product-single__cart-submit btn--full js-product-price-check" disabled>Check delivery price</button>
                     </div>
                     <div class="js-quantity-block js-pickup-quantity-block hide">
-                      <button type="button" class="btn product-single__cart-submit btn--full js-product-price-check">Check pickup price</button>
+                      <button type="button" class="btn product-single__cart-submit btn--full js-product-price-check">Check location</button>
                     </div>
                   {%- else -%}
                     <button type="submit" name="add" id="AddToCart" class="js-product-submit btn product-single__cart-submit btn--full{% if section.settings.enable_payment_button %} shopify-payment-btn btn--secondary{% endif %}" data-cart-url="{{ routes.cart_url }}">
@@ -265,9 +250,16 @@
               </div>
             </div>
             <div>
-              {%- if use_pallet == true -%}
+              {% if use_pallet == true %}
+                <div class="js-quantity-block js-pickup-quantity-block hide">
+                  <label for="pickup-select" class="js-product-pickup-variants-title hide">{{ 'layout.product.location' | t }}</label>
+                  <select name="properties[pickup_location]" id="pickup-select" class="form__input full-width js-product-pickup-variants hide"></select>
+                </div>
+                <p class="product-single__pallet-msg product-single__price product-single__price--pallet-price js-current-price-unit hide"></p>
                 <button type="submit" name="add" id="AddToCart"{% if use_pallet == true %} disabled{% endif %} class="js-product-submit {% if use_pallet == true %}hide {% endif %}btn product-single__cart-submit btn--full{% if section.settings.enable_payment_button %} shopify-payment-btn btn--secondary{% endif %}" data-cart-url="{{ routes.cart_url }}">
                   <span id="AddToCartText">{{ 'products.product.add_to_cart' | t }}</span>
+                  <span id="AddToCartText2" class="js-add-to-cart-text-delivery hide">(delivered)</span>
+                  <span id="AddToCartText3" class="js-add-to-cart-text-pickup hide">(pickup)</span>
                 </button>
               {%- endif -%}
               {% if section.settings.enable_payment_button %}
@@ -275,8 +267,8 @@
               {% endif %}
             </div>
             {%- if section.settings.product_quantity_enable and use_pallet -%}
-              <span class="product-single__price product-single__price--pallet-price js-current-price-unit hide"></span>
-              <p class="product-single__pallet-msg product-single__pallet-msg--unavailable product-single__pallet-msg--wrong-quantity js-wrong-quantity hide">Please enter a quantity that is multiple of <span class="js-multiple-number">500</span></p>
+              <p class="product-single__pallet-msg product-single__pallet-msg--unavailable product-single__pallet-msg--wrong-quantity js-wrong-min-quantity hide">{{ 'layout.product.minimum_quantity' | t | replace: '%placeholder%', '<span class="js-min-number">500</span>' }}</p>
+              <p class="product-single__pallet-msg product-single__pallet-msg--unavailable product-single__pallet-msg--wrong-quantity js-wrong-quantity hide">{{ 'layout.product.multiples_value' | t }} <span class="js-multiple-number">500</span></p>
             {%- endif -%}
 
           {% endform %}

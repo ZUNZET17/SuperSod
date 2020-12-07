@@ -44,7 +44,7 @@ $grid-breakpoints: (
     - Will not work if `theme/_grid.scss` is removed
 ==============================================================================*/
 $grid-breakpoint-has-widths: ($small, $medium-up, $large-up);
-$grid-breakpoint-has-push: ($medium-up);
+$grid-breakpoint-has-push: ($medium-up, $large-up);
 
 /*================ Color Variables ================*/
 
@@ -5145,5 +5145,16 @@ button {
       @include transform(rotate(-135deg));
     }
   }
+}
+
+.sr-only {
+  border: 0 ;
+  clip: rect(0,0,0,0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
 }
 

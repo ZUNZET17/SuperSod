@@ -74,6 +74,7 @@
     <link rel="preload" as="style" href="{{ 'collection-grid-item.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
   {%- endif -%}
   {%- if template.name == 'cart' -%}
+    <link rel="preload" as="style" href="{{ 'tail.datetime-harx-light.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
     <link rel="preload" as="style" href="{{ 'cart.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
   {%- endif -%}
 </head>
@@ -153,7 +154,7 @@
   <div hidden>
     <span id="new-window-0">Opens in a new window</span>
     <span id="new-window-1">Opens an external site</span>
-    <span id="new-window-2">Opens an external site in a new window</span>  
+    <span id="new-window-2">Opens an external site in a new window</span>
   </div>
   <script>
     window.theme = window.theme || {};
@@ -206,12 +207,13 @@
     <script src="https://maps.googleapis.com/maps/api/js?libraries=places,geometry&key=AIzaSyBDNbFA4quUVSMGdxSn_lqnZVcp72c5K9k" defer></script>
     <script src="{{ 'product.js' | asset_url }}" defer></script>
     <script src="{{ 'tabs.js' | asset_url }}" defer></script>
-    {%- render 'bold-ro-init' -%} 
+    {%- render 'bold-ro-init' -%}
   {%- endif -%}
   {%- if template.name != 'index' and template.name != 'collection' and template.name != 'cart' and template.name != 'account'-%}
     {%- render 'bold-common' -%}
+    {%- render 'bold-subscription-widget' -%}
   {%- endif -%}
-  
+
   <!-- begin olark code -->
   <script type="text/javascript">
     ;(function(o,l,a,r,k,y){if(o.olark)return;
@@ -227,7 +229,11 @@
       olark.identify('7324-564-10-6259');
   </script>
   <!-- end olark code -->
-  
+
+  {%- if template.name == 'cart' -%}
+    <script src="{{ 'tail.datetime.min.js' | asset_url }}" defer></script>
+    <script src="{{ 'cart.js' | asset_url }}" defer></script>
+  {%- endif -%}
   <script>
     const loadPreloadedStyles = function () {
       let elements = document.querySelectorAll('link[as=style]');

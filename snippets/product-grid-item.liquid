@@ -38,7 +38,7 @@
         {%- assign brand_image_name = brand_handle_name | append: '-logo.jpg' -%}
         {%- assign brand_image_name_2x = brand_handle_name | append: '-logo-2x.jpg' -%}
         <img src="{{ brand_image_name | asset_url }}" alt="{{ product.vendor }}" srcset="{{ brand_image_name_2x | asset_url }} 2x" class="product__brand-image" loading="lazy" onerror="this.style.display='none'">
-      {%- elsif collection_handle == 'soil3' -%}
+      {%- elsif product.tags contains 'omri-listed' -%}
         {%- assign brand_image_name = 'omri-badge.png' -%}
         {%- assign brand_image_name_2x = 'omri-badge-2x.png' -%}
         <picture>

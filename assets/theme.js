@@ -1265,22 +1265,22 @@ theme.Product = (function() {
 
   function addToCartflip($addToCartBtn) {
     var cartUrl = $addToCartBtn.data('cart-url');
-
+    $('.js-added-to-cart').html('');
     $addToCartBtn.addClass('btn--unflipped').hide();
 
     $('<div></div>')
       .text(theme.strings.itemAddedToCart)
-      .addClass('product-single__notification')
+      .addClass('product-single__notification js-added-to-cart')
       .insertAfter($addToCartBtn);
 
-    $('<button></button>')
-      .text(theme.strings.viewCart)
-      .addClass('btn btn--view-cart btn--secondary')
-      .click(function(evt) {
-        evt.preventDefault();
-        window.location.href = cartUrl;
-      })
-      .insertAfter($addToCartBtn);
+    // $('<button></button>')
+    //   .text(theme.strings.viewCart)
+    //   .addClass('btn btn--view-cart btn--secondary')
+    //   .click(function(evt) {
+    //     evt.preventDefault();
+    //     window.location.href = cartUrl;
+    //   })
+    //   .insertAfter($addToCartBtn);
 
     $('.single-option-selector, [name="quantity"]').bind('click', function() {
       $(this)
@@ -1293,6 +1293,11 @@ theme.Product = (function() {
         .removeClass('.btn--unflipped')
         .show();
     });
+
+    setTimeout(function () {
+      $addToCartBtn.show();
+      $('.js-added-to-cart').html('');
+    }, 1000);
   }
 
   return Product;
