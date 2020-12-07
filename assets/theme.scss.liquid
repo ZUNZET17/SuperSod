@@ -492,8 +492,6 @@ html {
 
 body {
   margin: 0;
-  background-image: url({{ 'textured-bg-1.jpg' | asset_url }});
-  background-repeat: repeat;
 }
 
 /* HTML5 display definitions
@@ -1515,6 +1513,8 @@ svg:not(:root) {
 body,
 html {
   background-color: $color-body;
+  background-image: url({{ 'textured-bg-1.jpg' | asset_url }});
+  background-repeat: repeat;
 }
 
 .site-wrapper {
@@ -3579,7 +3579,7 @@ select::-ms-expand {
 .collection__image {
   display: block;
   width: 100%;
-  
+
   .supports-js & {
     position: absolute;
     top: 0;
