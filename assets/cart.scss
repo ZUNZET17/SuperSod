@@ -178,6 +178,12 @@ $cart_desk: 990px;
   vertical-align: top;
 }
 
+.cart__error-message--invalid-quantity {
+  font-size: 12px;
+  margin: 0;
+  text-align: center;
+}
+
 .form__input--date {
   background-image: url(./calendar.svg);
   background-repeat: no-repeat;

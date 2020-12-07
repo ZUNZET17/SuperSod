@@ -7,7 +7,7 @@
   <div class="grid__item">
     {% if cart.item_count > 0 %}
       <h1 class="h2 cart-title">{{ 'cart.general.title' | t }}</h1>
-      <form action="{{ routes.cart_url }}" method="post" novalidate class="cart form">
+      <form action="{{ routes.cart_url }}" method="post" novalidate class="cart form js-cart-form">
         <table class="cart-table responsive-table table--no-border">
           <h2 class="sr-only">{{ 'cart.cart_summary.products_header' | t }}</h2>
           <thead class="cart__row cart__header-labels small--hide">
@@ -82,7 +82,8 @@
                     {%- assign has_custom_pricing = true -%}
                     {%- assign item_value = item.properties._custom_price | times: 100 -%}
                     {%- assign item_value = item_value | divided_by: item.quantity -%}
-                    {{item_value | money}}
+                    <span class="js-item-price-{{forloop.index}}">{{item_value | money}}</span>
+                    <input type="hidden" name="custom_values" class="js-item-custom-price" data-index="{{forloop.index}}" data-units="{{item.quantity}}" value="{{item.properties._custom_price}}">
                   {%- elsif item.original_price != item.final_price -%}
                     <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
                     <del>{{ item.original_price | money }}</del>
@@ -106,10 +107,11 @@
                 </td>
                 <td data-label="{{ 'cart.label.quantity' | t }}" class="cart__table-cell--quantity">
                   <label class="visually-hidden" for="updates_{{ item.key }}">{{ 'cart.label.quantity' | t }}</label>
-                  <input class="quantity-selector form__input js-cart-quantity-selector" type="number" name="updates[]"
+                  <input class="quantity-selector form__input js-cart-quantity-selector js-cart-quantity-selector-{{forloop.index}}" type="number" name="updates[]"
                     id="updates_{{ item.key }}" value="{{ item.quantity }}"
                     {% if item.properties._custom_increment %}step="{{item.properties._custom_increment}}" {% endif %}
                     min="{% if item.properties._custom_increment %}{{item.properties._custom_increment}}{% else %}0{% endif %}">
+                  <p class="cart__error-message cart__error-message--invalid-quantity js-invalid-quantity js-invalid-quantity-{{forloop.index}} hide">Please enter a valid quantity</p>
                 </td>
                 <td data-label="{{ 'cart.label.total' | t }}" class="text-right cart__table-cell--line-price">
                   {%- if item.properties._custom_price != blank -%}
