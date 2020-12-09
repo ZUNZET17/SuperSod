@@ -1583,6 +1583,32 @@
           "zh-TW": "商品加入購物車時留在目前頁面"
         },
         "default": true
+      },
+      {
+        "type": "header",
+        "content": "Delivery prices",
+        "info": "For cart including calculated price products"
+      },
+      {
+        "type": "text",
+        "id": "normal_delivery_price",
+        "default": "0",
+        "label": "Normal delivery price (in cents)",
+        "info": "$49.99 equals 4999 cents"
+      },
+      {
+        "type": "text",
+        "id": "before_noon_delivery_price",
+        "default": "4999",
+        "label": "Before noon delivery price (in cents)",
+        "info": "$49.99 equals 4999 cents"
+      },
+      {
+        "type": "text",
+        "id": "before_nine_delivery_price",
+        "default": "9999",
+        "label": "Before 9 am delivery price (in cents)",
+        "info": "$49.99 equals 4999 cents"
       }
     ]
   },
