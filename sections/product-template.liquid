@@ -1,7 +1,11 @@
 <!-- /templates/product.liquid -->
 {%- assign use_pallet = false -%}
+{%- assign uses_variant_toggle = false -%}
 {%- if product.tags contains 'pallet' -%}
   {%- assign use_pallet = true -%}
+{%- elsif product.tags contains 'use-variant-fixed-toggle' -%}
+  {%- assign use_pallet = true -%}
+  {%- assign uses_variant_toggle = true -%}
 {%- endif -%}
 <div itemscope itemtype="http://schema.org/Product" id="ProductSection" data-section-id="{{ section.id }}" data-section-type="product-template" data-image-zoom-type="{{ section.settings.product_image_zoom_type }}" data-show-extra-tab="{{ section.settings.show_extra_tab }}" data-extra-tab-content="{{ section.settings.extra_tab_content }}" data-cart-enable-ajax="{{ settings.cart_enable_ajax }}" data-enable-history-state="true">
 
@@ -126,7 +130,7 @@
           <link itemprop="availability" href="http://schema.org/{% if current_variant.available %}InStock{% else %}OutOfStock{% endif %}">
 
           <p class="product-single__prices">
-            {%- if use_pallet == true -%}
+            {%- if use_pallet == true and uses_variant_toggle == false -%}
               <span class="product-single__price js-current-price" itemprop="price" content="{{ current_variant.price | divided_by: 100.00 }}"></span>
             {%- else -%}
               {% if product.compare_at_price_max > product.price %}
@@ -134,7 +138,7 @@
               {% else %}
                 <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
               {% endif %}
-              <span id="ProductPrice" class="product-single__price" itemprop="price" content="{{ current_variant.price | divided_by: 100.00 }}">
+              <span id="ProductPrice" class="product-single__price js-product-single-price" itemprop="price" content="{{ current_variant.price | divided_by: 100.00 }}">
                 {{ current_variant.price | money }}
               </span>
 
@@ -211,35 +215,49 @@
                 <div class="ro_widget"></div>
               </div>
               {% if section.settings.product_quantity_enable %}
-                <div class="grid__item medium-up--one-third">
+                <div class="grid__item medium-up--{% if uses_variant_toggle == true %}one-quarter{% else %}one-third{% endif %}">
                   {%- if use_pallet -%}
-                    <input type="hidden" name="quantity" class="js-product-quantity">
-                    <input type="hidden" name="properties[_custom_price]" value="0" class="js-custom-value">
-                    <input type="hidden" name="properties[_custom_increment]" value="0" class="js-increment-value">
+                    {%- assign min_delivery_quantity = 500 -%}
+                    {%- assign min_pickup_quantity = 10 -%}
+                    {%- if uses_variant_toggle == true -%}
+                      {%- assign min_delivery_quantity = 1 -%}
+                      {%- assign min_pickup_quantity = 1 -%}
+                    {%- endif -%}
+                    {%- unless uses_variant_toggle -%}
+                      <input type="hidden" name="quantity" class="js-product-quantity">
+                      <input type="hidden" name="properties[_custom_price]" value="0" class="js-custom-value">
+                      <input type="hidden" name="properties[_custom_increment]" value="0" class="js-increment-value">
+                    {%- endunless -%}
                     <div class="js-quantity-block js-delivery-quantity-block">
-                      <label for="delivery-quantity" class="form__label">{{ 'products.product.quantity' | t }} (sq ft)</label>
-                      <input type="number" id="delivery-quantity" name="quantity-delivery" value="500"
-                        min="500" step="500" class="form__input full-width js-quantity-input js-quantity-input-delivery" required>
+                      <label for="delivery-quantity" class="form__label">{{ 'products.product.quantity' | t }}{% unless uses_variant_toggle %} (sq ft){% endunless %}</label>
+                      <input type="number" id="delivery-quantity" name="quantity-delivery" value="{{min_delivery_quantity}}"
+                        min="{{min_delivery_quantity}}" step="{{min_delivery_quantity}}" class="form__input full-width js-quantity-input js-quantity-input-delivery" required>
                     </div>
                     <div class="js-quantity-block js-pickup-quantity-block hide">
-                      <label for="pickup-uantity" class="form__label">{{ 'products.product.quantity' | t }} (sq ft)</label>
-                      <input type="number" id="pickup-uantity" name="quantity-pickup" value="10"
-                        min="10" step="10" class="form__input full-width js-quantity-input js-quantity-input-pickup" required>
+                      <label for="pickup-uantity" class="form__label">{{ 'products.product.quantity' | t }}{% unless uses_variant_toggle %} (sq ft){% endunless %}</label>
+                      <input type="number" id="pickup-uantity" name="quantity-pickup" value="{{min_pickup_quantity}}"
+                        min="{{min_pickup_quantity}}" step="{{min_pickup_quantity}}" class="form__input full-width js-quantity-input js-quantity-input-pickup" required>
                     </div>
                   {%- else -%}
-                    <label for="Quantity" class="form__label">{{ 'products.product.quantity' | t }}{% if use_pallet == true %} (sq ft){% endif %}</label>
+                    <label for="Quantity" class="form__label">{{ 'products.product.quantity' | t }}{% if use_pallet == true and uses_variant_toggle == false %} (sq ft){% endif %}</label>
                     <input type="number" id="Quantity" name="quantity" value="1" class="form__input full-width" required>
                   {%- endif -%}
                 </div>
               {% endif %}
-              <div class="grid__item medium-up--two-thirds">
+              <div class="grid__item medium-up--{% if uses_variant_toggle == true %}three-quarters{% else %}two-thirds{% endif %}">
                 <div class="product-single__cart-submit-wrapper{% if section.settings.enable_payment_button %} product-single__shopify-payment-btn{% endif %}{% if section.settings.add_to_cart_width == 'full_width' %} product-form--full{% endif %}">
                   {%- if use_pallet == true -%}
+                    {%- assign delivery_button_text = 'Check delivery price' -%}
+                    {%- assign pickup_button_text = 'Check location' -%}
+                    {%- if uses_variant_toggle == true -%}
+                      {%- assign delivery_button_text = 'Check delivery location' -%}
+                      {%- assign pickup_button_text = 'Check pickup location' -%}
+                    {%- endif -%}
                     <div class="js-quantity-block js-delivery-quantity-block">
-                      <button type="button" class="btn product-single__cart-submit btn--full js-product-price-check" disabled>Check delivery price</button>
+                      <button type="button" class="btn product-single__cart-submit btn--full js-product-price-check" disabled>{{delivery_button_text}}</button>
                     </div>
                     <div class="js-quantity-block js-pickup-quantity-block hide">
-                      <button type="button" class="btn product-single__cart-submit btn--full js-product-price-check">Check location</button>
+                      <button type="button" class="btn product-single__cart-submit btn--full js-product-price-check">{{pickup_button_text}}</button>
                     </div>
                   {%- else -%}
                     <button type="submit" name="add" id="AddToCart" class="js-product-submit btn product-single__cart-submit btn--full{% if section.settings.enable_payment_button %} shopify-payment-btn btn--secondary{% endif %}" data-cart-url="{{ routes.cart_url }}">
@@ -350,7 +368,7 @@
   </script>
 {% endunless %}
 {%- if use_pallet == true -%}
-  <script>const isProductLimitedByZip = true;</script>
+  <script>const isProductLimitedByZip = true;{% if uses_variant_toggle == true%}const usesVariantToggle = true;{% endif %}</script>
   <style>.selector-wrapper {display: none;}</style>
 {%- endif -%}
 <script>
@@ -364,7 +382,9 @@
   }
   const cartAttributes = {{cart.attributes | json}};
   const productData = {
-    id: {{product.id}}
+    id: {{product.id}},
+    name: {{product.name | json}},
+    type: {{product.type | json}}
   };
 </script>
 
