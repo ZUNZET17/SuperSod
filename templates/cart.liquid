@@ -88,9 +88,17 @@
                     <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
                     <del>{{ item.original_price | money }}</del>
                     <span class="visually-hidden">{{ 'products.product.sale_price' | t }}</span>
-                    <span class="order-discount">{{ item.final_price | money }}</span>
+                    <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_price" data-item-key="{{item.key}}" style="display:none !important;"></span>
+                    {%- if item.properties._bold_bundles_price -%}
+                      <span>{{ item.original_price | money }}</span><br>
+                    {%- endif -%}
+                    <{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %} class="order-discount">{{ item.final_price | money }}</{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %}>
                   {%- else -%}
-                    {{ item.original_price | money }}
+                    <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_price" data-item-key="{{item.key}}" style="display:none !important;"></span>
+                    {%- if item.properties._bold_bundles_price -%}
+                      <span>{{ item.original_price | money }}</span><br>
+                    {%- endif -%}
+                    <{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %}>{{ item.final_price | money }}</{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %}>
                   {%- endif -%}
 
                   {% include 'product-unit-price', variant: item, available: item.variant.available %}
@@ -122,11 +130,18 @@
                     <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
                     <del>{{ item.original_line_price | money }}</del>
                     <span class="visually-hidden">{{ 'products.product.sale_price' | t }}</span>
+                    <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_total" data-item-key="{{item.key}}" style="display:none !important;"></span>
                     <span class="order-discount"><b>{{ item.final_line_price | money }}</b></span>
                     {%- assign subtotal = subtotal | plus: item.final_line_price -%}
                   {%- else -%}
-                    <b>{{ item.original_line_price | money }}</b>
-                    {%- assign subtotal = subtotal | plus: item.original_line_price -%}
+                    <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_total" data-item-key="{{item.key}}" style="display:none !important;"></span>
+                    <b>{{ item.final_line_price | money }}</b>
+                    {%- if item.properties._bold_bundles_price -%}
+                      {%- assign item_bundle_price = item.properties._bold_bundles_price | times: item.quantity -%}
+                      {%- assign subtotal = subtotal | plus: item_bundle_price -%}
+                    {%- else -%}
+                      {%- assign subtotal = subtotal | plus: item.final_line_price -%}
+                    {%- endif -%}
                   {%- endif -%}
                 </td>
               </tr>
@@ -227,6 +242,7 @@
 
               <p class="cart__subtotal-container">
                 <span class="cart__subtotal-title h3">{{ 'cart.general.subtotal' | t }}</span>
+                <!-- <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_total" style="display:none !important;"></span> -->
                 <span class="cart__subtotal h3 js-cart-subtotal" data-value="{{ subtotal }}">{{ subtotal | money }}</span>
               </p>
 
@@ -291,7 +307,18 @@
         {%- else -%}
           {%- assign item_value = item.original_price -%}
         {%- endif -%}
-        variant_id: {{item.id}}, quantity: {{item.quantity}}, price: {{item_value | money_without_currency | replace: ',', ''}},
+        {%- assign item_price = item_value | money_without_currency | replace: ',', '' -%}
+        {%- if item.properties._bold_bundles_price != blank -%}
+          {%- assign item_price = item.properties._bold_bundles_price | times: item.quantity | money_without_currency | replace: ',', '' -%}
+        {%- endif -%}
+        variant_id: {{item.id}}, quantity: {{item.quantity}}, price: {{item_price}},
+        {%- if item.properties -%}
+          properties: {
+            {%- for prop in item.properties -%}
+              {{prop[0] | json}}: {{prop[1] | json}}{%- unless forloop.last -%},{%- endunless -%}
+            {%- endfor -%}
+          },
+        {%- endif -%}
         product_type: {{item.product.type | downcase | json}}, product_id: {{item.product.id}}
       }{%- unless forloop.last -%},{%- endunless -%}{% endfor %}];
     {%- endif -%}
