@@ -1,0 +1,13 @@
+<input type="hidden" name="quantity" class="js-product-quantity">
+<div class="grid__item medium-up--one-quarter">
+  <div class="js-quantity-block js-delivery-quantity-block">
+    <label for="delivery-quantity" class="form__label">{{ 'products.product.quantity' | t }}</label>
+    <input type="number" id="delivery-quantity" name="quantity-delivery" value="1"
+      min="1" step="1" class="form__input full-width js-quantity-input js-quantity-input-delivery" required>
+  </div>
+  <div class="js-quantity-block js-pickup-quantity-block hide">
+    <label for="pickup-uantity" class="form__label">{{ 'products.product.quantity' | t }}</label>
+    <input type="number" id="pickup-uantity" name="quantity-pickup" value="1"
+      min="1" step="1" class="form__input full-width js-quantity-input js-quantity-input-pickup" required>
+  </div>
+</div>

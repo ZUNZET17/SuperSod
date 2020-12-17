@@ -93,6 +93,15 @@
                       <span>{{ item.original_price | money }}</span><br>
                     {%- endif -%}
                     <{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %} class="order-discount">{{ item.final_price | money }}</{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %}>
+                  {%- elsif item.variant.compare_at_price != item.final_price -%}
+                    <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
+                    <del>{{ item.variant.compare_at_price | money }}</del>
+                    <span class="visually-hidden">{{ 'products.product.sale_price' | t }}</span>
+                    <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_price" data-item-key="{{item.key}}" style="display:none !important;"></span>
+                    {%- if item.properties._bold_bundles_price -%}
+                      <span>{{ item.original_price | money }}</span><br>
+                    {%- endif -%}
+                    <{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %} class="order-discount">{{ item.final_price | money }}</{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %}>
                   {%- else -%}
                     <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_price" data-item-key="{{item.key}}" style="display:none !important;"></span>
                     {%- if item.properties._bold_bundles_price -%}

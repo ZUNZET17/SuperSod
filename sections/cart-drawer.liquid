@@ -125,10 +125,10 @@
                     {%- else -%}
                       {% if item.original_line_price != item.final_line_price %}
                         <span class="reduced-price cart-summary-item__price-current theme-money">{{ item.final_line_price | money }}</span>
-                        <span class="theme-money struck-out-price">{{ item.original_line_price | money }}</span>
+                        <del class="theme-money struck-out-price">{{ item.original_line_price | money }}</del>
                       {% elsif item.variant.compare_at_price != blank and item.variant.price < item.variant.compare_at_price %}
                         <span class="reduced-price cart-summary-item__price-current theme-money">{{ item.final_line_price | money }}</span>
-                        <span class="theme-money struck-out-price">{{ item.variant.compare_at_price | times: item.quantity | money }}</span>
+                        <del class="theme-money struck-out-price">{{ item.variant.compare_at_price | times: item.quantity | money }}</del>
                       {% else %}
                         <span class="cart-summary-item__price-current theme-money">{{ item.final_line_price | money }}</span>
                       {% endif %}
@@ -257,7 +257,7 @@
 
                               {% if promo_product.compare_at_price > promo_product.price %}
                                 <span class="reduced-price cart-summary-item__price-current theme-money">{{ promo_product.price | money }}</span>
-                                <span class="struck-out-price theme-money">{{ promo_product.compare_at_price | money }}</span>
+                                <del class="struck-out-price theme-money">{{ promo_product.compare_at_price | money }}</del>
                               {% else %}
                                 <span class="cart-summary-item__price-current theme-money">{{ promo_product.price | money }}</span>
                               {% endif %}

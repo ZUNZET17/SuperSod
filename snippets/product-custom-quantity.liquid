@@ -1,0 +1,23 @@
+<div class="grid__item medium-up--one-{% if use_variant_toggle == true %}quarter{% else %}third{% endif %}">
+  {%- assign min_delivery_quantity = 500 -%}
+  {%- assign min_pickup_quantity = 10 -%}
+  {%- if use_variant_toggle == true -%}
+    {%- assign min_delivery_quantity = 1 -%}
+    {%- assign min_pickup_quantity = 1 -%}
+  {%- endif -%}
+  {%- unless use_variant_toggle -%}
+    <input type="hidden" name="quantity" class="js-product-quantity">
+    <input type="hidden" name="properties[_custom_price]" value="0" class="js-custom-value">
+    <input type="hidden" name="properties[_custom_increment]" value="0" class="js-increment-value">
+  {%- endunless -%}
+  <div class="js-quantity-block js-delivery-quantity-block">
+    <label for="delivery-quantity" class="form__label">{{ 'products.product.quantity' | t }}{% unless use_variant_toggle %} (sq ft){% endunless %}</label>
+    <input type="number" id="delivery-quantity" name="quantity-delivery" value="{{min_delivery_quantity}}"
+      min="{{min_delivery_quantity}}" step="{{min_delivery_quantity}}" class="form__input full-width js-quantity-input js-quantity-input-delivery" required>
+  </div>
+  <div class="js-quantity-block js-pickup-quantity-block hide">
+    <label for="pickup-uantity" class="form__label">{{ 'products.product.quantity' | t }}{% unless use_variant_toggle %} (sq ft){% endunless %}</label>
+    <input type="number" id="pickup-uantity" name="quantity-pickup" value="{{min_pickup_quantity}}"
+      min="{{min_pickup_quantity}}" step="{{min_pickup_quantity}}" class="form__input full-width js-quantity-input js-quantity-input-pickup" required>
+  </div>
+</div>

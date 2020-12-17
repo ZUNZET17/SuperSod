@@ -56,7 +56,10 @@ const Product = (function () {
       toggleSubmitButton('disable', 'js-product-price-check');
       return;
     }
-    if (typeof usesVariantToggle === 'undefined') {
+    if (
+      typeof usesVariantToggle === 'undefined' &&
+      typeof usesRegularToggle === 'undefined'
+    ) {
       checkMinimumQuantity(value);
     }
     toggleSubmitButton('show', 'js-product-price-check');
@@ -92,7 +95,10 @@ const Product = (function () {
       return;
     }
 
-    if (typeof usesVariantToggle !== 'undefined') {
+    if (
+      typeof usesVariantToggle !== 'undefined' ||
+      typeof usesRegularToggle !== 'undefined'
+    ) {
       checkNonSodAvailability(zipCode, $(ev.target));
       return;
     }
@@ -145,11 +151,23 @@ const Product = (function () {
           zipcode: zipCode
         }, function () {
           toggleSubmitButton('show');
-          showButtonMessage(deliveryMethod);
+          showButtonMessage('pickup');
+          if (
+            typeof usesVariantToggle !== 'undefined' ||
+            typeof usesRegularToggle !== 'undefined'
+          ) {
+            checkChosenVariant();
+          }
         });
       } else {
         toggleSubmitButton('show');
-        showButtonMessage(deliveryMethod);
+        showButtonMessage('delivery');
+        if (
+          typeof usesVariantToggle !== 'undefined' ||
+          typeof usesRegularToggle !== 'undefined'
+        ) {
+          checkChosenVariant();
+        }
       }
       $('.js-delivery-method').trigger('change');
       $('.js-not-available-text').addClass('hide');
@@ -311,9 +329,21 @@ const Product = (function () {
       return;
     }
     if (typeof usesVariantToggle !== 'undefined') {
-      chooseVariantToggle(input.value);
+      checkChosenVariant();
+      return;
     }
     chooseVariant(input.value);
+  };
+
+  const checkChosenVariant = function () {
+    const input = document.querySelector('.js-delivery-method:checked');
+    let variantText = input.value;
+    if (typeof hasMultipleOptions !== 'undefined') {
+      const firstOption = document.querySelector('.single-option-selector').value;
+      variantText = firstOption + ' / ' + Utils.capitalize(input.value);
+    }
+    console.log(variantText);
+    chooseVariantToggle(variantText);
   };
 
   const hideSubmitButton = function () {

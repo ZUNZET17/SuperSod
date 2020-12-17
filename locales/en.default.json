@@ -316,6 +316,12 @@
   },
   "products": {
     "general": {
+      "quick_buy_added": "Added to cart",
+      "from": "From",
+      "include_taxes": "Tax included.",
+      "shipping_policy_html": "<a href=\"{{ link }}\">Shipping<\/a> calculated at checkout.",
+      "full_details": "Full details",
+      "quick_buy_html": "Quick<br>shop",
       "related_products_title": "You might also like",
       "unit_price": "Unit price"
     },
@@ -345,6 +351,11 @@
       "next": "Next (Right arrow key)",
       "prev": "Previous (Left arrow key)",
       "close": "Close (Esc)"
+    },
+    "grid": {
+      "add_to_cart": "Add to cart",
+      "choose_options": "Show options",
+      "item_is_in_cart": "in your cart"
     }
   },
   "gift_cards": {

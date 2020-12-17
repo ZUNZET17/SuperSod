@@ -189,6 +189,10 @@ $desk: 1100px;
   margin-bottom: 10px;
 }
 
+.selector-wrapper + .selector-wrapper {
+  display: none;
+}
+
 .payment-icons {
   margin-top: 20px;
 }
