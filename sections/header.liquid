@@ -55,7 +55,7 @@
   <div class="search-bar">
     <div class="site-wrapper{% unless use_full_wrapper %} site-wrapper--head{% endunless %}">
       <div class="grid">
-  
+
         <div class="grid__item medium-up--three-quarters small--one-half">
           <div class="top-bar__search">
             <a href="{{ routes.search_url }}" class="medium-up--hide">
@@ -117,7 +117,7 @@
 
   <header class="site-header" role="banner">
     {%- assign show_banner_image = false -%}
-    {%- assign banner_image_url = value -%}
+    {%- assign banner_image_url = section.settings.banner_image | img_url: 'master' -%}
     {%- if template.name == 'product' or template.name == 'collection' -%}
       {%- assign show_banner_image = true -%}
       {%- if collection == blank and product != blank -%}
@@ -132,7 +132,6 @@
       {%- endif -%}
     {%- elsif section.settings.banner_image != blank -%}
       {%- assign show_banner_image = true -%}
-      {%- assign banner_image_url = section.settings.banner_image | img_url: 'master' -%}
     {%- endif -%}
     <div class="site-wrapper{% unless use_full_wrapper %} site-wrapper--head{% endunless %}">
       <div class="site-header__container"{% if show_banner_image == true %} style="background-image: url({{ banner_image_url }});" {% endif %}>
@@ -144,7 +143,7 @@
                 Site name uses `h1` tag on homepage, div on other pages.
               {% endcomment %}
               {%- assign img_url = section.settings.logo | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
-      
+
               {% if section.settings.logo %}
                 <div id="HeaderLogoWrapper" class="supports-js">
                   <a href="{{ routes.root_url }}" itemprop="url" style="padding-top:{{ 1 | divided_by: section.settings.logo.aspect_ratio | times: 100}}%; display: block;">

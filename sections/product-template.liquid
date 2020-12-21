@@ -1,4 +1,5 @@
 <!-- /templates/product.liquid -->
+{% include 'bold-product' with product, hide_action: 'break' %}{% if bold_hidden_product %}{% break %}{%endif %}
 {%- assign use_pallet = false -%}
 {%- assign uses_variant_toggle = false -%}
 {%- if product.tags contains 'pallet' -%}
@@ -201,6 +202,7 @@
             <div{% if use_pallet == true %} class="hide"{% endif %}>
               <select name="id" id="ProductSelect-{{ section.id }}" class="form__input full-width js-product-variants{% if use_pallet == true %} hide{% endif %}">
                 {% for variant in product.variants %}
+                  {% include 'bold-variant' with variant, hide_action: 'skip' %}
                   {% if variant.available %}
                     <option {% if variant == product.selected_or_first_available_variant %} selected="selected" {% endif %}
                       {% if use_pallet == true %} data-sod-zips="{{ variant.metafields.sod.zips }}" data-price="{{ variant.price | money_with_currency }}"{% endif %}
@@ -364,7 +366,7 @@
 
 {% unless product == empty %}
   <script type="application/json" id="ProductJson-{{ section.id }}">
-    {{ product | json }}
+    {% include 'bold-product', output: 'json' %}
   </script>
 {% endunless %}
 {%- if use_pallet == true -%}

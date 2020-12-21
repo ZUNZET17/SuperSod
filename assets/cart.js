@@ -3,7 +3,6 @@ const Cart = (function () {
   let chosenDates = [];
   let calendarHandles = [];
   let firstTime = true;
-  const cartItems = [];
 
   const initDatePicker = function (dates) {
     for (let index = 0; index < 3; index++) {
@@ -273,34 +272,23 @@ const Cart = (function () {
     $('.js-update-cart-message').removeClass('hide');
   };
 
-  const getCartItems = function () {
-    $.getJSON('/cart.js', function(cart) {
-      if (cart.item_count < 1) {
-        return;
+  const showFixedPrices = function () {
+    for (let i = 0; i < cartItems.length; i++) {
+      const element = cartItems[i];
+      if (
+        typeof element.properties !== 'undefined' &&
+        element.properties !== null &&
+        Object.keys(element.properties).length > 0 &&
+        (element.properties).constructor === Object &&
+        typeof element.properties._custom_price !== 'undefined'
+      ) {
+        const unitPrice = Utils.formatMoneyWithPrecision(
+          (element.properties._custom_price / element.quantity) * 100,
+          3
+        );
+        $('.js-item-price-' + (i+1)).html(unitPrice);
       }
-
-      for (let i = 0; i < cart.items.length; i++) {
-        const element = cart.items[i];
-        const item = {
-          id: element.id,
-          quantity: element.quantity
-        };
-        if (
-          typeof element.properties !== "undefined" &&
-          element.properties !== null &&
-          Object.keys(element.properties).length > 0 &&
-          (element.properties).constructor === Object
-        ) {
-          item.properties = element.properties;
-          const unitPrice = Utils.formatMoneyWithPrecision(
-            (item.properties._custom_price / element.quantity) * 100,
-            3
-          );
-          $('.js-item-price-' + (i+1)).html(unitPrice);
-        }
-        cartItems.push(item);
-      }
-    });
+    }
   };
 
   const interceptCartSubmit = function (ev) {
@@ -362,7 +350,7 @@ const Cart = (function () {
 
   const init = function () {
     setEvents();
-    getCartItems();
+    showFixedPrices();
   };
 
   const setEvents = function () {

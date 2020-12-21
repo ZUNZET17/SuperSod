@@ -127,6 +127,10 @@ $cart_desk: 990px;
 .cart-summary-item {
   display: flex;
   padding-bottom: 2em;
+
+  .bold-bundles-product {
+    display: none;
+  }
 }
 
 .cart-summary-item .cart-discount-list {
@@ -484,9 +488,9 @@ $cart_desk: 990px;
 
 #page-wrap-content {
   zoom: 1;
-  
+
   background: #ffffff;
-  
+
 }
 
 #page-wrap-content:before {
