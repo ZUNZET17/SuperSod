@@ -139,13 +139,13 @@
   {%- endif -%}
   {% if request.page_type == 'product' or request.page_type == 'index' %}
     {{ 'option_selection.js' | shopify_asset_url | script_tag }}
-    <script>
-      // Set a global variable for theme.js to use on product single init
-      window.theme = window.theme || {};
-      theme.moneyFormat = {{ shop.money_format | json }};
-      theme.productSingleObject = {{ product | json }};
-    </script>
   {% endif %}
+  <script>
+    // Set a global variable for theme.js to use on product single init
+    window.theme = window.theme || {};
+    theme.moneyFormat = {{ shop.money_format | json }};
+    theme.productSingleObject = {{ product | json }};
+  </script>
 
   <ul hidden>
     <li id="a11y-refresh-page-message">{{ 'general.accessibility.refresh_page' | t }}</li>
@@ -211,29 +211,7 @@
     <script src="https://maps.googleapis.com/maps/api/js?libraries=places,geometry&key=AIzaSyBDNbFA4quUVSMGdxSn_lqnZVcp72c5K9k" defer></script>
     <script src="{{ 'product.js' | asset_url }}" defer></script>
     <script src="{{ 'tabs.js' | asset_url }}" defer></script>
-    {%- render 'bold-ro-init' -%}
   {%- endif -%}
-  {%- if template.name != 'index' and template.name != 'collection' and template.name != 'cart' and template.name != 'account'-%}
-    {%- render 'bold-common' -%}
-    {%- render 'bold-subscription-widget' -%}
-  {%- endif -%}
-
-  <!-- begin olark code -->
-  <script type="text/javascript">
-    ;(function(o,l,a,r,k,y){if(o.olark)return;
-      r="script";y=l.createElement(r);r=l.getElementsByTagName(r)[0];
-      y.async=1;y.src="//"+a;r.parentNode.insertBefore(y,r);
-      y=o.olark=function(){k.s.push(arguments);k.t.push(+new Date)};
-      y.extend=function(i,j){y("extend",i,j)};
-      y.identify=function(i){y("identify",k.i=i)};
-      y.configure=function(i,j){y("configure",i,j);k.c[i]=j};
-      k=y._={s:[],t:[+new Date],c:{},l:a};
-      })(window,document,"static.olark.com/jsclient/loader.js");
-      /* Add configuration calls below this comment */
-      olark.identify('7324-564-10-6259');
-  </script>
-  <!-- end olark code -->
-
   {%- if template.name == 'cart' -%}
     <script src="{{ 'tail.datetime.min.js' | asset_url }}" defer></script>
     <script src="{{ 'cart.js' | asset_url }}" defer></script>
@@ -251,5 +229,29 @@
     };
     loadPreloadedStyles();
   </script>
+
+  <!-- begin olark code -->
+  <script type="text/javascript">
+    ;(function(o,l,a,r,k,y){if(o.olark)return;
+      r="script";y=l.createElement(r);r=l.getElementsByTagName(r)[0];
+      y.async=1;y.src="//"+a;r.parentNode.insertBefore(y,r);
+      y=o.olark=function(){k.s.push(arguments);k.t.push(+new Date)};
+      y.extend=function(i,j){y("extend",i,j)};
+      y.identify=function(i){y("identify",k.i=i)};
+      y.configure=function(i,j){y("configure",i,j);k.c[i]=j};
+      k=y._={s:[],t:[+new Date],c:{},l:a};
+      })(window,document,"static.olark.com/jsclient/loader.js");
+      /* Add configuration calls below this comment */
+      olark.identify('7324-564-10-6259');
+  </script>
+  <!-- end olark code -->
+
+  {%- if template.name != 'index' and template.name != 'collection' and template.name != 'cart' and template.name != 'account'-%}
+    {%- render 'bold-common' -%}
+  {%- endif -%}
+  {%- if template.name == 'product' -%}
+    {%- render 'bold-ro-init' -%}
+    {%- render 'bold-subscription-widget' -%}
+  {%- endif -%}
 </body>
 </html>

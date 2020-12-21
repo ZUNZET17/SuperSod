@@ -3,6 +3,7 @@ const Cart = (function () {
   let chosenDates = [];
   let calendarHandles = [];
   let firstTime = true;
+  const cartItems = [];
 
   const initDatePicker = function (dates) {
     for (let index = 0; index < 3; index++) {
@@ -268,8 +269,143 @@ const Cart = (function () {
     $('.js-update-cart-message').removeClass('hide');
   };
 
+  const formatMoney = function (cents, centPrecision, format) {
+    if (typeof cents == 'string') {
+      cents = cents.replace('.', '');
+    }
+    var value = '';
+    var placeholderRegex = /\{\{\s*(\w+)\s*\}\}/;
+    var formatString = (format || theme.moneyFormat);
+    const centsPrecision = (centPrecision || 2);
+
+    function defaultOption(opt, def) {
+      return (typeof opt == 'undefined' ? def : opt);
+    }
+
+    function formatWithDelimiters(number, precision, thousands, decimal) {
+      precision = defaultOption(precision, 2);
+      thousands = defaultOption(thousands, ',');
+      decimal   = defaultOption(decimal, '.');
+
+      if (isNaN(number) || number == null) { return 0; }
+
+      number = (number/100.0).toFixed(precision);
+
+      var parts   = number.split('.'),
+          dollars = parts[0].replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1' + thousands),
+          cents   = parts[1] ? (decimal + parts[1]) : '';
+
+      return dollars + cents;
+    }
+
+    switch(formatString.match(placeholderRegex)[1]) {
+      case 'amount':
+        value = formatWithDelimiters(cents, centsPrecision);
+        break;
+      case 'amount_no_decimals':
+        value = formatWithDelimiters(cents, 0);
+        break;
+      case 'amount_with_comma_separator':
+        value = formatWithDelimiters(cents, centsPrecision, '.', ',');
+        break;
+      case 'amount_no_decimals_with_comma_separator':
+        value = formatWithDelimiters(cents, 0, '.', ',');
+        break;
+    }
+
+    return formatString.replace(placeholderRegex, value);
+  };
+
+  const getCartItems = function () {
+    $.getJSON('/cart.js', function(cart) {
+      if (cart.item_count < 1) {
+        return;
+      }
+
+      for (let i = 0; i < cart.items.length; i++) {
+        const element = cart.items[i];
+        const item = {
+          id: element.id,
+          quantity: element.quantity
+        };
+        if (
+          typeof element.properties !== "undefined" &&
+          element.properties !== null &&
+          Object.keys(element.properties).length > 0 &&
+          (element.properties).constructor === Object
+        ) {
+          item.properties = element.properties;
+          const unitPrice = formatMoney(
+            (item.properties._custom_price / element.quantity) * 100,
+            3
+          );
+          $('.js-item-price-' + (i+1)).html(unitPrice);
+        }
+        cartItems.push(item);
+      }
+    });
+  };
+
+  const interceptCartSubmit = function (ev) {
+    if (typeof hasCustomPricing === 'undefined') {
+      return;
+    }
+
+    const form = ev.target;
+    ev.preventDefault();
+    const changes = [];
+    let isInvalid = false;
+
+    $('.js-update-cart-button').prop('disabled', true);
+
+    $('.js-invalid-quantity').addClass('hide');
+    $('.js-item-custom-price').each(function (i, el) {
+      const index = parseInt(el.dataset.index);
+      const itemProperties = JSON.parse(
+        JSON.stringify(cartItems[index - 1].properties)
+      );
+      const input = $('.js-cart-quantity-selector-' + index);
+      let quantity = parseInt(input.val());
+      const step = parseInt(input.prop('step'));
+      if (quantity % step !== 0) {
+        $('.js-invalid-quantity-' + index).removeClass('hide');
+        isInvalid = true;
+        return;
+      }
+      itemProperties._custom_price = quantity * parseFloat(el.value / el.dataset.units);
+      changes.push({
+        line: index,
+        properties: itemProperties
+      });
+    });
+
+    if (isInvalid) {
+      $('.js-update-cart-button').prop('disabled', null);
+      return;
+    }
+    changeCartItemsProperties(changes, form);
+  };
+
+  const changeCartItemsProperties = function (changes, form) {
+    if (changes.length < 1) {
+      form.submit();
+      return;
+    }
+    const current = changes.shift();
+    const ajax = $.ajax({
+      type: 'POST',
+      url: '/cart/change.js',
+      dataType: 'json',
+      data: current
+    });
+    ajax.always(function () {
+      changeCartItemsProperties(changes, form);
+    });
+  };
+
   const init = function () {
     setEvents();
+    getCartItems();
   };
 
   const setEvents = function () {
@@ -277,7 +413,8 @@ const Cart = (function () {
       .on('click', '.js-check-dates', searchAvailableDates)
       .on('change', '.js-delivery-type', resetCheckoutForm)
       .on('click', '.js-go-to-checkout', validateCheckout)
-      .on('change keyup input', '.js-cart-quantity-selector', highlightUpdateButton);
+      .on('change keyup input', '.js-cart-quantity-selector', highlightUpdateButton)
+      .on('submit', '.js-cart-form', interceptCartSubmit);
     for (let index = 0; index < 3; index++) {
       const fieldSelector = '.js-tail-datetime-field-' + (index + 1);
       $(document).on('click', fieldSelector, function () {
