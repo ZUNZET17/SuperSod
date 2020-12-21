@@ -90,6 +90,7 @@ const Cart = (function () {
     const noDatesInfo = $('.js-no-dates');
     const originalText = button.html();
     const endpoint = 'available_dates';
+    const addedValue = parseFloat(input.data('price'));
     const ajaxData = {
       latitude: $('.js-address-latitude').val(),
       longitude: $('.js-address-longitude').val(),
@@ -124,6 +125,9 @@ const Cart = (function () {
       initDatePicker(dateRangesMilliseconds);
       button.html(originalText);
       $('.js-go-to-checkout').prop('disabled', false);
+      const subtotalElement = $('.js-cart-subtotal')
+      const subtotal = parseFloat(subtotalElement.data('value')) + addedValue;
+      subtotalElement.html( Shopify.formatMoney(subtotal) );
     }).fail(function () {
       button.html(originalText);
       noDatesInfo.removeClass('hide');

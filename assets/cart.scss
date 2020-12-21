@@ -17,6 +17,7 @@ $cart_desk: 990px;
 
 .cart {
   .cart__method-label {
+    display: inline-block;
     font-size: 14px;
 
     @media only screen and (min-width: #{$cart_desk}) {
