@@ -200,3 +200,7 @@ $desk: 1100px;
 button[class*="bold-ro__custombutton-"] + .btn--full {
   margin-left: 0;
 }
+
+.btn + .bold_clone {
+  margin-left: 0;
+}

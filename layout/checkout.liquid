@@ -12,6 +12,14 @@
 
     {{ checkout_stylesheets }}
     <style>
+      .display-none {
+        display: none !important;
+      }
+
+      .product__description__variant {
+        display: none;
+      }
+
       .section--shipping-method .content-box__small-text {
         border: 0 ;
         clip: rect(0,0,0,0);
@@ -97,5 +105,35 @@
     </div>
 
     {{ tracking_code }}
+    <script>
+      const hideShippingMethods = function () {
+        const deliveryType = window.localStorage.getItem('delivery_type');
+        const labels = [].slice.call(document.getElementsByClassName('radio__label__primary'));
+        for (let i = 0; i < labels.length; i++) {
+          const label = labels[i].innerHTML.trim();
+          let hide = false;
+
+          if (deliveryType === 'pickup' && label.indexOf('ick') < 0) {
+            hide = true;
+          } else if (deliveryType !== 'pickup' && label.indexOf('ick') > -1) {
+            hide = true;
+          }
+
+          if (hide === true) {
+            const container = labels[i].parentNode.parentNode.parentNode;
+            const input = container.getElementsByClassName('input-radio');
+            container.classList.add('display-none');
+            input[0].checked = false;
+          }
+        }
+      };
+
+      if (
+        Shopify.Checkout.step === 'shipping_method' &&
+        window.localStorage.getItem('delivery_type') !== null
+      ) {
+        hideShippingMethods();
+      }
+    </script>
   </body>
 </html>

@@ -151,6 +151,7 @@ const Cart = (function () {
   };
 
   const validateCheckout = function (ev) {
+    removeInvalidBundleProducts();
     $('.js-dates-invalid').addClass('hide');
     $('.js-dates-empty').addClass('hide');
     $('.js-dates-same').addClass('hide');
@@ -159,7 +160,7 @@ const Cart = (function () {
     const originalText = button.html();
 
     button.html('Checking ...');
-    let dates = document.querySelectorAll('input[class*="js-tail-datetime-field-');
+    let dates = document.querySelectorAll('input[class*="js-tail-datetime-field-"]');
     dates = Array.prototype.slice.call(dates);
     const filledDates = dates.length;
     const validIndexes = [true, true, true];
@@ -177,6 +178,8 @@ const Cart = (function () {
         containsEmpty = true;
       }
       return self.indexOf(value) === index;
+    }).filter(function (value) {
+      return value !== '';
     });
 
     const datesAreValid = validIndexes.reduce(function (acc, item) {
@@ -187,7 +190,7 @@ const Cart = (function () {
     if (dates.length === 0) {
       invalidTextSelector = '.js-dates-empty';
       button.html(originalText);
-    } else if (filledDates > dates.length && !containsEmpty) {
+    } else if (filledDates > dates.length || containsEmpty) {
       invalidTextSelector = '.js-dates-same';
     } else if (!datesAreValid) {
       invalidTextSelector = '.js-dates-invalid';
@@ -211,7 +214,7 @@ const Cart = (function () {
       dates: dates,
       originalText: originalText
     };
-    processDates(settings);
+    // processDates(settings);
     sendOrderData(settings);
   };
 
@@ -234,13 +237,27 @@ const Cart = (function () {
         'products[]variant_id=' + item.variant_id +
         '&products[]quantity=' + item.quantity +
         '&products[]price=' + item.price +
+        (typeof item.full_price !== 'undefined' ? '&products[]full_price=' + item.full_price : '') +
         '&products[]product_id=' + item.product_id +
+        (item.product_type.toLowerCase() === 'sod' ? '&products[]product_name=' + item.product_name : '') +
+        (item.product_type.toLowerCase() === 'sod' ? '&products[]product_image=' + item.product_image : '') +
         '&products[]product_type=' + item.product_type
     }, '');
+    let cartAttributes = '';
+    $('.js-cart-attribute').each(function (i, el) {
+      cartAttributes += (cartAttributes !== '' ? '&' : '');
+      cartAttributes += 'cart_attributes[]' + el.dataset.name + '=' + el.value;
+    });
     const ajaxData =
       'delivery_type=' + $('.js-delivery-type:checked').val() +
       '&shop_domain=' + theme.routes.validation_tool_shop +
+      '&schedule_dates=' + (settings.dates.join(',')) +
+      '&note=' + $('.js-cart-note').val() +
+      '&discount=' + $('.js-discount-code').val() +
+      '&' + cartAttributes +
       '&' + cartItemsString;
+
+    window.localStorage.setItem('delivery_type', $('.js-delivery-type:checked').val());
     const ajax = $.ajax({
       type: 'GET',
       url: theme.routes.validation_tool_url + 'draft_orders',
@@ -346,6 +363,30 @@ const Cart = (function () {
     ajax.always(function () {
       changeCartItemsProperties(changes, form);
     });
+  };
+
+  const removeInvalidBundleProducts = function () {
+    const invalidBundleProducts = $('.js-remove-bundle-from-cart');
+    if (invalidBundleProducts.length < 1) {
+      return;
+    }
+
+    const updates = {};
+    invalidBundleProducts.each(function (i, item) {
+      updates[item.innerHTML] = 0;
+    });
+
+    const ajax = $.ajax({
+      type: 'POST',
+      url: '/cart/update.js',
+      dataType: 'json',
+      data: {
+        updates: updates
+      }
+    });
+    ajax.done(function (data) {
+      window.location.reload();
+    })
   };
 
   const init = function () {

@@ -99,23 +99,74 @@ const Product = (function () {
       typeof usesVariantToggle !== 'undefined' ||
       typeof usesRegularToggle !== 'undefined'
     ) {
+      const boldLinks = $('.js-product-form .bold-bundles-child-product__link');
+      if (boldLinks.length > 0) {
+        checkBundleProductsInfo(boldLinks, zipCode, $(ev.target));
+        return;
+      }
       checkNonSodAvailability(zipCode, $(ev.target));
       return;
     }
     checkProductAvailability(zipCode, $(ev.target));
   };
 
-  const checkNonSodAvailability = function (zipCode, button) {
+  const checkBundleProductsInfo = function (links, zipCode, button) {
+    const productHandles = [].slice.call(links).map(function (link) {
+      const hrefs = link.getAttribute('href').split('/');
+      return hrefs[hrefs.length - 1];
+    });
+    const originalText = button.html();
+    button.html('Checking ...');
+    checkBundleProductsIds(productHandles, zipCode, button, originalText, '');
+  };
+
+  const checkBundleProductsIds = function (handles, zipCode, button, originalText, ids) {
+    if (handles.length < 1 && ids !== null) {
+      const count = (ids.match(/&/g) || []).length;
+      button.html(originalText);
+      if (count < 1) {
+        $('.js-not-available-text').removeClass('hide');
+      } else {
+        $('.js-not-available-text').addClass('hide');
+        checkNonSodAvailability(zipCode, button, ids);
+      }
+      return;
+    } else if (handles.length < 1 && ids === null) {
+      button.html(originalText);
+      $('.js-not-available-text').removeClass('hide');
+      return;
+    }
+
+    const current = handles.shift();
+    const ajax = $.ajax({
+      type: 'GET',
+      url: '/products/' + current + '.js',
+      dataType: 'json'
+    });
+    ajax.always(function (data) {
+      if (typeof data.id !== 'undefined') {
+        ids += (ids !== '' ? '&' : '') + 'products[]shopify_product_id=' + data.id;
+      }
+      checkBundleProductsIds(handles, zipCode, button, originalText, ids);
+    });
+  };
+
+  const checkNonSodAvailability = function (zipCode, button, productIds) {
     const originalText = button.html();
     const deliveryMethod = $('.js-delivery-method:checked').val();
     const latitude = $('.js-address-latitude').val();
     const longitude = $('.js-address-longitude').val();
     const quantity = $('.js-product-quantity').val();
-    const ajaxData =
-      'zipcode=' + zipCode +
-      '&products[]shopify_product_id=' + productData.id +
-      '&shop_domain=' + theme.routes.validation_tool_shop;
     const endpoint = 'available_in_zone';
+    let productString = '&products[]shopify_product_id=' + productData.id;
+
+    if (typeof productIds !== 'undefined' && productIds !== '') {
+      productString = '&' + productIds;
+    }
+
+    const ajaxData =
+      'zipcode=' + zipCode + productString +
+      '&shop_domain=' + theme.routes.validation_tool_shop;
 
     button.html('Checking ...');
     $('.js-current-price-unit').html('');
@@ -140,6 +191,11 @@ const Product = (function () {
 
       button.html(originalText);
       updateForm(zipCode);
+      const boldLinks = $('.js-product-form .bold-bundles-child-product__link');
+      let buttonClassname = null;
+      if (boldLinks.length > 0) {
+        buttonClassname = 'bold_clone';
+      }
       if (deliveryMethod === 'pickup') {
         checkNearestPickupLocations({
           latitude: latitude,
@@ -150,7 +206,7 @@ const Product = (function () {
           unit_price: $('.js-product-variants option:selected').data('price-val'),
           zipcode: zipCode
         }, function () {
-          toggleSubmitButton('show');
+          toggleSubmitButton('show', buttonClassname);
           showButtonMessage('pickup');
           if (
             typeof usesVariantToggle !== 'undefined' ||
@@ -160,7 +216,7 @@ const Product = (function () {
           }
         });
       } else {
-        toggleSubmitButton('show');
+        toggleSubmitButton('show', buttonClassname);
         showButtonMessage('delivery');
         if (
           typeof usesVariantToggle !== 'undefined' ||
@@ -342,7 +398,6 @@ const Product = (function () {
       const firstOption = document.querySelector('.single-option-selector').value;
       variantText = firstOption + ' / ' + Utils.capitalize(input.value);
     }
-    console.log(variantText);
     chooseVariantToggle(variantText);
   };
 
@@ -444,7 +499,7 @@ const Product = (function () {
   const toggleSubmitButton = function (action, customSelector) {
     let buttons = document.getElementsByClassName('js-product-submit');
 
-    if (typeof customSelector !== 'undefined') {
+    if (typeof customSelector !== 'undefined' && customSelector !== null) {
       buttons = document.getElementsByClassName(customSelector);
     }
     if (typeof buttons === 'undefined' || buttons.length < 1) {
@@ -496,7 +551,7 @@ const Product = (function () {
   };
 
   const updateForm = function (zipCode) {
-    const deliveryMethodInput = $('.js-delivery-method')[0];
+    const deliveryMethodInput = $('.js-delivery-method:checked')[0];
     changeDeliveryElements(deliveryMethodInput);
 
     let parameters = [];
@@ -520,6 +575,22 @@ const Product = (function () {
       const fullValue = foundVariant[0].priceValue * $('.js-product-quantity').val();
       selectVariant(foundVariant[0]);
       showProductPricing({additional_miles_cost: 0, fulfillment: 'pickup', total_price: fullValue})
+    }
+
+    const boldLinks = $('.js-product-form .bold-bundles-child-product__link');
+    if (boldLinks.length > 0) {
+      const deliveryMethodInput = $('.js-delivery-method:checked')[0];
+      const zipCode = $('.js-zip-code')[0];
+      let parameters = [];
+      parameters.push({parameter: 'zip_code', value: zipCode.value});
+      parameters.push({parameter: 'delivery_method', value: deliveryMethodInput.value});
+      parameters.push({parameter: 'customer_address', value: $('.js-autocomplete-address').val()});
+      if (deliveryMethodInput.value === 'pickup') {
+        parameters.push({parameter: 'pickup_address', value: selectedVariant});
+      }
+      if (typeof parameters === 'object' && parameters.length > 1) {
+        Utils.addToCartParameters(parameters);
+      }
     }
   };
 

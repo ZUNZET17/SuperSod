@@ -287,10 +287,11 @@
       "delivery_title_html": "Step 2:<br>Preferred Delivery/Pickup Dates",
       "delivery_message": "Note: Fluctuations in demand (time of year) and weather can play a key role in our ability to meet one of your preferred dates.  After our online sales team processes your order (typically within 2 hours), you will receive a confirmation email with your pickup or delivery date. Our online sales team processes orders Monday through Friday 8AM to 5PM. Orders placed on Saturday and Sunday will be processed the following Monday.",
       "invalid_dates": "Selected dates are not valid",
-      "same_dates": "Cannot select two of the same dates",
+      "same_dates": "Please select 3 different Delivery/Pickup dates",
       "empty_dates": "Please select 3 preferred Delivery/Pickup dates",
-      "delivery_soil_level_mix": "Your order will be delivered within the next 7-10, and you'll receive a text message from us the day before your delivery with your delivery time.",
+      "delivery_soil_level_mix": "Your order will be delivered within the next 7-10 days, and you'll receive a text message from us the day before your delivery with your delivery time.",
       "notes_placeholder": "example: product placement if delivered, narrow roads, dead ends, gate code, etc.",
+      "cannot_mix_methods": "Pickups and Deliveries cannot be combined in the same order.",
       "no_checkout_available": "An error ocurred while processing your request"
     },
     "customer": {

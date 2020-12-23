@@ -43,6 +43,9 @@
             {%- if item.properties._custom_price != blank -%}
               {%- assign item_value = item.properties._custom_price | times: 100 -%}
               {%- assign subtotal = subtotal | plus: item_value -%}
+            {%- elsif item.properties._bold_bundles_price -%}
+              {%- assign item_bundle_price = item.properties._bold_bundles_price | times: item.quantity -%}
+              {%- assign subtotal = subtotal | plus: item_bundle_price -%}
             {%- elsif item.original_line_price != item.final_line_price -%}
               {%- assign subtotal = subtotal | plus: item.final_line_price -%}
             {%- else -%}
@@ -123,14 +126,25 @@
                     {%- if item.properties._custom_price != blank -%}
                       <span class="cart-summary-item__price-current theme-money">{{item.properties._custom_price | times: 100 | money}}</span>
                     {%- else -%}
+                      {%- assign final_price = item.final_line_price -%}
                       {% if item.original_line_price != item.final_line_price %}
-                        <span class="reduced-price cart-summary-item__price-current theme-money">{{ item.final_line_price | money }}</span>
+                        {%- if item.properties._bold_bundles_price -%}
+                          {%- assign final_price = item.properties._bold_bundles_price | times: item.quantity -%}
+                        {%- endif -%}
+                        <span class="reduced-price cart-summary-item__price-current theme-money">{{ final_price | money }}</span>&nbsp;
                         <del class="theme-money struck-out-price">{{ item.original_line_price | money }}</del>
                       {% elsif item.variant.compare_at_price != blank and item.variant.price < item.variant.compare_at_price %}
-                        <span class="reduced-price cart-summary-item__price-current theme-money">{{ item.final_line_price | money }}</span>
+                        {%- if item.properties._bold_bundles_price -%}
+                          {%- assign final_price = item.properties._bold_bundles_price | times: item.quantity -%}
+                        {%- endif -%}
+                        <span class="reduced-price cart-summary-item__price-current theme-money">{{ final_price | money }}</span>&nbsp;
                         <del class="theme-money struck-out-price">{{ item.variant.compare_at_price | times: item.quantity | money }}</del>
                       {% else %}
-                        <span class="cart-summary-item__price-current theme-money">{{ item.final_line_price | money }}</span>
+                        {%- if item.properties._bold_bundles_price -%}
+                          {%- assign final_price = item.properties._bold_bundles_price | times: item.quantity -%}
+                          <span class="cart-summary-item__price-current theme-money">{{ final_price | money }}</span>&nbsp;
+                        {%- endif -%}
+                        <{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %} class="cart-summary-item__price-current theme-money">{{ item.final_line_price | money }}</{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %}>
                       {% endif %}
                       {% render 'unit-price', variant: item %}
                     {%- endif -%}

@@ -3,6 +3,7 @@
 {%- assign invalid_fulfillment = false -%}
 {%- assign has_custom_pricing = false -%}
 {%- assign contains_soil_level_mix = false -%}
+{%- assign contains_sod = false -%}
 <div class="grid">
   <div class="grid__item">
     {% if cart.item_count > 0 %}
@@ -20,8 +21,17 @@
           <tbody>
             {%- assign subtotal = 0 -%}
             {% for item in cart.items %}
-              {%- if item.type contains 'Soil' -%}
+              {%- if item.product.title contains 'Humus Compost'
+                or item.product.title contains 'Raised Garden Kit'
+                or item.product.title contains 'Workshop Bundle'
+                or item.product.title contains 'Level Mix'
+              -%}
                 {%- assign contains_soil_level_mix = true -%}
+              {%- endif -%}
+              {%- if item.product.type contains 'Sod' -%}
+                {%- assign contains_sod = true -%}
+              {%- elsif item.product.type contains 'Compost' -%}
+                {%- assign contains_sod = true -%}
               {%- endif -%}
               <tr class="cart__row responsive-table__row">
                 <td class="cart__table-cell--image small--text-center">
@@ -58,12 +68,20 @@
                 <td class="cart__table-cell--meta text-center large-up--text-left">
                   <p>
                     <a href="{{ item.url }}" class="cart__product-title">{{ item.product.title }}</a>
-                    {% unless item.variant.title contains 'Default' %}
-                      <small class="visually-hidden">{{ item.variant.title }}</small>
+                    {% unless item.variant.title contains 'Default'
+                      or item.variant.title contains 'elivery'
+                      or item.variant.title contains 'ickup'
+                    %}
+                      <br><small>{{ item.variant.title }}</small>
                     {% endunless %}
                     <br>
+                    {%- if item.properties._bold_bundle_price_rules_external_id != blank -%}
+                      <small class="cart__policies">{{ cart.attributes.delivery_method }}</small>
+                    {%- endif -%}
                     {% if item.properties._method == 'pickup' %}
-                      <span class="txt--minor cart__policies">{{ 'layout.product.pickup' | t }}: {{ item.properties.pickup_location }}</span>
+                      <small class="cart__policies">{{ 'layout.product.pickup' | t }}: {{ item.properties.pickup_location }}</small>
+                    {% elsif cart.attributes.pickup_address != blank %}
+                    <small class="cart__policies">{{ cart.attributes.pickup_address }}</small>
                     {% endif %}
                   </p>
                   {%- if item.properties._method != blank -%}
@@ -71,6 +89,11 @@
                       {%- assign fulfillment_method = item.properties._method -%}
                     {%- elsif item.properties._method != fulfillment_method -%}
                       {%- assign invalid_fulfillment = true -%}
+                    {%- endif -%}
+                  {%- endif -%}
+                  {%- if item.properties._bold_bundle_price_rules_external_id != blank -%}
+                    {%- if item.properties._bold_bundles_price == blank -%}
+                      <span class="hide js-remove-bundle-from-cart">{{item.id}}</span>
                     {%- endif -%}
                   {%- endif -%}
                   <p class="txt--minor">
@@ -90,6 +113,7 @@
                     <span class="visually-hidden">{{ 'products.product.sale_price' | t }}</span>
                     <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_price" data-item-key="{{item.key}}" style="display:none !important;"></span>
                     {%- if item.properties._bold_bundles_price -%}
+                      {%- assign has_custom_pricing = true -%}
                       <span>{{ item.original_price | money }}</span><br>
                     {%- endif -%}
                     <{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %} class="order-discount">{{ item.final_price | money }}</{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %}>
@@ -99,12 +123,14 @@
                     <span class="visually-hidden">{{ 'products.product.sale_price' | t }}</span>
                     <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_price" data-item-key="{{item.key}}" style="display:none !important;"></span>
                     {%- if item.properties._bold_bundles_price -%}
+                      {%- assign has_custom_pricing = true -%}
                       <span>{{ item.original_price | money }}</span><br>
                     {%- endif -%}
                     <{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %} class="order-discount">{{ item.final_price | money }}</{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %}>
                   {%- else -%}
                     <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_price" data-item-key="{{item.key}}" style="display:none !important;"></span>
                     {%- if item.properties._bold_bundles_price -%}
+                      {%- assign has_custom_pricing = true -%}
                       <span>{{ item.original_price | money }}</span><br>
                     {%- endif -%}
                     <{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %}>{{ item.final_price | money }}</{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %}>
@@ -158,7 +184,19 @@
           </tbody>
         </table>
 
+        {%- if fulfillment_method == '' and has_custom_pricing == true -%}
+          {%- assign fulfillment_method = cart.attributes.delivery_method -%}
+        {%- endif -%}
         <footer class="cart__footer">
+          {%- if contains_soil_level_mix == true and contains_sod == false and fulfillment_method == 'delivery' -%}
+            <div class="grid">
+              <div class="grid__item medium-up--one-half large-up--seven-twelfths">
+                {%- unless contains_sod -%}
+                  <p class="cart__delivery-message cart__delivery-message--soil-level-mix">{{ 'layout.cart.delivery_soil_level_mix' | t }}</p>
+                {%- endunless -%}
+              </div>
+              <div class="grid__item medium-up--one-half large-up--five-twelfths">
+          {%- endif -%}
           <div class="text-right">
             <span class="cart__error-message cart__error-message--warning js-update-cart-message hide">Please update your cart <span class="arrow arrow--right"></span></span>
             <button type="submit" name="update" class="btn btn--secondary update-cart js-update-cart-button">
@@ -166,6 +204,10 @@
               <span>{{ 'cart.general.update' | t }}</span>
             </button>
           </div>
+          {%- if contains_soil_level_mix == true and contains_sod == false -%}
+              </div>
+            </div>
+          {%- endif -%}
           <div class="grid">
             {%- if invalid_fulfillment == false and has_custom_pricing == true -%}
               <div class="grid__item medium-up--one-third">
@@ -189,14 +231,13 @@
                     <dfn class="sr-only">{{ 'layout.cart.first_off_truck' | t }}</dfn>
                     {{ 'layout.cart.first_off_truck_explanation' | t }}
                   </p>
-                  {%- if contains_soil_level_mix -%}
-                    <p class="cart__delivery-message">{{ 'layout.cart.delivery_soil_level_mix' | t }}</p>
-                  {%- endif -%}
                 {%- else -%}
-                  <label for="pickup-method" class="cart__method-label">
-                    <input type="radio" name="attributes[_method]" class="js-delivery-type js-check-dates" id="pickup-method" value="pickup">
-                    {{ 'layout.cart.pickup' | t }}
-                  </label>
+                  <div>
+                    <label for="pickup-method" class="cart__method-label">
+                      <input type="radio" name="attributes[_method]" class="js-delivery-type js-check-dates" id="pickup-method" value="pickup" data-price="0">
+                      {{ 'layout.cart.pickup' | t }}
+                    </label>
+                  </div>
                 {%- endif -%}
                 <span class="js-checking-dates"></span>
                 <p class="cart__error-message hide js-no-dates">{{ 'layout.cart.no_date_available' | t }}</p>
@@ -229,13 +270,24 @@
                 <p class="cart__error-message hide js-dates-same">{{ 'layout.cart.same_dates' | t }}</p>
                 <p class="cart__error-message hide js-dates-invalid">{{ 'layout.cart.invalid_dates' | t }}</p>
               {%- endif -%}
-              <label for="CartSpecialInstructions" class="cart__note-label label--block">{{ 'cart.general.note' | t }}</label>
-              <textarea name="note" id="CartSpecialInstructions" class="input--block form__input cart__note{{textarea_extra_class}}" placeholder="{{ 'layout.cart.notes_placeholder' | t }}">{{ cart.note }}</textarea>
+              {%- if has_custom_pricing == false -%}
+                <label for="CartSpecialInstructions" class="cart__note-label label--block">{{ 'cart.general.note' | t }}</label>
+                <textarea name="note" id="CartSpecialInstructions" class="input--block js-cart-note form__input cart__note{{textarea_extra_class}}" placeholder="{{ 'layout.cart.notes_placeholder' | t }}">{{ cart.note }}</textarea>
+              {%- endif -%}
             </div>
             {%- assign push_class = '' -%}
-            {%- if invalid_fulfillment == false and has_custom_pricing == true  -%}
+            {%- if invalid_fulfillment == false and has_custom_pricing == true -%}
               {%- assign push_class = ' large-up--push-two-thirds' -%}
-              </div><div class="grid">
+              </div>
+              <div class="grid">
+                <div class="grid__item large-up--one-third">
+                  <label for="discount_code" class="cart__note-label label--block">Discount code</label>
+                  <input type="text" name="discount" id="discount_code" class="form__input js-discount-code">
+                </div>
+                <div class="grid__item large-up--two-thirds">
+                  <label for="CartSpecialInstructions" class="cart__note-label label--block">{{ 'cart.general.note' | t }}</label>
+                  <textarea name="note" id="CartSpecialInstructions" class="input--block js-cart-note form__input cart__note{{textarea_extra_class}}" placeholder="{{ 'layout.cart.notes_placeholder' | t }}">{{ cart.note }}</textarea>
+                </div>
             {%- endif -%}
             <div class="grid__item text-center large-up--one-third large-up--text-right{{push_class}}">
               {%- if cart.cart_level_discount_applications != blank -%}
@@ -257,7 +309,7 @@
 
               <div>
                 {%- if invalid_fulfillment -%}
-                  <p class="cart__error-message">You cannot mix fulfillment methods</p>
+                  <p class="cart__error-message">{{ 'layout.cart.cannot_mix_methods' | t }}</p>
                 {%- else -%}
                   {%- if invalid_fulfillment == false and has_custom_pricing == true -%}
                     <button type="button" name="checkout" class="btn full-width js-go-to-checkout" disabled>{{ 'cart.general.checkout' | t }}</button>
@@ -275,7 +327,7 @@
                 {%- endfor -%}
               </ul>
               <p class="cart__continue-shopping">
-                <a href="{{ routes.all_products_collection_url }}">
+                <a href="{{ routes.root_url }}">
                   {% render 'arrow-left' %}
                   {{ 'cart.general.continue_shopping' | t }}
                 </a>
@@ -285,9 +337,12 @@
         </footer>
         {%- comment -%}{% render 'shipping-calculator' %}{%- endcomment -%}
         {%- if invalid_fulfillment == false and has_custom_pricing == true -%}
-          <input type="hidden" name="attributes[customer_latitude]" class="js-address-latitude" value="{{cart.attributes.customer_latitude}}">
-          <input type="hidden" name="attributes[customer_longitude]" class="js-address-longitude" value="{{cart.attributes.customer_longitude}}">
-          <input type="hidden" name="attributes[zip_code]" class="js-address-zip" value="{{cart.attributes.zip_code}}">
+          <input type="hidden" data-name="customer_latitude" name="attributes[customer_latitude]" class="js-cart-attribute js-address-latitude" value="{{cart.attributes.customer_latitude}}">
+          <input type="hidden" data-name="customer_longitude" name="attributes[customer_longitude]" class="js-cart-attribute js-address-longitude" value="{{cart.attributes.customer_longitude}}">
+          <input type="hidden" data-name="zip_code" name="attributes[zip_code]" class="js-cart-attribute js-address-zip" value="{{cart.attributes.zip_code}}">
+          {%- if cart.attributes.pickup_address != blank -%}
+            <input type="hidden" data-name="pickup_address" name="attributes[pickup_address]" class="js-cart-attribute js-address-pickup" value="{{cart.attributes.pickup_address}}">
+          {%- endif -%}
         {%- endif -%}
       </form>
     {% else %}
@@ -307,8 +362,10 @@
   <script>
     {%- if invalid_fulfillment == false and has_custom_pricing == true -%}
       const hasCustomPricing = true;
-      const cartItems = [{% for item in cart.items %}{
+    {%- endif -%}
+    const cartItems = [{% for item in cart.items %}{
         {%- assign item_value = 0 -%}
+        {%- assign product_type = item.product.type | downcase -%}
         {%- if item.properties._custom_price != blank -%}
           {%- assign item_value = item.properties._custom_price | times: 100 -%}
         {%- elsif item.original_price != item.final_price -%}
@@ -318,7 +375,9 @@
         {%- endif -%}
         {%- assign item_price = item_value | money_without_currency | replace: ',', '' -%}
         {%- if item.properties._bold_bundles_price != blank -%}
+          {%- assign product_type = 'bundle' -%}
           {%- assign item_price = item.properties._bold_bundles_price | times: item.quantity | money_without_currency | replace: ',', '' -%}
+          full_price: {{item.final_line_price | times: 0.01}},
         {%- endif -%}
         variant_id: {{item.id}}, quantity: {{item.quantity}}, price: {{item_price}},
         {%- if item.properties -%}
@@ -328,8 +387,8 @@
             {%- endfor -%}
           },
         {%- endif -%}
-        product_type: {{item.product.type | downcase | json}}, product_id: {{item.product.id}}
+        product_type: {{product_type | json}}, product_id: {{item.product.id}},
+        product_name: '{{item.product.title}}', product_image: '{{item.image | img_url: "100x100"}}'
       }{%- unless forloop.last -%},{%- endunless -%}{% endfor %}];
-    {%- endif -%}
   </script>
 {%- endif -%}
