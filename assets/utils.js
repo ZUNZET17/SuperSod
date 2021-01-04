@@ -89,9 +89,15 @@ const Utils = (function () {
     return s.charAt(0).toUpperCase() + s.slice(1);
   }
 
+  const dateStringToMilliseconds = function (date) {
+    const milliDate = new Date(date);
+    return milliDate.getTime();
+  };
+
   return {
     addToCartParameters: addToCartParameters,
     capitalize: capitalize,
+    dateStringToMilliseconds: dateStringToMilliseconds,
     formatMoneyWithPrecision: formatMoneyWithPrecision,
     onlyNumbers: onlyNumbers
   };

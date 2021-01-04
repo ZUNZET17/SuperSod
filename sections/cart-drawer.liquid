@@ -97,7 +97,7 @@
 
         <div class="cart-summary__item-list-header cart-summary__section cart-accordion-btn-container">
           <h6 class="cart-summary__item-list-header__title">{{ 'cart.cart_summary.products_header' | t }}</h6>
-          <small class="cart-summary__item-list-header__count">{{ 'cart.cart_summary.item_count' | t: count: cart.item_count }}</small>
+          <small class="cart-summary__item-list-header__count">{{ 'cart.cart_summary.item_count' | t: count: cart.items.size }}</small>
           <button class="cart-accordion-btn btn plain-text">{% render 'svg-chevron-down' %}</button>
         </div>
 

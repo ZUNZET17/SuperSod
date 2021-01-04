@@ -73,7 +73,13 @@
 
     <header class="banner" data-header role="banner">
       <div class="wrap">
+        {%- unless content_for_logo contains '<a' -%}
+          <a href="{{ routes.cart_url }}" title="{{ 'layout.checkout.back_to_cart' | t }}">
+        {%- endunless -%}
         {{ content_for_logo }}
+        {%- unless content_for_logo contains '<a' -%}
+          </a>
+        {%- endunless -%}
       </div>
     </header>
 
@@ -82,7 +88,13 @@
       <div class="wrap">
         <div class="main">
           <header class="main__header" role="banner">
+            {%- unless content_for_logo contains '<a' -%}
+              <a href="{{ routes.cart_url }}" title="{{ 'layout.checkout.back_to_cart' | t }}">
+            {%- endunless -%}
             {{ content_for_logo }}
+            {%- unless content_for_logo contains '<a' -%}
+              </a>
+            {%- endunless -%}
             {{ breadcrumb }}
             {{ alternative_payment_methods }}
           </header>
@@ -95,7 +107,13 @@
         </div>
         <aside class="sidebar" role="complementary">
           <div class="sidebar__header">
+            {%- unless content_for_logo contains '<a' -%}
+              <a href="{{ routes.cart_url }}" title="{{ 'layout.checkout.back_to_cart' | t }}">
+            {%- endunless -%}
             {{ content_for_logo }}
+            {%- unless content_for_logo contains '<a' -%}
+              </a>
+            {%- endunless -%}
           </div>
           <div class="sidebar__content">
             {{ content_for_order_summary }}

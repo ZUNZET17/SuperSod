@@ -30,11 +30,10 @@ const Cart = (function () {
 
   const updateCalendars = function (index) {
     for (let i = 0; i < calendarHandles.length; i++) {
-      if (i === index) {
-        continue;
-      } else if (chosenDates.length < 1) {
-        $('.js-tail-datetime-field-' + (i + 1)).val('');
-        $('.js-tail-datetime-field-' + (i + 1)).data('value', '');
+      if (i !== index && chosenDates.length < 1) {
+        const dateField = $('.js-tail-datetime-field-' + (i + 1));
+        dateField.val('');
+        dateField.data('value', '');
       }
     }
 
@@ -60,7 +59,7 @@ const Cart = (function () {
     }
   };
 
-  const updateOtherCalendars = function (index) {
+  const updateOtherCalendars = function () {
     if (!firstTime) {
       updateChosenDates();
       firstTime = false;
@@ -73,7 +72,7 @@ const Cart = (function () {
     for (let i = 0; i < 3; i++) {
       const input = $('.js-tail-datetime-field-' + (i + 1));
       if (input.val()) {
-        const date = dateStringToMilliseconds(input.val() + ' 00:00:00');
+        const date = Utils.dateStringToMilliseconds(input.val() + ' 00:00:00');
         chosenDates.push(date);
       }
     }
@@ -115,7 +114,7 @@ const Cart = (function () {
       for (let index = 0; index < data.available_dates.length; index++) {
         if (typeof data.available_dates[index] !== 'undefined') {
           const modifiedDate = data.available_dates[index].replace(/T.+/g, '');
-          const milliseconds = dateStringToMilliseconds(modifiedDate + ' 00:00:00');
+          const milliseconds = Utils.dateStringToMilliseconds(modifiedDate + ' 00:00:00');
           availableDates.push(milliseconds);
         }
       }
@@ -136,18 +135,13 @@ const Cart = (function () {
   const getDateRangesMilliseconds = function (dates) {
     return dates.map(function (date) {
       const modifiedDate = date.replace(/T.+/g, '');
-      const milliseconds = dateStringToMilliseconds(modifiedDate + ' 00:00:00');
+      const milliseconds = Utils.dateStringToMilliseconds(modifiedDate + ' 00:00:00');
       return {
         days: true,
         end: milliseconds,
         start: milliseconds
       };
     });
-  };
-
-  const dateStringToMilliseconds = function (date) {
-    const milliDate = new Date(date);
-    return milliDate.getTime();
   };
 
   const validateCheckout = function (ev) {
@@ -214,7 +208,6 @@ const Cart = (function () {
       dates: dates,
       originalText: originalText
     };
-    // processDates(settings);
     sendOrderData(settings);
   };
 
@@ -231,8 +224,17 @@ const Cart = (function () {
     });
   };
 
-  const sendOrderData = function (settings) {
-    const cartItemsString = cartItems.reduce(function (acc, item) {
+  const getCartAttributesElementsValue = function () {
+    let cartAttributes = '';
+    $('.js-cart-attribute').each(function (i, el) {
+      cartAttributes += (cartAttributes !== '' ? '&' : '');
+      cartAttributes += 'cart_attributes[]' + el.dataset.name + '=' + el.value;
+    });
+    return cartAttributes;
+  }
+
+  const getCartItemsString = function () {
+    return cartItems.reduce(function (acc, item) {
       return acc + (acc === '' ? '' : '&') +
         'products[]variant_id=' + item.variant_id +
         '&products[]quantity=' + item.quantity +
@@ -243,11 +245,11 @@ const Cart = (function () {
         (item.product_type.toLowerCase() === 'sod' ? '&products[]product_image=' + item.product_image : '') +
         '&products[]product_type=' + item.product_type
     }, '');
-    let cartAttributes = '';
-    $('.js-cart-attribute').each(function (i, el) {
-      cartAttributes += (cartAttributes !== '' ? '&' : '');
-      cartAttributes += 'cart_attributes[]' + el.dataset.name + '=' + el.value;
-    });
+  }
+
+  const sendOrderData = function (settings) {
+    const cartItemsString = getCartItemsString();
+    const cartAttributes = getCartAttributesElementsValue();
     const ajaxData =
       'delivery_type=' + $('.js-delivery-type:checked').val() +
       '&shop_domain=' + theme.routes.validation_tool_shop +
@@ -280,8 +282,9 @@ const Cart = (function () {
   const resetCheckoutForm = function (ev) {
     $('.js-go-to-checkout').prop('disabled', true);
     for (let i = 0; i < 3; i++) {
-      $('.js-tail-datetime-field-' + (i + 1)).val('');
-      $('.js-tail-datetime-field-' + (i + 1)).data('value', '');
+      const dateField = $('.js-tail-datetime-field-' + (i + 1));
+      dateField.val('');
+      dateField.data('value', '');
     }
   };
 

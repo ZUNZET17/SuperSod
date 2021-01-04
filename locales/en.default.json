@@ -294,6 +294,9 @@
       "cannot_mix_methods": "Pickups and Deliveries cannot be combined in the same order.",
       "no_checkout_available": "An error ocurred while processing your request"
     },
+    "checkout": {
+      "back_to_cart": "Go back to cart"
+    },
     "customer": {
       "account": "Account",
       "logged_in_as_html": "Logged in as {{ first_name }}",
