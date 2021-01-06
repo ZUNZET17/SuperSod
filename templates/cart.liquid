@@ -363,6 +363,7 @@
     {%- if invalid_fulfillment == false and has_custom_pricing == true -%}
       const hasCustomPricing = true;
     {%- endif -%}
+    window.localStorage.removeItem('delivery_type');
     const cartItems = [{% for item in cart.items %}{
         {%- assign item_value = 0 -%}
         {%- assign product_type = item.product.type | downcase -%}

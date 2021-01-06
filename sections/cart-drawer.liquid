@@ -160,6 +160,15 @@
                     {% endfor %}
                     </ul>
                   {% endif %}
+                  {%- assign item_value = 0 -%}
+                  {%- if item.properties._custom_price != blank -%}
+                    {%- assign item_value = item.properties._custom_price | times: 100 -%}
+                  {%- elsif item.original_price != item.final_price -%}
+                    {%- assign item_value = item.final_price -%}
+                  {%- else -%}
+                    {%- assign item_value = item.original_price -%}
+                  {%- endif -%}
+                  {%- assign item_price = item_value | money_without_currency | replace: ',', '' -%}
                   <div class="cart-summary-item__quantity">
                     <div class="qty-adjuster qty-adjuster--with-remove qty-adjuster--ajax" data-line-item-id="{{ item.id }}" {% if item.variant.inventory_management == 'shopify' and item.variant.inventory_policy == 'deny' %}data-limit="{{ item.variant.inventory_quantity }}"{% endif %}>
                       <div class="qty-adjuster__inner">
@@ -169,9 +178,10 @@
                           aria-label="{{ 'cart.label.quantity' | t | escape }}"
                           {% if cart.attributes.customer_latitude != blank %} data-latitude="{{cart.attributes.customer_latitude}}"{% endif %}
                           {% if cart.attributes.customer_longitude != blank %} data-longitude="{{cart.attributes.customer_longitude}}"{% endif %}
-                          data-original-price="{{item.original_price | money_without_currency}}"
+                          data-original-price="{{item_value | money_without_currency}}"
                           data-product-id="{{item.product.id}}"
                           data-line="{{forloop.index}}"
+                          data-quantity="{{item.quantity}}"
                           data-properties='{{item.properties | json}}'
                           {% if item.properties._zip != blank %} data-zip="{{item.properties._zip}}"{% endif %}
                           {% if item.properties._custom_increment != blank %} step="{{item.properties._custom_increment}}"{% endif %}>

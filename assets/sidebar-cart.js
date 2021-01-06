@@ -311,40 +311,49 @@ $(document).on('change', '.qty-adjuster--ajax .qty-adjuster__value', function (e
     theme.cartLoadingStarted();
 
     if (input.data('latitude')) {
+      const step = parseInt(input.prop('step'));
+      const unitPrice = parseFloat(input.data('original-price')) / (parseInt(input.data('quantity')) / step);
       const productData = {
         latitude: input.data('latitude'),
         longitude: input.data('longitude'),
         product_id: input.data('product-id'),
-        quantity: input.val(),
+        quantity: parseInt(input.val()),
         shop_domain: theme.routes.validation_tool_shop,
-        unit_price: input.data('original-price'),
+        unit_price: (unitPrice / step),
         zipcode: input.data('zip')
-      }
+      };
       const properties = transformPropertiesToJSON(input.data('properties'));
       postData.line = input.data('line');
+      console.log(productData);
 
       if (productData.quantity > 0) {
-        const ajax = $.ajax({
-          type: 'GET',
-          url: theme.routes.validation_tool_url + 'pricing_info',
-          data: productData,
-          timeout: 3000
-        });
-    
-        ajax.done(function (data) {
-          properties._custom_price = data.total_price;
-          postData.properties = properties;
-    
-          qtyAdjustXhttp = $.post(theme.routes.cart_url + '/change.js', postData, function (data) {
-            theme.updateCartSummaries(false);
-            theme.loadInPlaceQuantityAdjustment($('body'), data);
-            qtyAdjustXhttp = null;
-          }, 'json').always(function () {
-            theme.cartLoadingFinished();
+        properties._custom_price = productData.unit_price * productData.quantity;
+        if (properties._method === 'delivery') {
+          const ajax = $.ajax({
+            type: 'GET',
+            url: theme.routes.validation_tool_url + 'pricing_info',
+            data: productData,
+            timeout: 3000
           });
-        });
-        return;
+
+          ajax.done(function (data) {
+            properties._custom_price = data.total_price;
+            postData.properties = properties;
+
+            qtyAdjustXhttp = $.post(theme.routes.cart_url + '/change.js', postData, function (data) {
+              theme.updateCartSummaries(false);
+              theme.loadInPlaceQuantityAdjustment($('body'), data);
+              qtyAdjustXhttp = null;
+            }, 'json').always(function () {
+              theme.cartLoadingFinished();
+            });
+          });
+          return;
+        }
+
+        postData.properties = properties;
       }
+      console.log(':/');
     }
 
     qtyAdjustXhttp = $.post(theme.routes.cart_url + '/change.js', postData, function (data) {

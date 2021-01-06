@@ -238,7 +238,7 @@ const Cart = (function () {
       return acc + (acc === '' ? '' : '&') +
         'products[]variant_id=' + item.variant_id +
         '&products[]quantity=' + item.quantity +
-        '&products[]price=' + item.price +
+        '&products[]price=' + (item.price / item.quantity) +
         (typeof item.full_price !== 'undefined' ? '&products[]full_price=' + item.full_price : '') +
         '&products[]product_id=' + item.product_id +
         (item.product_type.toLowerCase() === 'sod' ? '&products[]product_name=' + item.product_name : '') +
