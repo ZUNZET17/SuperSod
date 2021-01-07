@@ -107,7 +107,7 @@ const Product = (function () {
       checkNonSodAvailability(zipCode, $(ev.target));
       return;
     }
-    checkProductAvailability(zipCode, $(ev.target));
+    checkProductZoneAvailability(zipCode, $(ev.target));
   };
 
   const checkBundleProductsInfo = function (links, zipCode, button) {
@@ -250,7 +250,48 @@ const Product = (function () {
     });
   };
 
-  const checkProductAvailability = function (zipCode, button) {
+  const checkProductZoneAvailability = function (zipCode, button, productIds) {
+    const endpoint = 'available_in_zone';
+    let productString = '&products[]shopify_product_id=' + productData.id;
+
+    if (typeof productIds !== 'undefined' && productIds !== '') {
+      productString = '&' + productIds;
+    }
+    const ajaxData =
+      'zipcode=' + zipCode + productString +
+      '&shop_domain=' + theme.routes.validation_tool_shop;
+
+    const originalText = button.html();
+    button.html('Checking ...');
+    const ajax = $.ajax({
+      type: 'GET',
+      url: theme.routes.validation_tool_url + endpoint,
+      data: ajaxData,
+      timeout: 3000
+    });
+    ajax.done(function (response) {
+      const deliveryMethod = $('.js-delivery-method:checked').val();
+      if (
+        typeof response.message !== 'undefined' ||
+        response.data.length < 1 ||
+        response.data[0].available_in_zone === false ||
+        response.data[0][deliveryMethod] === false
+      ) {
+        button.html(originalText);
+        hideFormElements();
+        return;
+      }
+
+      button.html(originalText);
+      checkProductPricing(zipCode, button);
+    })
+    .fail(function (response) {
+      button.html(originalText);
+      hideFormElements();
+    });
+  };
+
+  const checkProductPricing = function (zipCode, button) {
     const originalText = button.html();
     const deliveryMethod = $('.js-delivery-method:checked').val();
     const latitude = $('.js-address-latitude').val();
@@ -265,7 +306,7 @@ const Product = (function () {
       unit_price: $('.js-product-variants option:selected').data('price-val'),
       zipcode: zipCode
     };
-    const endpoint = deliveryMethod === 'pickup' ? 'nearest_locations' : 'pricing_info';
+    const endpoint = deliveryMethod === 'pickup' ? 'nearest_locations_price' : 'pricing_info';
 
     button.html('Checking ...');
     $('.js-current-price-unit').html('');
@@ -295,7 +336,7 @@ const Product = (function () {
       if (deliveryMethod === 'pickup') {
         enableNearestLocations(typeof data.nearest_locations !== 'undefined' ? data.nearest_locations : null);
         $('.js-product-pickup-variants').trigger('change');
-        const totalPrice = $('.js-product-variants option:selected').data('price-val') * $('.js-product-quantity').val();
+        const totalPrice = $('.js-product-pickup-variants option:selected').data('price') * $('.js-product-quantity').val();
         showProductPricing({
           additional_miles_cost: 0,
           fulfillment: 'pickup',
@@ -346,7 +387,18 @@ const Product = (function () {
     chooseVariant('pickup');
     if (data != null && typeof data !== 'undefined') {
       const options = data.reduce(function (acc, customLocation) {
-        return acc + '<option value="' + customLocation + '">' + customLocation + '</option>';
+        return (
+          acc +
+          '<option value="' +
+          customLocation.location_name +
+          '"' +
+          (customLocation.unit_price
+            ? ' data-price="' + customLocation.unit_price + '"'
+            : "") +
+          ">" +
+          customLocation.location_name +
+          "</option>"
+        );
       }, '');
       dropdown.html(options);
     }
@@ -366,10 +418,14 @@ const Product = (function () {
       return;
     }
 
+    if (isNaN(data.total_price)) {
+      return;
+    }
+
     const type = data.fulfillment == 'delivery' ? 'Delivered' : 'Pickup';
     productObject.fullPrice = data.total_price * 100;
     $('.js-custom-value').val(productObject.fullPrice / 100);
-    priceElement.html(type + ' price: ' + Shopify.formatMoney(productObject.fullPrice, theme.money_format));
+    priceElement.html(type + ' price: ' + Shopify.formatMoney(productObject.fullPrice, theme.moneyFormat));
     priceElement.removeClass('hide');
   };
 
@@ -411,7 +467,7 @@ const Product = (function () {
   const chooseVariant = function (value) {
     const variants = getVariants();
     const foundVariant = variants.filter(function (variant) {
-      return variant.text.indexOf(value) > -1;
+      return variant.text.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) > -1;
     });
     changeDropdownOptions(foundVariant.length > 0 ? foundVariant[0].id : null);
   };
@@ -571,26 +627,30 @@ const Product = (function () {
       return selectedVariant.indexOf(variant.text) > -1;
     });
 
+    let fullValue = 0;
     if (foundVariant.length > 0) {
-      const fullValue = foundVariant[0].priceValue * $('.js-product-quantity').val();
+      fullValue = foundVariant[0].priceValue * $('.js-product-quantity').val();
       selectVariant(foundVariant[0]);
-      showProductPricing({additional_miles_cost: 0, fulfillment: 'pickup', total_price: fullValue})
+    } else if (
+      typeof usesVariantToggle === 'undefined' &&
+      typeof usesRegularToggle === 'undefined' &&
+      typeof select.options[select.selectedIndex].dataset.price !== 'undefined'
+    ) {
+      fullValue = select.options[select.selectedIndex].dataset.price * $('.js-product-quantity').val();
+      chooseVariant('pickup');
+    } else {
+      fullValue = $('.js-product-variants option:selected').data('price-val') * $('.js-product-quantity').val();
+      chooseVariant('pickup');
     }
+    showProductPricing({
+      additional_miles_cost: 0,
+      fulfillment: 'pickup',
+      total_price: fullValue
+    });
 
     const boldLinks = $('.js-product-form .bold-bundles-child-product__link');
     if (boldLinks.length > 0) {
-      const deliveryMethodInput = $('.js-delivery-method:checked')[0];
-      const zipCode = $('.js-zip-code')[0];
-      let parameters = [];
-      parameters.push({parameter: 'zip_code', value: zipCode.value});
-      parameters.push({parameter: 'delivery_method', value: deliveryMethodInput.value});
-      parameters.push({parameter: 'customer_address', value: $('.js-autocomplete-address').val()});
-      if (deliveryMethodInput.value === 'pickup') {
-        parameters.push({parameter: 'pickup_address', value: selectedVariant});
-      }
-      if (typeof parameters === 'object' && parameters.length > 1) {
-        Utils.addToCartParameters(parameters);
-      }
+      addBoldBundleParameters(selectedVariant);
     }
   };
 
@@ -599,6 +659,21 @@ const Product = (function () {
     $('.js-product-variants').val(variant.id);
     productObject.variantId = variant.id;
     toggleSubmitButton('enable');
+  };
+
+  const addBoldBundleParameters = function (selectedVariant) {
+    const deliveryMethodInput = $('.js-delivery-method:checked')[0];
+    const zipCode = $('.js-zip-code')[0];
+    let parameters = [];
+    parameters.push({parameter: 'zip_code', value: zipCode.value});
+    parameters.push({parameter: 'delivery_method', value: deliveryMethodInput.value});
+    parameters.push({parameter: 'customer_address', value: $('.js-autocomplete-address').val()});
+    if (deliveryMethodInput.value === 'pickup') {
+      parameters.push({parameter: 'pickup_address', value: selectedVariant});
+    }
+    if (typeof parameters === 'object' && parameters.length > 1) {
+      Utils.addToCartParameters(parameters);
+    }
   };
 
   const changeDropdownOptions = function (id) {
