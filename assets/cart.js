@@ -125,7 +125,11 @@ const Cart = (function () {
       $('.js-go-to-checkout').prop('disabled', false);
       const subtotalElement = $('.js-cart-subtotal')
       const subtotal = parseFloat(subtotalElement.data('value')) + addedValue;
-      subtotalElement.html( Shopify.formatMoney(subtotal) );
+      const formattedSubtotal =
+        typeof Shopify.formatMoney !== 'undefined'
+          ? Shopify.formatMoney(subtotal)
+          : Utils.formatMoneyWithPrecision(subtotal);
+      subtotalElement.html( formattedSubtotal );
     }).fail(function () {
       button.html(originalText);
       noDatesInfo.removeClass('hide');
@@ -250,8 +254,9 @@ const Cart = (function () {
   const sendOrderData = function (settings) {
     const cartItemsString = getCartItemsString();
     const cartAttributes = getCartAttributesElementsValue();
+    const deliveryType = $('.js-delivery-type:checked').val();
     const ajaxData =
-      'delivery_type=' + $('.js-delivery-type:checked').val() +
+      'delivery_type=' + deliveryType +
       '&shop_domain=' + theme.routes.validation_tool_shop +
       '&schedule_dates=' + (settings.dates.join(',')) +
       '&note=' + $('.js-cart-note').val() +
@@ -259,7 +264,12 @@ const Cart = (function () {
       '&' + cartAttributes +
       '&' + cartItemsString;
 
-    window.localStorage.setItem('delivery_type', $('.js-delivery-type:checked').val());
+    window.localStorage.setItem('delivery_type', deliveryType);
+    if (cartDeliveryMethod === 'delivery') {
+      window.localStorage.setItem('delivery_method', cartDeliveryMethod);
+      window.localStorage.setItem('delivery_address', cartDeliveryAddress);
+      window.localStorage.setItem('delivery_zipcode', cartZipCode);
+    }
     const ajax = $.ajax({
       type: 'GET',
       url: theme.routes.validation_tool_url + 'draft_orders',
@@ -312,6 +322,15 @@ const Cart = (function () {
   };
 
   const interceptCartSubmit = function (ev) {
+    const deliveryType = $('.js-delivery-type:checked').val();
+
+    window.localStorage.setItem('delivery_type', deliveryType);
+    if (cartDeliveryMethod === 'delivery') {
+      window.localStorage.setItem('delivery_method', cartDeliveryMethod);
+      window.localStorage.setItem('delivery_address', cartDeliveryAddress);
+      window.localStorage.setItem('delivery_zipcode', cartZipCode);
+    }
+
     if (typeof hasCustomPricing === 'undefined') {
       return;
     }

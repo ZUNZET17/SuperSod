@@ -46,6 +46,9 @@
         .btn:hover, .sp-modal-toggle:hover {
           background-color: {{settings.checkout_link_color}};
         }
+        .btn--subdued {
+          color: #FFFFFF;
+        }
         .input-checkbox:checked, .input-radio:checked {
           -webkit-box-shadow: 0 0 0 10px {{settings.checkout_link_color}} inset;
           box-shadow: 0 0 0 10px {{settings.checkout_link_color}} inset;
@@ -146,11 +149,48 @@
         }
       };
 
+      const fillStorageAddress = function () {
+        if (
+          window.localStorage.getItem('delivery_address') === null ||
+          window.localStorage.getItem('delivery_address') === '' ||
+          window.localStorage.getItem('delivery_method') === null ||
+          window.localStorage.getItem('delivery_method') === 'pickup'
+        ) {
+          return;
+        }
+
+        const parts = (window.localStorage.getItem('delivery_address')).split(', ');
+        if (parts.length < 1) {
+          return;
+        }
+
+        const elementIds = ['address_address1', 'address_city', 'address_province'];
+        const checkoutType = document.getElementById('checkout_shipping_address_address1') ? 'shipping' : 'billing';
+        for (let i = 0; i < elementIds.length; i++) {
+          if (typeof parts[i] !== 'undefined') {
+            const element = document.getElementById('checkout_' + checkoutType + '_' + elementIds[i]);
+            element.value = parts[i];
+            element.readOnly = true;
+          }
+        }
+
+        if (
+          window.localStorage.getItem('delivery_zipcode') !== null &&
+          window.localStorage.getItem('delivery_zipcode') !== ''
+        ) {
+          document.getElementById('checkout_' + checkoutType + '_address_zip').value = window.localStorage.getItem('delivery_zipcode');
+        }
+      };
+
       if (
         Shopify.Checkout.step === 'shipping_method' &&
         window.localStorage.getItem('delivery_type') !== null
       ) {
         hideShippingMethods();
+      } else if (Shopify.Checkout.step === 'contact_information') {
+        setTimeout(function () {
+          fillStorageAddress();
+        }, 1000);
       }
     </script>
   </body>
