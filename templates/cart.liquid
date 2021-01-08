@@ -369,6 +369,7 @@
     window.localStorage.removeItem('delivery_zipcode');
     const cartDeliveryMethod = '{{ cart.attributes.delivery_method }}';
     const cartDeliveryAddress = '{{ cart.attributes.customer_address }}';
+    const cartPickupAddress = '{{ cart.attributes.pickup_address }}';
     const cartZipCode = '{{ cart.attributes.zip_code }}';
     const cartItems = [{% for item in cart.items %}{
         {%- assign item_value = 0 -%}
