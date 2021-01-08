@@ -44,7 +44,7 @@
   {%- endif -%}{%- endcomment -%}
   <link rel="stylesheet" media="screen" href="{{ 'theme.scss.css' | asset_url }}">
   <link rel="stylesheet" media="screen" href="{{ 'header.scss.css' | asset_url }}">
-  <link rel="stylesheet" rel="preload" as="style" href="{{ 'forms.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="{{ 'forms.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
   {%- if template.name == 'account' or template.name == 'order' or template.name == 'addresses' -%}
     <link rel="stylesheet" href="{{'account.scss.css' | asset_url}}">
   {%- endif -%}
@@ -77,6 +77,38 @@
     <link rel="preload" as="style" href="{{ 'tail.datetime-harx-light.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
     <link rel="preload" as="style" href="{{ 'cart.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
   {%- endif -%}
+  <noscript>
+    <link rel="stylesheet" href="{{ 'forms.scss.css' | asset_url }}">
+    {%- if template.name == 'index' -%}
+    <link rel="stylesheet" href="{{ 'home.scss.css' | asset_url }}">
+    {%- endif -%}
+    <link rel="stylesheet" href="{{ 'site-footer.scss.css' | asset_url }}">
+    {%- unless request.page_type == 'cart' -%}
+      <link rel="stylesheet" href="{{ 'sidebar-cart.scss.css' | asset_url }}">
+    {%- endunless -%}
+    {%- if template.name == 'login' or template.name == 'register' -%}
+      <link rel="stylesheet" href="{{ 'sign-in-up.scss.css' | asset_url }}">
+    {%- endif -%}
+    {%- if template.name == 'product' or template.name == 'collection' or template.name == 'search' -%}
+      <link rel="stylesheet" href="{{ 'products-collections.scss.css' | asset_url }}">
+    {%- endif -%}
+    {%- if template.name == 'product' -%}
+      <link rel="stylesheet" href="{{ 'tabs.scss.css' | asset_url }}">
+    {%- endif -%}
+    {%- if template.name == 'product' or template.name == 'cart' -%}
+      <link rel="stylesheet" href="{{ 'product.scss.css' | asset_url }}">
+    {%- endif -%}
+    {%- if template.name == 'collection' -%}
+      <link rel="stylesheet" href="{{ 'collection.scss.css' | asset_url }}">
+    {%- endif -%}
+    {%- if template.name == 'index' -%}
+      <link rel="stylesheet" href="{{ 'collection-grid-item.scss.css' | asset_url }}">
+    {%- endif -%}
+    {%- if template.name == 'cart' -%}
+      <link rel="stylesheet" href="{{ 'tail.datetime-harx-light.css' | asset_url }}">
+      <link rel="stylesheet" href="{{ 'cart.scss.css' | asset_url }}">
+    {%- endif -%}
+  </noscript>
 </head>
 {%- assign show_breadcrumb = true -%}
 {%- assign show_hr = false -%}
@@ -191,6 +223,19 @@
   {{ shopify_scripts | strip }}
   {% comment %} {{ shopify_scripts | replace: 'previewBarInjector.init();', '' | strip }} {% endcomment %}
   <!-- End shopify marketing and plugin stuff -->
+  <script>
+    const loadPreloadedStyles = function () {
+      let elements = document.querySelectorAll('link[as=style]');
+      if (elements.length < 1) {
+        return;
+      }
+      elements.forEach(function (element) {
+        element.rel = 'stylesheet';
+        element.onload = null;
+      });
+    };
+    loadPreloadedStyles();
+  </script>
   <script src="{{ 'lazysizes.min.js' | asset_url }}" defer></script>
   {% if request.page_type contains 'customers/'  or template.name == 'cart' %}
     <script src="{{ 'shopify_common.js' | shopify_asset_url }}" defer></script>
@@ -217,19 +262,6 @@
     <script src="{{ 'tail.datetime.min.js' | asset_url }}" defer></script>
     <script src="{{ 'cart.js' | asset_url }}" defer></script>
   {%- endif -%}
-  <script>
-    const loadPreloadedStyles = function () {
-      let elements = document.querySelectorAll('link[as=style]');
-      if (elements.length < 1) {
-        return;
-      }
-      elements.forEach(function (element) {
-        element.rel = 'stylesheet';
-        element.onload = null;
-      });
-    };
-    loadPreloadedStyles();
-  </script>
 
   {%- if template.name != 'index' and template.name != 'collection' and template.name != 'account'-%}
     {%- render 'bold-common' -%}
