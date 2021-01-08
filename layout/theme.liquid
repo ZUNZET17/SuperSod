@@ -42,8 +42,17 @@
   {%- comment -%}{%- if template.name == 'product' and product.tags contains 'pallet' -%}
     {%- assign use_pallet = true -%}
   {%- endif -%}{%- endcomment -%}
-  <link rel="stylesheet" media="screen" href="{{ 'theme.scss.css' | asset_url }}">
-  <link rel="stylesheet" media="screen" href="{{ 'header.scss.css' | asset_url }}">
+  {%- if template.name == 'index' -%}
+    <style>{% render 'home-critical' %}</style>
+  {%- elsif template.name == 'product' -%}
+    <style>{% render 'product-critical' %}</style>
+  {%- elsif template.name == 'product' -%}
+    <style>{% render 'collection-critical' %}</style>
+  {%- else -%}
+    <style>{% render 'home-critical' %}</style>
+  {%- endif -%}
+  <link rel="preload" as="style" media="screen" href="{{ 'theme.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" media="screen" href="{{ 'header.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
   <link rel="preload" as="style" href="{{ 'forms.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
   {%- if template.name == 'account' or template.name == 'order' or template.name == 'addresses' -%}
     <link rel="stylesheet" href="{{'account.scss.css' | asset_url}}">
@@ -78,6 +87,8 @@
     <link rel="preload" as="style" href="{{ 'cart.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
   {%- endif -%}
   <noscript>
+    <link rel="stylesheet" media="screen" href="{{ 'theme.scss.css' | asset_url }}">
+    <link rel="stylesheet" media="screen" href="{{ 'header.scss.css' | asset_url }}">
     <link rel="stylesheet" href="{{ 'forms.scss.css' | asset_url }}">
     {%- if template.name == 'index' -%}
     <link rel="stylesheet" href="{{ 'home.scss.css' | asset_url }}">
