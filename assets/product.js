@@ -207,6 +207,7 @@ const Product = (function () {
           zipcode: zipCode
         }, function () {
           toggleSubmitButton('show', buttonClassname);
+          $('.bold_clone').removeClass('js-product-submit');
           showButtonMessage('pickup');
           if (
             typeof usesVariantToggle !== 'undefined' ||
@@ -217,6 +218,7 @@ const Product = (function () {
         });
       } else {
         toggleSubmitButton('show', buttonClassname);
+        $('.bold_clone').removeClass('js-product-submit');
         showButtonMessage('delivery');
         if (
           typeof usesVariantToggle !== 'undefined' ||
@@ -390,13 +392,13 @@ const Product = (function () {
         return (
           acc +
           '<option value="' +
-          customLocation.location_name +
+          (typeof customLocation.location_name !== 'undefined' ? customLocation.location_name : customLocation) +
           '"' +
           (customLocation.unit_price
             ? ' data-price="' + customLocation.unit_price + '"'
             : "") +
           ">" +
-          customLocation.location_name +
+          (typeof customLocation.location_name !== 'undefined' ? customLocation.location_name : customLocation) +
           "</option>"
         );
       }, '');
@@ -507,6 +509,7 @@ const Product = (function () {
 
     $('.js-quantity-input-' + (input.value)).trigger('change');
     $('.js-increment-value').val( $('.js-quantity-input-' + (input.value)).prop('min') );
+    $('.bold_clone').addClass('js-product-submit');
   };
 
   const checkQuantityIncrement = function (ev) {
