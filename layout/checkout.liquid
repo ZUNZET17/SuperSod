@@ -77,7 +77,7 @@
     <header class="banner" data-header role="banner">
       <div class="wrap">
         {%- unless content_for_logo contains '<a' -%}
-          <a href="{{ routes.cart_url }}" title="{{ 'layout.checkout.back_to_cart' | t }}">
+          <a href="{{ shop.secure_url }}" title="{{ 'cart.general.continue_shopping' | t }}">
         {%- endunless -%}
         {{ content_for_logo }}
         {%- unless content_for_logo contains '<a' -%}
@@ -92,7 +92,7 @@
         <div class="main">
           <header class="main__header" role="banner">
             {%- unless content_for_logo contains '<a' -%}
-              <a href="{{ routes.cart_url }}" title="{{ 'layout.checkout.back_to_cart' | t }}">
+              <a href="{{ shop.secure_url }}" title="{{ 'cart.general.continue_shopping' | t }}">
             {%- endunless -%}
             {{ content_for_logo }}
             {%- unless content_for_logo contains '<a' -%}
@@ -111,7 +111,7 @@
         <aside class="sidebar" role="complementary">
           <div class="sidebar__header">
             {%- unless content_for_logo contains '<a' -%}
-              <a href="{{ routes.cart_url }}" title="{{ 'layout.checkout.back_to_cart' | t }}">
+              <a href="{{ shop.secure_url }}" title="{{ 'cart.general.continue_shopping' | t }}">
             {%- endunless -%}
             {{ content_for_logo }}
             {%- unless content_for_logo contains '<a' -%}
@@ -200,6 +200,19 @@
         }
       };
 
+      const checkBreadcrumbLinks = function () {
+        const linkElements = document.getElementsByClassName('breadcrumb__link');
+        const isThereACartLink = [].slice.call(linkElements).some(el => el.innerHTML === 'Cart');
+        if (!isThereACartLink) {
+          const breadcrumb = document.getElementsByClassName('breadcrumb')[0];
+          const html = '<li class="breadcrumb__item breadcrumb__item--completed">' +
+            '<a class="breadcrumb__link" data-trekkie-id="breadcrumb_cart_link" href="{{ shop.secure_url }}{{ routes.cart_url }}">Cart</a>' +
+            '<svg class="icon-svg icon-svg--color-adaptive-light icon-svg--size-10 breadcrumb__chevron-icon" aria-hidden="true" focusable="false"> <use xlink:href="#chevron-right"></use> </svg>' +
+          '</li>';
+          breadcrumb.insertAdjacentHTML('afterbegin', html);
+        }
+      };
+
       if (
         Shopify.Checkout.step === 'shipping_method' &&
         window.localStorage.getItem('delivery_type') !== null
@@ -210,6 +223,8 @@
           fillStorageAddress();
         }, 1000);
       }
+
+      checkBreadcrumbLinks();
     </script>
   </body>
 </html>
