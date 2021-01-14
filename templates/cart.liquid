@@ -316,6 +316,7 @@
                   {%- else -%}
                     <button type="submit" name="checkout" class="btn full-width">{{ 'cart.general.checkout' | t }}</button>
                   {%- endif -%}
+                  <p class="cart__error-message hide js-removed--bundle-products">Some bundle-related products were removed from the cart</p>
                 {%- endif -%}
               </div>
               <p class="cart__error-message hide js-no-response">{{ 'layout.cart.no_checkout_available' | t }}</p>

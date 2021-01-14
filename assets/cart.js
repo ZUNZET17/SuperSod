@@ -149,7 +149,12 @@ const Cart = (function () {
   };
 
   const validateCheckout = function (ev) {
-    removeInvalidBundleProducts();
+    removeInvalidBundleProducts(function () {
+      validateCheckoutProcess(ev);
+    });
+  };
+
+  const validateCheckoutProcess = function (ev) {
     $('.js-dates-invalid').addClass('hide');
     $('.js-dates-empty').addClass('hide');
     $('.js-dates-same').addClass('hide');
@@ -259,8 +264,8 @@ const Cart = (function () {
     const ajaxData =
       'delivery_type=' + deliveryType +
       '&shop_domain=' + theme.routes.validation_tool_shop +
-      '&note=' + (note !== '' ? note + '. ': '') + 'Dates for ' + cartDeliveryMethod + ': ' + (settings.dates.join(',')) +
-        (cartDeliveryMethod === 'delivery' ? '' : '. Pick up in: ' + cartPickupAddress) +
+      '&note=' + (note !== '' ? note + '. ': '') + 'Dates for ' + cartDeliveryMethod + ': ' + (settings.dates.join(',')) + '. ' +
+        (cartDeliveryMethod === 'delivery' ? 'Delivery address:' + cartDeliveryAddress : 'Pick up in: ' + cartPickupAddress) +
       '&schedule_dates=' + (settings.dates.join(',')) +
       '&discount_code=' + $('.js-discount-code').val() +
       '&' + cartAttributes +
@@ -333,16 +338,18 @@ const Cart = (function () {
       window.localStorage.setItem('delivery_zipcode', cartZipCode);
     }
 
-    if (typeof hasCustomPricing === 'undefined') {
-      return;
-    }
-
     const form = ev.target;
     ev.preventDefault();
     const changes = [];
     let isInvalid = false;
 
     $('.js-update-cart-button').prop('disabled', true);
+    if (typeof hasCustomPricing === 'undefined') {
+      removeInvalidBundleProducts(function () {
+        form.submit();
+      });
+      return;
+    }
 
     $('.js-invalid-quantity').addClass('hide');
     $('.js-item-custom-price').each(function (i, el) {
@@ -389,9 +396,12 @@ const Cart = (function () {
     });
   };
 
-  const removeInvalidBundleProducts = function () {
+  const removeInvalidBundleProducts = function (noInvalidProductsCallback) {
     const invalidBundleProducts = $('.js-remove-bundle-from-cart');
     if (invalidBundleProducts.length < 1) {
+      if (typeof noInvalidProductsCallback === 'function') {
+        noInvalidProductsCallback();
+      }
       return;
     }
 
@@ -399,6 +409,8 @@ const Cart = (function () {
     invalidBundleProducts.each(function (i, item) {
       updates[item.innerHTML] = 0;
     });
+
+    $('.js-removed--bundle-products').removeClass('hide');
 
     const ajax = $.ajax({
       type: 'POST',
@@ -409,7 +421,9 @@ const Cart = (function () {
       }
     });
     ajax.done(function (data) {
-      window.location.reload();
+      setTimeout(function () {
+        window.location.reload();
+      }, 3000);
     })
   };
 
