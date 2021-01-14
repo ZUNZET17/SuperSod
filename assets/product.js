@@ -183,9 +183,12 @@ const Product = (function () {
         typeof response.message !== 'undefined' ||
         response.data.length < 1 ||
         response.data[0].available_in_zone === false ||
-        response.data[0][deliveryMethod] === false
+        response.data[0][deliveryMethod] === false ||
+        typeof response.message !== 'undefined'
       ) {
-        availiabilityError({ zipCode: zipCode });
+        button.html(originalText);
+        availiabilityError({zipCode: zipCode});
+        hideFormElements();
         return;
       }
 
@@ -496,6 +499,12 @@ const Product = (function () {
     });
   };
 
+  const updateBundleSelector = function () {
+    if (typeof isBundle !== 'undefined' && isBundle) {
+      $('.bold-bundles-child-product__variant-selector').trigger('change');
+    }
+  };
+
   const changeDeliveryElements = function (input) {
     $('.js-quantity-block').addClass('hide');
     $('.js-quantity-input').prop('disabled', true);
@@ -510,6 +519,7 @@ const Product = (function () {
     $('.js-quantity-input-' + (input.value)).trigger('change');
     $('.js-increment-value').val( $('.js-quantity-input-' + (input.value)).prop('min') );
     $('.bold_clone').addClass('js-product-submit');
+    updateBundleSelector();
   };
 
   const checkQuantityIncrement = function (ev) {
@@ -613,13 +623,15 @@ const Product = (function () {
     const deliveryMethodInput = $('.js-delivery-method:checked')[0];
     changeDeliveryElements(deliveryMethodInput);
 
-    let parameters = [];
-    parameters.push({parameter: 'zip_code', value: zipCode});
-    parameters.push({parameter: 'delivery_method', value: deliveryMethodInput.value});
-    parameters.push({parameter: 'customer_address', value: $('.js-autocomplete-address').val()});
-    if (typeof parameters === 'object' && parameters.length > 1) {
-      Utils.addToCartParameters(parameters);
-    }
+    const parameters = [
+      { parameter: 'zip_code', value: zipCode },
+      { parameter: 'delivery_method', value: deliveryMethodInput.value },
+      {
+        parameter: 'customer_address',
+        value: $('.js-autocomplete-address').val(),
+      }
+    ];
+    Utils.addToCartParameters(parameters);
   };
 
   const selectPickupVariant = function (ev) {

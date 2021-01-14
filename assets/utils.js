@@ -12,23 +12,23 @@ const Utils = (function () {
   };
 
   const addToCartParameters = function (parameter, value) {
+    const attributes = cartAttributes || {};
     if (typeof parameter === 'object') {
       for (let i = 0; i < parameter.length; i++) {
         const element = parameter[i];
-        cartAttributes[element.parameter] = element.value;
+        attributes[element.parameter] = element.value;
       }
     } else {
-      cartAttributes[parameter] = value;
+      attributes[parameter] = value;
     }
 
-    const cartData = {
-      attributes: cartAttributes
-    };
     return $.ajax({
       type: 'POST',
       url: '/cart/update.js',
       dataType: 'json',
-      data: cartData
+      data: {
+        attributes: attributes
+      }
     });
   };
 

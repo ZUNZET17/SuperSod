@@ -274,13 +274,15 @@
     <script src="{{ 'cart.js' | asset_url }}" defer></script>
   {%- endif -%}
 
+  {%- if template.name == 'product' -%}
+    {%- render 'bold-pr' -%}
+    {%- comment -%}{%- render 'bold-ro-init' -%}
+    {%- render 'bold-subscription-widget' -%}{%- endcomment -%}
+  {%- endif -%}
   {%- if template.name != 'index' and template.name != 'collection' and template.name != 'account'-%}
     {%- render 'bold-common' -%}
   {%- endif -%}
-  {%- if template.name == 'product' -%}
-    {%- render 'bold-ro-init' -%}
-    {%- render 'bold-subscription-widget' -%}
-  {%- endif -%}
   <script src="{{ 'third-party-code.js' | asset_url }}" defer></script>
+  {% include 'smile-initializer' %}
 </body>
 </html>

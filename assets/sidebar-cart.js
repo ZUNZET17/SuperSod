@@ -324,7 +324,6 @@ $(document).on('change', '.qty-adjuster--ajax .qty-adjuster__value', function (e
       };
       const properties = transformPropertiesToJSON(input.data('properties'));
       postData.line = input.data('line');
-      console.log(productData);
 
       if (productData.quantity > 0) {
         properties._custom_price = productData.unit_price * productData.quantity;
