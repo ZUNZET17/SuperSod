@@ -275,11 +275,13 @@
   {%- endif -%}
 
   {%- if template.name == 'product' -%}
-    {%- render 'bold-pr' -%}
+    {%- if product.tags contains 'Bundle' -%}
+      {%- render 'bold-pr' -%}
+      {%- render 'bold-common' -%}
+    {%- endif -%}
     {%- comment -%}{%- render 'bold-ro-init' -%}
     {%- render 'bold-subscription-widget' -%}{%- endcomment -%}
-  {%- endif -%}
-  {%- if template.name != 'index' and template.name != 'collection' and template.name != 'account'-%}
+  {%- elsif template.name != 'index' and template.name != 'collection' and template.name != 'account'-%}
     {%- render 'bold-common' -%}
   {%- endif -%}
   <script src="{{ 'third-party-code.js' | asset_url }}" defer></script>

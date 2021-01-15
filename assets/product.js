@@ -23,6 +23,8 @@ const Product = (function () {
       .on('change keyup', '.js-zip-code', validateZipCode)
       .on('change', '.js-delivery-method', changeDeliveryForm)
       .on('change', '.js-product-pickup-variants', selectPickupVariant)
+      .on('change', '.js-product-variants', changeLabelPrice)
+      .on('change', '.js-first-product-variant', selectMultivariant)
       .on('change keyup input', '.js-quantity-input', checkQuantityIncrement)
       .on('change keyup', '.js-autocomplete-address', hideAddToCart)
       .on('focus', '.js-autocomplete-address', geolocate)
@@ -456,7 +458,7 @@ const Product = (function () {
     const input = document.querySelector('.js-delivery-method:checked');
     let variantText = input.value;
     if (typeof hasMultipleOptions !== 'undefined') {
-      const firstOption = document.querySelector('.single-option-selector').value;
+      const firstOption = document.querySelector('.js-first-product-variant').value;
       variantText = firstOption + ' / ' + Utils.capitalize(input.value);
     }
     chooseVariantToggle(variantText);
@@ -475,6 +477,10 @@ const Product = (function () {
       return variant.text.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) > -1;
     });
     changeDropdownOptions(foundVariant.length > 0 ? foundVariant[0].id : null);
+  };
+
+  const selectMultivariant = function (ev) {
+    checkChosenVariant();
   };
 
   const chooseVariantToggle = function (value) {
@@ -694,15 +700,14 @@ const Product = (function () {
   const changeDropdownOptions = function (id) {
     const deliveryOption = $('.js-delivery-method:checked').val();
 
-    if (deliveryOption === 'pickup' && id != null) {
+    if (id != null) {
       let found = 0;
       $('.js-product-variants option').each(function (i, option) {
         if (option.value != id) {
-          option.setAttribute('disabled', true);
           option.removeAttribute('selected');
           return;
         }
-        option.removeAttribute('disabled');
+
         option.setAttribute('selected', true);
         found++;
       });
@@ -711,22 +716,28 @@ const Product = (function () {
         changeDropdownOptions(null);
         return;
       }
-      $('.js-product-variants').show();
+
+      $('.js-product-variants').trigger('change');
       return;
     } else if (deliveryOption === 'pickup') {
       $('.js-product-variants').show();
     } else if (deliveryOption === 'delivery') {
       $('.js-product-variants').hide();
     }
-
-    $('.js-product-variants option').each(function (i, option) {
-      option.removeAttribute('disabled');
-    });
   };
 
   const hideFormElements = function () {
     $('.js-not-available-text').removeClass('hide');
     toggleSubmitButton('disable');
+  };
+
+  const changeLabelPrice = function (ev) {
+    const dropdown = ev.target;
+    const selectedOption = dropdown.options[dropdown.selectedIndex];
+    $('.js-product-single-price').html('$' + selectedOption.dataset.priceVal);
+    if (selectedOption.dataset.compareVal !== null) {
+      $('.js-price-compare').html('$' + selectedOption.dataset.compareVal);
+    }
   };
 
   const initAutocomplete = function () {

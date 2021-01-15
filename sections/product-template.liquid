@@ -146,12 +146,12 @@
                 <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
               {% endif %}
               <span id="ProductPrice" class="product-single__price js-product-single-price" itemprop="price" content="{{ current_variant.price | divided_by: 100.00 }}">
-                <span class="money" data-product-id="{{ product.id }}">{{ current_variant.price | money }}</span>
+                <span class="money js-single-price" data-product-id="{{ product.id }}">{{ current_variant.price | money }}</span>
               </span>
 
               {% if product.compare_at_price_max > product.price %}
                 <span id="PriceA11y" class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
-                <del class="product-single__price--compare" id="ComparePrice">
+                <del class="product-single__price--compare js-price-compare" id="ComparePrice">
                   {{ current_variant.compare_at_price | money }}
                 </del>
               {% endif %}
@@ -203,11 +203,24 @@
             {%- endif -%}
 
             <div>
+              {%- if product.options.size > 1 -%}
+                {%- for product_option in product.options_with_values limit: 1 -%}
+                  <label class="form__label" for="first_product_variant">{{ product_option.name }}</label>
+                  <select class="form__input full-width js-first-product-variant" id="first_product_variant">
+                    {% for value in product_option.values %}
+                      <option {% if product_option.selected_value == value %}selected{% endif %}>
+                        {{ value }}
+                      </option>
+                    {% endfor %}
+                  </select>
+                {%- endfor -%}
+              {%- endif -%}
               <select name="id" id="ProductSelect-{{ section.id }}" class="form__input full-width js-product-variants{% if product.has_only_default_variant %} hide{% elsif use_check == true or uses_normal_toggle == true %} hide{% endif %}">
                 {% for variant in product.variants %}
                   {% if variant.available %}
                     <option {% if variant == product.selected_or_first_available_variant %} selected="selected" {% endif %}
                       {% if use_pallet == true %} data-sod-zips="{{ variant.metafields.sod.zips }}" data-price="{{ variant.price | money_with_currency }}"{% endif %}
+                      {% if variant.compare_at_price %} data-compare-val="{{ variant.compare_at_price | money_without_currency }}"{% endif %}
                       data-sku="{{ variant.sku }}" value="{{ variant.id }}" data-price-val="{{ variant.price | money_without_currency }}">{{ variant.title }}</option>
                   {% endif %}
                 {% endfor %}
