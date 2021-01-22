@@ -96,6 +96,15 @@
                       <span class="hide js-remove-bundle-from-cart">{{item.id}}</span>
                     {%- endif -%}
                   {%- endif -%}
+                  {%- if cart.attributes.pickup_address == blank -%}
+                    {%- unless pickup_address -%}
+                      {%- if item.properties._method == 'pickup' -%}
+                        {%- assign pickup_address = item.properties.pickup_location -%}
+                      {%- endif -%}
+                    {%- endunless -%}
+                  {%- else -%}
+                    {%- assign pickup_address = cart.attributes.pickup_address -%}
+                  {%- endif -%}
                   <p class="txt--minor">
                     <a href="{{ routes.cart_change_url }}?line={{ forloop.index }}&amp;quantity=0" class="cart__remove">{{ 'cart.general.remove' | t }}</a>
                   </p>
@@ -341,8 +350,8 @@
           <input type="hidden" data-name="customer_latitude" name="attributes[customer_latitude]" class="js-cart-attribute js-address-latitude" value="{{cart.attributes.customer_latitude}}">
           <input type="hidden" data-name="customer_longitude" name="attributes[customer_longitude]" class="js-cart-attribute js-address-longitude" value="{{cart.attributes.customer_longitude}}">
           <input type="hidden" data-name="zip_code" name="attributes[zip_code]" class="js-cart-attribute js-address-zip" value="{{cart.attributes.zip_code}}">
-          {%- if cart.attributes.pickup_address != blank -%}
-            <input type="hidden" data-name="pickup_address" name="attributes[pickup_address]" class="js-cart-attribute js-address-pickup" value="{{cart.attributes.pickup_address}}">
+          {%- if pickup_address != blank -%}
+            <input type="hidden" data-name="pickup_address" name="attributes[pickup_address]" class="js-cart-attribute js-address-pickup" value="{{pickup_address}}">
           {%- endif -%}
         {%- endif -%}
       </form>
@@ -370,7 +379,7 @@
     window.localStorage.removeItem('delivery_zipcode');
     const cartDeliveryMethod = '{{ cart.attributes.delivery_method }}';
     const cartDeliveryAddress = '{{ cart.attributes.customer_address }}';
-    const cartPickupAddress = '{{ cart.attributes.pickup_address }}';
+    const cartPickupAddress = '{{ pickup_address }}';
     const cartZipCode = '{{ cart.attributes.zip_code }}';
     const cartItems = [{% for item in cart.items %}{
         {%- assign item_value = 0 -%}
