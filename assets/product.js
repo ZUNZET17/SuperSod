@@ -23,6 +23,8 @@ const Product = (function () {
       .on('change keyup', '.js-zip-code', validateZipCode)
       .on('change', '.js-delivery-method', changeDeliveryForm)
       .on('change', '.js-product-pickup-variants', selectPickupVariant)
+      .on('change', '.js-product-variants', changeLabelPrice)
+      .on('change', '.js-first-product-variant', selectMultivariant)
       .on('change keyup input', '.js-quantity-input', checkQuantityIncrement)
       .on('change keyup', '.js-autocomplete-address', hideAddToCart)
       .on('focus', '.js-autocomplete-address', geolocate)
@@ -56,7 +58,10 @@ const Product = (function () {
       toggleSubmitButton('disable', 'js-product-price-check');
       return;
     }
-    if (typeof usesVariantToggle === 'undefined') {
+    if (
+      typeof usesVariantToggle === 'undefined' &&
+      typeof usesRegularToggle === 'undefined'
+    ) {
       checkMinimumQuantity(value);
     }
     toggleSubmitButton('show', 'js-product-price-check');
@@ -92,24 +97,78 @@ const Product = (function () {
       return;
     }
 
-    if (typeof usesVariantToggle !== 'undefined') {
+    if (
+      typeof usesVariantToggle !== 'undefined' ||
+      typeof usesRegularToggle !== 'undefined'
+    ) {
+      const boldLinks = $('.js-product-form .bold-bundles-child-product__link');
+      if (boldLinks.length > 0) {
+        checkBundleProductsInfo(boldLinks, zipCode, $(ev.target));
+        return;
+      }
       checkNonSodAvailability(zipCode, $(ev.target));
       return;
     }
-    checkProductAvailability(zipCode, $(ev.target));
+    checkProductZoneAvailability(zipCode, $(ev.target));
   };
 
-  const checkNonSodAvailability = function (zipCode, button) {
+  const checkBundleProductsInfo = function (links, zipCode, button) {
+    const productHandles = [].slice.call(links).map(function (link) {
+      const hrefs = link.getAttribute('href').split('/');
+      return hrefs[hrefs.length - 1];
+    });
+    const originalText = button.html();
+    button.html('Checking ...');
+    checkBundleProductsIds(productHandles, zipCode, button, originalText, '');
+  };
+
+  const checkBundleProductsIds = function (handles, zipCode, button, originalText, ids) {
+    if (handles.length < 1 && ids !== null) {
+      const count = (ids.match(/&/g) || []).length;
+      button.html(originalText);
+      if (count < 1) {
+        $('.js-not-available-text').removeClass('hide');
+      } else {
+        $('.js-not-available-text').addClass('hide');
+        checkNonSodAvailability(zipCode, button, ids);
+      }
+      return;
+    } else if (handles.length < 1 && ids === null) {
+      button.html(originalText);
+      $('.js-not-available-text').removeClass('hide');
+      return;
+    }
+
+    const current = handles.shift();
+    const ajax = $.ajax({
+      type: 'GET',
+      url: '/products/' + current + '.js',
+      dataType: 'json'
+    });
+    ajax.always(function (data) {
+      if (typeof data.id !== 'undefined') {
+        ids += (ids !== '' ? '&' : '') + 'products[]shopify_product_id=' + data.id;
+      }
+      checkBundleProductsIds(handles, zipCode, button, originalText, ids);
+    });
+  };
+
+  const checkNonSodAvailability = function (zipCode, button, productIds) {
     const originalText = button.html();
     const deliveryMethod = $('.js-delivery-method:checked').val();
     const latitude = $('.js-address-latitude').val();
     const longitude = $('.js-address-longitude').val();
     const quantity = $('.js-product-quantity').val();
-    const ajaxData =
-      'zipcode=' + zipCode +
-      '&products[]shopify_product_id=' + productData.id +
-      '&shop_domain=' + theme.routes.validation_tool_shop;
     const endpoint = 'available_in_zone';
+    let productString = '&products[]shopify_product_id=' + productData.id;
+
+    if (typeof productIds !== 'undefined' && productIds !== '') {
+      productString = '&' + productIds;
+    }
+
+    const ajaxData =
+      'zipcode=' + zipCode + productString +
+      '&shop_domain=' + theme.routes.validation_tool_shop;
 
     button.html('Checking ...');
     $('.js-current-price-unit').html('');
@@ -126,14 +185,22 @@ const Product = (function () {
         typeof response.message !== 'undefined' ||
         response.data.length < 1 ||
         response.data[0].available_in_zone === false ||
-        response.data[0][deliveryMethod] === false
+        response.data[0][deliveryMethod] === false ||
+        typeof response.message !== 'undefined'
       ) {
-        availiabilityError({ zipCode: zipCode });
+        button.html(originalText);
+        availiabilityError({zipCode: zipCode});
+        hideFormElements();
         return;
       }
 
       button.html(originalText);
       updateForm(zipCode);
+      const boldLinks = $('.js-product-form .bold-bundles-child-product__link');
+      let buttonClassname = null;
+      if (boldLinks.length > 0) {
+        buttonClassname = 'bold_clone';
+      }
       if (deliveryMethod === 'pickup') {
         checkNearestPickupLocations({
           latitude: latitude,
@@ -144,12 +211,26 @@ const Product = (function () {
           unit_price: $('.js-product-variants option:selected').data('price-val'),
           zipcode: zipCode
         }, function () {
-          toggleSubmitButton('show');
-          showButtonMessage(deliveryMethod);
+          toggleSubmitButton('show', buttonClassname);
+          $('.bold_clone').removeClass('js-product-submit');
+          showButtonMessage('pickup');
+          if (
+            typeof usesVariantToggle !== 'undefined' ||
+            typeof usesRegularToggle !== 'undefined'
+          ) {
+            checkChosenVariant();
+          }
         });
       } else {
-        toggleSubmitButton('show');
-        showButtonMessage(deliveryMethod);
+        toggleSubmitButton('show', buttonClassname);
+        $('.bold_clone').removeClass('js-product-submit');
+        showButtonMessage('delivery');
+        if (
+          typeof usesVariantToggle !== 'undefined' ||
+          typeof usesRegularToggle !== 'undefined'
+        ) {
+          checkChosenVariant();
+        }
       }
       $('.js-delivery-method').trigger('change');
       $('.js-not-available-text').addClass('hide');
@@ -176,7 +257,48 @@ const Product = (function () {
     });
   };
 
-  const checkProductAvailability = function (zipCode, button) {
+  const checkProductZoneAvailability = function (zipCode, button, productIds) {
+    const endpoint = 'available_in_zone';
+    let productString = '&products[]shopify_product_id=' + productData.id;
+
+    if (typeof productIds !== 'undefined' && productIds !== '') {
+      productString = '&' + productIds;
+    }
+    const ajaxData =
+      'zipcode=' + zipCode + productString +
+      '&shop_domain=' + theme.routes.validation_tool_shop;
+
+    const originalText = button.html();
+    button.html('Checking ...');
+    const ajax = $.ajax({
+      type: 'GET',
+      url: theme.routes.validation_tool_url + endpoint,
+      data: ajaxData,
+      timeout: 3000
+    });
+    ajax.done(function (response) {
+      const deliveryMethod = $('.js-delivery-method:checked').val();
+      if (
+        typeof response.message !== 'undefined' ||
+        response.data.length < 1 ||
+        response.data[0].available_in_zone === false ||
+        response.data[0][deliveryMethod] === false
+      ) {
+        button.html(originalText);
+        hideFormElements();
+        return;
+      }
+
+      button.html(originalText);
+      checkProductPricing(zipCode, button);
+    })
+    .fail(function (response) {
+      button.html(originalText);
+      hideFormElements();
+    });
+  };
+
+  const checkProductPricing = function (zipCode, button) {
     const originalText = button.html();
     const deliveryMethod = $('.js-delivery-method:checked').val();
     const latitude = $('.js-address-latitude').val();
@@ -191,7 +313,7 @@ const Product = (function () {
       unit_price: $('.js-product-variants option:selected').data('price-val'),
       zipcode: zipCode
     };
-    const endpoint = deliveryMethod === 'pickup' ? 'nearest_locations' : 'pricing_info';
+    const endpoint = deliveryMethod === 'pickup' ? 'nearest_locations_price' : 'pricing_info';
 
     button.html('Checking ...');
     $('.js-current-price-unit').html('');
@@ -221,7 +343,7 @@ const Product = (function () {
       if (deliveryMethod === 'pickup') {
         enableNearestLocations(typeof data.nearest_locations !== 'undefined' ? data.nearest_locations : null);
         $('.js-product-pickup-variants').trigger('change');
-        const totalPrice = $('.js-product-variants option:selected').data('price-val') * $('.js-product-quantity').val();
+        const totalPrice = $('.js-product-pickup-variants option:selected').data('price') * $('.js-product-quantity').val();
         showProductPricing({
           additional_miles_cost: 0,
           fulfillment: 'pickup',
@@ -272,7 +394,18 @@ const Product = (function () {
     chooseVariant('pickup');
     if (data != null && typeof data !== 'undefined') {
       const options = data.reduce(function (acc, customLocation) {
-        return acc + '<option value="' + customLocation + '">' + customLocation + '</option>';
+        return (
+          acc +
+          '<option value="' +
+          (typeof customLocation.location_name !== 'undefined' ? customLocation.location_name : customLocation) +
+          '"' +
+          (customLocation.unit_price
+            ? ' data-price="' + customLocation.unit_price + '"'
+            : "") +
+          ">" +
+          (typeof customLocation.location_name !== 'undefined' ? customLocation.location_name : customLocation) +
+          "</option>"
+        );
       }, '');
       dropdown.html(options);
     }
@@ -292,10 +425,14 @@ const Product = (function () {
       return;
     }
 
+    if (isNaN(data.total_price)) {
+      return;
+    }
+
     const type = data.fulfillment == 'delivery' ? 'Delivered' : 'Pickup';
     productObject.fullPrice = data.total_price * 100;
     $('.js-custom-value').val(productObject.fullPrice / 100);
-    priceElement.html(type + ' price: ' + Shopify.formatMoney(productObject.fullPrice, theme.money_format));
+    priceElement.html(type + ' price: ' + Shopify.formatMoney(productObject.fullPrice, theme.moneyFormat));
     priceElement.removeClass('hide');
   };
 
@@ -311,9 +448,20 @@ const Product = (function () {
       return;
     }
     if (typeof usesVariantToggle !== 'undefined') {
-      chooseVariantToggle(input.value);
+      checkChosenVariant();
+      return;
     }
     chooseVariant(input.value);
+  };
+
+  const checkChosenVariant = function () {
+    const input = document.querySelector('.js-delivery-method:checked');
+    let variantText = input.value;
+    if (typeof hasMultipleOptions !== 'undefined') {
+      const firstOption = document.querySelector('.js-first-product-variant').value;
+      variantText = firstOption + ' / ' + Utils.capitalize(input.value);
+    }
+    chooseVariantToggle(variantText);
   };
 
   const hideSubmitButton = function () {
@@ -326,9 +474,13 @@ const Product = (function () {
   const chooseVariant = function (value) {
     const variants = getVariants();
     const foundVariant = variants.filter(function (variant) {
-      return variant.text.indexOf(value) > -1;
+      return variant.text.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) > -1;
     });
     changeDropdownOptions(foundVariant.length > 0 ? foundVariant[0].id : null);
+  };
+
+  const selectMultivariant = function (ev) {
+    checkChosenVariant();
   };
 
   const chooseVariantToggle = function (value) {
@@ -353,6 +505,12 @@ const Product = (function () {
     });
   };
 
+  const updateBundleSelector = function () {
+    if (typeof isBundle !== 'undefined' && isBundle) {
+      $('.bold-bundles-child-product__variant-selector').trigger('change');
+    }
+  };
+
   const changeDeliveryElements = function (input) {
     $('.js-quantity-block').addClass('hide');
     $('.js-quantity-input').prop('disabled', true);
@@ -366,6 +524,8 @@ const Product = (function () {
 
     $('.js-quantity-input-' + (input.value)).trigger('change');
     $('.js-increment-value').val( $('.js-quantity-input-' + (input.value)).prop('min') );
+    $('.bold_clone').addClass('js-product-submit');
+    updateBundleSelector();
   };
 
   const checkQuantityIncrement = function (ev) {
@@ -414,7 +574,7 @@ const Product = (function () {
   const toggleSubmitButton = function (action, customSelector) {
     let buttons = document.getElementsByClassName('js-product-submit');
 
-    if (typeof customSelector !== 'undefined') {
+    if (typeof customSelector !== 'undefined' && customSelector !== null) {
       buttons = document.getElementsByClassName(customSelector);
     }
     if (typeof buttons === 'undefined' || buttons.length < 1) {
@@ -466,16 +626,18 @@ const Product = (function () {
   };
 
   const updateForm = function (zipCode) {
-    const deliveryMethodInput = $('.js-delivery-method')[0];
+    const deliveryMethodInput = $('.js-delivery-method:checked')[0];
     changeDeliveryElements(deliveryMethodInput);
 
-    let parameters = [];
-    parameters.push({parameter: 'zip_code', value: zipCode});
-    parameters.push({parameter: 'delivery_method', value: deliveryMethodInput.value});
-    parameters.push({parameter: 'customer_address', value: $('.js-autocomplete-address').val()});
-    if (typeof parameters === 'object' && parameters.length > 1) {
-      Utils.addToCartParameters(parameters);
-    }
+    const parameters = [
+      { parameter: 'zip_code', value: zipCode },
+      { parameter: 'delivery_method', value: deliveryMethodInput.value },
+      {
+        parameter: 'customer_address',
+        value: $('.js-autocomplete-address').val(),
+      }
+    ];
+    Utils.addToCartParameters(parameters);
   };
 
   const selectPickupVariant = function (ev) {
@@ -486,10 +648,30 @@ const Product = (function () {
       return selectedVariant.indexOf(variant.text) > -1;
     });
 
+    let fullValue = 0;
     if (foundVariant.length > 0) {
-      const fullValue = foundVariant[0].priceValue * $('.js-product-quantity').val();
+      fullValue = foundVariant[0].priceValue * $('.js-product-quantity').val();
       selectVariant(foundVariant[0]);
-      showProductPricing({additional_miles_cost: 0, fulfillment: 'pickup', total_price: fullValue})
+    } else if (
+      typeof usesVariantToggle === 'undefined' &&
+      typeof usesRegularToggle === 'undefined' &&
+      typeof select.options[select.selectedIndex].dataset.price !== 'undefined'
+    ) {
+      fullValue = select.options[select.selectedIndex].dataset.price * $('.js-product-quantity').val();
+      chooseVariant('pickup');
+    } else {
+      fullValue = $('.js-product-variants option:selected').data('price-val') * $('.js-product-quantity').val();
+      chooseVariant('pickup');
+    }
+    showProductPricing({
+      additional_miles_cost: 0,
+      fulfillment: 'pickup',
+      total_price: fullValue
+    });
+
+    const boldLinks = $('.js-product-form .bold-bundles-child-product__link');
+    if (boldLinks.length > 0) {
+      addBoldBundleParameters(selectedVariant);
     }
   };
 
@@ -500,18 +682,32 @@ const Product = (function () {
     toggleSubmitButton('enable');
   };
 
+  const addBoldBundleParameters = function (selectedVariant) {
+    const deliveryMethodInput = $('.js-delivery-method:checked')[0];
+    const zipCode = $('.js-zip-code')[0];
+    let parameters = [];
+    parameters.push({parameter: 'zip_code', value: zipCode.value});
+    parameters.push({parameter: 'delivery_method', value: deliveryMethodInput.value});
+    parameters.push({parameter: 'customer_address', value: $('.js-autocomplete-address').val()});
+    if (deliveryMethodInput.value === 'pickup') {
+      parameters.push({parameter: 'pickup_address', value: selectedVariant});
+    }
+    if (typeof parameters === 'object' && parameters.length > 1) {
+      Utils.addToCartParameters(parameters);
+    }
+  };
+
   const changeDropdownOptions = function (id) {
     const deliveryOption = $('.js-delivery-method:checked').val();
 
-    if (deliveryOption === 'pickup' && id != null) {
+    if (id != null) {
       let found = 0;
       $('.js-product-variants option').each(function (i, option) {
         if (option.value != id) {
-          option.setAttribute('disabled', true);
           option.removeAttribute('selected');
           return;
         }
-        option.removeAttribute('disabled');
+
         option.setAttribute('selected', true);
         found++;
       });
@@ -520,22 +716,28 @@ const Product = (function () {
         changeDropdownOptions(null);
         return;
       }
-      $('.js-product-variants').show();
+
+      $('.js-product-variants').trigger('change');
       return;
     } else if (deliveryOption === 'pickup') {
       $('.js-product-variants').show();
     } else if (deliveryOption === 'delivery') {
       $('.js-product-variants').hide();
     }
-
-    $('.js-product-variants option').each(function (i, option) {
-      option.removeAttribute('disabled');
-    });
   };
 
   const hideFormElements = function () {
     $('.js-not-available-text').removeClass('hide');
     toggleSubmitButton('disable');
+  };
+
+  const changeLabelPrice = function (ev) {
+    const dropdown = ev.target;
+    const selectedOption = dropdown.options[dropdown.selectedIndex];
+    $('.js-product-single-price').html('$' + selectedOption.dataset.priceVal);
+    if (selectedOption.dataset.compareVal !== null) {
+      $('.js-price-compare').html('$' + selectedOption.dataset.compareVal);
+    }
   };
 
   const initAutocomplete = function () {

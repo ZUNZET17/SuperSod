@@ -43,6 +43,9 @@
             {%- if item.properties._custom_price != blank -%}
               {%- assign item_value = item.properties._custom_price | times: 100 -%}
               {%- assign subtotal = subtotal | plus: item_value -%}
+            {%- elsif item.properties._bold_bundles_price -%}
+              {%- assign item_bundle_price = item.properties._bold_bundles_price | times: item.quantity -%}
+              {%- assign subtotal = subtotal | plus: item_bundle_price -%}
             {%- elsif item.original_line_price != item.final_line_price -%}
               {%- assign subtotal = subtotal | plus: item.final_line_price -%}
             {%- else -%}
@@ -94,7 +97,7 @@
 
         <div class="cart-summary__item-list-header cart-summary__section cart-accordion-btn-container">
           <h6 class="cart-summary__item-list-header__title">{{ 'cart.cart_summary.products_header' | t }}</h6>
-          <small class="cart-summary__item-list-header__count">{{ 'cart.cart_summary.item_count' | t: count: cart.item_count }}</small>
+          <small class="cart-summary__item-list-header__count">{{ 'cart.cart_summary.item_count' | t: count: cart.items.size }}</small>
           <button class="cart-accordion-btn btn plain-text">{% render 'svg-chevron-down' %}</button>
         </div>
 
@@ -123,14 +126,25 @@
                     {%- if item.properties._custom_price != blank -%}
                       <span class="cart-summary-item__price-current theme-money">{{item.properties._custom_price | times: 100 | money}}</span>
                     {%- else -%}
+                      {%- assign final_price = item.final_line_price -%}
                       {% if item.original_line_price != item.final_line_price %}
-                        <span class="reduced-price cart-summary-item__price-current theme-money">{{ item.final_line_price | money }}</span>
-                        <span class="theme-money struck-out-price">{{ item.original_line_price | money }}</span>
+                        {%- if item.properties._bold_bundles_price -%}
+                          {%- assign final_price = item.properties._bold_bundles_price | times: item.quantity -%}
+                        {%- endif -%}
+                        <span class="reduced-price cart-summary-item__price-current theme-money">{{ final_price | money }}</span>&nbsp;
+                        <del class="theme-money struck-out-price">{{ item.original_line_price | money }}</del>
                       {% elsif item.variant.compare_at_price != blank and item.variant.price < item.variant.compare_at_price %}
-                        <span class="reduced-price cart-summary-item__price-current theme-money">{{ item.final_line_price | money }}</span>
-                        <span class="theme-money struck-out-price">{{ item.variant.compare_at_price | times: item.quantity | money }}</span>
+                        {%- if item.properties._bold_bundles_price -%}
+                          {%- assign final_price = item.properties._bold_bundles_price | times: item.quantity -%}
+                        {%- endif -%}
+                        <span class="reduced-price cart-summary-item__price-current theme-money">{{ final_price | money }}</span>&nbsp;
+                        <del class="theme-money struck-out-price">{{ item.variant.compare_at_price | times: item.quantity | money }}</del>
                       {% else %}
-                        <span class="cart-summary-item__price-current theme-money">{{ item.final_line_price | money }}</span>
+                        {%- if item.properties._bold_bundles_price -%}
+                          {%- assign final_price = item.properties._bold_bundles_price | times: item.quantity -%}
+                          <span class="cart-summary-item__price-current theme-money">{{ final_price | money }}</span>&nbsp;
+                        {%- endif -%}
+                        <{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %} class="cart-summary-item__price-current theme-money">{{ item.final_line_price | money }}</{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %}>
                       {% endif %}
                       {% render 'unit-price', variant: item %}
                     {%- endif -%}
@@ -146,6 +160,15 @@
                     {% endfor %}
                     </ul>
                   {% endif %}
+                  {%- assign item_value = 0 -%}
+                  {%- if item.properties._custom_price != blank -%}
+                    {%- assign item_value = item.properties._custom_price | times: 100 -%}
+                  {%- elsif item.original_price != item.final_price -%}
+                    {%- assign item_value = item.final_price -%}
+                  {%- else -%}
+                    {%- assign item_value = item.original_price -%}
+                  {%- endif -%}
+                  {%- assign item_price = item_value | money_without_currency | replace: ',', '' -%}
                   <div class="cart-summary-item__quantity">
                     <div class="qty-adjuster qty-adjuster--with-remove qty-adjuster--ajax" data-line-item-id="{{ item.id }}" {% if item.variant.inventory_management == 'shopify' and item.variant.inventory_policy == 'deny' %}data-limit="{{ item.variant.inventory_quantity }}"{% endif %}>
                       <div class="qty-adjuster__inner">
@@ -155,9 +178,10 @@
                           aria-label="{{ 'cart.label.quantity' | t | escape }}"
                           {% if cart.attributes.customer_latitude != blank %} data-latitude="{{cart.attributes.customer_latitude}}"{% endif %}
                           {% if cart.attributes.customer_longitude != blank %} data-longitude="{{cart.attributes.customer_longitude}}"{% endif %}
-                          data-original-price="{{item.original_price | money_without_currency}}"
+                          data-original-price="{{item_value | money_without_currency}}"
                           data-product-id="{{item.product.id}}"
                           data-line="{{forloop.index}}"
+                          data-quantity="{{item.quantity}}"
                           data-properties='{{item.properties | json}}'
                           {% if item.properties._zip != blank %} data-zip="{{item.properties._zip}}"{% endif %}
                           {% if item.properties._custom_increment != blank %} step="{{item.properties._custom_increment}}"{% endif %}>
@@ -257,7 +281,7 @@
 
                               {% if promo_product.compare_at_price > promo_product.price %}
                                 <span class="reduced-price cart-summary-item__price-current theme-money">{{ promo_product.price | money }}</span>
-                                <span class="struck-out-price theme-money">{{ promo_product.compare_at_price | money }}</span>
+                                <del class="struck-out-price theme-money">{{ promo_product.compare_at_price | money }}</del>
                               {% else %}
                                 <span class="cart-summary-item__price-current theme-money">{{ promo_product.price | money }}</span>
                               {% endif %}

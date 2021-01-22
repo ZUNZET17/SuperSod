@@ -1,0 +1,26 @@
+<script type="text/template" class="quickbuy-placeholder-template" data-product-id="{{ product.id }}">
+  <div class="quickbuy-form placeholder">
+    <div class="container">
+      <div class="row space-under">
+        <div class="product-gallery half column">
+          {% render 'responsive-image', image: product.featured_media.preview_image %}
+        </div>
+        <div class="product-details half column">
+          <div class="border-bottom section padless-top cf product-title-row">
+            <div class="brand-and-type feature-col">
+              <span class="brand">&nbsp;</span>
+            </div>
+            <h1 class="product-title">{{ product.title }}</h1>
+
+            <div id="price" class="product-price {% if product.selected_or_first_available_variant.compare_at_price > product.selected_or_first_available_variant.price %}on-sale{% endif %}">
+              <span class="current-price theme-money">{{ product.selected_or_first_available_variant.price | money }}</span>
+              {% if product.selected_or_first_available_variant.compare_at_price > product.selected_or_first_available_variant.price %}
+              <span class="was-price theme-money">{{ product.selected_or_first_available_variant.compare_at_price | money }}</span>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</script>

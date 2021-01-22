@@ -30,11 +30,10 @@ const Cart = (function () {
 
   const updateCalendars = function (index) {
     for (let i = 0; i < calendarHandles.length; i++) {
-      if (i === index) {
-        continue;
-      } else if (chosenDates.length < 1) {
-        $('.js-tail-datetime-field-' + (i + 1)).val('');
-        $('.js-tail-datetime-field-' + (i + 1)).data('value', '');
+      if (i !== index && chosenDates.length < 1) {
+        const dateField = $('.js-tail-datetime-field-' + (i + 1));
+        dateField.val('');
+        dateField.data('value', '');
       }
     }
 
@@ -60,7 +59,7 @@ const Cart = (function () {
     }
   };
 
-  const updateOtherCalendars = function (index) {
+  const updateOtherCalendars = function () {
     if (!firstTime) {
       updateChosenDates();
       firstTime = false;
@@ -73,7 +72,7 @@ const Cart = (function () {
     for (let i = 0; i < 3; i++) {
       const input = $('.js-tail-datetime-field-' + (i + 1));
       if (input.val()) {
-        const date = dateStringToMilliseconds(input.val() + ' 00:00:00');
+        const date = Utils.dateStringToMilliseconds(input.val() + ' 00:00:00');
         chosenDates.push(date);
       }
     }
@@ -115,7 +114,7 @@ const Cart = (function () {
       for (let index = 0; index < data.available_dates.length; index++) {
         if (typeof data.available_dates[index] !== 'undefined') {
           const modifiedDate = data.available_dates[index].replace(/T.+/g, '');
-          const milliseconds = dateStringToMilliseconds(modifiedDate + ' 00:00:00');
+          const milliseconds = Utils.dateStringToMilliseconds(modifiedDate + ' 00:00:00');
           availableDates.push(milliseconds);
         }
       }
@@ -126,7 +125,11 @@ const Cart = (function () {
       $('.js-go-to-checkout').prop('disabled', false);
       const subtotalElement = $('.js-cart-subtotal')
       const subtotal = parseFloat(subtotalElement.data('value')) + addedValue;
-      subtotalElement.html( Shopify.formatMoney(subtotal) );
+      const formattedSubtotal =
+        typeof Shopify.formatMoney !== 'undefined'
+          ? Shopify.formatMoney(subtotal)
+          : Utils.formatMoneyWithPrecision(subtotal);
+      subtotalElement.html( formattedSubtotal );
     }).fail(function () {
       button.html(originalText);
       noDatesInfo.removeClass('hide');
@@ -136,7 +139,7 @@ const Cart = (function () {
   const getDateRangesMilliseconds = function (dates) {
     return dates.map(function (date) {
       const modifiedDate = date.replace(/T.+/g, '');
-      const milliseconds = dateStringToMilliseconds(modifiedDate + ' 00:00:00');
+      const milliseconds = Utils.dateStringToMilliseconds(modifiedDate + ' 00:00:00');
       return {
         days: true,
         end: milliseconds,
@@ -145,12 +148,13 @@ const Cart = (function () {
     });
   };
 
-  const dateStringToMilliseconds = function (date) {
-    const milliDate = new Date(date);
-    return milliDate.getTime();
+  const validateCheckout = function (ev) {
+    removeInvalidBundleProducts(function () {
+      validateCheckoutProcess(ev);
+    });
   };
 
-  const validateCheckout = function (ev) {
+  const validateCheckoutProcess = function (ev) {
     $('.js-dates-invalid').addClass('hide');
     $('.js-dates-empty').addClass('hide');
     $('.js-dates-same').addClass('hide');
@@ -159,7 +163,7 @@ const Cart = (function () {
     const originalText = button.html();
 
     button.html('Checking ...');
-    let dates = document.querySelectorAll('input[class*="js-tail-datetime-field-');
+    let dates = document.querySelectorAll('input[class*="js-tail-datetime-field-"]');
     dates = Array.prototype.slice.call(dates);
     const filledDates = dates.length;
     const validIndexes = [true, true, true];
@@ -177,6 +181,8 @@ const Cart = (function () {
         containsEmpty = true;
       }
       return self.indexOf(value) === index;
+    }).filter(function (value) {
+      return value !== '';
     });
 
     const datesAreValid = validIndexes.reduce(function (acc, item) {
@@ -187,7 +193,7 @@ const Cart = (function () {
     if (dates.length === 0) {
       invalidTextSelector = '.js-dates-empty';
       button.html(originalText);
-    } else if (filledDates > dates.length && !containsEmpty) {
+    } else if (filledDates > dates.length || containsEmpty) {
       invalidTextSelector = '.js-dates-same';
     } else if (!datesAreValid) {
       invalidTextSelector = '.js-dates-invalid';
@@ -211,7 +217,6 @@ const Cart = (function () {
       dates: dates,
       originalText: originalText
     };
-    processDates(settings);
     sendOrderData(settings);
   };
 
@@ -228,19 +233,50 @@ const Cart = (function () {
     });
   };
 
-  const sendOrderData = function (settings) {
-    const cartItemsString = cartItems.reduce(function (acc, item) {
+  const getCartAttributesElementsValue = function () {
+    let cartAttributes = '';
+    $('.js-cart-attribute').each(function (i, el) {
+      cartAttributes += (cartAttributes !== '' ? '&' : '');
+      cartAttributes += 'cart_attributes[]' + el.dataset.name + '=' + el.value;
+    });
+    return cartAttributes;
+  }
+
+  const getCartItemsString = function () {
+    return cartItems.reduce(function (acc, item) {
       return acc + (acc === '' ? '' : '&') +
         'products[]variant_id=' + item.variant_id +
         '&products[]quantity=' + item.quantity +
-        '&products[]price=' + item.price +
+        '&products[]price=' + (item.price / item.quantity) +
+        (typeof item.full_price !== 'undefined' ? '&products[]full_price=' + item.full_price : '') +
         '&products[]product_id=' + item.product_id +
+        (item.product_type.toLowerCase() === 'sod' ? '&products[]product_name=' + item.product_name : '') +
+        (item.product_type.toLowerCase() === 'sod' ? '&products[]product_image=' + item.product_image : '') +
         '&products[]product_type=' + item.product_type
     }, '');
+  }
+
+  const sendOrderData = function (settings) {
+    const cartItemsString = getCartItemsString();
+    const cartAttributes = getCartAttributesElementsValue();
+    const deliveryType = $('.js-delivery-type:checked').val();
+    const note = $('.js-cart-note').val();
     const ajaxData =
-      'delivery_type=' + $('.js-delivery-type:checked').val() +
+      'delivery_type=' + deliveryType +
       '&shop_domain=' + theme.routes.validation_tool_shop +
+      '&note=' + (note !== '' ? note + '. ': '') + 'Dates for ' + cartDeliveryMethod + ': ' + (settings.dates.join(',')) + '. ' +
+        (cartDeliveryMethod === 'delivery' ? 'Delivery address:' + cartDeliveryAddress : 'Pick up in: ' + cartPickupAddress) +
+      '&schedule_dates=' + (settings.dates.join(',')) +
+      '&discount_code=' + $('.js-discount-code').val() +
+      '&' + cartAttributes +
       '&' + cartItemsString;
+
+    window.localStorage.setItem('delivery_type', deliveryType);
+    if (cartDeliveryMethod === 'delivery') {
+      window.localStorage.setItem('delivery_method', cartDeliveryMethod);
+      window.localStorage.setItem('delivery_address', cartDeliveryAddress);
+      window.localStorage.setItem('delivery_zipcode', cartZipCode);
+    }
     const ajax = $.ajax({
       type: 'GET',
       url: theme.routes.validation_tool_url + 'draft_orders',
@@ -263,8 +299,9 @@ const Cart = (function () {
   const resetCheckoutForm = function (ev) {
     $('.js-go-to-checkout').prop('disabled', true);
     for (let i = 0; i < 3; i++) {
-      $('.js-tail-datetime-field-' + (i + 1)).val('');
-      $('.js-tail-datetime-field-' + (i + 1)).data('value', '');
+      const dateField = $('.js-tail-datetime-field-' + (i + 1));
+      dateField.val('');
+      dateField.data('value', '');
     }
   };
 
@@ -292,8 +329,13 @@ const Cart = (function () {
   };
 
   const interceptCartSubmit = function (ev) {
-    if (typeof hasCustomPricing === 'undefined') {
-      return;
+    const deliveryType = $('.js-delivery-type:checked').val();
+
+    window.localStorage.setItem('delivery_type', deliveryType);
+    if (cartDeliveryMethod === 'delivery') {
+      window.localStorage.setItem('delivery_method', cartDeliveryMethod);
+      window.localStorage.setItem('delivery_address', cartDeliveryAddress);
+      window.localStorage.setItem('delivery_zipcode', cartZipCode);
     }
 
     const form = ev.target;
@@ -302,6 +344,12 @@ const Cart = (function () {
     let isInvalid = false;
 
     $('.js-update-cart-button').prop('disabled', true);
+    if (typeof hasCustomPricing === 'undefined') {
+      removeInvalidBundleProducts(function () {
+        form.submit();
+      });
+      return;
+    }
 
     $('.js-invalid-quantity').addClass('hide');
     $('.js-item-custom-price').each(function (i, el) {
@@ -346,6 +394,37 @@ const Cart = (function () {
     ajax.always(function () {
       changeCartItemsProperties(changes, form);
     });
+  };
+
+  const removeInvalidBundleProducts = function (noInvalidProductsCallback) {
+    const invalidBundleProducts = $('.js-remove-bundle-from-cart');
+    if (invalidBundleProducts.length < 1) {
+      if (typeof noInvalidProductsCallback === 'function') {
+        noInvalidProductsCallback();
+      }
+      return;
+    }
+
+    const updates = {};
+    invalidBundleProducts.each(function (i, item) {
+      updates[item.innerHTML] = 0;
+    });
+
+    $('.js-removed--bundle-products').removeClass('hide');
+
+    const ajax = $.ajax({
+      type: 'POST',
+      url: '/cart/update.js',
+      dataType: 'json',
+      data: {
+        updates: updates
+      }
+    });
+    ajax.done(function (data) {
+      setTimeout(function () {
+        window.location.reload();
+      }, 3000);
+    })
   };
 
   const init = function () {

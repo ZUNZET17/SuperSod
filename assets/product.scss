@@ -189,10 +189,18 @@ $desk: 1100px;
   margin-bottom: 10px;
 }
 
+.selector-wrapper + .selector-wrapper {
+  display: none;
+}
+
 .payment-icons {
   margin-top: 20px;
 }
 
 button[class*="bold-ro__custombutton-"] + .btn--full {
+  margin-left: 0;
+}
+
+.btn + .bold_clone {
   margin-left: 0;
 }

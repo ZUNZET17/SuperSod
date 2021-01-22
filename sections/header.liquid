@@ -79,7 +79,7 @@
                   {%- comment -%}<span class="beside-svg"><span class="theme-money">{{ cart.total_price | money }}</span></span>{%- endcomment -%}
                   <span class="sr-only">{{ 'layout.cart.title' | t }}</span>
                   <span class="current-cart-icon">{% render 'icon-cart' %}</span>
-                  <span>({{ cart.item_count }})</span>
+                  <span>({{ cart.items.size }})</span>
                 </a>
               </div>
               {%- comment -%} <a href="{{ routes.cart_url }}" class="site-header__cart">

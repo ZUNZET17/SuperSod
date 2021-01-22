@@ -1,3 +1,4 @@
+$color_primary: #54A45B;
 $cart_desk: 990px;
 
 .cart-title {
@@ -145,6 +146,13 @@ $cart_desk: 990px;
   font-size: 14px;
 }
 
+.cart__delivery-message--soil-level-mix {
+  background-color: #F9FFF9;
+  border: 1px solid $color_primary;
+  font-size: 16px;
+  padding: 5px 10px;
+}
+
 .tail-datetime-calendar .calendar-datepicker table tr td.date-disabled:after {
   display: none;
 }
@@ -153,8 +161,8 @@ $cart_desk: 990px;
 .tail-datetime-calendar .calendar-datepicker table tr td.calendar-decade.date-select,
 .tail-datetime-calendar .calendar-datepicker table tr td.calendar-month.date-select,
 .tail-datetime-calendar .calendar-datepicker table tr td.calendar-year.date-select {
-  border-color: #54a45b;
-  background-color: #54a45b;
+  border-color:  $color_primary;
+  background-color:  $color_primary;
 }
 
 .cart__error-message {
@@ -175,7 +183,7 @@ $cart_desk: 990px;
   display: inline-block;
   line-height: 1;
   margin-top: 0;
-  padding: 16px 11px;
+  padding: 16px 5px;
   vertical-align: top;
 }
 
@@ -198,6 +206,7 @@ $cart_desk: 990px;
 
 .update-cart {
   margin-bottom: 16px;
+  margin-right: 0;
 }
 
 .arrow {

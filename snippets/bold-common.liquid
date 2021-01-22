@@ -121,12 +121,12 @@ It may be overwritten and any customizations would be lost.
       window.BOLD.common.Shopify.metafields[{{ namespace | json }}] = {{ shop.metafields[namespace] | json }};
   {%- endfor -%}
   window.BOLD.common.cacheParams = window.BOLD.common.cacheParams || {};
-   window.BOLD.common.cacheParams.bundles = 1607720362;
-   window.BOLD.common.cacheParams.recurring_orders = 1604693912;
+  // window.BOLD.common.cacheParams.bundles = 1610471831;
+  window.BOLD.common.cacheParams.recurring_orders = 1604693912;
 </script>
 
 {%- comment -%} INCLUDE APP SCRIPTS BELOW {%- endcomment -%}
 
-{{ 'https://ro.boldapps.net/v2_ui/js/ro.js' | script_tag }}
+{%- comment -%}{{ 'https://ro.boldapps.net/v2_ui/js/ro.js' | script_tag }}{%- endcomment -%}
 {{ 'https://bundles.boldapps.net/js/bundles.js' | script_tag }}
 {{ 'bold-bundles.css' | asset_url | stylesheet_tag }}
