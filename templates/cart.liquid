@@ -347,9 +347,9 @@
         </footer>
         {%- comment -%}{% render 'shipping-calculator' %}{%- endcomment -%}
         {%- if invalid_fulfillment == false and has_custom_pricing == true -%}
-          <input type="hidden" data-name="customer_latitude" name="attributes[customer_latitude]" class="js-cart-attribute js-address-latitude" value="{{cart.attributes.customer_latitude}}">
-          <input type="hidden" data-name="customer_longitude" name="attributes[customer_longitude]" class="js-cart-attribute js-address-longitude" value="{{cart.attributes.customer_longitude}}">
-          <input type="hidden" data-name="zip_code" name="attributes[zip_code]" class="js-cart-attribute js-address-zip" value="{{cart.attributes.zip_code}}">
+          <input type="hidden" data-name="latitude" name="attributes[customer_latitude]" class="js-cart-attribute js-address-latitude" value="{{cart.attributes.customer_latitude}}">
+          <input type="hidden" data-name="longitude" name="attributes[customer_longitude]" class="js-cart-attribute js-address-longitude" value="{{cart.attributes.customer_longitude}}">
+          <input type="hidden" data-name="zipcode" name="attributes[zip_code]" class="js-cart-attribute js-address-zip" value="{{cart.attributes.zip_code}}">
           {%- if pickup_address != blank -%}
             <input type="hidden" data-name="pickup_address" name="attributes[pickup_address]" class="js-cart-attribute js-address-pickup" value="{{pickup_address}}">
           {%- endif -%}

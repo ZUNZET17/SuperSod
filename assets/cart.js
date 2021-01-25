@@ -237,7 +237,7 @@ const Cart = (function () {
     let cartAttributes = '';
     $('.js-cart-attribute').each(function (i, el) {
       cartAttributes += (cartAttributes !== '' ? '&' : '');
-      cartAttributes += 'cart_attributes[]' + el.dataset.name + '=' + el.value;
+      cartAttributes += '' + el.dataset.name + '=' + el.value;
     });
     return cartAttributes;
   }
