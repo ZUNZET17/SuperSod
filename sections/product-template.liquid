@@ -236,8 +236,8 @@
                   {%- if use_pallet == true or use_check == true -%}
                     {%- assign min_delivery_quantity = 500 -%}
                     {%- assign min_pickup_quantity = 10 -%}
+                    <input type="hidden" name="quantity" class="js-product-quantity">
                     {%- if uses_normal_toggle == false and use_variant_toggle == false -%}
-                      <input type="hidden" name="quantity" class="js-product-quantity">
                       <input type="hidden" name="properties[_custom_price]" value="0" class="js-custom-value">
                       <input type="hidden" name="properties[_custom_increment]" value="0" class="js-increment-value">
                     {%- endif -%}
