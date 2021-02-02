@@ -404,6 +404,7 @@ const Product = (function () {
             : "") +
           ">" +
           (typeof customLocation.location_name !== 'undefined' ? customLocation.location_name : customLocation) +
+          (typeof customLocation.distance !== 'undefined' ? ' (' + customLocation.distance + ' miles away)' : '') +
           "</option>"
         );
       }, '');
