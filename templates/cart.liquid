@@ -4,6 +4,39 @@
 {%- assign has_custom_pricing = false -%}
 {%- assign contains_soil_level_mix = false -%}
 {%- assign contains_sod = false -%}
+{%- assign available_to_deliver = false -%}
+{%- for item in cart.items -%}
+  {%- if item.product.title contains 'Humus Compost'
+    or item.product.title contains 'Raised Garden Kit'
+    or item.product.title contains 'Workshop Bundle'
+    or item.product.title contains 'Level Mix'
+  -%}
+    {%- assign contains_soil_level_mix = true -%}
+  {%- endif -%}
+  {%- if item.product.type contains 'Sod' -%}
+    {%- assign contains_sod = true -%}
+    {%- assign available_to_deliver = true -%}
+  {%- elsif item.product.type contains 'Fertilizer' -%}
+    {%- assign available_to_deliver = true -%}
+  {%- elsif item.product.type contains 'Compost' -%}
+    {%- assign contains_sod = true -%}
+  {%- endif -%}
+  {%- if item.product.tags contains 'grants-delivery' -%}
+    {%- assign available_to_deliver = true -%}
+  {%- endif -%}
+  {%- if item.properties._method != blank -%}
+    {%- if fulfillment_method == '' -%}
+      {%- assign fulfillment_method = item.properties._method -%}
+    {%- elsif item.properties._method != fulfillment_method -%}
+      {%- assign invalid_fulfillment = true -%}
+    {%- endif -%}
+    {%- if contains_sod == true and item.properties._method == 'delivery' -%}
+      {%- assign fulfillment_method = item.properties._method -%}
+    {%- elsif available_to_deliver == true and item.properties._method == 'delivery' -%}
+      {%- assign fulfillment_method = item.properties._method -%}
+    {%- endif -%}
+  {%- endif -%}
+{%- endfor -%}
 <div class="grid">
   <div class="grid__item">
     {% if cart.item_count > 0 %}
@@ -21,18 +54,6 @@
           <tbody>
             {%- assign subtotal = 0 -%}
             {% for item in cart.items %}
-              {%- if item.product.title contains 'Humus Compost'
-                or item.product.title contains 'Raised Garden Kit'
-                or item.product.title contains 'Workshop Bundle'
-                or item.product.title contains 'Level Mix'
-              -%}
-                {%- assign contains_soil_level_mix = true -%}
-              {%- endif -%}
-              {%- if item.product.type contains 'Sod' -%}
-                {%- assign contains_sod = true -%}
-              {%- elsif item.product.type contains 'Compost' -%}
-                {%- assign contains_sod = true -%}
-              {%- endif -%}
               <tr class="cart__row responsive-table__row">
                 <td class="cart__table-cell--image small--text-center">
                   {% unless item.image == blank %}
@@ -84,13 +105,6 @@
                     <small class="cart__policies">{{ cart.attributes.pickup_address }}</small>
                     {% endif %}
                   </p>
-                  {%- if item.properties._method != blank -%}
-                    {%- if fulfillment_method == '' -%}
-                      {%- assign fulfillment_method = item.properties._method -%}
-                    {%- elsif item.properties._method != fulfillment_method -%}
-                      {%- assign invalid_fulfillment = true -%}
-                    {%- endif -%}
-                  {%- endif -%}
                   {%- if item.properties._bold_bundle_price_rules_external_id != blank -%}
                     {%- if item.properties._bold_bundles_price == blank -%}
                       <span class="hide js-remove-bundle-from-cart">{{item.id}}</span>
@@ -126,7 +140,7 @@
                       <span>{{ item.original_price | money }}</span><br>
                     {%- endif -%}
                     <{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %} class="order-discount">{{ item.final_price | money }}</{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %}>
-                  {%- elsif item.variant.compare_at_price != item.final_price -%}
+                  {%- elsif item.variant.compare_at_price and item.variant.compare_at_price != item.final_price -%}
                     <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
                     <del>{{ item.variant.compare_at_price | money }}</del>
                     <span class="visually-hidden">{{ 'products.product.sale_price' | t }}</span>
@@ -137,12 +151,23 @@
                     {%- endif -%}
                     <{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %} class="order-discount">{{ item.final_price | money }}</{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %}>
                   {%- else -%}
-                    <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_price" data-item-key="{{item.key}}" style="display:none !important;"></span>
+                    {%- unless item.product.tags contains 'BYB_DISCOUNT' -%}
+                      <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_price" data-item-key="{{item.key}}" style="display:none !important;"></span>
+                    {%- endunless -%}
+                    {%- assign tag_name = 'span' -%}
                     {%- if item.properties._bold_bundles_price -%}
                       {%- assign has_custom_pricing = true -%}
+                      {%- assign tag_name = 'del' -%}
                       <span>{{ item.original_price | money }}</span><br>
+                    {%- elsif item.product.tags contains 'BYB_DISCOUNT' -%}
+                      {%- if contains_sod -%}
+                        {%- assign discount_value = 2000 | times: item.quantity -%}
+                        {%- assign discounted_price = item.original_price | minus: 2000 -%}
+                        {%- assign tag_name = 'del' -%}
+                        <span>{{ discounted_price | money }}</span><br>
+                      {%- endif -%}
                     {%- endif -%}
-                    <{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %}>{{ item.final_price | money }}</{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %}>
+                    <{{tag_name}}>{{ item.final_price | money }}</{{tag_name}}>
                   {%- endif -%}
 
                   {% include 'product-unit-price', variant: item, available: item.variant.available %}
@@ -178,14 +203,23 @@
                     <span class="order-discount"><b>{{ item.final_line_price | money }}</b></span>
                     {%- assign subtotal = subtotal | plus: item.final_line_price -%}
                   {%- else -%}
-                    <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_total" data-item-key="{{item.key}}" style="display:none !important;"></span>
-                    <b>{{ item.final_line_price | money }}</b>
+                    {%- unless item.product.tags contains 'BYB_DISCOUNT' -%}
+                      <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_total" data-item-key="{{item.key}}" style="display:none !important;"></span>
+                    {%- endunless -%}
+                    {%- assign final_line_price = item.final_line_price -%}
+                    {%- if item.product.tags contains 'BYB_DISCOUNT' -%}
+                      {%- if contains_sod -%}
+                        {%- assign discount_value = 2000 | times: item.quantity -%}
+                        {%- assign final_line_price = item.final_line_price | minus: discount_value -%}
+                      {%- endif -%}
+                    {%- endif -%}
                     {%- if item.properties._bold_bundles_price -%}
                       {%- assign item_bundle_price = item.properties._bold_bundles_price | times: item.quantity -%}
                       {%- assign subtotal = subtotal | plus: item_bundle_price -%}
                     {%- else -%}
-                      {%- assign subtotal = subtotal | plus: item.final_line_price -%}
+                      {%- assign subtotal = subtotal | plus: final_line_price -%}
                     {%- endif -%}
+                    <b>{{ final_line_price | money }}</b>
                   {%- endif -%}
                 </td>
               </tr>
@@ -195,6 +229,11 @@
 
         {%- if fulfillment_method == '' and has_custom_pricing == true -%}
           {%- assign fulfillment_method = cart.attributes.delivery_method -%}
+        {%- endif -%}
+        {%- if invalid_fulfillment == true and contains_sod == true -%}
+          {%- assign invalid_fulfillment = false -%}
+        {%- elsif invalid_fulfillment == true and available_to_deliver == true -%}
+          {%- assign invalid_fulfillment = false -%}
         {%- endif -%}
         <footer class="cart__footer">
           {%- if contains_soil_level_mix == true and contains_sod == false and fulfillment_method == 'delivery' -%}
