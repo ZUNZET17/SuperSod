@@ -260,12 +260,13 @@ const Cart = (function () {
     const cartItemsString = getCartItemsString();
     const cartAttributes = getCartAttributesElementsValue();
     const deliveryType = $('.js-delivery-type:checked').val();
+    const deliveryTypeText = $('.js-delivery-type:checked + label').html();
     const note = $('.js-cart-note').val();
     const ajaxData =
       'delivery_type=' + deliveryType +
       '&shop_domain=' + theme.routes.validation_tool_shop +
       '&note=' + (note !== '' ? note + '. ': '') + 'Dates for ' + cartDeliveryMethod + ': ' + (settings.dates.join(',')) + '. ' +
-        (cartDeliveryMethod === 'delivery' ? 'Delivery address:' + cartDeliveryAddress : 'Pick up in: ' + cartPickupAddress) +
+        (cartDeliveryMethod === 'delivery' ? 'Delivery address:' + cartDeliveryAddress + ', ' + deliveryTypeText : 'Pick up in: ' + cartPickupAddress) +
       '&schedule_dates=' + (settings.dates.join(',')) +
       '&discount_code=' + $('.js-discount-code').val() +
       '&' + cartAttributes +
