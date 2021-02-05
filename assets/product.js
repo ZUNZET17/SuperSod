@@ -69,6 +69,19 @@ const Product = (function () {
       checkMinimumQuantity(value);
     }
     toggleSubmitButton('show', 'js-product-price-check');
+
+    if (
+      typeof productObject.geometry !== 'undefined' &&
+      typeof productObject.geometry.zipCode === 'undefined'
+    ) {
+      const parameters = [];
+      parameters.push({parameter: 'customer_latitude', value: productObject.geometry.latitude});
+      parameters.push({parameter: 'customer_longitude', value: productObject.geometry.longitude});
+      parameters.push({parameter: 'customer_address', value: $('.js-autocomplete-address').val()});
+      parameters.push({parameter: 'zip_code', value: value});
+      $('.js-zip-not-found').addClass('hide');
+      Utils.addToCartParameters(parameters);
+    }
   };
 
   const checkMinimumQuantity = function (zip) {
@@ -431,9 +444,16 @@ const Product = (function () {
       timeout: 3000
     });
     ajax.done(function (data) {
-      if (typeof data.error !== 'undefined') {
+      if (
+        typeof data.error !== 'undefined' ||
+        (
+          deliveryMethod === 'pickup' &&
+          typeof data.nearest_locations === 'undefined'
+        )
+      ) {
         button.html(originalText);
         availiabilityError({zipCode: zipCode});
+        hideFormElements();
         return;
       }
 
@@ -461,7 +481,7 @@ const Product = (function () {
     }).fail(function () {
       button.html(originalText);
       availiabilityError({zipCode: zipCode});
-      toggleSubmitButton('show');
+      hideFormElements();
     });
   };
 
@@ -867,6 +887,9 @@ const Product = (function () {
     const place = autocomplete.getPlace();
     let parameters = [];
 
+    $('.js-zip-not-found').addClass('hide');
+    $('.js-zip-code').prop('readonly', true);
+
     for (const component in componentForm) {
       if (!document.getElementById(component)) {
         continue;
@@ -874,6 +897,10 @@ const Product = (function () {
       document.getElementById(component).value = '';
       document.getElementById(component).disabled = false;
     }
+
+    productObject.geometry = null;
+    $('.js-address-latitude').val('');
+    $('.js-address-longitude').val('');
 
     if (typeof place.geometry !== 'undefined') {
       productObject.geometry = {
@@ -896,8 +923,19 @@ const Product = (function () {
         $('#' + addressType).trigger('change');
         if (addressType === 'postal_code') {
           parameters.push({parameter: 'zip_code', value: val});
+          productObject.geometry.zipCode = val;
         }
       }
+    }
+
+    const hasZipCode = parameters.some(function (data) {
+      return data.parameter === 'zip_code';
+    });
+
+    if (!hasZipCode) {
+      parameters.push({parameter: 'zip_code', value: ''});
+      $('.js-zip-not-found').removeClass('hide');
+      $('.js-zip-code').prop('readonly', false);
     }
 
     if (typeof parameters === 'object' && parameters.length > 1) {

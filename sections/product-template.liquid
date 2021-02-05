@@ -198,7 +198,8 @@
               <input class="form__input full-width js-autocomplete-address" type="text" name="properties[_address]" value="{{cart.attributes['customer_address']}}" id="customer-address-product">
               <div class="js-quantity-block js-delivery-quantity-block">
                 <label for="zip_code" class="form__label">{{ 'customer.addresses.zip' | t }}</label>
-                <input type="text" pattern="[0-9]{5}" name="properties[_zip]" id="postal_code" class="form__input full-width js-zip-code" value="{{cart.attributes['zip_code']}}" required>
+                <input type="text" pattern="[0-9]{5}" name="properties[_zip]" id="postal_code" class="form__input full-width js-zip-code" value="{{cart.attributes['zip_code']}}" required readonly>
+                <p class="product-single__pallet-msg product-single__pallet-msg--unavailable js-zip-not-found hide">Zip Code not found</p>
               </div>
             {%- endif -%}
 
