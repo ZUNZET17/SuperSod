@@ -207,7 +207,7 @@
               {%- if product.options.size > 1 -%}
                 {%- for product_option in product.options_with_values limit: 1 -%}
                   <label class="form__label" for="first_product_variant">{{ product_option.name }}</label>
-                  <select class="form__input full-width js-first-product-variant" id="first_product_variant">
+                  <select class="form__input full-width js-first-product-variant js-product-variant" id="first_product_variant">
                     {% for value in product_option.values %}
                       <option {% if product_option.selected_value == value %}selected{% endif %}>
                         {{ value }}
@@ -215,8 +215,32 @@
                     {% endfor %}
                   </select>
                 {%- endfor -%}
+                {%- unless use_check -%}
+                  {%- for product_option in product.options_with_values offset: 1 -%}
+                    <label class="form__label" for="first_product_variant">{{ product_option.name }}</label>
+                    <select class="form__input full-width js-product-variant" id="product_variant_{{forloop.index}}">
+                      {% for value in product_option.values %}
+                        <option {% if product_option.selected_value == value %}selected{% endif %}>
+                          {{ value }}
+                        </option>
+                      {% endfor %}
+                    </select>
+                  {%- endfor -%}
+                {%- endunless -%}
               {%- endif -%}
-              <select name="id" id="ProductSelect-{{ section.id }}" class="form__input full-width js-product-variants{% if product.has_only_default_variant %} hide{% elsif use_check == true or uses_normal_toggle == true %} hide{% endif %}">
+              {%- assign hide = false -%}
+              {%- assign multi_options = false -%}
+              {%- if product.has_only_default_variant -%}
+                {%- assign hide = true -%}
+              {%- elsif use_check == true or uses_normal_toggle == true -%}
+                {%- assign hide = true -%}
+              {%- elsif product.options.size > 1 -%}
+                {%- unless use_check -%}
+                  {%- assign hide = true -%}
+                  {%- assign multi_options = true -%}
+                {%- endunless -%}
+              {%- endif -%}
+              <select name="id" id="ProductSelect-{{ section.id }}" class="form__input full-width js-product-variants{% if hide %} hide{% endif %}">
                 {% for variant in product.variants %}
                   {% if variant.available %}
                     <option {% if variant == product.selected_or_first_available_variant %} selected="selected" {% endif %}
@@ -418,6 +442,9 @@
   };
   {%- if product.options.size > 1 -%}
     const hasMultipleOptions = true;
+    {%- if multi_options -%}
+      const isMultiOption = true;
+    {%- endif -%}
   {%- endif -%}
 </script>
 

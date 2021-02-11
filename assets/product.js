@@ -28,7 +28,7 @@ const Product = (function () {
       .on('change', '.js-delivery-method', changeDeliveryForm)
       .on('change', '.js-product-pickup-variants', selectPickupVariant)
       .on('change', '.js-product-variants', changeLabelPrice)
-      .on('change', '.js-first-product-variant', selectMultivariant)
+      .on('change', '.js-product-variant', selectMultivariant)
       .on('change keyup input', '.js-quantity-input', checkQuantityIncrement)
       .on('change keyup', '.js-autocomplete-address', hideAddToCart)
       .on('focus', '.js-autocomplete-address', geolocate)
@@ -581,13 +581,28 @@ const Product = (function () {
   };
 
   const checkChosenVariant = function () {
-    const input = document.querySelector('.js-delivery-method:checked');
-    let variantText = input.value;
-    if (typeof hasMultipleOptions !== 'undefined') {
+    let variantText = '';
+
+    if (typeof isMultiOption !== 'undefined' && isMultiOption) {
+      const selectedOptions = document.querySelectorAll('.js-product-variant');
+      for (let i = 0; i < selectedOptions.length; i++) {
+        const element = selectedOptions[i];
+        variantText += (variantText === '' ? '' : ' / ') + element.options[element.selectedIndex].text;
+      }
+    } else if (typeof hasMultipleOptions !== 'undefined') {
+      const input = document.querySelector('.js-delivery-method:checked');
       const firstOption = document.querySelector('.js-first-product-variant').value;
       variantText = firstOption + ' / ' + Utils.capitalize(input.value);
+    } else {
+      const input = document.querySelector('.js-delivery-method:checked');
+      if (input) {
+        variantText = input.value;
+      }
     }
-    chooseVariantToggle(variantText);
+
+    if (variantText !== '') {
+      chooseVariantToggle(variantText);
+    }
   };
 
   const hideSubmitButton = function () {
@@ -627,6 +642,7 @@ const Product = (function () {
     $('.js-product-variants option').each(function (i, option) {
       if (option.value === foundVariant[0].id) {
         option.selected = true;
+        $('.js-price-compare').html('$' + option.dataset.compareVal);
       }
     });
   };
