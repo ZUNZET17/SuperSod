@@ -318,6 +318,26 @@
       "multiples_value": "Please enter a quantity that is multiple of"
     }
   },
+  "pages": {
+    "financing": {
+      "banner_title": "Enjoy now and pay later financing options available for our clients",
+      "banner_text_html": "<p><b>Bread</b> allows you an easy and honest way to pay monthly for your big purchases. Checking your rate takes only seconds. Transparent pricing, easy online payments, and no prepayment penalties make your purchase worry-free.</p>",
+      "get_rate_link": "https://financing.com",
+      "get_rate_text": "Get my rate",
+      "advantages_title": "Advantages",
+      "advantages_text": "Here are some advantages to use 'Bread' as a finance method",
+      "advantage1_title": "SplitPay",
+      "advantage1_text": "4 easy payments with 0% interest.",
+      "advantage2_title": "¿Interest?",
+      "advantage2_text": "Interest rates starting at 0%",
+      "advantage3_title": "Fast",
+      "advantage3_text": "Check your rates and get approved in minutes.",
+      "advantage4_title": "Secure",
+      "advantage4_text": "Your money is protected 100% end to end.",
+      "financing_available_title": "Financing available",
+      "financing_available_text": "We think in our customers, for that reason we want to give you the most comfortable way to pay. What are you waiting for? get a wonderful sod with a wonderful payment method. Click below to get the best rate!"
+    }
+  },
   "products": {
     "general": {
       "quick_buy_added": "Added to cart",

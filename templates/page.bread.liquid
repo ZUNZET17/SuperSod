@@ -1,0 +1,85 @@
+{% layout 'full-width' %}
+<section class="financing-section financing-hero">
+  <div class="site-wrapper">
+    <div class="grid grid--rev">
+      <div class="grid__item medium-up--one-half">
+        <img class="full-width" src="{{ 'supersod-bread.png' | asset_url }}" alt="Supersod and bread integration" srcset="{{ 'supersod-bread-2x.png' | asset_url }} 2x">
+      </div>
+      <div class="grid__item medium-up--one-half">
+        <h2 class="financing-hero__title">{{ 'pages.financing.banner_title' | t }}</h2>
+        {{'pages.financing.banner_text_html' | t}}
+        <div class="grid">
+          <div class="grid__item medium-up--three-quarters large-up--one-half financing-hero__cta-container">
+            <a href="{{ 'pages.financing.get_rate_link' | t }}" class="btn full-width">{{ 'pages.financing.get_rate_text' | t }}</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="financing-section financing-advantages">
+  <div class="site-wrapper">
+    <div class="text-center">
+      <h2 class="financing-advantages__title">{{ 'pages.financing.advantages_title' | t }}</h2>
+      <p>{{ 'pages.financing.advantages_text' | t }}</p>
+    </div>
+    <ul class="grid unstyled-list financing-advantages__advantages">
+      <li class="grid__item medium-up--one-quarter financing-advantages__advantage">
+        <div class="financing-advantages__advantage-content text-center">
+          <div class="financing-advantages__advantage-image" style="background-image: url({{ 'splitpay-financing.svg' | asset_url }});">
+            <img src="{{ 'splitpay-financing.svg' | asset_url }}" alt="" class="hide">
+          </div>
+          <h3 class="financing-advantages__advantage-title">{{ 'pages.financing.advantage1_title' | t }}</h3>
+          <p>{{ 'pages.financing.advantage1_text' | t }}</p>
+        </div>
+      </li>
+      <li class="grid__item medium-up--one-quarter financing-advantages__advantage">
+        <div class="financing-advantages__advantage-content text-center">
+          <div class="financing-advantages__advantage-image" style="background-image: url({{ 'interests-financing.svg' | asset_url }});">
+            <img src="{{ 'interests-financing.svg' | asset_url }}" alt="" class="hide">
+          </div>
+          <h3 class="financing-advantages__advantage-title">{{ 'pages.financing.advantage2_title' | t }}</h3>
+          <p>{{ 'pages.financing.advantage2_text' | t }}</p>
+        </div>
+      </li>
+      <li class="grid__item medium-up--one-quarter financing-advantages__advantage">
+        <div class="financing-advantages__advantage-content text-center">
+          <div class="financing-advantages__advantage-image" style="background-image: url({{ 'fast-financing.svg' | asset_url }});">
+            <img src="{{ 'fast-financing.svg' | asset_url }}" alt="" class="hide">
+          </div>
+          <h3 class="financing-advantages__advantage-title">{{ 'pages.financing.advantage3_title' | t }}</h3>
+          <p>{{ 'pages.financing.advantage3_text' | t }}</p>
+        </div>
+      </li>
+      <li class="grid__item medium-up--one-quarter financing-advantages__advantage">
+        <div class="financing-advantages__advantage-content text-center">
+          <div class="financing-advantages__advantage-image" style="background-image: url({{ 'secure-financing.svg' | asset_url }});">
+            <img src="{{ 'secure-financing.svg' | asset_url }}" alt="" class="hide">
+          </div>
+          <h3 class="financing-advantages__advantage-title">{{ 'pages.financing.advantage4_title' | t }}</h3>
+          <p>{{ 'pages.financing.advantage4_text' | t }}</p>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>
+<section class="financing-section financing-available">
+  <div class="site-wrapper">
+    <div class="grid grid--rev grid--full">
+      <div class="grid__item medium-up--four-tenths">
+        <img class="financing-available__image" src="{{ 'sunny-house.jpg' | asset_url }}" alt="" srcset="{{ 'sunny-house-2x.jpg' | asset_url }} 2x">
+      </div>
+      <div class="grid__item medium-up--six-tenths">
+        <div class="financing-available__container">
+          <h2 class="financing-available__title">{{ 'pages.financing.financing_available_title' | t }}</h2>
+          <p class="financing-available__text">{{ 'pages.financing.financing_available_text' | t }}</p>
+          <div class="grid">
+            <div class="grid__item medium-up--one-third">
+              <a href="{{ 'pages.financing.get_rate_link' | t }}" class="btn full-width">{{ 'pages.financing.get_rate_text' | t }}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

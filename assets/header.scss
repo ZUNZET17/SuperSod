@@ -83,6 +83,12 @@ $tablet: 750px;
   }
 }
 
+.top-bar--full {
+  box-shadow: 0px 2px 4px rgba(189, 189, 189, 0.25);
+  padding-bottom: 0;
+  position: relative;
+}
+
 .search-bar {
   position: relative;
 }

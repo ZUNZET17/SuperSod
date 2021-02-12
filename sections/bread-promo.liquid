@@ -1,0 +1,105 @@
+<div class="promo-block__background"{% if section.settings.background_image %} style="background-image: url({{section.settings.background_image | img_url: 'master'}})"{% endif %}></div>
+<div class="promo-block__container"{% if section.settings.background_color %} style="background-color: {{section.settings.background_color}}"{% endif %}>
+  <div class="grid">
+    {%- if section.settings.featured_image -%}
+      <div class="grid__item one-third">
+        <img src="{{section.settings.featured_image | img_url: 'master'}}" alt="{{section.settings.featured_image.alt | default: 'featured image'}}">
+      </div>
+    {%- endif -%}
+    <div class="grid__item{% if section.settings.featured_image %} two-thirds{% else %}{% endif %}">
+      <h2 class="promo-block__title"{% if section.settings.title_color %} style="color: {{section.settings.title_color}}"{% endif %}>{{section.settings.section_title}}</h2>
+      {%- if section.settings.section_subtitle -%}
+        <p class="promo-block__subtitle"{% if section.settings.text_color %} style="color: {{section.settings.text_color}}"{% endif %}>{{section.settings.section_subtitle}}</p>
+      {%- endif -%}
+      <div class="promo-block__content"{% if section.settings.text_color %} style="color: {{section.settings.text_color}}"{% endif %}>{{section.settings.section_content}}</div>
+      {%- if section.settings.cta_text -%}
+        <a href="{{section.settings.cta_link}}" class="btn btn--terciary">{{section.settings.cta_text}}</a>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "Promo block",
+  "class": "promo-block",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background image"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "image_picker",
+      "id": "featured_image",
+      "label": "Featured image"
+    },
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section title"
+    },
+    {
+      "type": "text",
+      "id": "section_subtitle",
+      "label": "Section subtitle"
+    },
+    {
+      "type": "html",
+      "id": "section_content",
+      "label": "Section content",
+      "info": "HTML code can be used"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "CTA link"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "CTA text"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Promo block",
+      "category": {
+        "da": "Kampagne",
+        "de": "Promotional",
+        "en": "Promotional",
+        "es": "Promocional",
+        "fi": "Mainonnallinen",
+        "fr": "Promotionnel",
+        "hi": "प्रमोशनल",
+        "it": "Promozionale",
+        "ja": "プロモーション用",
+        "ko": "프로모션",
+        "nb": "Kampanjer",
+        "nl": "Promotioneel",
+        "pt-BR": "Promocional",
+        "pt-PT": "Promocional",
+        "sv": "Kampanjer",
+        "th": "ส่งเสริมการขาย",
+        "zh-CN": "促销",
+        "zh-TW": "宣傳活動"
+      }
+    }
+  ]
+}
+{% endschema %}

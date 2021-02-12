@@ -1,8 +1,12 @@
 {%- assign use_full_wrapper = false -%}
-{%- if request.page_type == 'cart' -%}
+{%- assign use_top_margin = true -%}
+{%- if request.page_type == 'cart' or request.path contains 'bread' -%}
   {%- assign use_full_wrapper = true -%}
 {%- endif -%}
-<footer class="site-footer" role="contentinfo" data-section-id="{{ section.id }}" data-section-type="footer-section">
+{%- if request.path contains 'bread' -%}
+  {%- assign use_top_margin = false -%}
+{%- endif -%}
+<footer class="site-footer{% unless use_top_margin %} site-footer--no-top-margin{% endunless %}" role="contentinfo" data-section-id="{{ section.id }}" data-section-type="footer-section">
   <div class="site-wrapper{% unless use_full_wrapper %} site-wrapper--head{% endunless %}">
     <div class="grid site-footer__menus">
 
@@ -56,7 +60,7 @@
                 {% endfor %}
               </ul>
             </div>
-  
+
           {% when 'text' %}
             <div class="grid__item {{ column_width }}">
               {% if block.settings.title %}
@@ -64,7 +68,7 @@
               {% endif %}
               <div class="rte">{{ block.settings.richtext }}</div>
             </div>
-  
+
           {% when 'newsletter' %}
             <div class="grid__item {{ column_width }}">
               {% if block.settings.title %}
