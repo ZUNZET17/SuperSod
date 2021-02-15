@@ -760,11 +760,20 @@ const Product = (function () {
         id: option.value,
         index: index,
         price: option.getAttribute('data-price'),
-        priceValue: option.getAttribute('data-price-val'),
+        priceValue: priceToNumber(option.getAttribute('data-price-val')),
         text: option.text,
         zips: zips
       };
     });
+  };
+
+  const priceToNumber = function (originalPrice) {
+    if (typeof originalPrice === 'undefined') {
+      return 0;
+    }
+
+    const processedPrice = originalPrice.replace(/,/g, '');
+    return processedPrice;
   };
 
   const updateForm = function (zipCode) {
