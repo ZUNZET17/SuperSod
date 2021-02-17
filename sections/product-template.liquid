@@ -36,9 +36,10 @@
 
         {% include 'image-style' with image: image, width: 720, height: 600, small_style: true, wrapper_id: wrapper_id, img_id: img_id %}
 
-        <div id="{{ wrapper_id }}" class="product-single__featured-image-wrapper supports-js{% unless featured_image == image %} hidden{% endunless %}" data-image-id="{{ image.id }}">
+        <div id="{{ wrapper_id }}" class="product-single__featured-image-wrapper js-image-wrapper supports-js{% unless featured_image == image %} hidden{% endunless %}" data-image-id="{{ image.id }}">
           <div class="product-single__photos" data-image-id="{{ image.id }}" style="padding-top:{{ 1 | divided_by: image.aspect_ratio | times: 100}}%;">
-            <img id="{{ img_id }}"
+            <a href="#{{ img_id }}" class="js-product-single-photo" data-mfp-src="{{ image | img_url: '1024x1024' }}">
+              <img id="{{ img_id }}"
                  class="product-single__photo lazyload{% unless featured_image == image %} lazypreload{% endunless %}{% if section.settings.product_image_zoom_type == 'lightbox' %} lightbox{% endif %}"
                  {% if section.settings.product_image_zoom_type == 'zoom-in' %} data-zoom="{{ image | img_url: '1024x1024' }}"{% endif %}
                  src="{{ image | img_url: '200x200' }}"
@@ -47,6 +48,8 @@
                  data-aspectratio="{{ image.aspect_ratio }}"
                  data-sizes="auto"
                  alt="{{ image.alt | escape }}">
+                <span class="hide">View image</span>
+              </a>
           </div>
           {% if product.compare_at_price_max > product.price %}
             <span class="badge badge--sale"><span>{{ 'products.product.on_sale' | t }}</span></span>
@@ -58,7 +61,7 @@
           {%- capture wrapper_id -%}ProductImageWrapper-{{ media.id }}{%- endcapture -%}
           {% capture img_id %}ProductImage-{{ media.id }}{% endcapture %}
           {%- assign img_url = media | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
-          <div id="{{ wrapper_id }}" class="product-single__featured-image-wrapper supports-js hidden" data-image-id="{{ media.id }}">
+          <div id="{{ wrapper_id }}" class="product-single__featured-image-wrapper js-image-wrapper supports-js hidden" data-image-id="{{ media.id }}">
             <div class="product-single__photos" data-image-id="{{ media.id }}" style="padding-top:74.24297%;">
               {%- assign filtered_url = media | external_video_url | split: '?controls=' -%}
               <a href="{{ filtered_url[0] | replace: 'embed/', 'watch?v=' }}" class="js-show-youtube-popup">
@@ -95,7 +98,7 @@
 
           {% for image in product.images %}
             <li class="grid__item small--one-third medium-up--one-third">
-              <a href="{{ image.src | img_url: 'grande' }}" class="product-single__thumbnail" data-image-id="{{ image.id }}">
+              <a href="{{ image.src | img_url: 'grande' }}" class="js-product-single-thumbnail product-single__thumbnail" data-image-id="{{ image.id }}">
                 <img src="{{ image.src | img_url: 'compact' }}" alt="{{ image.alt | escape }}">
               </a>
             </li>

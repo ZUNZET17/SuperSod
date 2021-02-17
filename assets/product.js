@@ -24,6 +24,7 @@ const Product = (function () {
   const setEvents = function () {
     $(document)
       .on('click', '.js-product-price-check', checkZipCode)
+      .on('click', '.js-product-single-thumbnail', switchImage)
       .on('change keyup', '.js-zip-code', validateZipCode)
       .on('change', '.js-delivery-method', changeDeliveryForm)
       .on('change', '.js-product-pickup-variants', selectPickupVariant)
@@ -43,6 +44,7 @@ const Product = (function () {
 
   const initElements = function () {
     $('.js-show-youtube-popup').magnificPopup( { type:'iframe' } );
+    addZoomImage();
 
     const zipCodeElement = $('.js-zip-code');
     if (zipCodeElement.val() !== '') {
@@ -987,6 +989,53 @@ const Product = (function () {
         $('.js-address-longitude').val(position.coords.longitude);
       });
     }
+  };
+
+  const switchImage = function (ev) {
+    ev.preventDefault();
+    const imageId = $(this).attr('data-image-id');
+
+    const $newImage = $(
+      ".js-image-wrapper[data-image-id='" +
+        imageId +
+        "']"
+    );
+    const $otherImages = $(
+      ".js-image-wrapper:not([data-image-id='" +
+        imageId +
+        "'])"
+    );
+
+    $newImage.removeClass('hidden');
+    $otherImages.addClass('hidden');
+  };
+
+  const addZoomImage = function () {
+    $('.js-product-single-photo').magnificPopup({
+      type: 'image',
+      mainClass: 'mfp-fade',
+      closeOnBgClick: true,
+      closeBtnInside: false,
+      closeOnContentClick: true,
+      tClose: theme.strings.zoomClose,
+      removalDelay: 500,
+      callbacks: {
+        open: function() {
+          $('html').css('overflow-y', 'hidden');
+        },
+        close: function() {
+          $('html').css('overflow-y', '');
+        }
+      },
+      gallery: {
+        enabled: true,
+        navigateByImgClick: false,
+        arrowMarkup:
+          '<button title="%title%" type="button" class="mfp-arrow mfp-arrow-%dir%"><span class="mfp-chevron mfp-chevron-%dir%"></span></button>',
+        tPrev: theme.strings.zoomPrev,
+        tNext: theme.strings.zoomNext
+      }
+    });
   };
 
   const hideAddToCart = function () {
