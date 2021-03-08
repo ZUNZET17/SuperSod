@@ -802,16 +802,16 @@ const Product = (function () {
     });
 
     let fullValue = 0;
-    if (foundVariant.length > 0) {
-      fullValue = foundVariant[0].priceValue * $('.js-product-quantity').val();
-      selectVariant(foundVariant[0]);
-    } else if (
+    if (
       typeof usesVariantToggle === 'undefined' &&
       typeof usesRegularToggle === 'undefined' &&
       typeof select.options[select.selectedIndex].dataset.price !== 'undefined'
     ) {
       fullValue = select.options[select.selectedIndex].dataset.price * $('.js-product-quantity').val();
       chooseVariant('pickup');
+    } else if (foundVariant.length > 0) {
+      fullValue = foundVariant[0].priceValue * $('.js-product-quantity').val();
+      selectVariant(foundVariant[0]);
     } else {
       fullValue = $('.js-product-variants option:selected').data('price-val') * $('.js-product-quantity').val();
       chooseVariant('pickup');
