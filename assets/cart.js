@@ -411,7 +411,7 @@ const Cart = (function () {
       updates[item.innerHTML] = 0;
     });
 
-    $('.js-removed--bundle-products').removeClass('hide');
+    $('.js-removed-bundle-products').removeClass('hide');
 
     const ajax = $.ajax({
       type: 'POST',

@@ -4,7 +4,10 @@
 {%- assign has_custom_pricing = false -%}
 {%- assign contains_soil_level_mix = false -%}
 {%- assign contains_sod = false -%}
+{%- assign contains_deliverable_sod = false -%}
 {%- assign available_to_deliver = false -%}
+{%- assign contains_pickup_sod = false -%}
+{%- assign contains_delivery_items = false -%}
 {%- for item in cart.items -%}
   {%- if item.product.title contains 'Humus Compost'
     or item.product.title contains 'Raised Garden Kit'
@@ -15,28 +18,74 @@
   {%- endif -%}
   {%- if item.product.type contains 'Sod' -%}
     {%- assign contains_sod = true -%}
-    {%- assign available_to_deliver = true -%}
-  {%- elsif item.product.type contains 'Fertilizer' -%}
+    {%- if item.properties._method == 'delivery' -%}
+      {%- assign available_to_deliver = true -%}
+      {%- assign contains_deliverable_sod = true -%}
+    {%- else -%}
+      {%- assign contains_pickup_sod = true -%}
+    {%- endif -%}
+  {%- elsif item.product.type contains 'Fertilizer' and item.properties._method == 'delivery' -%}
     {%- assign available_to_deliver = true -%}
   {%- elsif item.product.type contains 'Compost' -%}
     {%- assign contains_sod = true -%}
+    {%- if item.properties._method == 'delivery' -%}
+      {%- assign contains_deliverable_sod = true -%}
+    {%- endif -%}
   {%- endif -%}
   {%- if item.product.tags contains 'grants-delivery' -%}
     {%- assign available_to_deliver = true -%}
+    {%- assign contains_deliverable_sod = true -%}
   {%- endif -%}
   {%- if item.properties._method != blank -%}
     {%- if fulfillment_method == '' -%}
       {%- assign fulfillment_method = item.properties._method -%}
     {%- elsif item.properties._method != fulfillment_method -%}
-      {%- assign invalid_fulfillment = true -%}
-    {%- endif -%}
-    {%- if contains_sod == true and item.properties._method == 'delivery' -%}
+      {%- if item.product.type contains 'Sod' and item.properties._method == 'delivery' -%}
+        {%- assign invalid_fulfillment = false -%}
+        {%- assign fulfillment_method = item.properties._method -%}
+      {%- elsif item.product.type contains 'Sod' and item.properties._method == 'pickup' -%}
+        {%- assign invalid_fulfillment = false -%}
+        {%- assign fulfillment_method = item.properties._method -%}
+      {%- elsif contains_deliverable_sod == true and fulfillment_method == 'delivery' -%}
+        {%- assign invalid_fulfillment = false -%}
+      {%- elsif contains_deliverable_sod == true and item.properties._method == 'delivery' -%}
+        {%- if contains_pickup_sod -%}
+          {%- assign invalid_fulfillment = true -%}
+          {%- assign fulfillment_method = 'none' -%}
+        {%- else -%}
+          {%- assign invalid_fulfillment = false -%}
+          {%- assign fulfillment_method = item.properties._method -%}
+        {%- endif -%}
+      {%- else -%}
+        {%- assign invalid_fulfillment = true -%}
+        {%- assign fulfillment_method = 'none' -%}
+      {%- endif -%}
+    {%- elsif contains_deliverable_sod == true and item.properties._method == 'delivery' -%}
       {%- assign fulfillment_method = item.properties._method -%}
     {%- elsif available_to_deliver == true and item.properties._method == 'delivery' -%}
       {%- assign fulfillment_method = item.properties._method -%}
     {%- endif -%}
+    {%- if item.properties._method == 'delivery' -%}
+      {%- assign contains_delivery_items = true -%}
+    {%- endif -%}
+  {%- elsif item.variant.title contains 'ickup' -%}
+    {%- if fulfillment_method == '' -%}
+      {%- assign fulfillment_method = 'pickup' -%}
+    {%- elsif item.properties._method != fulfillment_method -%}
+      {%- assign invalid_fulfillment = true -%}
+    {%- endif -%}
+  {%- elsif item.variant.title contains 'elivery' -%}
+    {%- if fulfillment_method == '' -%}
+      {%- assign fulfillment_method = 'delivery' -%}
+    {%- elsif item.properties._method != fulfillment_method -%}
+      {%- assign invalid_fulfillment = true -%}
+    {%- endif -%}
   {%- endif -%}
 {%- endfor -%}
+{%- if contains_delivery_items and contains_pickup_sod -%}
+  {%- assign invalid_fulfillment = true -%}
+  {%- assign fulfillment_method = 'none' -%}
+{%- endif -%}
 <div class="grid">
   <div class="grid__item">
     {% if cart.item_count > 0 %}
@@ -230,10 +279,13 @@
         {%- if fulfillment_method == '' and has_custom_pricing == true -%}
           {%- assign fulfillment_method = cart.attributes.delivery_method -%}
         {%- endif -%}
-        {%- if invalid_fulfillment == true and contains_sod == true -%}
+        {%- if invalid_fulfillment == true and available_to_deliver == true and fulfillment_method == 'delivery' -%}
           {%- assign invalid_fulfillment = false -%}
-        {%- elsif invalid_fulfillment == true and available_to_deliver == true -%}
+        {%- elsif invalid_fulfillment == true and contains_deliverable_sod == true -%}
           {%- assign invalid_fulfillment = false -%}
+        {%- endif -%}
+        {%- if available_to_deliver == true and fulfillment_method == 'none' -%}
+          {%- assign invalid_fulfillment = true -%}
         {%- endif -%}
         <footer class="cart__footer">
           {%- if contains_soil_level_mix == true and contains_sod == false and fulfillment_method == 'delivery' -%}
@@ -336,6 +388,8 @@
                   <label for="CartSpecialInstructions" class="cart__note-label label--block">{{ 'cart.general.note' | t }}</label>
                   <textarea name="note" id="CartSpecialInstructions" class="input--block js-cart-note form__input cart__note{{textarea_extra_class}}" placeholder="{{ 'layout.cart.notes_placeholder' | t }}">{{ cart.note }}</textarea>
                 </div>
+            {%- elsif invalid_fulfillment and has_custom_pricing == true -%}
+              {%- assign push_class = ' large-up--push-two-thirds' -%}
             {%- endif -%}
             <div class="grid__item text-center large-up--one-third large-up--text-right{{push_class}}">
               {%- if cart.cart_level_discount_applications != blank -%}
@@ -361,10 +415,12 @@
                 {%- else -%}
                   {%- if invalid_fulfillment == false and has_custom_pricing == true -%}
                     <button type="button" name="checkout" class="btn full-width js-go-to-checkout" disabled>{{ 'cart.general.checkout' | t }}</button>
+                  {%- elsif invalid_fulfillment == false -%}
+                    <button type="button" name="checkout" class="btn full-width js-go-to-checkout" disabled>{{ 'cart.general.checkout' | t }}</button>
                   {%- else -%}
                     <button type="submit" name="checkout" class="btn full-width">{{ 'cart.general.checkout' | t }}</button>
                   {%- endif -%}
-                  <p class="cart__error-message hide js-removed--bundle-products">Some bundle-related products were removed from the cart</p>
+                  <p class="cart__error-message hide js-removed-bundle-products">Some bundle-related products were removed from the cart</p>
                 {%- endif -%}
               </div>
               <p class="cart__error-message hide js-no-response">{{ 'layout.cart.no_checkout_available' | t }}</p>
