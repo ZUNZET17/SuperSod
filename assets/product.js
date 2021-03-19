@@ -53,6 +53,10 @@ const Product = (function () {
         zipCodeElement.trigger('change');
       }, 1000);
     }
+
+    if (typeof isBundle !== 'undefined' && isBundle) {
+      startBundleObserver();
+    }
   };
 
   const validateZipCode = function (ev) {
@@ -232,6 +236,23 @@ const Product = (function () {
         return;
       }
 
+      let isAvailable = true;
+
+      for (let i = 0; i < response.data.length; i++) {
+        const data = response.data[i];
+        if (data.available_in_zone === false ||
+          data[deliveryMethod] === false
+        ) {
+          isAvailable = false;
+        }
+      }
+
+      if (!isAvailable) {
+        button.html(originalText);
+        hideFormElements();
+        return;
+      }
+
       showPricesAndLocations({
         button: button,
         originalText: originalText,
@@ -369,6 +390,23 @@ const Product = (function () {
             hideFormElements();
           }
         });
+        return;
+      }
+
+      let isAvailable = true;
+
+      for (let i = 0; i < response.data.length; i++) {
+        const data = response.data[i];
+        if (data.available_in_zone === false ||
+          data[deliveryMethod] === false
+        ) {
+          isAvailable = false;
+        }
+      }
+
+      if (!isAvailable) {
+        button.html(originalText);
+        hideFormElements();
         return;
       }
 
@@ -651,7 +689,17 @@ const Product = (function () {
 
   const updateBundleSelector = function () {
     if (typeof isBundle !== 'undefined' && isBundle) {
-      $('.bold-bundles-child-product__variant-selector').trigger('change');
+      const deliveryInput = document.querySelector('.js-delivery-method:checked');
+      const deliveryMethod = deliveryInput.value;
+      $('.bold-bundles-child-product__variant-selector').each(function (i, element) {
+        for (let j = 0; j < element.options.length; j++) {
+          const option = element.options[j];
+          if (option.text.toLocaleLowerCase() === deliveryMethod) {
+            option.selected = true;
+          }
+        }
+        $(element).trigger('change');
+      });
     }
   };
 
@@ -871,6 +919,7 @@ const Product = (function () {
       }
 
       $('.js-product-variants').trigger('change');
+      updateBundleSelector();
       return;
     } else if (deliveryOption === 'pickup') {
       $('.js-product-variants').show();
@@ -1040,6 +1089,42 @@ const Product = (function () {
 
   const hideAddToCart = function () {
     $('.js-quantity-input').trigger('keyup');
+  };
+
+  const startBundleObserver = function () {
+    const targetNode = document.querySelector('.js-product-form');
+    const config = { attributes: true, childList: true, subtree: true };
+    const callback = function (mutationsList, observer) {
+      for (let i = 0; i < mutationsList.length; i++) {
+        const mutation = mutationsList[i];
+        if (mutation.type === 'childList') {
+          const bundleVariantDropdowns = document.querySelectorAll('.bold-bundles-child-product__variant-selector');
+          if (bundleVariantDropdowns.length > 0) {
+            observer.disconnect();
+            hideDropdowns(bundleVariantDropdowns);
+          }
+        }
+      }
+    }
+
+    const observer = new MutationObserver(callback);
+    observer.observe(targetNode, config);
+  };
+
+  const hideDropdowns = function (dropdowns) {
+    for (let i = 0; i < dropdowns.length; i++) {
+      const dropdown = dropdowns[i];
+      let hasDeliveryVariant = false;
+      for (let j = 0; j < dropdown.options.length; j++) {
+        const option = dropdown.options[j];
+        if (option.text.toLocaleLowerCase() === 'delivery') {
+          hasDeliveryVariant = true;
+        }
+      }
+      if (hasDeliveryVariant) {
+        dropdown.classList.add('sr-only');
+      }
+    }
   };
 
   return {
