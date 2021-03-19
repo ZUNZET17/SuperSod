@@ -32,7 +32,7 @@
       {%- assign contains_deliverable_sod = true -%}
     {%- endif -%}
   {%- endif -%}
-  {%- if item.product.tags contains 'grants-delivery' -%}
+  {%- if item.product.tags contains 'grants-delivery' and item.properties._method == 'delivery' -%}
     {%- assign available_to_deliver = true -%}
     {%- assign contains_deliverable_sod = true -%}
   {%- endif -%}
@@ -210,10 +210,12 @@
                       <span>{{ item.original_price | money }}</span><br>
                     {%- elsif item.product.tags contains 'BYB_DISCOUNT' -%}
                       {%- if contains_sod -%}
-                        {%- assign discount_value = 2000 | times: item.quantity -%}
-                        {%- assign discounted_price = item.original_price | minus: 2000 -%}
-                        {%- assign tag_name = 'del' -%}
-                        <span>{{ discounted_price | money }}</span><br>
+                        {%- unless item.properties._bold_bundles_price -%}
+                          {%- assign discount_value = 2000 | times: item.quantity -%}
+                          {%- assign discounted_price = item.original_price | minus: 2000 -%}
+                          {%- assign tag_name = 'del' -%}
+                          <span>{{ discounted_price | money }}</span><br>
+                        {%- endunless -%}
                       {%- endif -%}
                     {%- endif -%}
                     <{{tag_name}}>{{ item.final_price | money }}</{{tag_name}}>
@@ -258,8 +260,10 @@
                     {%- assign final_line_price = item.final_line_price -%}
                     {%- if item.product.tags contains 'BYB_DISCOUNT' -%}
                       {%- if contains_sod -%}
-                        {%- assign discount_value = 2000 | times: item.quantity -%}
-                        {%- assign final_line_price = item.final_line_price | minus: discount_value -%}
+                        {%- unless item.properties._bold_bundles_price -%}
+                          {%- assign discount_value = 2000 | times: item.quantity -%}
+                          {%- assign final_line_price = item.final_line_price | minus: discount_value -%}
+                        {%- endunless -%}
                       {%- endif -%}
                     {%- endif -%}
                     {%- if item.properties._bold_bundles_price -%}
@@ -416,7 +420,7 @@
                   {%- if invalid_fulfillment == false and has_custom_pricing == true -%}
                     <button type="button" name="checkout" class="btn full-width js-go-to-checkout" disabled>{{ 'cart.general.checkout' | t }}</button>
                   {%- elsif invalid_fulfillment == false -%}
-                    <button type="button" name="checkout" class="btn full-width js-go-to-checkout" disabled>{{ 'cart.general.checkout' | t }}</button>
+                    <button type="submit" name="checkout" class="btn full-width" disabled>{{ 'cart.general.checkout' | t }}</button>
                   {%- else -%}
                     <button type="submit" name="checkout" class="btn full-width">{{ 'cart.general.checkout' | t }}</button>
                   {%- endif -%}
