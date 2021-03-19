@@ -159,11 +159,14 @@ const Cart = (function () {
     $('.js-dates-empty').addClass('hide');
     $('.js-dates-same').addClass('hide');
     $('.js-no-response').addClass('hide');
+    $('.js-delivery-empty').addClass('hide');
+
     const button = $(ev.target);
     const originalText = button.html();
 
     button.html('Checking ...');
     let dates = document.querySelectorAll('input[class*="js-tail-datetime-field-"]');
+    let radioGroup = $('.js-delivery-type:checked');
     dates = Array.prototype.slice.call(dates);
     const filledDates = dates.length;
     const validIndexes = [true, true, true];
@@ -188,6 +191,10 @@ const Cart = (function () {
     const datesAreValid = validIndexes.reduce(function (acc, item) {
       return acc && item;
     }, true);
+
+    if(radioGroup.length === 0) {
+      $('.js-delivery-empty').removeClass('hide');
+    }
 
     let invalidTextSelector = '';
     if (dates.length === 0) {
@@ -219,6 +226,13 @@ const Cart = (function () {
     };
     sendOrderData(settings);
   };
+
+  $('.form__input--date').click(function(){
+    let radioGroup = $('.js-delivery-type:checked');
+    if(radioGroup.length === 0) {
+	    alert('You have to select a delivery type to choose a date');
+    }
+  });
 
   const processDates = function (settings) {
     const ajaxData = {
