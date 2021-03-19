@@ -205,9 +205,14 @@ const Product = (function () {
         typeof response.message !== 'undefined' ||
         response.data.length < 1 ||
         response.data[0].available_in_zone === false ||
-        response.data[0][deliveryMethod] === false ||
-        typeof response.message !== 'undefined'
+        response.data[0][deliveryMethod] === false
       ) {
+        if (response.message.indexOf('not available') > -1) {
+          button.html(originalText);
+          hideFormElements();
+          return;
+        }
+
         const longitude = $('.js-address-longitude').val();
         const latitude = $('.js-address-latitude').val();
         const productString = getUnavailableInZoneProductString();
@@ -370,6 +375,12 @@ const Product = (function () {
         response.data[0].available_in_zone === false ||
         response.data[0][deliveryMethod] === false
       ) {
+        if (response.message.indexOf('not available') > -1) {
+          button.html(originalText);
+          hideFormElements();
+          return;
+        }
+
         const longitude = $('.js-address-longitude').val();
         const latitude = $('.js-address-latitude').val();
         const productString = getUnavailableInZoneProductString();
