@@ -8,7 +8,11 @@
 {%- assign available_to_deliver = false -%}
 {%- assign contains_pickup_sod = false -%}
 {%- assign contains_delivery_items = false -%}
+{%- assign hide_expedited = false -%}
 {%- for item in cart.items -%}
+  {%- if item.properties._bold_bundles_price != blank -%}
+    {%- assign hide_expedited = true -%}
+  {%- endif -%}
   {%- if item.product.title contains 'Humus Compost'
     or item.product.title contains 'Raised Garden Kit'
     or item.product.title contains 'Workshop Bundle'
@@ -323,18 +327,20 @@
                     <dfn class="sr-only">{{ 'layout.cart.standard_delivery' | t }}</dfn>
                     {{ 'layout.cart.standard_delivery_explanation' | t }}
                   </p>
-                  <input type="radio" name="attributes[_method]" class="js-delivery-type js-check-dates" id="noon-method" value="before_noon" data-price="{{ settings.before_noon_delivery_price | default: '4999' }}">
-                  <label for="noon-method" class="cart__method-label">{{ 'layout.cart.before_noon' | t }}</label>
-                  <p>
-                    <dfn class="sr-only">{{ 'layout.cart.before_noon' | t }}</dfn>
-                    {{ 'layout.cart.before_noon_explanation' | t }}
-                  </p>
-                  <input type="radio" name="attributes[_method]" class="js-delivery-type js-check-dates" id="truck-method" value="first_off_truck" data-price="{{ settings.before_nine_delivery_price | default: '9999' }}">
-                  <label for="truck-method" class="cart__method-label">{{ 'layout.cart.first_off_truck' | t }}</label>
-                  <p>
-                    <dfn class="sr-only">{{ 'layout.cart.first_off_truck' | t }}</dfn>
-                    {{ 'layout.cart.first_off_truck_explanation' | t }}
-                  </p>
+                  {%- unless hide_expedited -%}
+                    <input type="radio" name="attributes[_method]" class="js-delivery-type js-check-dates" id="noon-method" value="before_noon" data-price="{{ settings.before_noon_delivery_price | default: '4999' }}">
+                    <label for="noon-method" class="cart__method-label">{{ 'layout.cart.before_noon' | t }}</label>
+                    <p>
+                      <dfn class="sr-only">{{ 'layout.cart.before_noon' | t }}</dfn>
+                      {{ 'layout.cart.before_noon_explanation' | t }}
+                    </p>
+                    <input type="radio" name="attributes[_method]" class="js-delivery-type js-check-dates" id="truck-method" value="first_off_truck" data-price="{{ settings.before_nine_delivery_price | default: '9999' }}">
+                    <label for="truck-method" class="cart__method-label">{{ 'layout.cart.first_off_truck' | t }}</label>
+                    <p>
+                      <dfn class="sr-only">{{ 'layout.cart.first_off_truck' | t }}</dfn>
+                      {{ 'layout.cart.first_off_truck_explanation' | t }}
+                    </p>
+                  {%- endunless -%}
                 {%- else -%}
                   <div>
                     <label for="pickup-method" class="cart__method-label">
