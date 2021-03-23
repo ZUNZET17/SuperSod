@@ -207,7 +207,7 @@ const Product = (function () {
         response.data[0].available_in_zone === false ||
         response.data[0][deliveryMethod] === false
       ) {
-        if (response.message.indexOf('not available') > -1) {
+        if (typeof response.message !== 'undefined' && response.message.indexOf('not available') > -1) {
           button.html(originalText);
           hideFormElements();
           return;
@@ -375,7 +375,7 @@ const Product = (function () {
         response.data[0].available_in_zone === false ||
         response.data[0][deliveryMethod] === false
       ) {
-        if (response.message.indexOf('not available') > -1) {
+        if (typeof response.message !== 'undefined' && response.message.indexOf('not available') > -1) {
           button.html(originalText);
           hideFormElements();
           return;
