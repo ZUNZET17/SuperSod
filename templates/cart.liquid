@@ -476,6 +476,7 @@
 </div>
 {%- if cart.item_count > 0 -%}
   <script>
+    const chooseStepOneMessage = "{{ 'layout.cart.select_option_in_step_one' | t }}";
     {%- if invalid_fulfillment == false and has_custom_pricing == true -%}
       const hasCustomPricing = true;
     {%- endif -%}

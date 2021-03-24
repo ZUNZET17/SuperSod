@@ -227,13 +227,6 @@ const Cart = (function () {
     sendOrderData(settings);
   };
 
-  $('.form__input--date').click(function(){
-    let radioGroup = $('.js-delivery-type:checked');
-    if(radioGroup.length === 0) {
-	    alert('You have to select a delivery type to choose a date');
-    }
-  });
-
   const processDates = function (settings) {
     const ajaxData = {
       shop_domain: theme.routes.validation_tool_shop,
@@ -460,6 +453,13 @@ const Cart = (function () {
         updateOtherCalendars(index);
       });
     }
+
+    $('.form__input--date').click(function() {
+      let radioGroup = $('.js-delivery-type:checked');
+      if(radioGroup.length === 0) {
+        alert(chooseStepOneMessage);
+      }
+    });
   };
 
   return {

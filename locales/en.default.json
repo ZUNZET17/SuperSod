@@ -293,7 +293,8 @@
       "delivery_soil_level_mix": "Your order will be delivered within the next 7-10 days, and you'll receive a text message from us the day before your delivery with your delivery time.",
       "notes_placeholder": "example: product placement if delivered, narrow roads, dead ends, gate code, etc.",
       "cannot_mix_methods": "Pickups and Deliveries cannot be combined in the same order.",
-      "no_checkout_available": "An error ocurred while processing your request"
+      "no_checkout_available": "An error ocurred while processing your request",
+      "select_option_in_step_one": "To select your dates, please choose an option in Step 1"
     },
     "checkout": {
       "back_to_cart": "Go back to cart"
