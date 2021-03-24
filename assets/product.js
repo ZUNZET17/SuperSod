@@ -208,8 +208,38 @@ const Product = (function () {
         response.data[0][deliveryMethod] === false
       ) {
         if (typeof response.message !== 'undefined' && response.message.indexOf('not available') > -1) {
+          if (deliveryMethod === 'pickup') {
+            if (typeof isSod !== 'undefined') {
+              button.html(originalText);
+              checkProductPricing(zipCode, button);
+            } else {
+              showPricesAndLocations({
+                button: button,
+                originalText: originalText,
+                deliveryMethod: deliveryMethod,
+                zipCode: zipCode
+              });
+            }
+
+            return;
+          }
           button.html(originalText);
           hideFormElements();
+
+          return;
+        } else if (response.data[0][deliveryMethod] === false && deliveryMethod === 'pickup' ) {
+          if (typeof isSod !== 'undefined') {
+            button.html(originalText);
+            checkProductPricing(zipCode, button);
+          } else {
+            showPricesAndLocations({
+              button: button,
+              originalText: originalText,
+              deliveryMethod: deliveryMethod,
+              zipCode: zipCode
+            });
+          }
+
           return;
         }
 
@@ -376,8 +406,38 @@ const Product = (function () {
         response.data[0][deliveryMethod] === false
       ) {
         if (typeof response.message !== 'undefined' && response.message.indexOf('not available') > -1) {
+          if (deliveryMethod === 'pickup') {
+            if (typeof isSod !== 'undefined') {
+              button.html(originalText);
+              checkProductPricing(zipCode, button);
+            } else {
+              showPricesAndLocations({
+                button: button,
+                originalText: originalText,
+                deliveryMethod: deliveryMethod,
+                zipCode: zipCode
+              });
+            }
+
+            return;
+          }
+
           button.html(originalText);
           hideFormElements();
+          return;
+        } else if (response.data[0][deliveryMethod] === false && deliveryMethod === 'pickup' ) {
+          if (typeof isSod !== 'undefined') {
+            button.html(originalText);
+            checkProductPricing(zipCode, button);
+          } else {
+            showPricesAndLocations({
+              button: button,
+              originalText: originalText,
+              deliveryMethod: deliveryMethod,
+              zipCode: zipCode
+            });
+          }
+
           return;
         }
 
@@ -575,7 +635,7 @@ const Product = (function () {
           '<option value="' +
           (typeof customLocation.location_name !== 'undefined' ? customLocation.location_name : customLocation) +
           '"' +
-          (customLocation.unit_price
+          (typeof customLocation.unit_price !== 'undefined'
             ? ' data-price="' + customLocation.unit_price + '"'
             : "") +
           ">" +

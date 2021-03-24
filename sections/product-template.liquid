@@ -423,6 +423,7 @@
     {% if uses_normal_toggle == true %}const usesRegularToggle = true;{% endif %}
     {% if use_variant_toggle == true %}const usesVariantToggle = true;{% endif %}
     {% if product.tags contains 'Bundle' %}const isBundle = true;{% endif %}
+    {% if product.type == 'Sod' or product.type == 'sod' %}const isSod = true;{% endif %}
   </script>
   {%- unless uses_normal_toggle -%}
     <style>.selector-wrapper {display: none;}</style>
