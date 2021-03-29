@@ -173,7 +173,10 @@
                     {%- assign pickup_address = cart.attributes.pickup_address -%}
                   {%- endif -%}
                   <p class="txt--minor">
-                    <a href="{{ routes.cart_change_url }}?line={{ forloop.index }}&amp;quantity=0" class="cart__remove">{{ 'cart.general.remove' | t }}</a>
+                    <a href="{{ routes.cart_change_url }}?line={{ forloop.index }}&amp;quantity=0" class="cart__remove hide js-remove-link">{{ 'cart.general.remove' | t }}</a>
+                    <noscript>
+                      <a href="{{ routes.cart_change_url }}?line={{ forloop.index }}&amp;quantity=0" class="cart__remove">{{ 'cart.general.remove' | t }}</a>
+                    </noscript>
                   </p>
                 </td>
                 <td class="cart__table-cell--price medium-up--text-right" data-label="{{ 'cart.label.price' | t }}">
@@ -204,13 +207,11 @@
                     {%- endif -%}
                     <{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %} class="order-discount">{{ item.final_price | money }}</{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %}>
                   {%- else -%}
-                    {%- unless item.product.tags contains 'BYB_DISCOUNT' -%}
-                      <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_price" data-item-key="{{item.key}}" style="display:none !important;"></span>
-                    {%- endunless -%}
                     {%- assign tag_name = 'span' -%}
                     {%- if item.properties._bold_bundles_price -%}
                       {%- assign has_custom_pricing = true -%}
                       {%- assign tag_name = 'del' -%}
+                      <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_price" data-item-key="{{item.key}}" style="display:none !important;"></span>
                       <span>{{ item.original_price | money }}</span><br>
                     {%- elsif item.product.tags contains 'BYB_DISCOUNT' -%}
                       {%- if contains_sod -%}
@@ -258,11 +259,10 @@
                     <span class="order-discount"><b>{{ item.final_line_price | money }}</b></span>
                     {%- assign subtotal = subtotal | plus: item.final_line_price -%}
                   {%- else -%}
-                    {%- unless item.product.tags contains 'BYB_DISCOUNT' -%}
-                      <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_total" data-item-key="{{item.key}}" style="display:none !important;"></span>
-                    {%- endunless -%}
                     {%- assign final_line_price = item.final_line_price -%}
-                    {%- if item.product.tags contains 'BYB_DISCOUNT' -%}
+                    {%- if item.properties._bold_bundles_price -%}
+                      <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_total" data-item-key="{{item.key}}" style="display:none !important;"></span>
+                    {%- elsif item.product.tags contains 'BYB_DISCOUNT' -%}
                       {%- if contains_sod -%}
                         {%- unless item.properties._bold_bundles_price -%}
                           {%- assign discount_value = 2000 | times: item.quantity -%}
