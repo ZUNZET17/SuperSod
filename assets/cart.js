@@ -435,9 +435,18 @@ const Cart = (function () {
     })
   };
 
+  const showRemoveLinks = function () {
+    setTimeout(() => {
+      $('.js-remove-link').each(function (i, link) {
+        $(link).removeClass('hide');
+      });
+    }, 3000);
+  };
+
   const init = function () {
     setEvents();
     showFixedPrices();
+    showRemoveLinks();
   };
 
   const setEvents = function () {
