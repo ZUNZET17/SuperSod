@@ -165,6 +165,10 @@ $cart_desk: 990px;
   background-color:  $color_primary;
 }
 
+.tail-datetime-calendar .calendar-datepicker table tr td.calendar-day:not(.date-disabled) {
+  font-weight: bold;
+}
+
 .cart__error-message {
   background-color: #fff8f8;
   border: 1px solid #D20000;
