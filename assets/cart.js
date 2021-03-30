@@ -294,14 +294,18 @@ const Cart = (function () {
 
     ajax.done(function (data) {
       if (data.draft_order) {
-        window.location.href = data.draft_order;
+        setTimeout(function () {
+          window.location.href = data.draft_order;
+        }, 2000);
         return;
       }
+
+      settings.button.html(settings.originalText);
       $('.js-no-response').removeClass('hide');
     }).fail(function () {
       $('.js-no-response').removeClass('hide');
+      settings.button.html(settings.originalText);
     });
-    settings.button.html(settings.originalText);
   };
 
   const resetCheckoutForm = function (ev) {
