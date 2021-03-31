@@ -115,9 +115,12 @@ const Product = (function () {
   const checkZipCode = function (ev) {
     const input = $('.js-zip-code')[0];
     const zipCode = (input.value).trim();
-    if (!zipCode || zipCode == '' || zipCode.length < 5) {
-      toggleSubmitButton('disable');
-      return;
+    const deliveryMethod = $('.js-delivery-method:checked').val();
+    if (deliveryMethod === 'delivery') {
+      if (!zipCode || zipCode == '' || zipCode.length < 5) {
+        toggleSubmitButton('disable');
+        return;
+      }
     }
 
     if (
@@ -362,7 +365,7 @@ const Product = (function () {
   };
 
   const checkNearestPickupLocations = function (ajaxData, doneCallback) {
-    const endpoint = 'nearest_locations';
+    const endpoint = 'nearest_locations_price';
     const ajax = $.ajax({
       type: 'GET',
       url: theme.routes.validation_tool_url + endpoint,
@@ -370,6 +373,18 @@ const Product = (function () {
       timeout: 3000
     });
     ajax.done(function (data) {
+      if (
+        typeof data.error !== 'undefined' ||
+        (
+          deliveryMethod === 'pickup' &&
+          typeof data.nearest_locations === 'undefined'
+        )
+      ) {
+        availiabilityError({zipCode: ''});
+        hideFormElements('.js-not-available-pickup-text');
+        return;
+      }
+
       enableNearestLocations(typeof data.nearest_locations !== 'undefined' ? data.nearest_locations : null);
       $('.js-product-pickup-variants').trigger('change');
       if (typeof doneCallback === 'function') {
@@ -999,8 +1014,8 @@ const Product = (function () {
     }
   };
 
-  const hideFormElements = function () {
-    $('.js-not-available-text').removeClass('hide');
+  const hideFormElements = function (selector) {
+    $(selector ? selector : '.js-not-available-text').removeClass('hide');
     toggleSubmitButton('disable');
   };
 

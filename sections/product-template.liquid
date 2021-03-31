@@ -197,8 +197,8 @@
               </div>
               <div class="js-quantity-block js-delivery-quantity-block">
                 <input class="form__input full-width js-autocomplete-address" type="text" name="properties[_address]" value="{{cart.attributes['customer_address']}}" id="customer-address-product">
-                <label for="zip_code" class="form__label">{{ 'customer.addresses.zip' | t }}</label>
-                <input type="text" pattern="[0-9]{5}" name="properties[_zip]" id="postal_code" class="form__input full-width js-zip-code" value="{{cart.attributes['zip_code']}}" required readonly>
+                <label for="zip_code" class="form__label hide">{{ 'customer.addresses.zip' | t }}</label>
+                <input type="hidden" pattern="[0-9]{5}" name="properties[_zip]" id="postal_code" class="form__input full-width js-zip-code" value="{{cart.attributes['zip_code']}}" required readonly>
                 <p class="product-single__pallet-msg product-single__pallet-msg--unavailable js-zip-not-found hide">Zip Code not found</p>
               </div>
             {%- endif -%}
@@ -336,6 +336,7 @@
           {% endform %}
           {%- if use_pallet == true or use_check == true -%}
             <p class="product-single__pallet-msg product-single__pallet-msg--unavailable js-not-available-text hide">{{ 'products.product.pallet_unavailable_html' | t }}</p>
+            <p class="product-single__pallet-msg product-single__pallet-msg--unavailable js-not-available-pickup-text hide">{{ 'products.product.pickup_unavailable_html' | t }}</p>
             {%- if uses_normal_toggle == false and use_variant_toggle == false -%}
               <p class="product-single__pallet-msg">{{ 'products.product.sod_picker_text_html' | t }}</p>
             {%- endif -%}
