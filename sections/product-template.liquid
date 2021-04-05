@@ -448,6 +448,9 @@
       const isMultiOption = true;
     {%- endif -%}
   {%- endif -%}
+  {%- if product.tags contains 'delivers-everywhere' -%}
+    const isDeliveredEverywhere = true;
+  {%- endif -%}
 </script>
 
 
