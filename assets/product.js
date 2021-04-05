@@ -127,6 +127,17 @@ const Product = (function () {
       typeof usesVariantToggle !== 'undefined' ||
       typeof usesRegularToggle !== 'undefined'
     ) {
+      if (deliveryMethod === 'delivery') {
+        if (typeof isDeliveredEverywhere !== 'undefined') {
+          toggleSubmitButton('show');
+          showButtonMessage(deliveryMethod);
+          // $('.js-delivery-method').trigger('change');
+          $('.js-not-available-text').addClass('hide');
+          chooseVariant('delivery');
+          return;
+        }
+      }
+
       const boldLinks = $('.js-product-form .bold-bundles-child-product__link');
       if (boldLinks.length > 0) {
         checkBundleProductsInfo(boldLinks, zipCode, $(ev.target));
@@ -360,7 +371,11 @@ const Product = (function () {
         checkChosenVariant();
       }
     }
-    $('.js-delivery-method').trigger('change');
+    // $('.js-delivery-method').trigger('change');
+    const submitButton = $('.js-product-submit');
+    if (submitButton.hasClass('hide')) {
+      toggleSubmitButton('show');
+    }
     $('.js-not-available-text').addClass('hide');
   };
 
@@ -373,6 +388,7 @@ const Product = (function () {
       timeout: 3000
     });
     ajax.done(function (data) {
+      const deliveryMethod = $('.js-delivery-method:checked').val();
       if (
         typeof data.error !== 'undefined' ||
         (
@@ -588,7 +604,7 @@ const Product = (function () {
       updateForm(zipCode);
       toggleSubmitButton('show');
       showButtonMessage(deliveryMethod);
-      $('.js-delivery-method').trigger('change');
+
       $('.js-not-available-text').addClass('hide');
 
       if (deliveryMethod === 'pickup') {
@@ -629,7 +645,10 @@ const Product = (function () {
     showProductPricing();
     hideFormElements();
     toggleSubmitButton('show', 'js-product-price-check');
-    $('.js-delivery-method').trigger('change');
+    const submitButton = $('.js-product-submit');
+    if (!submitButton.hasClass('hide')) {
+      toggleSubmitButton('hide');
+    }
   };
 
   const enableNearestLocations = function (data) {
@@ -695,6 +714,11 @@ const Product = (function () {
     }
 
     changeDeliveryElements(input);
+    const submitButton = $('.js-product-submit');
+    if (!submitButton.hasClass('hide')) {
+      toggleSubmitButton('hide');
+    }
+    $('.js-current-price-unit').addClass('hide');
     const zipCode = $('.js-zip-code').val();
     if (zipCode == '' || zipCode == null) {
       return;
