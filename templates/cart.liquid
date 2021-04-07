@@ -9,7 +9,9 @@
 {%- assign contains_pickup_sod = false -%}
 {%- assign contains_delivery_items = false -%}
 {%- assign hide_expedited = false -%}
+{%- assign first_zip = '' -%}
 {%- for item in cart.items -%}
+  {%- assign first_zip = item.properties.pickup_location -%}
   {%- if item.properties._bold_bundles_price != blank -%}
     {%- assign hide_expedited = true -%}
   {%- endif -%}
@@ -488,6 +490,10 @@
     const cartDeliveryAddress = '{{ cart.attributes.customer_address }}';
     const cartPickupAddress = '{{ pickup_address }}';
     const cartZipCode = '{{ cart.attributes.zip_code }}';
+    {% if first_zip != '' %}
+      const regex = /\d{5}/gm;
+      const firstZip = regex.exec('{{first_zip}}')[0];
+    {% endif %}
     const cartItems = [{% for item in cart.items %}{
         {%- assign item_value = 0 -%}
         {%- assign product_type = item.product.type | downcase -%}

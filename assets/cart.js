@@ -94,7 +94,7 @@ const Cart = (function () {
       longitude: $('.js-address-longitude').val(),
       type_delivery_pickup: input.val(),
       shop_domain: theme.routes.validation_tool_shop,
-      zipcode: $('.js-address-zip').val()
+      zipcode: cartZipCode !== '' ? cartZipCode : firstZip
     };
 
     button.html('Checking ...');
@@ -244,6 +244,10 @@ const Cart = (function () {
     let cartAttributes = '';
     $('.js-cart-attribute').each(function (i, el) {
       cartAttributes += (cartAttributes !== '' ? '&' : '');
+      if (el.dataset.name === 'zipcode' && el.value === '') {
+        cartAttributes += '' + el.dataset.name + '=' + (cartZipCode !== '' ? cartZipCode : firstZip);
+        return;
+      }
       cartAttributes += '' + el.dataset.name + '=' + el.value;
     });
     return cartAttributes;
