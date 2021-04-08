@@ -11,7 +11,9 @@
 {%- assign hide_expedited = false -%}
 {%- assign first_zip = '' -%}
 {%- for item in cart.items -%}
-  {%- assign first_zip = item.properties.pickup_location -%}
+  {%- if first_zip == '' -%}
+    {%- assign first_zip = item.properties.pickup_location -%}
+  {%- endif -%}
   {%- if item.properties._bold_bundles_price != blank -%}
     {%- assign hide_expedited = true -%}
   {%- endif -%}
@@ -492,7 +494,8 @@
     const cartZipCode = '{{ cart.attributes.zip_code }}';
     {% if first_zip != '' %}
       const regex = /\d{5}/gm;
-      const firstZip = regex.exec('{{first_zip}}')[0];
+      const exec = regex.exec('{{first_zip}}');
+      const firstZip = (exec != null && exec.length > 1) ? exec[0] : 0;
     {% endif %}
     const cartItems = [{% for item in cart.items %}{
         {%- assign item_value = 0 -%}
