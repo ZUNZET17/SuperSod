@@ -187,7 +187,6 @@
                   {%- if item.properties._custom_price != blank -%}
                     {%- assign has_custom_pricing = true -%}
                     {%- assign item_value = item.properties._custom_price | times: 100 -%}
-                    {%- assign item_value = item_value | divided_by: item.quantity -%}
                     <span class="js-item-price-{{forloop.index}}">{{item_value | money}}</span>
                     <input type="hidden" name="custom_values" class="js-item-custom-price" data-index="{{forloop.index}}" data-units="{{item.quantity}}" value="{{item.properties._custom_price}}">
                   {%- elsif item.original_price != item.final_price -%}
@@ -252,7 +251,7 @@
                 </td>
                 <td data-label="{{ 'cart.label.total' | t }}" class="text-right cart__table-cell--line-price">
                   {%- if item.properties._custom_price != blank -%}
-                    {%- assign item_value = item.properties._custom_price | times: 100 -%}
+                    {%- assign item_value = item.properties._custom_price | times: 100 | times: item.quantity -%}
                     {%- assign subtotal = subtotal | plus: item_value -%}
                     {{item_value | money}}
                   {%- elsif item.original_line_price != item.final_line_price -%}
@@ -495,13 +494,13 @@
     {% if first_zip != '' %}
       const regex = /\d{5}/gm;
       const exec = regex.exec('{{first_zip}}');
-      const firstZip = (exec != null && exec.length > 1) ? exec[0] : 0;
+      const firstZip = (exec != null && exec.length > 0) ? exec[0] : '';
     {% endif %}
     const cartItems = [{% for item in cart.items %}{
         {%- assign item_value = 0 -%}
         {%- assign product_type = item.product.type | downcase -%}
         {%- if item.properties._custom_price != blank -%}
-          {%- assign item_value = item.properties._custom_price | times: 100 -%}
+          {%- assign item_value = item.properties._custom_price | times: 100 | times: item.quantity -%}
         {%- elsif item.original_price != item.final_price -%}
           {%- assign item_value = item.final_price -%}
         {%- else -%}

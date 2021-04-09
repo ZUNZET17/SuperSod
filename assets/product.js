@@ -610,10 +610,12 @@ const Product = (function () {
       if (deliveryMethod === 'pickup') {
         enableNearestLocations(typeof data.nearest_locations !== 'undefined' ? data.nearest_locations : null);
         $('.js-product-pickup-variants').trigger('change');
-        const totalPrice = $('.js-product-pickup-variants option:selected').data('price') * $('.js-product-quantity').val();
+        const unitPrice = $('.js-product-pickup-variants option:selected').data('price');
+        const totalPrice = unitPrice * $('.js-product-quantity').val();
         showProductPricing({
           additional_miles_cost: 0,
           fulfillment: 'pickup',
+          unit_price: unitPrice,
           total_price: totalPrice
         });
       } else if (deliveryMethod === 'delivery') {
@@ -702,7 +704,11 @@ const Product = (function () {
 
     const type = data.fulfillment == 'delivery' ? 'Delivered' : 'Pickup';
     productObject.fullPrice = data.total_price * 100;
-    $('.js-custom-value').val(productObject.fullPrice / 100);
+    productObject.unitPrice = data.unit_price ? data.unit_price * 100 : data.total_price * 100;
+    if (data.fulfillment === 'delivery') {
+      productObject.unitPrice = productObject.unitPrice / $('.js-product-quantity').val();
+    }
+    $('.js-custom-value').val(productObject.unitPrice / 100);
     priceElement.html(type + ' price: ' + Shopify.formatMoney(productObject.fullPrice, theme.moneyFormat));
     priceElement.removeClass('hide');
   };
@@ -960,23 +966,28 @@ const Product = (function () {
     });
 
     let fullValue = 0;
+    let unitPrice = 0;
     if (
       typeof usesVariantToggle === 'undefined' &&
       typeof usesRegularToggle === 'undefined' &&
       typeof select.options[select.selectedIndex].dataset.price !== 'undefined'
     ) {
       fullValue = select.options[select.selectedIndex].dataset.price * $('.js-product-quantity').val();
+      unitPrice = select.options[select.selectedIndex].dataset.price * 1;
       chooseVariant('pickup');
     } else if (foundVariant.length > 0) {
       fullValue = foundVariant[0].priceValue * $('.js-product-quantity').val();
+      unitPrice = foundVariant[0].priceValue * 1;
       selectVariant(foundVariant[0]);
     } else {
       fullValue = $('.js-product-variants option:selected').data('price-val') * $('.js-product-quantity').val();
+      unitPrice = $('.js-product-variants option:selected').data('price-val') * 1;
       chooseVariant('pickup');
     }
     showProductPricing({
       additional_miles_cost: 0,
       fulfillment: 'pickup',
+      unit_price: unitPrice,
       total_price: fullValue
     });
 

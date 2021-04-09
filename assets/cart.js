@@ -340,7 +340,7 @@ const Cart = (function () {
         typeof element.properties._custom_price !== 'undefined'
       ) {
         const unitPrice = Utils.formatMoneyWithPrecision(
-          (element.properties._custom_price / element.quantity) * 100,
+          element.properties._custom_price * 100,
           3
         );
         $('.js-item-price-' + (i+1)).html(unitPrice);
@@ -385,7 +385,7 @@ const Cart = (function () {
         isInvalid = true;
         return;
       }
-      itemProperties._custom_price = quantity * parseFloat(el.value / el.dataset.units);
+      // itemProperties._custom_price = quantity * parseFloat(el.value / el.dataset.units);
       changes.push({
         line: index,
         properties: itemProperties

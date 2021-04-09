@@ -326,7 +326,7 @@ $(document).on('change', '.qty-adjuster--ajax .qty-adjuster__value', function (e
       postData.line = input.data('line');
 
       if (productData.quantity > 0) {
-        properties._custom_price = productData.unit_price * productData.quantity;
+        properties._custom_price = unitPrice;
         if (properties._method === 'delivery') {
           const ajax = $.ajax({
             type: 'GET',
