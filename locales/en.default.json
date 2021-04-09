@@ -12,7 +12,7 @@
     },
     "404": {
       "title": "404 Page Not Found",
-      "subtext_html": "The page you requested does not exist. Click <a href=\"{{ link }}\">here</a> to continue shopping."
+      "subtext_html": "The page you requested does not exist. Click <a href=\"{{ link }}\">here<\/a> to continue shopping."
     },
     "password_page": {
       "login_form_heading": "Enter store using password",
@@ -21,7 +21,7 @@
       "login_form_submit": "Enter",
       "signup_form_email_label": "Email",
       "signup_form_success": "We will send you an email right before we open!",
-      "admin_link_html": "Are you the store owner? <a href=\"/admin\" class=\"text-link\">Log in here</a>",
+      "admin_link_html": "Are you the store owner? <a href=\"\/admin\" class=\"text-link\">Log in here<\/a>",
       "password_link": "Enter using password",
       "powered_by_shopify_html": "This shop will be powered by {{ shopify }}"
     },
@@ -51,7 +51,7 @@
     },
     "breadcrumbs": {
       "you_are_here": "You are here",
-      "home": "Home",
+      "home": "Shop",
       "home_link_title": "Back to the frontpage"
     },
     "payment": {
@@ -88,14 +88,14 @@
       "note": "Special instructions for seller",
       "subtotal": "Subtotal",
       "taxes_and_shipping_at_checkout": "Taxes and shipping calculated at checkout",
-      "taxes_and_shipping_policy_at_checkout_html": "Taxes and <a href=\"{{ link }}\">shipping</a> calculated at checkout",
+      "taxes_and_shipping_policy_at_checkout_html": "Taxes and <a href=\"{{ link }}\">shipping<\/a> calculated at checkout",
       "taxes_included_but_shipping_at_checkout": "Tax included and shipping calculated at checkout",
-      "taxes_included_and_shipping_policy_html": "Tax included. <a href=\"{{ link }}\">Shipping</a> calculated at checkout.",
+      "taxes_included_and_shipping_policy_html": "Tax included. <a href=\"{{ link }}\">Shipping<\/a> calculated at checkout.",
       "update": "Update Cart",
       "checkout": "Checkout",
       "empty": "Your cart is currently empty.",
       "cookies_required": "Enable cookies to use the shopping cart",
-      "continue_browsing_html": "Continue browsing <a href=\"{{ link }}\">here</a>.",
+      "continue_browsing_html": "Continue browsing <a href=\"{{ link }}\">here<\/a>.",
       "savings_html": "You're saving {{ price }}",
       "continue_shopping": "Continue shopping"
     },
@@ -167,9 +167,9 @@
       "address1": "Address1",
       "address2": "Address2",
       "city": "City",
-      "country": "Country/Region",
+      "country": "Country\/Region",
       "province": "Province",
-      "zip": "Postal/Zip Code",
+      "zip": "Postal\/Zip Code",
       "phone": "Phone",
       "set_default": "Set as default address",
       "add": "Add Address",
@@ -255,7 +255,7 @@
     "map": {
       "address_error": "Error looking up that address",
       "address_no_results": "No results for that address",
-      "address_query_limit_html": "You have exceeded the Google API usage limit. Consider upgrading to a <a href=\"https://developers.google.com/maps/premium/usage-limits\">Premium Plan</a>.",
+      "address_query_limit_html": "You have exceeded the Google API usage limit. Consider upgrading to a <a href=\"https:\/\/developers.google.com\/maps\/premium\/usage-limits\">Premium Plan<\/a>.",
       "auth_error_html": "There was a problem authenticating your Google Maps account."
     },
     "slideshow": {
@@ -265,7 +265,7 @@
       "play": "Play slideshow",
       "load_slide": "Load slide {{ slide_number }}",
       "active_slide": "Slide {{ slide_number }}, current",
-      "navigation_instructions": "Use left/right arrows to navigate the slideshow or swipe left/right if using a mobile device"
+      "navigation_instructions": "Use left\/right arrows to navigate the slideshow or swipe left\/right if using a mobile device"
     }
   },
   "layout": {
@@ -275,22 +275,22 @@
     "cart": {
       "title": "Cart",
       "standard_delivery": "Standard",
-      "before_noon": "Before Noon",
-      "first_off_truck": "Before 9AM",
+      "before_noon": "Before Noon ($99.99)",
+      "first_off_truck": "Before 9AM ($149.99)",
       "pickup": "Pickup in store",
       "check_available_dates": "Check available dates",
-      "choose_delivery_type_html": "Step 1:<br>Choose your delivery type",
-      "standard_delivery_explanation": "(Between 7AM and 5PM)",
-      "before_noon_explanation": "(Guaranteed before 12PM)",
-      "first_off_truck_explanation": "(Guaranteed before 9AM)",
+      "choose_delivery_type_html": "Step 1: Choose your delivery type",
+      "standard_delivery_explanation": "Between 7AM and 5PM-Text w\/2hr window sent day before",
+      "before_noon_explanation": "Guaranteed before 12PM",
+      "first_off_truck_explanation": "Guaranteed before 9AM",
       "no_date_available": "There are no available dates for your choice",
-      "delivery_title_html": "Step 2:<br>Preferred Delivery/Pickup Dates",
-      "delivery_message": "Note: Fluctuations in demand (time of year) and weather can play a key role in our ability to meet one of your preferred dates.  After our online sales team processes your order (typically within 2 hours), you will receive a confirmation email with your pickup or delivery date. Our online sales team processes orders Monday through Friday 8AM to 5PM. Orders placed on Saturday and Sunday will be processed the following Monday.",
+      "delivery_title_html": "Step 2: Preferred Delivery\/Pickup Dates",
+      "delivery_message": "Note: Fluctuations in demand (time of year) and weather can play a key role in our ability to meet one of your preferred dates.  After our online sales team processes your order, you will receive a confirmation email with your pickup or delivery date. Our online sales team processes orders Monday through Friday 8AM to 5PM. Orders placed on Saturday and Sunday will be processed the following Monday.",
       "invalid_dates": "Selected dates are not valid",
-      "same_dates": "Please select 3 different Delivery/Pickup dates",
-      "empty_dates": "Please select 3 preferred Delivery/Pickup dates",
+      "same_dates": "Please select 3 different Delivery\/Pickup dates",
+      "empty_dates": "Please select 3 preferred Delivery\/Pickup dates",
       "empty_delivery": "Please select your delivery type",
-      "delivery_soil_level_mix": "Your order will be delivered within the next 7-10 days, and you'll receive a text message from us the day before your delivery with your delivery time.",
+      "delivery_soil_level_mix": "Due to high demand your BigYellowBag of Soil³ Compost and\/or Level Mix will be delivered on or before May 8th.  Please be on the lookout for a text message from us the day before your delivery with your delivery time window.",
       "notes_placeholder": "example: product placement if delivered, narrow roads, dead ends, gate code, etc.",
       "cannot_mix_methods": "Pickups and Deliveries cannot be combined in the same order.",
       "no_checkout_available": "An error ocurred while processing your request",
@@ -323,8 +323,8 @@
   "pages": {
     "financing": {
       "banner_title": "Enjoy now and pay later financing options available for our clients",
-      "banner_text_html": "<p><b>Bread</b> allows you an easy and honest way to pay monthly for your big purchases. Checking your rate takes only seconds. Transparent pricing, easy online payments, and no prepayment penalties make your purchase worry-free.</p>",
-      "get_rate_link": "https://financing.com",
+      "banner_text_html": "<p><b>Bread<\/b> allows you an easy and honest way to pay monthly for your big purchases. Checking your rate takes only seconds. Transparent pricing, easy online payments, and no prepayment penalties make your purchase worry-free.<\/p>",
+      "get_rate_link": "https:\/\/financing.com",
       "get_rate_text": "Get my rate",
       "advantages_title": "Advantages",
       "advantages_text": "Here are some advantages to use 'Bread' as a finance method",
@@ -360,7 +360,7 @@
       "on_sale_from_html": "On Sale from {{ price }}",
       "from_text_html": "From {{ price }}",
       "include_taxes": "Tax included.",
-      "shipping_policy_html": "<a href=\"{{ link }}\">Shipping</a> calculated at checkout.",
+      "shipping_policy_html": "<a href=\"{{ link }}\">Shipping<\/a> calculated at checkout.",
       "quantity": "Quantity",
       "add_to_cart": "Add to Cart",
       "item_added_to_cart": "Item added to cart!",
@@ -368,13 +368,13 @@
       "continue_shopping": "Continue shopping",
       "description": "Description",
       "full_details": "Full details",
-      "pallet_text_html": "Currently there is a <b>maximum</b> order of 6 pallets (3,000 sq ft) when ordering online.<br><br>If you wish to purchase more than 6 pallets, then please visit our <a target='_blank' rel='noopener' href='https://info.supersod.com/sod-prices-free-sod-quote'><b>sod quote page.</b></a>",
-      "pallet_unavailable_html": "This product is currently unavailable in your area. Please call us at <a href='tel:+1-1888-360-1125'><b>888-360-1125</b></a> to discuss options, or <a target='_blank' rel='noopener' href='https://info.supersod.com/sod-prices-free-sod-quote' aria-describedby='new-window-2'><b>click here</b></a> for a sod quote. Thanks!",
-      "pickup_unavailable_html": "This product is currently not available for pickup. Please call us at <a href='tel:+1-1888-360-1125'><b>888-360-1125</b></a>, or email us at <a href='mailto:onlinesales@supersod.com'><b>onlinesales@supersod.com</b></a> with any questions.",
-      "sod_picker_text_html": "10 sq. ft. = 1 Roll (2 ft. x 5 ft.)<br>500 sq. ft. = 50 Rolls = 1 Pallet (~2,500 lbs.)<br><br><b>You don't know how much to order?</b><br>Use our <a target='_blank' rel='noopener' href='https://www.supersod.com/yard-area-calculator' aria-describedby='new-window-2'><b>Yard Area Calculator</b></a>",
-      "soil_calculator_text_html": "<b>You don't know how much to order?</b><br>Use our <a target='_blank' rel='noopener' href='https://soil3.com/how-much-soil3-to-use/#calculator' aria-describedby='new-window-2'><b>Soil Calculator</b></a>"
+      "pallet_text_html": "Currently there is a <b>maximum<\/b> order of 6 pallets (3,000 sq ft) when ordering online.<br><br>If you wish to purchase more than 6 pallets, then please visit our <a target='_blank' rel='noopener' href='https:\/\/info.supersod.com\/sod-prices-free-sod-quote'><b>sod quote page.<\/b><\/a>",
+      "pallet_unavailable_html": "This product is currently unavailable in your area. Please call us at <a href='tel:+1-1888-360-1125'><b>888-360-1125<\/b><\/a> to discuss options, or <a target='_blank' rel='noopener' href='https:\/\/info.supersod.com\/sod-prices-free-sod-quote' aria-describedby='new-window-2'><b>click here<\/b><\/a> for a sod quote. Thanks!",
+      "pickup_unavailable_html": "This product is currently not available for pickup. Please call us at <a href='tel:+1-1888-360-1125'><b>888-360-1125<\/b><\/a>, or email us at <a href='mailto:onlinesales@supersod.com'><b>onlinesales@supersod.com<\/b><\/a> with any questions.",
+      "sod_picker_text_html": "10 sq. ft. = 1 Roll (2 ft. x 5 ft.)<br>500 sq. ft. = 50 Rolls = 1 Pallet (~2,500 lbs.)<br><br><b>You don't know how much to order?<\/b><br>Use our <a target='_blank' rel='noopener' href='https:\/\/www.supersod.com\/yard-area-calculator' aria-describedby='new-window-2'><b>Yard Area Calculator<\/b><\/a>",
+      "soil_calculator_text_html": "<b>You don't know how much to order?<\/b><br>Use our <a target='_blank' rel='noopener' href='https:\/\/soil3.com\/how-much-soil3-to-use\/#calculator' aria-describedby='new-window-2'><b>Soil Calculator<\/b><\/a>"
     },
-      "zoom": {
+    "zoom": {
       "next": "Next (Right arrow key)",
       "prev": "Previous (Left arrow key)",
       "close": "Close (Esc)"

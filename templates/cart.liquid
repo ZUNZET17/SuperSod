@@ -324,21 +324,30 @@
               <div class="grid__item medium-up--one-third">
                 <p class="cart__delivery-title">{{ 'layout.cart.choose_delivery_type_html' | t }}</p>
                 {%- if fulfillment_method == 'delivery' -%}
-                  <input type="radio" name="attributes[_method]" class="js-delivery-type js-check-dates" id="standard-method" value="standard_delivery" data-price="{{ settings.normal_delivery_price | default: '0' }}">
-                  <label for="standard-method" class="cart__method-label">{{ 'layout.cart.standard_delivery' | t }}</label>
+                  
+                  <label for="standard-method" class="cart__method-label">
+                    <input type="radio" name="attributes[_method]" class="js-delivery-type js-check-dates" id="standard-method" value="standard_delivery" data-price="{{ settings.normal_delivery_price | default: '0' }}">
+                    <span>{{ 'layout.cart.standard_delivery' | t }}</span>
+	              </label>
                   <p>
                     <dfn class="sr-only">{{ 'layout.cart.standard_delivery' | t }}</dfn>
                     {{ 'layout.cart.standard_delivery_explanation' | t }}
                   </p>
                   {%- unless hide_expedited -%}
-                    <input type="radio" name="attributes[_method]" class="js-delivery-type js-check-dates" id="noon-method" value="before_noon" data-price="{{ settings.before_noon_delivery_price | default: '4999' }}">
-                    <label for="noon-method" class="cart__method-label">{{ 'layout.cart.before_noon' | t }}</label>
+                    
+                    <label for="noon-method" class="cart__method-label">
+                      <input type="radio" name="attributes[_method]" class="js-delivery-type js-check-dates" id="noon-method" value="before_noon" data-price="{{ settings.before_noon_delivery_price | default: '4999' }}">
+                      <span>{{ 'layout.cart.before_noon' | t }}</span>
+                    </label>
                     <p>
                       <dfn class="sr-only">{{ 'layout.cart.before_noon' | t }}</dfn>
                       {{ 'layout.cart.before_noon_explanation' | t }}
                     </p>
-                    <input type="radio" name="attributes[_method]" class="js-delivery-type js-check-dates" id="truck-method" value="first_off_truck" data-price="{{ settings.before_nine_delivery_price | default: '9999' }}">
-                    <label for="truck-method" class="cart__method-label">{{ 'layout.cart.first_off_truck' | t }}</label>
+                    
+                    <label for="truck-method" class="cart__method-label">
+                      <input type="radio" name="attributes[_method]" class="js-delivery-type js-check-dates" id="truck-method" value="first_off_truck" data-price="{{ settings.before_nine_delivery_price | default: '9999' }}">
+                      <span>{{ 'layout.cart.first_off_truck' | t }}</span>
+                    </label>
                     <p>
                       <dfn class="sr-only">{{ 'layout.cart.first_off_truck' | t }}</dfn>
                       {{ 'layout.cart.first_off_truck_explanation' | t }}
@@ -348,7 +357,7 @@
                   <div>
                     <label for="pickup-method" class="cart__method-label">
                       <input type="radio" name="attributes[_method]" class="js-delivery-type js-check-dates" id="pickup-method" value="pickup" data-price="0">
-                      {{ 'layout.cart.pickup' | t }}
+                      <span>{{ 'layout.cart.pickup' | t }}</span>
                     </label>
                   </div>
                 {%- endif -%}

@@ -12,7 +12,7 @@
     },
     "404": {
       "title": "404 Seite nicht gefunden",
-      "subtext_html": "Die von dir angeforderte Seite existiert nicht. Klicke <a href=\"{{ link }}\">hier</a>, um den Einkauf fortzusetzen."
+      "subtext_html": "Die von dir angeforderte Seite existiert nicht. Klicke <a href=\"{{ link }}\">hier<\/a>, um den Einkauf fortzusetzen."
     },
     "password_page": {
       "login_form_heading": "Shop mit Passwort betreten",
@@ -21,7 +21,7 @@
       "login_form_submit": "Betreten",
       "signup_form_email_label": "E-Mail",
       "signup_form_success": "Wir senden Ihnen eine E-Mail, kurz bevor wir eröffnen!",
-      "admin_link_html": "Bist du der Shop-Inhabernhaber? <a href=\"/admin\" class=\"text-link\">Logge dich hier ein</a>",
+      "admin_link_html": "Bist du der Shop-Inhabernhaber? <a href=\"\/admin\" class=\"text-link\">Logge dich hier ein<\/a>",
       "password_link": "Mit Passwort betreten",
       "powered_by_shopify_html": "Dieser Shop wird mit Hilfe von {{ shopify }} betrieben werden"
     },
@@ -88,14 +88,14 @@
       "note": "Besondere Hinweise an den Verkäufer",
       "subtotal": "Zwischensumme",
       "taxes_and_shipping_at_checkout": "Steuern und Versandkosten werden beim Checkout berechnet",
-      "taxes_and_shipping_policy_at_checkout_html": "zzgl. MwSt. und <a href=\"{{ link }}\">Versandkosten</a>",
+      "taxes_and_shipping_policy_at_checkout_html": "zzgl. MwSt. und <a href=\"{{ link }}\">Versandkosten<\/a>",
       "taxes_included_but_shipping_at_checkout": "inkl. MwSt. und zzgl. Versandkosten",
-      "taxes_included_and_shipping_policy_html": "inkl. MwSt. zzgl. <a href=\"{{ link }}\">Versandkosten</a>",
+      "taxes_included_and_shipping_policy_html": "inkl. MwSt. zzgl. <a href=\"{{ link }}\">Versandkosten<\/a>",
       "update": "Warenkorb aktualisieren",
       "checkout": "Checkout",
       "empty": "Dein Warenkorb ist im Moment leer.",
       "cookies_required": "Aktiviere Cookies, um den Warenkorb benutzen zu können",
-      "continue_browsing_html": "Mit der Suche <a href=\"{{ link }}\">hier</a> fortfahren.",
+      "continue_browsing_html": "Mit der Suche <a href=\"{{ link }}\">hier<\/a> fortfahren.",
       "savings_html": "Du sparst {{ price }}",
       "continue_shopping": "Weiter einkaufen"
     },
@@ -153,7 +153,7 @@
       "address1": "Adresse 1",
       "address2": "Adresse2",
       "city": "Stadt",
-      "country": "Land / Region",
+      "country": "Land \/ Region",
       "province": "Bundesland",
       "zip": "PLZ",
       "phone": "Telefon",
@@ -240,7 +240,7 @@
     "map": {
       "address_error": "Kann die Adresse nicht finden",
       "address_no_results": "Keine Ergebnisse für diese Adresse",
-      "address_query_limit_html": "Du hast die Nutzungsgrenze der Google-API überschritten. Du solltest über ein Upgrade auf einen <a href=\"https://developers.google.com/maps/premium/usage-limits\">Premium-Plan</a> nachdenken.",
+      "address_query_limit_html": "Du hast die Nutzungsgrenze der Google-API überschritten. Du solltest über ein Upgrade auf einen <a href=\"https:\/\/developers.google.com\/maps\/premium\/usage-limits\">Premium-Plan<\/a> nachdenken.",
       "auth_error_html": "Es gab ein Problem bei Google Maps Konto zu authentifizieren."
     },
     "slideshow": {
@@ -250,7 +250,7 @@
       "play": "Diashow abspielen",
       "load_slide": "Folie {{ slide_number }} laden",
       "active_slide": "Folie {{ slide_number }}, aktuell",
-      "navigation_instructions": "Nutze die linken/rechten Pfeile, um durch die Slideshow zu navigieren, oder wische nach links bzw. rechts, wenn du ein mobiles Gerät verwendest"
+      "navigation_instructions": "Nutze die linken\/rechten Pfeile, um durch die Slideshow zu navigieren, oder wische nach links bzw. rechts, wenn du ein mobiles Gerät verwendest"
     }
   },
   "layout": {
@@ -286,7 +286,7 @@
       "on_sale_from_html": "Im Angebot ab {{ price }}",
       "from_text_html": "Ab {{ price }}",
       "include_taxes": "inkl. MwSt.",
-      "shipping_policy_html": "zzgl. <a href=\"{{ link }}\">Versandkosten</a>",
+      "shipping_policy_html": "zzgl. <a href=\"{{ link }}\">Versandkosten<\/a>",
       "quantity": "Menge",
       "add_to_cart": "In den Warenkorb legen",
       "item_added_to_cart": "Artikel wurde in den Warenkorb gelegt.",

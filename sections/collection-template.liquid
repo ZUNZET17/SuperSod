@@ -44,13 +44,11 @@
     {% endif %}
   </header>
 
-  <div class="grid grid--uniform" role="list">
+  <div class="flex flex--row flex--wrap flex--has-gutter" role="list">
 
     {% for product in collection.products %}
       {% if collection.products.size == 1 %}
-        {% assign grid_item_width = 'medium-up--one-third small--one-whole' %}
-      {% else %}
-        {% assign grid_item_width = 'medium-up--one-third small--one-half' %}
+        {% assign grid_item_width = 'col-4' %}
       {% endif %}
       {% include 'product-grid-item', collection_handle: collection.handle %}
     {% else %}

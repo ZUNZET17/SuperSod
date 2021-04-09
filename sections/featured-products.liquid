@@ -13,7 +13,7 @@
     <h2 class="small--text-center">{{ section.settings.title | escape }}</h2>
   {% endif %}
 
-  <div class="grid grid--uniform" role="list">
+  <div class="flex flex--row flex--wrap flex--has-gutter" role="list">
 
     {% for product in collections[featured].products limit: total_products %}
       {% include 'product-grid-item' %}

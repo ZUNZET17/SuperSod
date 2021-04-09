@@ -12,7 +12,7 @@
     },
     "404": {
       "title": "404 Nie znaleziono strony",
-      "subtext_html": "Żądana strona nie istnieje. Kliknij <a href=\"{{ link }}\">tutaj</a>, aby kontynuować zakupy."
+      "subtext_html": "Żądana strona nie istnieje. Kliknij <a href=\"{{ link }}\">tutaj<\/a>, aby kontynuować zakupy."
     },
     "password_page": {
       "login_form_heading": "Wejdź do sklepu, wpisując hasło",
@@ -21,7 +21,7 @@
       "login_form_submit": "Enter",
       "signup_form_email_label": "E-mail",
       "signup_form_success": "Wyślemy Ci wiadomość e-mail tuż przed otwarciem!",
-      "admin_link_html": "Czy jesteś właścicielem sklepu? <a href=\"/admin\" class=\"text-link\">Zaloguj się tutaj</a>",
+      "admin_link_html": "Czy jesteś właścicielem sklepu? <a href=\"\/admin\" class=\"text-link\">Zaloguj się tutaj<\/a>",
       "password_link": "Wejdź, wpisując hasło",
       "powered_by_shopify_html": "Ten sklep będzie obsługiwany przez {{ shopify }}"
     },
@@ -88,14 +88,14 @@
       "note": "Specjalne instrukcje dla sprzedawcy",
       "subtotal": "Suma częściowa",
       "taxes_and_shipping_at_checkout": "Podatki i koszty wysyłki obliczane przy kasie",
-      "taxes_and_shipping_policy_at_checkout_html": "Podatki i <a href=\"{{ link }}\">koszyt wysyłki</a> obliczane przy kasie",
+      "taxes_and_shipping_policy_at_checkout_html": "Podatki i <a href=\"{{ link }}\">koszyt wysyłki<\/a> obliczane przy kasie",
       "taxes_included_but_shipping_at_checkout": "Podatek wliczony w cenę i wysyłka obliczona przy kasie",
-      "taxes_included_and_shipping_policy_html": "Z wliczonym podatkiem. <a href=\"{{ link }}\">Koszt wysyłki</a> obliczony przy kasie.",
+      "taxes_included_and_shipping_policy_html": "Z wliczonym podatkiem. <a href=\"{{ link }}\">Koszt wysyłki<\/a> obliczony przy kasie.",
       "update": "Zaktualizuj koszyk",
       "checkout": "Realizuj zakupy",
       "empty": "Twój koszyk jest obecnie pusty.",
       "cookies_required": "Włącz pliki cookie, aby korzystać z koszyka",
-      "continue_browsing_html": "Kontynuuj przeglądanie <a href=\"{{ link }}\">tutaj</a>.",
+      "continue_browsing_html": "Kontynuuj przeglądanie <a href=\"{{ link }}\">tutaj<\/a>.",
       "savings_html": "Oszczędzasz {{ price }}",
       "continue_shopping": "Kontynuuj zakupy"
     },
@@ -153,7 +153,7 @@
       "address1": "Adres 1",
       "address2": "Adres 2",
       "city": "Miasto",
-      "country": "Kraj/region",
+      "country": "Kraj\/region",
       "province": "Prowincja",
       "zip": "Kod pocztowy",
       "phone": "Telefon",
@@ -240,7 +240,7 @@
     "map": {
       "address_error": "Błąd podczas wyszukiwania tego adresu",
       "address_no_results": "Brak wyników dla tego adresu",
-      "address_query_limit_html": "Przekroczono limit używania interfejsu API Google. Rozważ przejście do <a href=\"https://developers.google.com/maps/premium/usage-limits\">Planu Premium</a>.",
+      "address_query_limit_html": "Przekroczono limit używania interfejsu API Google. Rozważ przejście do <a href=\"https:\/\/developers.google.com\/maps\/premium\/usage-limits\">Planu Premium<\/a>.",
       "auth_error_html": "Wystąpił problem z uwierzytelnianiem Twojego konta Google Maps."
     },
     "slideshow": {
@@ -250,7 +250,7 @@
       "play": "Odtwórz pokaz slajdów",
       "load_slide": "Załaduj slajd {{ slide_number }}",
       "active_slide": "Slajd {{ slide_number }}, obecny",
-      "navigation_instructions": "Użyj strzałek w lewo/w prawo, aby poruszać się po pokazie slajdów lub przesuń palcem w lewo/w prawo, jeśli używasz urządzenia mobilnego"
+      "navigation_instructions": "Użyj strzałek w lewo\/w prawo, aby poruszać się po pokazie slajdów lub przesuń palcem w lewo\/w prawo, jeśli używasz urządzenia mobilnego"
     }
   },
   "layout": {
@@ -286,7 +286,7 @@
       "on_sale_from_html": "Na sprzedaż od {{ price }}",
       "from_text_html": "Od {{ price }}",
       "include_taxes": "Z wliczonym podatkiem.",
-      "shipping_policy_html": "<a href=\"{{ link }}\">Koszt wysyłki</a> obliczony przy realizacji zakupu.",
+      "shipping_policy_html": "<a href=\"{{ link }}\">Koszt wysyłki<\/a> obliczony przy realizacji zakupu.",
       "quantity": "Ilość",
       "add_to_cart": "Dodaj do koszyka",
       "item_added_to_cart": "Pozycja dodana do koszyka!",

@@ -38,10 +38,14 @@
       }
     }
   </script>
+  
+  {% include 'ss-head-assets' %}
+  <link rel="stylesheet" href="{{ 'ss-styles.css' | asset_url }}">
+  
   {%- assign use_pallet = false -%}
   {%- comment -%}{%- if template.name == 'product' and product.tags contains 'pallet' -%}
     {%- assign use_pallet = true -%}
-  {%- endif -%}{%- endcomment -%}
+  {%- endif -%}
   {%- if template.name == 'index' -%}
     <style>{% render 'home-critical' %}</style>
   {%- elsif template.name == 'product' -%}
@@ -51,18 +55,19 @@
   {%- else -%}
     <style>{% render 'home-critical' %}</style>
   {%- endif -%}
+  {%- endcomment -%}
   <link rel="preload" as="style" media="screen" href="{{ 'theme.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
   <link rel="preload" as="style" media="screen" href="{{ 'header.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
-  <link rel="preload" as="style" href="{{ 'forms.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="{{ 'forms.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
   {%- if template.name == 'account' or template.name == 'order' or template.name == 'addresses' -%}
     <link rel="stylesheet" href="{{'account.scss.css' | asset_url}}">
   {%- endif -%}
   {%- if template.name == 'index' -%}
     <link rel="preload" as="style" href="{{ 'home.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
   {%- endif -%}
-  <link rel="preload" as="style" href="{{ 'site-footer.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="{{ 'site-footer.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
   {%- unless request.page_type == 'cart' -%}
-    <link rel="preload" as="style" href="{{ 'sidebar-cart.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" as="style" href="{{ 'sidebar-cart.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
   {%- endunless -%}
   {%- if template.name == 'login' or template.name == 'register' -%}
     <link rel="preload" as="style" href="{{ 'sign-in-up.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
@@ -85,18 +90,18 @@
   {%- endif -%}
   {%- if template.name == 'cart' -%}
     <link rel="preload" as="style" href="{{ 'tail.datetime-harx-light.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" as="style" href="{{ 'cart.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" as="style" href="{{ 'cart.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
   {%- endif -%}
   <noscript>
     <link rel="stylesheet" media="screen" href="{{ 'theme.scss.css' | asset_url }}">
     <link rel="stylesheet" media="screen" href="{{ 'header.scss.css' | asset_url }}">
-    <link rel="stylesheet" href="{{ 'forms.scss.css' | asset_url }}">
+    <link rel="stylesheet" href="{{ 'forms.css' | asset_url }}">
     {%- if template.name == 'index' -%}
     <link rel="stylesheet" href="{{ 'home.scss.css' | asset_url }}">
     {%- endif -%}
-    <link rel="stylesheet" href="{{ 'site-footer.scss.css' | asset_url }}">
+    <link rel="stylesheet" href="{{ 'site-footer.css' | asset_url }}">
     {%- unless request.page_type == 'cart' -%}
-      <link rel="stylesheet" href="{{ 'sidebar-cart.scss.css' | asset_url }}">
+      <link rel="stylesheet" href="{{ 'sidebar-cart.css' | asset_url }}">
     {%- endunless -%}
     {%- if template.name == 'login' or template.name == 'register' -%}
       <link rel="stylesheet" href="{{ 'sign-in-up.scss.css' | asset_url }}">
@@ -105,7 +110,7 @@
       <link rel="stylesheet" href="{{ 'products-collections.scss.css' | asset_url }}">
     {%- endif -%}
     {%- if template.name == 'product' -%}
-      <link rel="stylesheet" href="{{ 'tabs.scss.css' | asset_url }}">
+      {% comment %}<link rel="stylesheet" href="{{ 'tabs.scss.css' | asset_url }}">{% endcomment %}
     {%- endif -%}
     {%- if template.name == 'product' or template.name == 'cart' -%}
       <link rel="stylesheet" href="{{ 'product.scss.css' | asset_url }}">
@@ -119,64 +124,69 @@
     {%- endif -%}
     {%- if template.name == 'cart' -%}
       <link rel="stylesheet" href="{{ 'tail.datetime-harx-light.css' | asset_url }}">
-      <link rel="stylesheet" href="{{ 'cart.scss.css' | asset_url }}">
+      <link rel="stylesheet" href="{{ 'cart.css' | asset_url }}">
     {%- endif -%}
   </noscript>
 </head>
-{%- assign show_breadcrumb = true -%}
-{%- assign show_hr = false -%}
+
 {%- assign show_sidebar = true -%}
 {%- assign show_account_sidebar = false -%}
+{%- if template.name == 'cart' or template.name == 'product' -%}
+  {%- assign show_sidebar = false -%}
+{%- endif -%}
 {%- if settings.show_breadcrumb_nav -%}
   {%- if template.name == 'login' -%}
-    {%- assign show_breadcrumb = false -%}
-    {%- assign show_hr = false -%}
     {%- assign show_sidebar = false -%}
   {%- elsif template.name == 'register' -%}
-    {%- assign show_breadcrumb = false -%}
-    {%- assign show_hr = false -%}
     {%- assign show_sidebar = false -%}
   {%- elsif request.page_type == 'index' -%}
-    {%- assign show_breadcrumb = false -%}
   {%- elsif template.name == 'account' or template.name == 'order' or template.name == 'addresses' -%}
-    {%- assign show_hr = false -%}
     {%- assign show_account_sidebar = true -%}
     {%- assign show_sidebar = false -%}
   {%- endif -%}
 {%- endif -%}
+  
 <body id="{{ page_title | handle }}" class="{% if customer %}customer-logged-in {% endif %}template-{{ request.page_type | handle }}">
 
   <a class="in-page-link visually-hidden skip-link" href="#MainContent">{{ 'general.accessibility.skip_to_content' | t }}</a>
 
-    {% comment %}
-    <hr class="small--hide hr--small">
-    {% endcomment %}
-  {% section "header" %}
-  <div id="page-wrap" class="site-wrapper">
-    <div class="grid">
-      {%- if show_sidebar == true -%}
-        {% section "sidebar" %}
-      {%- elsif show_account_sidebar == true -%}
-        {% section 'account-sidebar' %}
-      {%- endif -%}
-      <main class="main-content{% if request.page_type == 'index' %} main-content--home{% endif %} grid__item{% if show_sidebar == true or show_account_sidebar == true %} medium-up--four-fifths{% endif %}" id="MainContent" role="main">
-        {%- if show_hr == true -%}
-          <hr class="hr--border-top small--hide">
-          {%- endif -%}
-        {%- if show_breadcrumb == true -%}
-          {% include 'breadcrumb-nav' %}
-        {%- endif -%}
-        {{ content_for_layout }}
-      </main>
-      {%- if template.name != 'cart' -%}
-        {% section 'cart-drawer' %}
-      {%- endif -%}
+  {% include "ss-header" %}
+
+  <div id="page-wrap" 
+       class="site-wrapper 
+              {% if show_sidebar == false and show_account_sidebar == false %} site-wrapper--no-sidebar{% endif %}
+              {%- if template.name == 'cart' or template.name == 'product' -%} site-wrapper--no-cart-drawer{% endif %}">
+
+
+    {%- if show_sidebar == true -%}
+    <div class="sidebar-content">
+      {% section "sidebar" %}
     </div>
+    {%- elsif show_account_sidebar == true -%}
+    <div class="sidebar-content sidebar-content--account">
+      {% section 'account-sidebar' %}
+    </div>
+    {%- endif -%}
+
+    <main class="main-content{% if request.page_type == 'index' %} main-content--home{% endif %}" id="MainContent" role="main">
+
+      {{ content_for_layout }}
+
+    </main>
+
+    {%- if template.name != 'cart' and template.name != 'product' -%}
+    {% section 'cart-drawer' %}
+    {%- endif -%}
+
+
   </div>
+
   {%- if use_pallet == true -%}
-    {% section 'product-pallet-banner' %}
+  {% section 'product-pallet-banner' %}
   {%- endif -%}
-  {% section "footer" %}
+
+  {% section "ss-footer" %}
+  
   {%- if request.page_type == 'index' -%}
     <p id="slideshow-info" class="visually-hidden" aria-hidden="true">
       {{- 'homepage.slideshow.navigation_instructions' | t -}}
@@ -270,7 +280,7 @@
   {%- if template.name == 'product' -%}
     <script src="https://maps.googleapis.com/maps/api/js?libraries=places,geometry&key=AIzaSyBDNbFA4quUVSMGdxSn_lqnZVcp72c5K9k" defer></script>
     <script src="{{ 'product.js' | asset_url }}" defer></script>
-    <script src="{{ 'tabs.js' | asset_url }}" defer></script>
+    {% comment %}<script src="{{ 'tabs.js' | asset_url }}" defer></script>{% endcomment %}
   {%- endif -%}
   {%- if template.name == 'cart' -%}
     <script src="{{ 'tail.datetime.min.js' | asset_url }}" defer></script>
@@ -287,6 +297,7 @@
   {%- elsif template.name != 'index' and template.name != 'collection' and template.name != 'account'-%}
     {%- render 'bold-common' -%}
   {%- endif -%}
+  {% include 'ss-script-assets' %}
   <script src="{{ 'third-party-code.js' | asset_url }}" defer></script>
   {% include 'smile-initializer' %}
 </body>

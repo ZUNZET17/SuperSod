@@ -12,7 +12,7 @@
     },
     "404": {
       "title": "404 Pagina non trovata",
-      "subtext_html": "La pagina che hai richiesto non esiste. Clicca <a href=\"{{ link }}\">qui</a> per continuare lo shopping."
+      "subtext_html": "La pagina che hai richiesto non esiste. Clicca <a href=\"{{ link }}\">qui<\/a> per continuare lo shopping."
     },
     "password_page": {
       "login_form_heading": "Accedi al negozio usando la password",
@@ -21,7 +21,7 @@
       "login_form_submit": "Accedi",
       "signup_form_email_label": "Email",
       "signup_form_success": "Ti invieremo un'email appena prima di aprire!",
-      "admin_link_html": "Sei il proprietario del negozio? <a href=\"/admin\" class=\"text-link\">Accedi qui</a>",
+      "admin_link_html": "Sei il proprietario del negozio? <a href=\"\/admin\" class=\"text-link\">Accedi qui<\/a>",
       "password_link": "Accedi usando la password",
       "powered_by_shopify_html": "Questo negozio sarà ospitato su {{ shopify }}"
     },
@@ -88,14 +88,14 @@
       "note": "Istruzioni speciali per il venditore",
       "subtotal": "Subtotale",
       "taxes_and_shipping_at_checkout": "Imposte e spese di spedizione calcolate al momento del pagamento",
-      "taxes_and_shipping_policy_at_checkout_html": "Imposte e <a href=\"{{ link }}\">spese di spedizione</a> calcolate al momento del pagamento",
+      "taxes_and_shipping_policy_at_checkout_html": "Imposte e <a href=\"{{ link }}\">spese di spedizione<\/a> calcolate al momento del pagamento",
       "taxes_included_but_shipping_at_checkout": "Imposte incluse e spese di spedizione calcolate al momento del pagamento",
-      "taxes_included_and_shipping_policy_html": "Imposte incluse. <a href=\"{{ link }}\">Spese di spedizione</a> calcolate al momento del pagamento.",
+      "taxes_included_and_shipping_policy_html": "Imposte incluse. <a href=\"{{ link }}\">Spese di spedizione<\/a> calcolate al momento del pagamento.",
       "update": "Aggiorna carrello",
       "checkout": "Check-out",
       "empty": "Il tuo carrello è attualmente vuoto.",
       "cookies_required": "Abilita i cookie per utilizzare il carrello",
-      "continue_browsing_html": "Continua a navigare <a href=\"{{ link }}\">qui</a>.",
+      "continue_browsing_html": "Continua a navigare <a href=\"{{ link }}\">qui<\/a>.",
       "savings_html": "Stai risparmiando {{ price }}",
       "continue_shopping": "Continua lo shopping"
     },
@@ -153,7 +153,7 @@
       "address1": "Indirizzo - campo 1",
       "address2": "Indirizzo - campo 2",
       "city": "Città",
-      "country": "Paese/Regione",
+      "country": "Paese\/Regione",
       "province": "Provincia",
       "zip": "CAP",
       "phone": "Numero di telefono",
@@ -240,7 +240,7 @@
     "map": {
       "address_error": "Errore durante la ricerca dell'indirizzo",
       "address_no_results": "La ricerca non ha prodotto alcun risultato per quell’indirizzo",
-      "address_query_limit_html": "Hai superato il limite di utilizzo dell'API di Google. Considera l’aggiornamento a un <a href=\"https://developers.google.com/maps/premium/usage-limits\">Piano Premium</a>.",
+      "address_query_limit_html": "Hai superato il limite di utilizzo dell'API di Google. Considera l’aggiornamento a un <a href=\"https:\/\/developers.google.com\/maps\/premium\/usage-limits\">Piano Premium<\/a>.",
       "auth_error_html": "Si è verificato un problema di autenticazione con il tuo account di Google Maps."
     },
     "slideshow": {
@@ -250,7 +250,7 @@
       "play": "Avvia slideshow",
       "load_slide": "Carica slide {{ slide_number }}",
       "active_slide": "Slide {{ slide_number }}: attuale",
-      "navigation_instructions": "Usa le frecce sinistra/destra per navigare nella presentazione o scorri a sinistra/destra se stai utilizzando un dispositivo mobile"
+      "navigation_instructions": "Usa le frecce sinistra\/destra per navigare nella presentazione o scorri a sinistra\/destra se stai utilizzando un dispositivo mobile"
     }
   },
   "layout": {
@@ -286,7 +286,7 @@
       "on_sale_from_html": "Scontato da {{ price }}",
       "from_text_html": "Da {{ price }}",
       "include_taxes": "Imposte incluse.",
-      "shipping_policy_html": "<a href=\"{{ link }}\">Spese di spedizione</a> calcolate al momento del pagamento.",
+      "shipping_policy_html": "<a href=\"{{ link }}\">Spese di spedizione<\/a> calcolate al momento del pagamento.",
       "quantity": "Quantità",
       "add_to_cart": "Aggiungi al carrello",
       "item_added_to_cart": "Articolo aggiunto al carrello!",

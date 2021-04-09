@@ -26,9 +26,46 @@
   {% assign current_variant = product.selected_or_first_available_variant %}
   {%- assign featured_image = current_variant.featured_image | default: product.featured_image -%}
 
-  <div class="grid product-single">
+  <div class="product-single {% if product.images.size == 0%} product-single--no-media{% endif %}" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+    
+    <header class="product-single__header">
 
-    <div class="grid__item medium-up--one-half">
+      {% if section.settings.vendor_show %}
+      <p class="product-single__vendor" itemprop="brand">{{ product.vendor }}</p>
+      {% endif %}
+    
+      <h1 class="product-single__title" itemprop="name">{{ product.title }}</h1>
+      
+      <meta itemprop="priceCurrency" content="{{ cart.currency.iso_code }}">
+
+      <link itemprop="availability" href="http://schema.org/{% if current_variant.available %}InStock{% else %}OutOfStock{% endif %}">
+
+      <p class="product-single__prices">
+        {%- if use_pallet == true -%}
+        <span class="product-single__price js-current-price" itemprop="price" content="{{ current_variant.price | divided_by: 100.00 }}"></span>
+        {%- else -%}
+        {% if product.compare_at_price_max > product.price %}
+        <span id="ComparePriceA11y" class="visually-hidden">{{ 'products.product.sale_price' | t }}</span>
+        {% else %}
+        <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
+        {% endif %}
+        <span id="ProductPrice" class="product-single__price js-product-single-price" itemprop="price" content="{{ current_variant.price | divided_by: 100.00 }}">
+          <span class="money js-single-price" data-product-id="{{ product.id }}">{{ current_variant.price | money }}</span>
+        </span>
+
+        {% if product.compare_at_price_max > product.price %}
+        <span id="PriceA11y" class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
+        <del class="product-single__price--compare js-price-compare" id="ComparePrice">
+          {{ current_variant.compare_at_price | money }}
+        </del>
+        {% endif %}
+
+        {% include 'product-unit-price', variant: current_variant, available: true %}
+        {%- endif -%}
+      </p>
+    </header>
+
+    <div class="product-single__gallery">
       {% for image in product.images %}
         {% capture img_id %}ProductImage-{{ image.id }}{% endcapture %}
         {% capture wrapper_id %}ProductImageWrapper-{{ image.id }}{% endcapture %}
@@ -85,7 +122,7 @@
       </noscript>
 
       {% if product.images.size > 1 %}
-        <ul class="product-single__thumbnails grid grid--uniform" id="ProductThumbs">
+        <ul class="product-single__thumbnails" id="ProductThumbs">
 
           {% case product.images.size %}
             {% when 2 %}
@@ -97,7 +134,7 @@
           {% endcase %}
 
           {% for image in product.images %}
-            <li class="grid__item small--one-third medium-up--one-third">
+            <li class="product-single__thumbnail-wrapper">
               <a href="{{ image.src | img_url: 'grande' }}" class="js-product-single-thumbnail product-single__thumbnail" data-image-id="{{ image.id }}">
                 <img src="{{ image.src | img_url: 'compact' }}" alt="{{ image.alt | escape }}">
               </a>
@@ -105,7 +142,7 @@
           {% endfor %}
           {%- for media in product.media -%}
             {%- if media.media_type == 'external_video' -%}
-              <li class="grid__item small--one-third medium-up--one-third">
+              <li class="product-single__thumbnail-wrapper">
                 {%- assign filtered_url = media | external_video_url | split: '?controls=' -%}
                 <a href="{{ filtered_url[0] | replace: 'embed/', 'watch?v=' }}" class="js-show-youtube-popup product-single__thumbnail" data-image-id="{{ media.id }}">
                   <img src="{{ media | img_url: 'compact' }}" alt="{{ media.alt | escape }}" loading="lazy">
@@ -125,288 +162,255 @@
         </ul>
       {% endif %}
     </div>
+      
+    {% if product.description contains '<!-- [break] -->' %}
+    <div class="product-single__selling-points rte" itemprop="description">
+      {{ product.description | split: '<!-- [break] -->' | first }}
+    </div>
+    {% endif %}
 
-    <div class="grid__item medium-up--one-half{% if product.images.size == 0%} medium-up--push-one-half{% endif %}">
-      <div class="product-single__meta small--text-center">
-        <h1 class="product-single__title" itemprop="name">{{ product.title }}</h1>
+    {%- if shop.taxes_included or shop.shipping_policy.body != blank -%}
+    <div class="product-single__policies rte">
+      {%- if shop.taxes_included -%}
+      {{ 'products.product.include_taxes' | t }}
+      {%- endif -%}
+      {%- if shop.shipping_policy.body != blank -%}
+      {{ 'products.product.shipping_policy_html' | t: link: shop.shipping_policy.url }}
+      {%- endif -%}
+    </div>
+    {%- endif -%}
+    
+    
+    {% if section.settings.social_sharing_products %}
+    {% include 'social-sharing', share_title: product.title, share_permalink: product.url, share_image: product %}
+    {% endif %}
+    
+    <div class="product-form-wrapper">
 
-        {% if section.settings.vendor_show %}
-          <p class="product-single__vendor" itemprop="brand">{{ product.vendor }}</p>
-        {% endif %}
+      {%- assign product_classes = 'js-product-form product-form form form--product' -%}
+      {%- if product.has_only_default_variant -%}
+      {%- assign product_classes = product_classes | append: ' product-form--default-variant-only' -%}
+      {%- endif -%}
+      {%- if use_pallet == true -%}
+      {%- assign product_classes = product_classes | append: ' form--product--pallet' -%}
+      {%- endif -%}
+      <input type="hidden" class="js-address-latitude" value="{{cart.attributes.customer_latitude}}">
+      <input type="hidden" class="js-address-longitude" value="{{cart.attributes.customer_longitude}}">
 
-        <div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
-          <meta itemprop="priceCurrency" content="{{ cart.currency.iso_code }}">
+      {% form 'product', product, class: product_classes, data-ajax-add-to-cart: true, data-product-id: product.id, data-enable-history-state: history_state_data %}
+      {%- if use_check == true or uses_normal_toggle == true -%}
+      
+      <input type="hidden" name="properties[pickup_location]" class="js-pickup-location" value="">
+      
+      <fieldset class="product-single__methods">
+        <legend>Choose delivery or pickup</legend>
+        <input type="radio" name="properties[_method]" class="toggle-input hide js-delivery-method" id="delivery-method" value="delivery" checked>
+        <label for="delivery-method" class="toggle-label">
+          {{ 'layout.product.delivery' | t }}
+          {% if product.type == 'Sod' or product.type == 'sod' %}<small class="toggle-label__instructions">Minimum order of 500 square feet of sod</small>{% endif %}
+        </label>
+        <input type="radio" name="properties[_method]" class="toggle-input hide js-delivery-method" id="pickup-method" value="pickup">
+        <label for="pickup-method" class="toggle-label">
+          {{ 'layout.product.pickup' | t }}
+          <small class="toggle-label__instructions">Pickup will be at your nearest store.</small>
+        </label>
+      </fieldset>
+      
+      <fieldset class="product-single__methods js-quantity-block js-delivery-quantity-block">
+      
+        <legend>Find the closest and freshest product</legend>
+        <div class="">
+          <label for="customer-address-product">{{ 'layout.product.your_address_delivery' | t }}</label>
+          <input class="form__input full-width js-autocomplete-address" type="text" name="properties[_address]" value="{{cart.attributes['customer_address']}}" id="customer-address-product">
+       
+        </div>
+      </fieldset>
 
-          <link itemprop="availability" href="http://schema.org/{% if current_variant.available %}InStock{% else %}OutOfStock{% endif %}">
-
-          <p class="product-single__prices">
-            {%- if use_pallet == true -%}
-              <span class="product-single__price js-current-price" itemprop="price" content="{{ current_variant.price | divided_by: 100.00 }}"></span>
-            {%- else -%}
-              {% if product.compare_at_price_max > product.price %}
-                <span id="ComparePriceA11y" class="visually-hidden">{{ 'products.product.sale_price' | t }}</span>
-              {% else %}
-                <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
-              {% endif %}
-              <span id="ProductPrice" class="product-single__price js-product-single-price" itemprop="price" content="{{ current_variant.price | divided_by: 100.00 }}">
-                <span class="money js-single-price" data-product-id="{{ product.id }}">{{ current_variant.price | money }}</span>
-              </span>
-
-              {% if product.compare_at_price_max > product.price %}
-                <span id="PriceA11y" class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
-                <del class="product-single__price--compare js-price-compare" id="ComparePrice">
-                  {{ current_variant.compare_at_price | money }}
-                </del>
-              {% endif %}
-
-              {% include 'product-unit-price', variant: current_variant, available: true %}
-            {%- endif -%}
-          </p>
-
-          {%- if shop.taxes_included or shop.shipping_policy.body != blank -%}
-            <div class="product-single__policies rte">
-              {%- if shop.taxes_included -%}
-                {{ 'products.product.include_taxes' | t }}
-              {%- endif -%}
-              {%- if shop.shipping_policy.body != blank -%}
-                {{ 'products.product.shipping_policy_html' | t: link: shop.shipping_policy.url }}
-              {%- endif -%}
-            </div>
-          {%- endif -%}
-          {%- assign product_classes = 'js-product-form form form--product' -%}
-          {%- if product.has_only_default_variant -%}
-            {%- assign product_classes = product_classes | append: ' product-form--default-variant-only' -%}
-          {%- endif -%}
-          {%- if use_pallet == true -%}
-            {%- assign product_classes = product_classes | append: 'form--product--pallet' -%}
-          {%- endif -%}
-          <input type="hidden" class="js-address-latitude" value="{{cart.attributes.customer_latitude}}">
-          <input type="hidden" class="js-address-longitude" value="{{cart.attributes.customer_longitude}}">
-
-          {% form 'product', product, class: product_classes, data-ajax-add-to-cart: true, data-product-id: product.id, data-enable-history-state: history_state_data %}
-            {%- if use_check == true or uses_normal_toggle == true -%}
-              <input type="hidden" name="properties[pickup_location]" class="js-pickup-location" value="">
-              <div class="product-single__methods">
-                <input type="radio" name="properties[_method]" class="toggle-input hide js-delivery-method" id="delivery-method" value="delivery" checked>
-                <label for="delivery-method" class="toggle-label">{{ 'layout.product.delivery' | t }}</label>
-                <input type="radio" name="properties[_method]" class="toggle-input hide js-delivery-method" id="pickup-method" value="pickup">
-                <label for="pickup-method" class="toggle-label">{{ 'layout.product.pickup' | t }}</label>
-              </div>
-              <div class="js-quantity-block js-delivery-quantity-block">
-                <label for="customer-address-product">{{ 'layout.product.your_address_delivery' | t }}</label>
-              </div>
-              <div class="js-quantity-block js-delivery-quantity-block">
-                <input class="form__input full-width js-autocomplete-address" type="text" name="properties[_address]" value="{{cart.attributes['customer_address']}}" id="customer-address-product">
-                <label for="zip_code" class="form__label hide">{{ 'customer.addresses.zip' | t }}</label>
-                <input type="hidden" pattern="[0-9]{5}" name="properties[_zip]" id="postal_code" class="form__input full-width js-zip-code" value="{{cart.attributes['zip_code']}}" required readonly>
-                <p class="product-single__pallet-msg product-single__pallet-msg--unavailable js-zip-not-found hide">Zip Code not found</p>
-              </div>
-            {%- endif -%}
-
-            <div>
-              {%- if product.options.size > 1 -%}
-                {%- for product_option in product.options_with_values limit: 1 -%}
-                  <label class="form__label" for="first_product_variant">{{ product_option.name }}</label>
-                  <select class="form__input full-width js-first-product-variant js-product-variant" id="first_product_variant">
-                    {% for value in product_option.values %}
-                      <option {% if product_option.selected_value == value %}selected{% endif %}>
-                        {{ value }}
-                      </option>
-                    {% endfor %}
-                  </select>
-                {%- endfor -%}
-                {%- unless use_check -%}
-                  {%- for product_option in product.options_with_values offset: 1 -%}
-                    <label class="form__label" for="first_product_variant">{{ product_option.name }}</label>
-                    <select class="form__input full-width js-product-variant" id="product_variant_{{forloop.index}}">
-                      {% for value in product_option.values %}
-                        <option {% if product_option.selected_value == value %}selected{% endif %}>
-                          {{ value }}
-                        </option>
-                      {% endfor %}
-                    </select>
-                  {%- endfor -%}
-                {%- endunless -%}
-              {%- endif -%}
-              {%- assign hide = false -%}
-              {%- assign multi_options = false -%}
-              {%- if product.has_only_default_variant -%}
-                {%- assign hide = true -%}
-              {%- elsif use_check == true or uses_normal_toggle == true -%}
-                {%- assign hide = true -%}
-              {%- elsif product.options.size > 1 -%}
-                {%- unless use_check -%}
-                  {%- assign hide = true -%}
-                  {%- assign multi_options = true -%}
-                {%- endunless -%}
-              {%- endif -%}
-              <select name="id" id="ProductSelect-{{ section.id }}" class="form__input full-width js-product-variants{% if hide %} hide{% endif %}">
-                {% for variant in product.variants %}
-                  {% if variant.available %}
-                    <option {% if variant == product.selected_or_first_available_variant %} selected="selected" {% endif %}
-                      {% if use_pallet == true %} data-sod-zips="{{ variant.metafields.sod.zips }}" data-price="{{ variant.price | money_with_currency }}"{% endif %}
-                      {% if variant.compare_at_price %} data-compare-val="{{ variant.compare_at_price | money_without_currency }}"{% endif %}
-                      data-sku="{{ variant.sku }}" value="{{ variant.id }}" data-price-val="{{ variant.price | money_without_currency }}">{{ variant.title }}</option>
-                  {% endif %}
-                {% endfor %}
-              </select>
-            </div>
-
-            <div class="grid">
-              <div class="grid__item">
-                <div class="ro_widget"></div>
-              </div>
-              {% if section.settings.product_quantity_enable %}
-                <div class="grid__item medium-up--{% if uses_normal_toggle == true or use_variant_toggle == true %}one-quarter{% else %}one-third{% endif %}">
-                  {%- if use_pallet == true or use_check == true -%}
-                    {%- assign min_delivery_quantity = 500 -%}
-                    {%- assign min_pickup_quantity = 10 -%}
-                    <input type="hidden" name="quantity" class="js-product-quantity">
-                    {%- if uses_normal_toggle == false and use_variant_toggle == false -%}
-                      <input type="hidden" name="properties[_custom_price]" value="0" class="js-custom-value">
-                      <input type="hidden" name="properties[_custom_increment]" value="0" class="js-increment-value">
-                    {%- endif -%}
-                    {%- if uses_normal_toggle == true or use_variant_toggle == true -%}
-                      {%- assign min_delivery_quantity = 1 -%}
-                      {%- assign min_pickup_quantity = 1 -%}
-                    {%- endif -%}
-                    <div class="js-quantity-block js-delivery-quantity-block">
-                      <label for="delivery-quantity" class="form__label">{{ 'products.product.quantity' | t }}{% if uses_normal_toggle == false and use_variant_toggle == false %} (sq ft){% endif %}</label>
-                      <input type="number" id="delivery-quantity" name="quantity-delivery" value="{{min_delivery_quantity}}"
-                        min="{{min_delivery_quantity}}" step="{{min_delivery_quantity}}" class="form__input full-width js-quantity-input js-quantity-input-delivery" required>
-                    </div>
-                    <div class="js-quantity-block js-pickup-quantity-block hide">
-                      <label for="pickup-uantity" class="form__label">{{ 'products.product.quantity' | t }}{% if uses_normal_toggle == false and use_variant_toggle == false %} (sq ft){% endif %}</label>
-                      <input type="number" id="pickup-uantity" name="quantity-pickup" value="{{min_pickup_quantity}}"
-                        min="{{min_pickup_quantity}}" step="{{min_pickup_quantity}}" class="form__input full-width js-quantity-input js-quantity-input-pickup" required>
-                    </div>
-                  {%- else -%}
-                    <label for="Quantity" class="form__label">{{ 'products.product.quantity' | t }}{% if use_pallet == true and uses_normal_toggle == false %} (sq ft){% endif %}</label>
-                    <input type="number" id="Quantity" name="quantity" value="1" class="form__input full-width" required>
-                  {%- endif -%}
-                </div>
-              {% endif %}
-              <div class="grid__item medium-up--{% if uses_normal_toggle == true or use_variant_toggle == true %}three-quarters{% else %}two-thirds{% endif %}">
-                <div class="product-single__cart-submit-wrapper{% if section.settings.enable_payment_button %} product-single__shopify-payment-btn{% endif %}{% if section.settings.add_to_cart_width == 'full_width' %} product-form--full{% endif %}">
-                  {%- if use_pallet == true or use_check == true -%}
-                    {%- assign delivery_button_text = 'Check delivery price' -%}
-                    {%- assign pickup_button_text = 'Check location' -%}
-                    {%- if uses_normal_toggle == true or use_variant_toggle == true -%}
-                      {%- assign delivery_button_text = 'Check delivery eligibility' -%}
-                      {%- assign pickup_button_text = 'Check pickup location' -%}
-                    {%- endif -%}
-                    <div class="js-quantity-block js-delivery-quantity-block">
-                      <button type="button" class="btn product-single__cart-submit btn--full js-product-price-check" disabled>{{delivery_button_text}}</button>
-                    </div>
-                    <div class="js-quantity-block js-pickup-quantity-block hide">
-                      <button type="button" class="btn product-single__cart-submit btn--full js-product-price-check">{{pickup_button_text}}</button>
-                    </div>
-                  {%- else -%}
-                    <button type="submit" name="add" id="AddToCart" class="js-product-submit btn product-single__cart-submit btn--full{% if section.settings.enable_payment_button %} shopify-payment-btn btn--secondary{% endif %}" data-cart-url="{{ routes.cart_url }}">
-                      <span id="AddToCartText">{{ 'products.product.add_to_cart' | t }}</span>
-                    </button>
-                  {%- endif -%}
-                </div>
-              </div>
-            </div>
-            <div>
-              {% if use_pallet == true or use_check == true %}
-                <div class="js-quantity-block js-pickup-quantity-block hide">
-                  <label for="pickup-select" class="js-product-pickup-variants-title hide">{{ 'layout.product.location' | t }}</label>
-                  <select name="properties[pickup_location]" id="pickup-select" class="form__input full-width js-product-pickup-variants hide"></select>
-                </div>
-                {%- if uses_normal_toggle == false and use_variant_toggle == false -%}
-                  <p class="product-single__pallet-msg product-single__price product-single__price--pallet-price js-current-price-unit hide"></p>
-                {%- endif -%}
-                <button type="submit" name="add"{% unless product.tags contains 'Bundle' %} id="AddToCart"{% endunless %}{% if use_pallet == true or use_check == true %} disabled{% endif %} class="js-product-submit {% if use_pallet == true or use_check == true %}hide {% endif %}btn product-single__cart-submit btn--full{% if section.settings.enable_payment_button %} shopify-payment-btn btn--secondary{% endif %}" data-cart-url="{{ routes.cart_url }}">
-                  <span id="AddToCartText">{{ 'products.product.add_to_cart' | t }}</span>
-                  <span id="AddToCartText2" class="js-add-to-cart-text-delivery hide">(delivered)</span>
-                  <span id="AddToCartText3" class="js-add-to-cart-text-pickup hide">(pickup)</span>
-                </button>
-              {%- endif -%}
-              {% if section.settings.enable_payment_button %}
-                {{ form | payment_button }}
-              {% endif %}
-            </div>
-            {%- if section.settings.product_quantity_enable and use_check -%}
-              <p class="product-single__pallet-msg product-single__pallet-msg--unavailable product-single__pallet-msg--wrong-quantity js-wrong-min-quantity hide">{{ 'layout.product.minimum_quantity' | t | replace: '%placeholder%', '<span class="js-min-number">500</span>' }}</p>
-              <p class="product-single__pallet-msg product-single__pallet-msg--unavailable product-single__pallet-msg--wrong-quantity js-wrong-quantity hide">{{ 'layout.product.multiples_value' | t }} <span class="js-multiple-number">500</span></p>
-            {%- endif -%}
-
-          {% endform %}
-          {%- if use_pallet == true or use_check == true -%}
-            <p class="product-single__pallet-msg product-single__pallet-msg--unavailable js-not-available-text hide">{{ 'products.product.pallet_unavailable_html' | t }}</p>
-            <p class="product-single__pallet-msg product-single__pallet-msg--unavailable js-not-available-pickup-text hide">{{ 'products.product.pickup_unavailable_html' | t }}</p>
-            {%- if uses_normal_toggle == false and use_variant_toggle == false -%}
-              <p class="product-single__pallet-msg">{{ 'products.product.sod_picker_text_html' | t }}</p>
-            {%- endif -%}
-          {%- elsif product.type == 'Soil' -%}
-            <p class="product-single__pallet-msg">{{ 'products.product.soil_calculator_text_html' | t }}</p>
-          {%- endif -%}
-
-          <ul class="list--inline payment-icons">
-            {%- for type in shop.enabled_payment_types -%}
-              <li>
-                {{ type | payment_type_svg_tag: class: 'icon icon--full-color' }}
-              </li>
-            {%- endfor -%}
-          </ul>
-
+        <div class="hide">
+          <label for="customer-address-product">{{ 'layout.product.your_address_pickup' | t }}</label>
         </div>
 
-        {% if section.settings.product_description_position == 'right' %}
-          {%- assign position = 'right' -%}
-          {% include 'product-description' %}
-        {% endif %}
+        <div class="js-quantity-block js-delivery-quantity-block">
+          <label for="zip_code" class="form__label hide">{{ 'customer.addresses.zip' | t }}</label>
+          <input type="hidden" pattern="[0-9]{5}" name="properties[_zip]" id="postal_code" class="form__input full-width js-zip-code" value="{{cart.attributes['zip_code']}}" required readonly>
+          <p class="product-single__pallet-msg product-single__pallet-msg--unavailable js-zip-not-found hide">Zip Code not found</p>
+        </div>
+      {%- endif -%}
 
-        {% if section.settings.social_sharing_products %}
-          {% include 'social-sharing', share_title: product.title, share_permalink: product.url, share_image: product %}
+      <div>
+        {%- if product.options.size > 1 -%}
+        {%- for product_option in product.options_with_values limit: 1 -%}
+        <label class="form__label" for="first_product_variant">{{ product_option.name }}</label>
+        <select class="form__input full-width js-first-product-variant js-product-variant" id="first_product_variant">
+          {% for value in product_option.values %}
+          <option {% if product_option.selected_value == value %}selected{% endif %}>
+            {{ value }}
+          </option>
+          {% endfor %}
+        </select>
+        {%- endfor -%}
+        {%- unless use_check -%}
+        {%- for product_option in product.options_with_values offset: 1 -%}
+        <label class="form__label" for="first_product_variant">{{ product_option.name }}</label>
+        <select class="form__input full-width js-product-variant" id="product_variant_{{forloop.index}}">
+          {% for value in product_option.values %}
+          <option {% if product_option.selected_value == value %}selected{% endif %}>
+            {{ value }}
+          </option>
+          {% endfor %}
+        </select>
+        {%- endfor -%}
+        {%- endunless -%}
+        {%- endif -%}
+        {%- assign hide = false -%}
+        {%- assign multi_options = false -%}
+        {%- if product.has_only_default_variant -%}
+        {%- assign hide = true -%}
+        {%- elsif use_check == true or uses_normal_toggle == true -%}
+        {%- assign hide = true -%}
+        {%- elsif product.options.size > 1 -%}
+        {%- unless use_check -%}
+        {%- assign hide = true -%}
+        {%- assign multi_options = true -%}
+        {%- endunless -%}
+        {%- endif -%}
+        <select name="id" id="ProductSelect-{{ section.id }}" class="form__input full-width js-product-variants{% if hide %} hide{% endif %}">
+          {% for variant in product.variants %}
+          {% if variant.available %}
+          <option {% if variant == product.selected_or_first_available_variant %} selected="selected" {% endif %}
+                  {% if use_pallet == true %} data-sod-zips="{{ variant.metafields.sod.zips }}" data-price="{{ variant.price | money_with_currency }}"{% endif %}
+                  {% if variant.compare_at_price %} data-compare-val="{{ variant.compare_at_price | money_without_currency }}"{% endif %}
+                  data-sku="{{ variant.sku }}" value="{{ variant.id }}" data-price-val="{{ variant.price | money_without_currency }}">{{ variant.title }}</option>
+          {% endif %}
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="flex flex--row flex--wrap flex--has-gutter flex--vertical-bottom" style="margin-bottom: 1em;">
+        {% if section.settings.product_quantity_enable %}
+        <div class="flex__item col-{% if uses_normal_toggle == true or use_variant_toggle == true %}3{% else %}4{% endif %}">
+          {%- if use_pallet == true or use_check == true -%}
+          {%- assign min_delivery_quantity = 500 -%}
+          {%- assign min_pickup_quantity = 10 -%}
+          <input type="hidden" name="quantity" class="js-product-quantity">
+          {%- if uses_normal_toggle == false and use_variant_toggle == false -%}
+          <input type="hidden" name="properties[_custom_price]" value="0" class="js-custom-value">
+          <input type="hidden" name="properties[_custom_increment]" value="0" class="js-increment-value">
+          {%- endif -%}
+          {%- if uses_normal_toggle == true or use_variant_toggle == true -%}
+          {%- assign min_delivery_quantity = 1 -%}
+          {%- assign min_pickup_quantity = 1 -%}
+          {%- endif -%}
+          <div class="js-quantity-block js-delivery-quantity-block">
+            <label for="delivery-quantity" class="form__label">{{ 'products.product.quantity' | t }}{% if uses_normal_toggle == false and use_variant_toggle == false %} (sq ft){% endif %}</label>
+            <input type="number" id="delivery-quantity" name="quantity-delivery" value="{{min_delivery_quantity}}"
+                   min="{{min_delivery_quantity}}" step="{{min_delivery_quantity}}" class="form__input form__input--quantity full-width js-quantity-input js-quantity-input-delivery" required>
+          </div>
+          <div class="js-quantity-block js-pickup-quantity-block hide">
+            <label for="pickup-uantity" class="form__label">{{ 'products.product.quantity' | t }}{% if uses_normal_toggle == false and use_variant_toggle == false %} (sq ft){% endif %}</label>
+            <input type="number" id="pickup-uantity" name="quantity-pickup" value="{{min_pickup_quantity}}"
+                   min="{{min_pickup_quantity}}" step="{{min_pickup_quantity}}" class="form__input form__input--quantity full-width js-quantity-input js-quantity-input-pickup" required>
+          </div>
+          {%- else -%}
+          <label for="Quantity" class="form__label">{{ 'products.product.quantity' | t }}{% if use_pallet == true and uses_normal_toggle == false %} (sq ft){% endif %}</label>
+          <input type="number" id="Quantity" name="quantity" value="1" class="form__input form__input--quantity full-width" required>
+          {%- endif -%}
+        </div>
+        {% endif %}
+        <div class="flex__item col-{% if uses_normal_toggle == true or use_variant_toggle == true %}9{% else %}8{% endif %}">
+          <div class="product-single__cart-submit-wrapper{% if section.settings.enable_payment_button %} product-single__shopify-payment-btn{% endif %}{% if section.settings.add_to_cart_width == 'full_width' %} product-form--full{% endif %}">
+            {%- if use_pallet == true or use_check == true -%}
+            {%- assign delivery_button_text = 'Check delivery price' -%}
+            {%- assign pickup_button_text = 'Check location' -%}
+            {%- if uses_normal_toggle == true or use_variant_toggle == true -%}
+            {%- assign delivery_button_text = 'Check delivery eligibility' -%}
+            {%- assign pickup_button_text = 'Check pickup location' -%}
+            {%- endif -%}
+            <div class="js-quantity-block js-delivery-quantity-block">
+              <button type="button" class="button button--medium button--secondary product-single__cart-submit btn--full js-product-price-check" disabled>{{delivery_button_text}}</button>
+            </div>
+            <div class="js-quantity-block js-pickup-quantity-block hide">
+              <button type="button" class="button button--medium button--secondary product-single__cart-submit btn--full js-product-price-check">{{pickup_button_text}}</button>
+            </div>
+            {%- else -%}
+            <button type="submit" name="add" id="AddToCart" class="js-product-submit button button--medium button--secondary product-single__cart-submit btn--full{% if section.settings.enable_payment_button %} shopify-payment-btn btn--secondary{% endif %}" data-cart-url="{{ routes.cart_url }}">
+              <span id="AddToCartText">{{ 'products.product.add_to_cart' | t }}</span>
+            </button>
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+      <div>
+        {% if use_pallet == true or use_check == true %}
+        <div class="product-locations-dropdown js-quantity-block js-pickup-quantity-block hide">
+          <label for="pickup-select" class="js-product-pickup-variants-title hide">{{ 'layout.product.location' | t }}</label>
+          <select name="properties[pickup_location]" id="pickup-select" class="form__input full-width js-product-pickup-variants hide"></select>
+        </div>
+        {%- if uses_normal_toggle == false and use_variant_toggle == false -%}
+        <p class="product-single__pallet-msg product-single__price product-single__price--pallet-price js-current-price-unit hide"></p>
+        {%- endif -%}
+        <button type="submit" name="add"{% unless product.tags contains 'Bundle' %} id="AddToCart"{% endunless %}{% if use_pallet == true or use_check == true %} disabled{% endif %} class="js-product-submit {% if use_pallet == true or use_check == true %}hide {% endif %}button button--medium button--secondary product-single__cart-submit btn--full{% if section.settings.enable_payment_button %} shopify-payment-btn btn--secondary{% endif %}" data-cart-url="{{ routes.cart_url }}">
+          <span id="AddToCartText">{{ 'products.product.add_to_cart' | t }}</span>
+          <span id="AddToCartText2" class="js-add-to-cart-text-delivery hide">(delivered)</span>
+          <span id="AddToCartText3" class="js-add-to-cart-text-pickup hide">(pickup)</span>
+        </button>
+        {%- endif -%}
+        {% if section.settings.enable_payment_button %}
+        {{ form | payment_button }}
         {% endif %}
       </div>
+      {%- if section.settings.product_quantity_enable and use_check -%}
+      <p class="product-single__pallet-msg product-single__pallet-msg--unavailable product-single__pallet-msg--wrong-quantity js-wrong-min-quantity hide">{{ 'layout.product.minimum_quantity' | t | replace: '%placeholder%', '<span class="js-min-number">500</span>' }}</p>
+      <p class="product-single__pallet-msg product-single__pallet-msg--unavailable product-single__pallet-msg--wrong-quantity js-wrong-quantity hide">{{ 'layout.product.multiples_value' | t }} <span class="js-multiple-number">500</span></p>
+      {%- endif -%}
+
+      {% endform %}
+      {%- if use_pallet == true or use_check == true -%}
+      <p class="product-single__pallet-msg product-single__pallet-msg--unavailable js-not-available-text hide">{{ 'products.product.pallet_unavailable_html' | t }}</p>
+      <p class="product-single__pallet-msg product-single__pallet-msg--unavailable js-not-available-pickup-text hide">{{ 'products.product.pickup_unavailable_html' | t }}</p>
+      {%- if uses_normal_toggle == false and use_variant_toggle == false -%}
+      <p class="product-single__pallet-msg">{{ 'products.product.sod_picker_text_html' | t }}</p>
+      {%- endif -%}
+      {%- elsif product.type == 'Soil' -%}
+      <p class="product-single__pallet-msg">{{ 'products.product.soil_calculator_text_html' | t }}</p>
+      {%- endif -%}
+
+      <ul class="list--inline payment-icons">
+        {%- for type in shop.enabled_payment_types -%}
+        <li>
+          {{ type | payment_type_svg_tag: class: 'icon icon--full-color' }}
+        </li>
+        {%- endfor -%}
+      </ul>
+
     </div>
 
   </div>
+  
+  <div class="product-tabs" id="frequently-bought-container"></div>
 
-  {% if section.settings.product_description_position == 'below' %}
-    {%- assign position = 'below' -%}
-    <div class="product-tabs">
-      <div class="grid grid--full product-tabs__tablist" role="tablist" aria-label="More product information">
-        <div class="grid__item one-third large-up--one-sixth">
-          <button class="product-tabs__button" role="tab" aria-selected="true" aria-controls="details-tab" id="details-tab-button">
-            {% render 'icon-features' %} Features
-          </button>
-        </div>
-        {%- assign metafield_names = 'uses,specs,guides,automower-app' | split: ',' -%}
-        {%- assign metafield_titles = 'Uses,Specs,Guides,Automower App' | split: ',' -%}
-        {%- for metafield_title in metafield_titles -%}
-          {%- assign metafield_key = metafield_names[forloop.index0] -%}
-          {%- if product.metafields.global[metafield_key] != blank -%}
-            <div class="grid__item one-third large-up--one-{% if metafield_title.size > 5 %}quarter{% else %}eighth{% endif %}">
-              <button class="product-tabs__button" role="tab" aria-selected="false" aria-controls="{{metafield_key}}-tab" id="{{metafield_key}}-tab-button" tabindex="-1">
-                {% if metafield_key == 'guides' %}
-                  {% render 'icon-guides' %}
-                {% else %}
-                  {% render 'icon-info' %}
-                {% endif %}
-                {{ metafield_title }}
-              </button>
-            </div>
-          {%- endif -%}
-        {%- endfor -%}
-      </div>
-      <div class="product-tabs__tab" tabindex="0" role="tabpanel" id="details-tab" aria-labelledby="details-tab-button">
-        {% include 'product-description' %}
-      </div>
-      {%- for metafield_name in metafield_names -%}
-        {%- if product.metafields.global[metafield_name] != blank -%}
-          {%- assign metafield_key = metafield_names[forloop.index0] -%}
-          <div class="product-tabs__tab" tabindex="0" role="tabpanel" id="{{metafield_key}}-tab" aria-labelledby="{{metafield_key}}-tab-button" hidden>
-            {{product.metafields.global[metafield_name]}}
-          </div>
-        {%- endif -%}
-      {%- endfor -%}
-    </div>
+  {% if product.description.size > 0 %}
+  	<section class="product-single__description product-single__section rte" itemprop="description">
+      <h2 class="product-single__section-title">{{ 'products.product.description' | t }}</h2>
+  	{% if product.description contains '<!-- [break] -->' %}
+      {{ product.description | split: '<!-- [break] -->' | last }}
+  	{% else %}
+  	  {{ product.description }}
+    {% endif %}
+    </section>
   {% endif %}
+  
+  
+  {% if section.settings.product_description_position == 'below' %}
+  {%- assign position = 'below' -%}
+  {%- assign metafield_names = 'uses,specs,guides,automower-app' | split: ',' -%}
+  {%- assign metafield_titles = 'Uses,Specs,Guides,Automower App' | split: ',' -%}
+    {%- for metafield_title in metafield_titles -%}
+      {%- assign metafield_key = metafield_names[forloop.index0] -%}
+      {%- if product.metafields.global[metafield_key] != blank -%}{%- endif -%}
+    {%- endfor -%}
+  {% endif %}
+  
 </div>
 {%- unless product.tags contains 'show-bundle-variant' -%}
   <style>

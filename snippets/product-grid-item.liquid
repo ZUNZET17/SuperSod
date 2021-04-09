@@ -1,5 +1,5 @@
 {% unless grid_item_width %}
-  {% assign grid_item_width = 'medium-up--one-third small--one-half' %}
+  {% assign grid_item_width = 'col-4 col-6--tablet' %}
 {% endunless %}
 
 {% unless current_collection == blank %}
@@ -18,78 +18,17 @@
   {% assign sold_out = false %}
 {% endif %}
 
+{%- assign show_price = true -%}
+{%- unless product.tags contains 'Bundle' -%}
+  {%- if collection_handle == 'sod' -%}
+  	{%- assign show_price = false -%}
+  {%- endif -%}
+{%- endunless -%}
+
 {%- assign img_url = product.featured_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
 
-<div class="product grid__item {{ grid_item_width }} slide-up-animation animated" role="listitem">
-  {% unless product.featured_image == blank %}
-    <div class="product__block-image" style="background-image: url({{product.featured_image | img_url: '300x'}});">
-      <a href="{{ product.url | within: collection }}" class="product__block-link" title="{{ product.title | escape }}" data-image-link>
-        <img class="product__image lazyload"
-             alt="{{ product.featured_image.alt | escape }}"
-             style="max-width: {{ 600 | times: product.featured_image.aspect_ratio | round }}px; max-height: 600px;"
-             data-src="{{ img_url }}"
-             data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
-             data-aspectratio="{{ product.featured_image.aspect_ratio }}"
-             data-sizes="auto"
-             data-image>
-      </a>
-      {%- if settings.show_brand_logo == true -%}
-        {%- assign brand_handle_name = product.vendor | handleize -%}
-        {%- assign brand_image_name = brand_handle_name | append: '-logo.jpg' -%}
-        {%- assign brand_image_name_2x = brand_handle_name | append: '-logo-2x.jpg' -%}
-        <img src="{{ brand_image_name | asset_url }}" alt="{{ product.vendor }}" srcset="{{ brand_image_name_2x | asset_url }} 2x" class="product__brand-image" loading="lazy" onerror="this.style.display='none'">
-      {%- elsif product.tags contains 'omri-listed' -%}
-        {%- assign brand_image_name = 'omri-badge.png' -%}
-        {%- assign brand_image_name_2x = 'omri-badge-2x.png' -%}
-        <picture>
-          <source media="(min-width: 768px)" srcset="{{brand_image_name | asset_img_url: '60x'}}, {{ brand_image_name_2x | asset_img_url: '60x', scale: 2 }} 2x">
-          <img src="{{ brand_image_name | asset_img_url: '40x' }}" alt="{{ product.vendor }}" srcset="{{ brand_image_name_2x | asset_img_url: '40x', scale: 2 }} 2x" class="product__brand-image" loading="lazy" onerror="this.style.display='none'">
-        </picture>
-      {%- endif -%}
-    </div>
-    {%- if product.metafields.global.card_data != blank -%}
-      <p class="product__card-data">{{product.metafields.global.card_data}}</p>
-    {%- endif -%}
-    {%- comment -%}
-    <div class="supports-js" style="max-width: {{ 600 | times: product.featured_image.aspect_ratio | round }}px; margin: 0 auto;">
-      <a href="{{ product.url | within: collection }}" class="product__image-wrapper product__image-wrapper--loading" style="padding-top:{{ 1 | divided_by: product.featured_image.aspect_ratio | times: 100}}%;" title="{{ product.title | escape }}" data-image-link>
-        <img class="product__image lazyload"
-             alt="{{ product.featured_image.alt | escape }}"
-             style="max-width: {{ 600 | times: product.featured_image.aspect_ratio | round }}px; max-height: 600px;"
-             data-src="{{ img_url }}"
-             data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
-             data-aspectratio="{{ product.featured_image.aspect_ratio }}"
-             data-sizes="auto"
-             data-image>
-      </a>
-    </div>{%- endcomment -%}
-  {% else %}
-    <a href="{{ product.url | within: collection }}" class=" supports-js product__image-wrapper" title="{{ product.title | escape }}">
-      <img src="{{ product.featured_image.src | img_url: '200x' }}" alt="{{ product.featured_image.alt | escape }}">
-    </a>
-  {% endunless %}
-
-  <noscript>
-    <a href="{{ product.url | within: collection }}" class="product__image-wrapper" title="{{ product.title | escape }}">
-      <img src="{{ product.featured_image.src | img_url: 'grande' }}" alt="{{ product.featured_image.alt | escape }}">
-    </a>
-  </noscript>
-
-  <div class="product__title product__title--card text-center">
-    <a href="{{ product.url | within: collection }}">{{ product.title }}</a>
-  </div>
-
-  {% if section.settings.vendor_show %}
-    <div class="product__vendor text-center">
-      {{ product.vendor }}
-    </div>
-  {% endif %}
-  {%- assign show_price = true -%}
-  {%- unless product.tags contains 'Bundle' -%}
-    {%- if collection_handle == 'sod' -%}
-      {%- assign show_price = false -%}
-    {%- endif -%}
-  {%- endunless -%}
+<!-- <div class="product grid__item {{ grid_item_width }} slide-up-animation animated" role="listitem">
+  
   <div class="product__prices text-center{% unless show_price %} hide{% endunless %}">
     {% if product.compare_at_price > product.price %}
 
@@ -140,4 +79,105 @@
       {% include 'product-unit-price', variant: product.selected_or_first_available_variant %}
     {% endif %}
   </div>
+</div> -->
+
+<div class="product-card-wrapper flex__item {{ grid_item_width }}" role="listitem">
+
+  <div class="product-card">
+    
+    {% if sold_out %}
+      <span class="product-card__badge product-card__badge--red"><span>{{ 'products.product.sold_out' | t }}</span></span>
+    {% endif %}
+
+    {% if on_sale %}
+      <span class="product-card__badge product-card__badge--green"><span>{{ 'products.product.on_sale' | t }}</span></span>
+    {% endif %}
+
+    {% unless product.featured_image == blank %}  
+    <div class="product-card__image-wrapper" style="background-image: url({{product.featured_image | img_url: '300x'}});">
+      <a href="{{ product.url | within: collection }}" class="product__block-link" title="{{ product.title | escape }}" data-image-link>
+        <img class="product-card__image lazyload"
+             alt="{{ product.featured_image.alt | escape }}"
+             style="max-width: {{ 600 | times: product.featured_image.aspect_ratio | round }}px; max-height: 600px;"
+             data-src="{{ img_url }}"
+             data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+             data-aspectratio="{{ product.featured_image.aspect_ratio }}"
+             data-sizes="auto"
+             data-image>
+      </a>
+      {%- if settings.show_brand_logo == true -%}
+      {%- assign brand_handle_name = product.vendor | handleize -%}
+      {%- assign brand_image_name = brand_handle_name | append: '-logo.jpg' -%}
+      {%- assign brand_image_name_2x = brand_handle_name | append: '-logo-2x.jpg' -%}
+      <img src="{{ brand_image_name | asset_url }}" alt="{{ product.vendor }}" srcset="{{ brand_image_name_2x | asset_url }} 2x" class="product__brand-image" loading="lazy" onerror="this.style.display='none'">
+      {%- elsif product.tags contains 'omri-listed' -%}
+      {%- assign brand_image_name = 'omri-badge.png' -%}
+      {%- assign brand_image_name_2x = 'omri-badge-2x.png' -%}
+      <picture>
+        <source media="(min-width: 768px)" srcset="{{brand_image_name | asset_img_url: '60x'}}, {{ brand_image_name_2x | asset_img_url: '60x', scale: 2 }} 2x">
+        <img src="{{ brand_image_name | asset_img_url: '40x' }}" alt="{{ product.vendor }}" srcset="{{ brand_image_name_2x | asset_img_url: '40x', scale: 2 }} 2x" class="product__brand-image" loading="lazy" onerror="this.style.display='none'">
+      </picture>
+      {%- endif -%}
+    </div>
+    <noscript>
+      <a href="{{ product.url | within: collection }}" class="product__image-wrapper" title="{{ product.title | escape }}" tabindex="-1">
+        <img src="{{ product.featured_image.src | img_url: 'grande' }}" alt="{{ product.featured_image.alt | escape }}">
+      </a>
+    </noscript>
+    {%- endunless -%}
+
+    <!--   <div class="product-card__stars"></div> -->
+
+    <div class="product-card__meta">
+      <a class="product-card__title clamp" href="{{ product.url | within: collection }}">{{ product.title }}</a>
+      
+      <dl class="screen-reader-text">
+        <dt>Price</dt>
+        <dd>$199.99</dd>
+      </dl>
+    </div>
+    
+    <div class="product-card__bottom">
+      <div class="product-card__price {% unless show_price %} hide{% endunless %}" aria-hidden="true">
+        {% if product.compare_at_price > product.price %}
+        
+        <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
+        <s>{{ product.compare_at_price | money }}</s>
+
+        <span class="product__price--on-sale">
+          {% if product.price_varies %}
+          {% assign sale_price = product.price | money %}
+          {{ 'products.product.on_sale_from_html' | t: price: sale_price }}
+          {% else %}
+          <strong class="visually-hidden">{{ 'products.product.sale_price' | t }}</strong>
+          {{ product.price | money }}
+          {% endif %}
+        </span>
+
+        {% else %}
+
+        <span class="product__price">
+          {% if product.price_varies %}
+          {% assign price = product.price | money %}
+          <span class="product-card__from-label">{{ 'products.product.from_text_html' | t: price: price }}</span>
+          {% else %}
+          <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
+          {{ product.price | money }}
+          {% endif %}
+        </span>
+
+        {% endif %}
+
+        {% if sold_out %}
+        — <strong class="sold-out-text">{{ 'products.product.sold_out' | t }}</strong>
+        {% endif %}
+
+        {% if product.price_varies == false %}
+        {% include 'product-unit-price', variant: product.selected_or_first_available_variant %}
+        {% endif %}
+      </div>
+      <a href="{{ product.url | within: collection }}" class="product-card__cta button button--primary button--outlined">Buy now</a>
+    </div>
+  </div>
+
 </div>

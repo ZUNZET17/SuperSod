@@ -12,7 +12,7 @@
     },
     "404": {
       "title": "404 找不到頁面",
-      "subtext_html": "您要求的頁面不存在。按一下<a href=\"{{ link }}\">這裡</a>以繼續購物。"
+      "subtext_html": "您要求的頁面不存在。按一下<a href=\"{{ link }}\">這裡<\/a>以繼續購物。"
     },
     "password_page": {
       "login_form_heading": "以密碼進入商店",
@@ -21,7 +21,7 @@
       "login_form_submit": "進入",
       "signup_form_email_label": "電子郵件",
       "signup_form_success": "我們會在即將開張前寄電子郵件通知您！",
-      "admin_link_html": "您是店主嗎？<a href=\"/admin\" class=\"text-link\">請在此登入</a>",
+      "admin_link_html": "您是店主嗎？<a href=\"\/admin\" class=\"text-link\">請在此登入<\/a>",
       "password_link": "以密碼進入",
       "powered_by_shopify_html": "本商店由 {{ shopify }} 提供技術支援"
     },
@@ -88,14 +88,14 @@
       "note": "給賣家的特別指示",
       "subtotal": "小計",
       "taxes_and_shipping_at_checkout": "結帳時計算稅金和運費",
-      "taxes_and_shipping_policy_at_checkout_html": "結帳時計算稅金和<a href=\"{{ link }}\">運費</a>",
+      "taxes_and_shipping_policy_at_checkout_html": "結帳時計算稅金和<a href=\"{{ link }}\">運費<\/a>",
       "taxes_included_but_shipping_at_checkout": "內含稅金，結帳時計算運費",
-      "taxes_included_and_shipping_policy_html": "內含稅金。結帳時計算<a href=\"{{ link }}\">運費</a>。",
+      "taxes_included_and_shipping_policy_html": "內含稅金。結帳時計算<a href=\"{{ link }}\">運費<\/a>。",
       "update": "更新購物車",
       "checkout": "結帳",
       "empty": "您的購物車目前沒有商品。",
       "cookies_required": "啟用 Cookie 功能即可使用購物車",
-      "continue_browsing_html": "繼續瀏覽 <a href=\"{{ link }}\">此處</a>。",
+      "continue_browsing_html": "繼續瀏覽 <a href=\"{{ link }}\">此處<\/a>。",
       "savings_html": "您將省下 {{ price }}",
       "continue_shopping": "繼續購物"
     },
@@ -153,7 +153,7 @@
       "address1": "地址 1",
       "address2": "地址 2",
       "city": "市",
-      "country": "國家/地區",
+      "country": "國家\/地區",
       "province": "省",
       "zip": "郵遞區號",
       "phone": "電話",
@@ -240,7 +240,7 @@
     "map": {
       "address_error": "尋找此地址時發生錯誤",
       "address_no_results": "此地址無結果",
-      "address_query_limit_html": "您已超出 Google API 使用量限制。請考慮升級為<a href=\"https://developers.google.com/maps/premium/usage-limits\">付費方案</a>。",
+      "address_query_limit_html": "您已超出 Google API 使用量限制。請考慮升級為<a href=\"https:\/\/developers.google.com\/maps\/premium\/usage-limits\">付費方案<\/a>。",
       "auth_error_html": "驗證 Google 地圖帳戶時發生問題。"
     },
     "slideshow": {
@@ -250,7 +250,7 @@
       "play": "播放投影片",
       "load_slide": "載入第 {{ slide_number }} 張投影片",
       "active_slide": "目前為第 {{ slide_number }} 投影片",
-      "navigation_instructions": "使用向左/向右箭頭操作播放投影片。如使用行動裝置，請向左/向右滑動"
+      "navigation_instructions": "使用向左\/向右箭頭操作播放投影片。如使用行動裝置，請向左\/向右滑動"
     }
   },
   "layout": {
@@ -286,7 +286,7 @@
       "on_sale_from_html": "促銷中，{{ price }} 起",
       "from_text_html": "從 {{ price }} 起",
       "include_taxes": "內含稅金。",
-      "shipping_policy_html": "結帳時計算<a href=\"{{ link }}\">運費</a>。",
+      "shipping_policy_html": "結帳時計算<a href=\"{{ link }}\">運費<\/a>。",
       "quantity": "數量",
       "add_to_cart": "加入購物車",
       "item_added_to_cart": "商品已加入購物車！",

@@ -12,7 +12,7 @@
     },
     "404": {
       "title": "404 Page Not Found",
-      "subtext_html": "Halaman yang kamu minta tidak ditemukan. Klik <a href=\"{{ link }}\">di sini</a> untuk lanjut berbelanja."
+      "subtext_html": "Halaman yang kamu minta tidak ditemukan. Klik <a href=\"{{ link }}\">di sini<\/a> untuk lanjut berbelanja."
     },
     "password_page": {
       "login_form_heading": "Masuki toko dengan sandi",
@@ -21,7 +21,7 @@
       "login_form_submit": "Masuk",
       "signup_form_email_label": "Email",
       "signup_form_success": "Kami akan mengirimimu email tepat sebelum kami akan buka!",
-      "admin_link_html": "Anda pemilik toko? <a href=\"/admin\" class=\"text-link\">Login di sini</a>",
+      "admin_link_html": "Anda pemilik toko? <a href=\"\/admin\" class=\"text-link\">Login di sini<\/a>",
       "password_link": "Masuk dengan sandi",
       "powered_by_shopify_html": "Toko ini didukung oleh {{ shopify }}"
     },
@@ -88,14 +88,14 @@
       "note": "Instruksi khusus untuk penjual",
       "subtotal": "Subtotal",
       "taxes_and_shipping_at_checkout": "Pajak dan biaya pengiriman dihitung saat checkout",
-      "taxes_and_shipping_policy_at_checkout_html": "Pajak dan <a href=\"{{ link }}\">biaya pengiriman</a> dihitung saat checkout",
+      "taxes_and_shipping_policy_at_checkout_html": "Pajak dan <a href=\"{{ link }}\">biaya pengiriman<\/a> dihitung saat checkout",
       "taxes_included_but_shipping_at_checkout": "Pajak yang berlaku dan biaya pengiriman dihitung saat checkout",
-      "taxes_included_and_shipping_policy_html": "Termasuk pajak. <a href=\"{{ link }}\">Biaya pengiriman </a> dihitung saat checkout.",
+      "taxes_included_and_shipping_policy_html": "Termasuk pajak. <a href=\"{{ link }}\">Biaya pengiriman <\/a> dihitung saat checkout.",
       "update": "Perbarui Keranjang",
       "checkout": "Check Out",
       "empty": "Keranjangmu kosong.",
       "cookies_required": "Aktifkan cookie untuk menggunakan keranjang belanja",
-      "continue_browsing_html": "Lanjutkan belanja <a href=\"{{ link }}\">di sini</a>.",
+      "continue_browsing_html": "Lanjutkan belanja <a href=\"{{ link }}\">di sini<\/a>.",
       "savings_html": "Kamu hemat {{ price }}",
       "continue_shopping": "Lanjutkan belanja"
     },
@@ -153,7 +153,7 @@
       "address1": "Alamat 1",
       "address2": "Alamat 2",
       "city": "Kota",
-      "country": "Negara/Wilayah",
+      "country": "Negara\/Wilayah",
       "province": "Provinsi",
       "zip": "Kode Pos",
       "phone": "Telepon",
@@ -240,7 +240,7 @@
     "map": {
       "address_error": "Kesalahan saat mencari alamat",
       "address_no_results": "Tidak ada hasil untuk alamat tersebut",
-      "address_query_limit_html": "Kamu sudah melampaui batas penggunaan Google API. Silakan upgrade ke <a href=\"https://developers.google.com/maps/premium/usage-limits\">Paket Premium</a>.",
+      "address_query_limit_html": "Kamu sudah melampaui batas penggunaan Google API. Silakan upgrade ke <a href=\"https:\/\/developers.google.com\/maps\/premium\/usage-limits\">Paket Premium<\/a>.",
       "auth_error_html": "Ada masalah saat mengautentikasi akun Google Map-mu."
     },
     "slideshow": {
@@ -250,7 +250,7 @@
       "play": "Putar slideshow",
       "load_slide": "Muat slide {{ slide_number }}",
       "active_slide": "Slide {{ slide_number }}, saat ini",
-      "navigation_instructions": "Gunakan panah kiri/kanan untuk beralih dari satu slide ke yang lainnya, atau usap ke kiri/kanan jika kamu menggunakan perangkat seluler"
+      "navigation_instructions": "Gunakan panah kiri\/kanan untuk beralih dari satu slide ke yang lainnya, atau usap ke kiri\/kanan jika kamu menggunakan perangkat seluler"
     }
   },
   "layout": {
@@ -286,7 +286,7 @@
       "on_sale_from_html": "Obral mulai {{ price }}",
       "from_text_html": "Dari {{ price }}",
       "include_taxes": "Termasuk pajak.",
-      "shipping_policy_html": "<a href=\"{{ link }}\">Biaya pengiriman </a> dihitung saat checkout.",
+      "shipping_policy_html": "<a href=\"{{ link }}\">Biaya pengiriman <\/a> dihitung saat checkout.",
       "quantity": "Jumlah",
       "add_to_cart": "Tambahkan ke keranjang",
       "item_added_to_cart": "Item ditambahkan ke keranjang!",

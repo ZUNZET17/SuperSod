@@ -12,7 +12,7 @@
     },
     "404": {
       "title": "404. Страница не найдена",
-      "subtext_html": "Эта страница не существует. Нажмите <a href=\"{{ link }}\">здесь</a>, чтобы продолжить покупки."
+      "subtext_html": "Эта страница не существует. Нажмите <a href=\"{{ link }}\">здесь<\/a>, чтобы продолжить покупки."
     },
     "password_page": {
       "login_form_heading": "Войдите в магазин с помощью пароля",
@@ -21,7 +21,7 @@
       "login_form_submit": "Ввести",
       "signup_form_email_label": "Электронный адрес",
       "signup_form_success": "Мы отправим вам письмо незадолго до открытия!",
-      "admin_link_html": "Вы владелец магазина? <a href=\"/admin\" class=\"text-link\">Войдите здесь</a>",
+      "admin_link_html": "Вы владелец магазина? <a href=\"\/admin\" class=\"text-link\">Войдите здесь<\/a>",
       "password_link": "Войдите с помощью пароля",
       "powered_by_shopify_html": "Этот магазин работает на платформе {{ shopify }}"
     },
@@ -88,14 +88,14 @@
       "note": "Особые примечания для продавца",
       "subtotal": "Промежуточный итог",
       "taxes_and_shipping_at_checkout": "Налоги и стоимость доставки, рассчитанные при оформлении заказа",
-      "taxes_and_shipping_policy_at_checkout_html": "Налоги и <a href=\"{{ link }}\">стоимость доставки</a>, рассчитанные при оформлении заказа",
+      "taxes_and_shipping_policy_at_checkout_html": "Налоги и <a href=\"{{ link }}\">стоимость доставки<\/a>, рассчитанные при оформлении заказа",
       "taxes_included_but_shipping_at_checkout": "Сумма налога и стоимость доставки, рассчитанные при оформлении заказа",
-      "taxes_included_and_shipping_policy_html": "Налоги включены. <a href=\"{{ link }}\">Стоимость доставки</a>, рассчитанная при оформлении заказа.",
+      "taxes_included_and_shipping_policy_html": "Налоги включены. <a href=\"{{ link }}\">Стоимость доставки<\/a>, рассчитанная при оформлении заказа.",
       "update": "Обновить корзину",
       "checkout": "Оформить заказ",
       "empty": "Корзина пуста.",
       "cookies_required": "Разрешить использование файлов cookie для корзины",
-      "continue_browsing_html": "Продолжить просмотр <a href=\"{{ link }}\">тут</a>.",
+      "continue_browsing_html": "Продолжить просмотр <a href=\"{{ link }}\">тут<\/a>.",
       "savings_html": "Экономия: {{ price }}",
       "continue_shopping": "Продолжить покупки"
     },
@@ -153,7 +153,7 @@
       "address1": "Адрес1",
       "address2": "Адрес2",
       "city": "Город",
-      "country": "Страна/регион",
+      "country": "Страна\/регион",
       "province": "Область",
       "zip": "Почтовый индекс",
       "phone": "Телефон",
@@ -240,7 +240,7 @@
     "map": {
       "address_error": "Не удалось найти этот адрес",
       "address_no_results": "Нет результатов для этого адреса",
-      "address_query_limit_html": "Вы превысили ограничение использования Google API. Рассмотрите переход на план уровня <a href=\"https://developers.google.com/maps/premium/usage-limits\">Премиум</a>.",
+      "address_query_limit_html": "Вы превысили ограничение использования Google API. Рассмотрите переход на план уровня <a href=\"https:\/\/developers.google.com\/maps\/premium\/usage-limits\">Премиум<\/a>.",
       "auth_error_html": "При аутентификации вашей учетной записи в Картах Google возникла проблема."
     },
     "slideshow": {
@@ -250,7 +250,7 @@
       "play": "Воспроизвести слайд-шоу",
       "load_slide": "Загрузить слайд {{ slide_number }}",
       "active_slide": "Слайд {{ slide_number }}, текущий",
-      "navigation_instructions": "Используйте стрелки влево/вправо для навигации по слайд-шоу или проведите влево/вправо, если вы используете мобильное устройство"
+      "navigation_instructions": "Используйте стрелки влево\/вправо для навигации по слайд-шоу или проведите влево\/вправо, если вы используете мобильное устройство"
     }
   },
   "layout": {
@@ -286,7 +286,7 @@
       "on_sale_from_html": "Акционная цена от {{ price }}",
       "from_text_html": "От {{ price }}",
       "include_taxes": "Сумма налога включена.",
-      "shipping_policy_html": "<a href=\"{{ link }}\">Стоимость доставки</a> рассчитывается при оформлении заказа.",
+      "shipping_policy_html": "<a href=\"{{ link }}\">Стоимость доставки<\/a> рассчитывается при оформлении заказа.",
       "quantity": "Количество",
       "add_to_cart": "Добавить в корзину",
       "item_added_to_cart": "Товар добавлен в корзину.",

@@ -12,7 +12,7 @@
     },
     "404": {
       "title": "404 Página não encontrada",
-      "subtext_html": "A página solicitada não existe. Clique <a href=\"{{ link }}\">aqui</a> para voltar para a loja."
+      "subtext_html": "A página solicitada não existe. Clique <a href=\"{{ link }}\">aqui<\/a> para voltar para a loja."
     },
     "password_page": {
       "login_form_heading": "Entre na loja usando a senha",
@@ -21,7 +21,7 @@
       "login_form_submit": "Entrar",
       "signup_form_email_label": "E-mail",
       "signup_form_success": "Nós lhe enviaremos um e-mail logo antes de lançar a loja!",
-      "admin_link_html": "Você é o titular da loja? <a href=\"/admin\" class=\"text-link\">Entre aqui</a>",
+      "admin_link_html": "Você é o titular da loja? <a href=\"\/admin\" class=\"text-link\">Entre aqui<\/a>",
       "password_link": "Entre usando a senha",
       "powered_by_shopify_html": "Esta loja será lançada com tecnologia da {{ shopify }}"
     },
@@ -88,14 +88,14 @@
       "note": "Instruções especiais para o vendedor",
       "subtotal": "Subtotal",
       "taxes_and_shipping_at_checkout": "Impostos e frete calculados no checkout",
-      "taxes_and_shipping_policy_at_checkout_html": "Impostos e <a href=\"{{ link }}\">frete</a> calculados no checkout",
+      "taxes_and_shipping_policy_at_checkout_html": "Impostos e <a href=\"{{ link }}\">frete<\/a> calculados no checkout",
       "taxes_included_but_shipping_at_checkout": "Imposto incluído e frete calculado no checkout",
-      "taxes_included_and_shipping_policy_html": "Imposto incluído. <a href=\"{{ link }}\">Frete</a> calculado no checkout.",
+      "taxes_included_and_shipping_policy_html": "Imposto incluído. <a href=\"{{ link }}\">Frete<\/a> calculado no checkout.",
       "update": "Atualizar carrinho",
       "checkout": "Finalizar pedido",
       "empty": "Seu carrinho está vazio no momento.",
       "cookies_required": "Habilite os cookies para usar o carrinho de compras",
-      "continue_browsing_html": "Continue navegando <a href=\"{{ link }}\">aqui</a>.",
+      "continue_browsing_html": "Continue navegando <a href=\"{{ link }}\">aqui<\/a>.",
       "savings_html": "Você está economizando {{ price }}",
       "continue_shopping": "Voltar à loja"
     },
@@ -153,8 +153,8 @@
       "address1": "Endereço 1",
       "address2": "Endereço 2",
       "city": "Cidade",
-      "country": "País/região",
-      "province": "Província/Estado",
+      "country": "País\/região",
+      "province": "Província\/Estado",
       "zip": "CEP",
       "phone": "Telefone",
       "set_default": "Definir como endereço padrão",
@@ -240,7 +240,7 @@
     "map": {
       "address_error": "Não é possível localizar o endereço",
       "address_no_results": "Nenhum resultado para este endereço",
-      "address_query_limit_html": "Você excedeu a cota de uso da API do Google. Considere a atualização para um <a href=\"https://developers.google.com/maps/premium/usage-limits\">Plano Premium</a>.",
+      "address_query_limit_html": "Você excedeu a cota de uso da API do Google. Considere a atualização para um <a href=\"https:\/\/developers.google.com\/maps\/premium\/usage-limits\">Plano Premium<\/a>.",
       "auth_error_html": "Houve um problema ao autenticar sua conta do Google Maps."
     },
     "slideshow": {
@@ -250,7 +250,7 @@
       "play": "Reproduzir apresentação de slides",
       "load_slide": "Abrir slide {{ slide_number }}",
       "active_slide": "Slide {{ slide_number }}, atual",
-      "navigation_instructions": "Utilize as setas esquerda/direita para navegar pela apresentação de slides, ou deslize para a esquerda/direita se estiver usando um dispositivo móvel"
+      "navigation_instructions": "Utilize as setas esquerda\/direita para navegar pela apresentação de slides, ou deslize para a esquerda\/direita se estiver usando um dispositivo móvel"
     }
   },
   "layout": {
@@ -286,7 +286,7 @@
       "on_sale_from_html": "Em promoção, a partir de {{ price }}",
       "from_text_html": "A partir de {{ price }}",
       "include_taxes": "Imposto incluído.",
-      "shipping_policy_html": "<a href=\"{{ link }}\">Frete</a> calculado no checkout.",
+      "shipping_policy_html": "<a href=\"{{ link }}\">Frete<\/a> calculado no checkout.",
       "quantity": "Quantidade",
       "add_to_cart": "Adicionar ao carrinho",
       "item_added_to_cart": "Item adicionado ao carrinho!",
