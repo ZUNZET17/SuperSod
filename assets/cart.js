@@ -89,12 +89,16 @@ const Cart = (function () {
     const originalText = button.html();
     const endpoint = 'available_dates';
     const addedValue = parseFloat(input.data('price'));
+    let ajaxZip = cartZipCode !== '' ? cartZipCode : (typeof firstZip !== 'undefined' ? firstZip : '');
+    if (cartDeliveryMethod === 'pickup') {
+      ajaxZip = (typeof firstZip !== 'undefined' ? firstZip : '');
+    }
     const ajaxData = {
       latitude: $('.js-address-latitude').val(),
       longitude: $('.js-address-longitude').val(),
       type_delivery_pickup: input.val(),
       shop_domain: theme.routes.validation_tool_shop,
-      zipcode: cartZipCode !== '' ? cartZipCode : firstZip
+      zipcode: ajaxZip
     };
 
     button.html('Checking ...');
