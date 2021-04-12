@@ -38,10 +38,10 @@
       }
     }
   </script>
-  
+
   {% include 'ss-head-assets' %}
   <link rel="stylesheet" href="{{ 'ss-styles.css' | asset_url }}">
-  
+
   {%- assign use_pallet = false -%}
   {%- comment -%}{%- if template.name == 'product' and product.tags contains 'pallet' -%}
     {%- assign use_pallet = true -%}
@@ -89,7 +89,7 @@
     <link rel="preload" as="style" href="{{ 'promo-block.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
   {%- endif -%}
   {%- if template.name == 'cart' -%}
-    <link rel="preload" as="style" href="{{ 'tail.datetime-harx-light.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" as="style" href="{{ 'zebra_datepicker.min.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
     <link rel="preload" as="style" href="{{ 'cart.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
   {%- endif -%}
   <noscript>
@@ -123,7 +123,7 @@
       <link rel="stylesheet" href="{{ 'promo-block.scss.css' | asset_url }}">
     {%- endif -%}
     {%- if template.name == 'cart' -%}
-      <link rel="stylesheet" href="{{ 'tail.datetime-harx-light.css' | asset_url }}">
+      <link rel="stylesheet" href="{{ 'zebra_datepicker.min.css' | asset_url }}">
       <link rel="stylesheet" href="{{ 'cart.css' | asset_url }}">
     {%- endif -%}
   </noscript>
@@ -145,15 +145,15 @@
     {%- assign show_sidebar = false -%}
   {%- endif -%}
 {%- endif -%}
-  
+
 <body id="{{ page_title | handle }}" class="{% if customer %}customer-logged-in {% endif %}template-{{ request.page_type | handle }}">
 
   <a class="in-page-link visually-hidden skip-link" href="#MainContent">{{ 'general.accessibility.skip_to_content' | t }}</a>
 
   {% include "ss-header" %}
 
-  <div id="page-wrap" 
-       class="site-wrapper 
+  <div id="page-wrap"
+       class="site-wrapper
               {% if show_sidebar == false and show_account_sidebar == false %} site-wrapper--no-sidebar{% endif %}
               {%- if template.name == 'cart' or template.name == 'product' -%} site-wrapper--no-cart-drawer{% endif %}">
 
@@ -186,7 +186,7 @@
   {%- endif -%}
 
   {% section "ss-footer" %}
-  
+
   {%- if request.page_type == 'index' -%}
     <p id="slideshow-info" class="visually-hidden" aria-hidden="true">
       {{- 'homepage.slideshow.navigation_instructions' | t -}}
@@ -283,7 +283,7 @@
     {% comment %}<script src="{{ 'tabs.js' | asset_url }}" defer></script>{% endcomment %}
   {%- endif -%}
   {%- if template.name == 'cart' -%}
-    <script src="{{ 'tail.datetime.min.js' | asset_url }}" defer></script>
+    <script src="{{ 'zebra_datepicker.min.js' | asset_url }}" defer></script>
     <script src="{{ 'cart.js' | asset_url }}" defer></script>
   {%- endif -%}
 
