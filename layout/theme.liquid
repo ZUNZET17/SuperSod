@@ -153,9 +153,8 @@
   {% include "ss-header" %}
 
   <div id="page-wrap"
-       class="site-wrapper
-              {% if show_sidebar == false and show_account_sidebar == false %} site-wrapper--no-sidebar{% endif %}
-              {%- if template.name == 'cart' or template.name == 'product' -%} site-wrapper--no-cart-drawer{% endif %}">
+       class="site-wrapper site-wrapper--no-cart-drawer
+              {% if show_sidebar == false and show_account_sidebar == false %} site-wrapper--no-sidebar{% endif %}">
 
 
     {%- if show_sidebar == true -%}
@@ -173,11 +172,6 @@
       {{ content_for_layout }}
 
     </main>
-
-    {%- if template.name != 'cart' and template.name != 'product' -%}
-    {% section 'cart-drawer' %}
-    {%- endif -%}
-
 
   </div>
 
