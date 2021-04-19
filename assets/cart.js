@@ -95,6 +95,7 @@ const Cart = (function () {
     const originalText = button.html();
     const endpoint = 'available_dates';
     const addedValue = parseFloat(input.data('price'));
+    const firstZip = Utils.extractZip(typeof firstZipAddress !== 'undefined' ? firstZipAddress : '');
     let ajaxZip = cartZipCode !== '' ? cartZipCode : (typeof firstZip !== 'undefined' ? firstZip : '');
     if (cartDeliveryMethod === 'pickup') {
       ajaxZip = (typeof firstZip !== 'undefined' ? firstZip : '');
@@ -258,6 +259,7 @@ const Cart = (function () {
 
   const getCartAttributesElementsValue = function () {
     let cartAttributes = '';
+    const firstZip = Utils.extractZip(typeof firstZipAddress !== 'undefined' ? firstZipAddress : '');
     $('.js-cart-attribute').each(function (i, el) {
       cartAttributes += (cartAttributes !== '' ? '&' : '');
       if (el.dataset.name === 'zipcode' && el.value === '') {
@@ -291,9 +293,9 @@ const Cart = (function () {
     const note = $('.js-cart-note').val();
     let pickupZip = '';
     if (deliveryType === 'pickup') {
-      const found = /\d{5}/gm.exec(cartPickupAddress)
+      const found = Utils.extractZip(cartPickupAddress);
       if (found !== null && found.length > 0) {
-        pickupZip = '&zipcode=' + found[0];
+        pickupZip = '&zipcode=' + found;
       }
     }
 

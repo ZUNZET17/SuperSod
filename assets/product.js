@@ -114,9 +114,10 @@ const Product = (function () {
 
   const checkZipCode = function (ev) {
     const input = $('.js-zip-code')[0];
-    const zipCode = (input.value).trim();
+    let zipCode = '';
     const deliveryMethod = $('.js-delivery-method:checked').val();
     if (deliveryMethod === 'delivery') {
+      zipCode = (input.value).trim();
       if (!zipCode || zipCode == '' || zipCode.length < 5) {
         toggleSubmitButton('disable');
         return;
@@ -948,12 +949,14 @@ const Product = (function () {
 
     const parameters = [
       { parameter: 'zip_code', value: zipCode },
-      { parameter: 'delivery_method', value: deliveryMethodInput.value },
       {
         parameter: 'customer_address',
         value: $('.js-autocomplete-address').val(),
       }
     ];
+    if (typeof isBundle !== 'undefined' && isBundle) {
+      parameters.push({ parameter: 'delivery_method', value: deliveryMethodInput.value });
+    }
     Utils.addToCartParameters(parameters);
   };
 

@@ -94,11 +94,30 @@ const Utils = (function () {
     return milliDate.getTime();
   };
 
+  const extractZip = function (str) {
+    if (str.length == 0) {
+      return '';
+    }
+    const regex = /\d{5}/gm;
+    let foundItems;
+    let foundZip = '';
+
+    while ((foundItems = regex.exec(str)) !== null) {
+      if (foundItems.index === regex.lastIndex) {
+        regex.lastIndex++;
+      }
+
+      foundZip = foundItems[0]
+    }
+    return foundZip;
+  };
+
   return {
     addToCartParameters: addToCartParameters,
     capitalize: capitalize,
     dateStringToMilliseconds: dateStringToMilliseconds,
     formatMoneyWithPrecision: formatMoneyWithPrecision,
-    onlyNumbers: onlyNumbers
+    onlyNumbers: onlyNumbers,
+    extractZip: extractZip
   };
 })();
