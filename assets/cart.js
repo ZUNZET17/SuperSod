@@ -287,8 +287,16 @@ const Cart = (function () {
     const cartItemsString = getCartItemsString();
     const cartAttributes = getCartAttributesElementsValue();
     const deliveryType = $('.js-delivery-type:checked').val();
-    const deliveryTypeText = $('.js-delivery-type:checked + label').html();
+    const deliveryTypeText = $('.js-delivery-type:checked + span').html();
     const note = $('.js-cart-note').val();
+    let pickupZip = '';
+    if (deliveryType === 'pickup') {
+      const found = /\d{5}/gm.exec(cartPickupAddress)
+      if (found !== null && found.length > 0) {
+        pickupZip = '&zipcode=' + found[0];
+      }
+    }
+
     const ajaxData =
       'delivery_type=' + deliveryType +
       '&shop_domain=' + theme.routes.validation_tool_shop +
@@ -296,7 +304,7 @@ const Cart = (function () {
         (cartDeliveryMethod === 'delivery' ? 'Delivery address:' + cartDeliveryAddress + ', ' + deliveryTypeText : 'Pick up in: ' + cartPickupAddress) +
       '&schedule_dates=' + (settings.dates.join(',')) +
       '&discount_code=' + $('.js-discount-code').val() +
-      '&' + cartAttributes +
+      '&' + cartAttributes + pickupZip +
       '&' + cartItemsString;
 
     window.localStorage.setItem('delivery_type', deliveryType);
