@@ -518,7 +518,7 @@
     window.localStorage.removeItem('delivery_method');
     window.localStorage.removeItem('delivery_address');
     window.localStorage.removeItem('delivery_zipcode');
-    const cartDeliveryMethod = '{{ cart.attributes.delivery_method }}';
+    const cartDeliveryMethod = '{{ fulfillment_method }}';
     const cartDeliveryAddress = '{{ cart.attributes.customer_address }}';
     const cartPickupAddress = '{{ pickup_address }}';
     const cartZipCode = '{{ cart.attributes.zip_code }}';

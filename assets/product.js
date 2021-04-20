@@ -857,19 +857,23 @@ const Product = (function () {
     if (value < 0) {
       $('.js-product-quantity').val(0);
       toggleSubmitButton('disable');
+      toggleSubmitButton('', 'js-product-price-check');
       return;
     } else if (deliveryMethodInput.val() == 'delivery' && value < minimum) {
       $('.js-min-number').html(minimum);
       wrongMinimumQuantityText.removeClass('hide');
       toggleSubmitButton('disable');
+      toggleSubmitButton('', 'js-product-price-check');
       return;
     } else if (value % increment !== 0) {
       $('.js-product-quantity').val(0);
       $('.js-multiple-number').html(increment);
       wrongQuantityText.removeClass('hide');
       toggleSubmitButton('disable');
+      toggleSubmitButton('', 'js-product-price-check');
       return;
     }
+    toggleSubmitButton('show', 'js-product-price-check');
 
     $('.js-product-quantity').val(value);
     const zipCode = (document.querySelector('.js-zip-code').value).trim();
