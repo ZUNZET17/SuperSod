@@ -175,8 +175,8 @@
                 <div class="cart-summary-item__quantity">
                   <div class="qty-adjuster qty-adjuster--with-remove qty-adjuster--ajax" data-line-item-id="{{ item.id }}" {% if item.variant.inventory_management == 'shopify' and item.variant.inventory_policy == 'deny' %}data-limit="{{ item.variant.inventory_quantity }}"{% endif %}>
                     <div class="qty-adjuster__inner">
-                      <button class="qty-adjuster__down">{% render 'svg-minus' %}</button>
-                      <input class="qty-adjuster__value"
+                      {% comment %}{% if item.properties._custom_increment == blank %}<button class="qty-adjuster__down">{% render 'svg-minus' %}</button>{% endif %}{% endcomment %}
+                      <input readonly class="qty-adjuster__value"
                               type="text" pattern="[0-9]*" name="updates[]" value="{{ item.quantity }}"
                               aria-label="{{ 'cart.label.quantity' | t | escape }}"
                               {% if cart.attributes.customer_latitude != blank %} data-latitude="{{cart.attributes.customer_latitude}}"{% endif %}
@@ -187,12 +187,12 @@
                               data-quantity="{{item.quantity}}"
                               data-properties='{{item.properties | json}}'
                               {% if item.properties._zip != blank %} data-zip="{{item.properties._zip}}"{% endif %}
-                              {% if item.properties._custom_increment != blank %} step="{{item.properties._custom_increment}}"{% endif %}>
-                      <button class="qty-adjuster__up"
+                              {% if item.properties._custom_increment != blank %} readonly step="{{item.properties._custom_increment}}"{% endif %}>
+                      {% comment %}{% if item.properties._custom_increment == blank %}<button class="qty-adjuster__up"
                               {% if item.variant.inventory_management == 'shopify' and item.variant.inventory_policy == 'deny' and item.variant.inventory_quantity == item.quantity %}disabled{% endif %}
                               >
                         {%- render 'svg-plus' -%}
-                      </button>
+                      </button>{% endif %}{% endcomment %}
                     </div>
                     <a class="qty-adjuster__remove" href="#">{{ 'cart.general.remove' | t }}</a>
                   </div>

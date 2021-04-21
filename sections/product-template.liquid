@@ -27,15 +27,15 @@
   {%- assign featured_image = current_variant.featured_image | default: product.featured_image -%}
 
   <div class="product-single {% if product.images.size == 0%} product-single--no-media{% endif %}" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
-
+    
     <header class="product-single__header">
 
       {% if section.settings.vendor_show %}
       <p class="product-single__vendor" itemprop="brand">{{ product.vendor }}</p>
       {% endif %}
-
+    
       <h1 class="product-single__title" itemprop="name">{{ product.title }}</h1>
-
+      
       <meta itemprop="priceCurrency" content="{{ cart.currency.iso_code }}">
 
       <link itemprop="availability" href="http://schema.org/{% if current_variant.available %}InStock{% else %}OutOfStock{% endif %}">
@@ -162,7 +162,7 @@
         </ul>
       {% endif %}
     </div>
-
+      
     {% if product.description contains '<!-- [break] -->' %}
     <div class="product-single__selling-points rte" itemprop="description">
       {{ product.description | split: '<!-- [break] -->' | first }}
@@ -179,12 +179,12 @@
       {%- endif -%}
     </div>
     {%- endif -%}
-
-
+    
+    
     {% if section.settings.social_sharing_products %}
     {% include 'social-sharing', share_title: product.title, share_permalink: product.url, share_image: product %}
     {% endif %}
-
+    
     <div class="product-form-wrapper">
 
       {%- assign product_classes = 'js-product-form product-form form form--product' -%}
@@ -199,9 +199,9 @@
 
       {% form 'product', product, class: product_classes, data-ajax-add-to-cart: true, data-product-id: product.id, data-enable-history-state: history_state_data %}
       {%- if use_check == true or uses_normal_toggle == true -%}
-
+      
       <input type="hidden" name="properties[pickup_location]" class="js-pickup-location" value="">
-
+      
       <fieldset class="product-single__methods">
         <legend>Choose delivery or pickup</legend>
         <input type="radio" name="properties[_method]" class="toggle-input hide js-delivery-method" id="delivery-method" value="delivery" checked>
@@ -215,14 +215,14 @@
           <small class="toggle-label__instructions">Pickup will be at your nearest store.</small>
         </label>
       </fieldset>
-
+      
       <fieldset class="product-single__methods js-quantity-block js-delivery-quantity-block">
-
+      
         <legend>Find the closest and freshest product</legend>
         <div class="">
           <label for="customer-address-product">{{ 'layout.product.your_address_delivery' | t }}</label>
           <input class="form__input full-width js-autocomplete-address" type="text" name="properties[_address]" value="{{cart.attributes['customer_address']}}" id="customer-address-product">
-
+       
         </div>
       </fieldset>
 
@@ -386,7 +386,7 @@
     </div>
 
   </div>
-
+  
   <div class="product-tabs" id="frequently-bought-container"></div>
 
   {% if product.description.size > 0 %}
@@ -399,8 +399,8 @@
     {% endif %}
     </section>
   {% endif %}
-
-
+  
+  
   {% if section.settings.product_description_position == 'below' %}
   {%- assign position = 'below' -%}
   {%- assign metafield_names = 'uses,specs,guides,automower-app' | split: ',' -%}
@@ -410,7 +410,7 @@
       {%- if product.metafields.global[metafield_key] != blank -%}{%- endif -%}
     {%- endfor -%}
   {% endif %}
-
+  
 </div>
 {%- unless product.tags contains 'show-bundle-variant' -%}
   <style>
