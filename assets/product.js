@@ -619,6 +619,18 @@ const Product = (function () {
           unit_price: unitPrice,
           total_price: totalPrice
         });
+
+        if (typeof isBundle !== 'undefined' && isBundle) {
+          toggleSubmitButton('show', 'bold_clone');
+          $('.bold_clone').removeClass('js-product-submit');
+          showButtonMessage('pickup');
+          if (
+            typeof usesVariantToggle !== 'undefined' ||
+            typeof usesRegularToggle !== 'undefined'
+          ) {
+            checkChosenVariant();
+          }
+        }
       } else if (deliveryMethod === 'delivery') {
         chooseVariant('delivery');
         showProductPricing(data);
