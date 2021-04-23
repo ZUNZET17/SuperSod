@@ -12,7 +12,7 @@
     },
     "404": {
       "title": "404 Страницата не е открита",
-      "subtext_html": "Заявената страница не съществува. Щракнете <a href=\"{{ link }}\">тук</a>, за да продължите да пазарувате."
+      "subtext_html": "Заявената страница не съществува. Щракнете <a href=\"{{ link }}\">тук<\/a>, за да продължите да пазарувате."
     },
     "password_page": {
       "login_form_heading": "Влизане в магазина с парола",
@@ -21,7 +21,7 @@
       "login_form_submit": "Въведете",
       "signup_form_email_label": "Имейл",
       "signup_form_success": "Ще ви изпратим имейл точно преди да отворим.",
-      "admin_link_html": "Вие ли сте собственикът на магазина? <a href=\"/admin\" class=\"text-link\">Влезте тук</a>",
+      "admin_link_html": "Вие ли сте собственикът на магазина? <a href=\"\/admin\" class=\"text-link\">Влезте тук<\/a>",
       "password_link": "Влизане с парола",
       "powered_by_shopify_html": "Този магазин ще се поддържа от {{ shopify }}"
     },
@@ -88,14 +88,14 @@
       "note": "Специални инструкции за продавача",
       "subtotal": "Междинна сума",
       "taxes_and_shipping_at_checkout": "Данъците и доставката се изчисляват при плащане",
-      "taxes_and_shipping_policy_at_checkout_html": "Данъците и <a href=\"{{ link }}\">доставката</a> се изчисляват при плащане",
+      "taxes_and_shipping_policy_at_checkout_html": "Данъците и <a href=\"{{ link }}\">доставката<\/a> се изчисляват при плащане",
       "taxes_included_but_shipping_at_checkout": "Данъците са включени, а доставката се изчислява при плащане",
-      "taxes_included_and_shipping_policy_html": "С включени данъци. <a href=\"{{ link }}\">Доставката</a> се изчислява при плащане.",
+      "taxes_included_and_shipping_policy_html": "С включени данъци. <a href=\"{{ link }}\">Доставката<\/a> се изчислява при плащане.",
       "update": "Актуализиране на количката",
       "checkout": "Преминаване към плащане",
       "empty": "Количката ви в момента е празна.",
       "cookies_required": "Активирайте бисквитките, за да използвате количката за пазаруване",
-      "continue_browsing_html": "Продължете да разглеждате <a href=\"{{ link }}\">тук</a>.",
+      "continue_browsing_html": "Продължете да разглеждате <a href=\"{{ link }}\">тук<\/a>.",
       "savings_html": "Спестявате {{ price }}",
       "continue_shopping": "Продължете да пазарувате"
     },
@@ -153,7 +153,7 @@
       "address1": "Адрес1",
       "address2": "Адрес2",
       "city": "Град",
-      "country": "Държава/регион",
+      "country": "Държава\/регион",
       "province": "Провинция",
       "zip": "Пощенски код",
       "phone": "Телефон",
@@ -240,7 +240,7 @@
     "map": {
       "address_error": "Грешка при търсенето на този адрес",
       "address_no_results": "За този адрес няма резултати",
-      "address_query_limit_html": "Превишихте ограничението за използване на Google API. Помислете за надграждане до <a href=\"https://developers.google.com/maps/premium/usage-limits\">план Premium</a>.",
+      "address_query_limit_html": "Превишихте ограничението за използване на Google API. Помислете за надграждане до <a href=\"https:\/\/developers.google.com\/maps\/premium\/usage-limits\">план Premium<\/a>.",
       "auth_error_html": "Възникна проблем при удостоверяването на профила ви в Google Карти."
     },
     "slideshow": {
@@ -250,7 +250,7 @@
       "play": "Възпроизвеждане на слайдшоу",
       "load_slide": "Зареждане на слайд {{ slide_number }}",
       "active_slide": "Слайд {{ slide_number }}, в момента",
-      "navigation_instructions": "Използвайте стрелките за наляво/надясно, за да навигирате в слайдшоуто, или плъзнете с пръст наляво/надясно, ако използвате мобилно устройство"
+      "navigation_instructions": "Използвайте стрелките за наляво\/надясно, за да навигирате в слайдшоуто, или плъзнете с пръст наляво\/надясно, ако използвате мобилно устройство"
     }
   },
   "layout": {
@@ -286,7 +286,7 @@
       "on_sale_from_html": "Разпродажба от {{ price }}",
       "from_text_html": "От {{ price }}",
       "include_taxes": "С включени данъци.",
-      "shipping_policy_html": "<a href=\"{{ link }}\">Доставката</a> се изчислява при плащане.",
+      "shipping_policy_html": "<a href=\"{{ link }}\">Доставката<\/a> се изчислява при плащане.",
       "quantity": "Количество",
       "add_to_cart": "Добавяне към количката",
       "item_added_to_cart": "Артикулът е добавен в количката.",

@@ -12,7 +12,7 @@
     },
     "404": {
       "title": "404 det gick inte att hitta sidan",
-      "subtext_html": "Sidan du sökte finns inte. Klicka <a href=\"{{ link }}\">här</a> för att fortsätta handla."
+      "subtext_html": "Sidan du sökte finns inte. Klicka <a href=\"{{ link }}\">här<\/a> för att fortsätta handla."
     },
     "password_page": {
       "login_form_heading": "Ange lösenord för att komma till butiken",
@@ -21,7 +21,7 @@
       "login_form_submit": "Ange",
       "signup_form_email_label": "E-post",
       "signup_form_success": "Vi kommer att skicka ett e-postmeddelande precis innan vi öppnar!",
-      "admin_link_html": "Är det du som är butiksägare? <a href=\"/admin\" class=\"text-link\">Logga in här</a>",
+      "admin_link_html": "Är det du som är butiksägare? <a href=\"\/admin\" class=\"text-link\">Logga in här<\/a>",
       "password_link": "Ange lösenord för att ta dig in",
       "powered_by_shopify_html": "Denna butik kommer att drivas av {{ shopify }}"
     },
@@ -88,14 +88,14 @@
       "note": "Särskilda instruktioner till säljaren",
       "subtotal": "Delsumma",
       "taxes_and_shipping_at_checkout": "Skatter och frakt beräknas vid utcheckning",
-      "taxes_and_shipping_policy_at_checkout_html": "Skatter och <a href=\"{{ link }}\">frakt</a> beräknas vid utcheckning",
+      "taxes_and_shipping_policy_at_checkout_html": "Skatter och <a href=\"{{ link }}\">frakt<\/a> beräknas vid utcheckning",
       "taxes_included_but_shipping_at_checkout": "Skatt ingår och frakt beräknas vid utcheckning",
-      "taxes_included_and_shipping_policy_html": "Skatt ingår. <a href=\"{{ link }}\">Frakt</a> beräknas vid utcheckning.",
+      "taxes_included_and_shipping_policy_html": "Skatt ingår. <a href=\"{{ link }}\">Frakt<\/a> beräknas vid utcheckning.",
       "update": "Uppdatera varukorg",
       "checkout": "Till kassan",
       "empty": "Din varukorg är för tillfället tom.",
       "cookies_required": "Aktivera cookies för att använda varukorgen",
-      "continue_browsing_html": "Fortsätt att bläddra <a href=\"{{ link }}\">här</a>.",
+      "continue_browsing_html": "Fortsätt att bläddra <a href=\"{{ link }}\">här<\/a>.",
       "savings_html": "Du sparar {{ price }}",
       "continue_shopping": "Fortsätt shoppa"
     },
@@ -153,7 +153,7 @@
       "address1": "Adress 1",
       "address2": "Adress 2",
       "city": "Stad",
-      "country": "Land/Region",
+      "country": "Land\/Region",
       "province": "Provins",
       "zip": "Postnummer",
       "phone": "Telefon",
@@ -240,7 +240,7 @@
     "map": {
       "address_error": "Det gick inte att hitta den adressen",
       "address_no_results": "Inga resultat för den adressen",
-      "address_query_limit_html": "Du har överskridit användningsgränsen för Google API. Överväg att uppgradera till en <a href=\"https://developers.google.com/maps/premium/usage-limits\">premiumplan</a>.",
+      "address_query_limit_html": "Du har överskridit användningsgränsen för Google API. Överväg att uppgradera till en <a href=\"https:\/\/developers.google.com\/maps\/premium\/usage-limits\">premiumplan<\/a>.",
       "auth_error_html": "Det gick inte att autentisera ditt Google Maps-konto."
     },
     "slideshow": {
@@ -250,7 +250,7 @@
       "play": "Spela bildspel",
       "load_slide": "Ladda bild {{ slide_number }}",
       "active_slide": "Bild {{ slide_number }}, nuvarande",
-      "navigation_instructions": "Använd vänster-/högerpil för att navigera i bildspelet eller svep åt vänster/höger om du använder en mobil enhet"
+      "navigation_instructions": "Använd vänster-\/högerpil för att navigera i bildspelet eller svep åt vänster\/höger om du använder en mobil enhet"
     }
   },
   "layout": {
@@ -286,7 +286,7 @@
       "on_sale_from_html": "Till nedsatt pris från {{ price }}",
       "from_text_html": "Från {{ price }}",
       "include_taxes": "Skatt ingår.",
-      "shipping_policy_html": "<a href=\"{{ link }}\">Frakt</a>beräknas i kassan.",
+      "shipping_policy_html": "<a href=\"{{ link }}\">Frakt<\/a>beräknas i kassan.",
       "quantity": "Kvantitet",
       "add_to_cart": "Lägg till i varukorgen",
       "item_added_to_cart": "Varan har lagts till i varukorgen!",

@@ -3,7 +3,7 @@
     "accessibility": {
       "skip_to_content": "İçeriğe atla",
       "refresh_page": "Bir seçim yapmanız sayfanın tamamının yenilenmesine neden olur.",
-      "unit_price_separator": "/",
+      "unit_price_separator": "\/",
       "selection_help": "Bir seçim yapmak için boşluk tuşuna sonra ok tuşlarına basın."
     },
     "meta": {
@@ -12,7 +12,7 @@
     },
     "404": {
       "title": "404 Sayfa Bulunamadı",
-      "subtext_html": "Talep ettiğiniz sayfa mevcut değil. Alışverişe devam etmek için <a href=\"{{ link }}\">buraya tıklayın</a>."
+      "subtext_html": "Talep ettiğiniz sayfa mevcut değil. Alışverişe devam etmek için <a href=\"{{ link }}\">buraya tıklayın<\/a>."
     },
     "password_page": {
       "login_form_heading": "Parola kullanarak mağazaya girin",
@@ -21,7 +21,7 @@
       "login_form_submit": "Gir",
       "signup_form_email_label": "E-posta",
       "signup_form_success": "Açılıştan hemen önce size e-posta göndereceğiz!",
-      "admin_link_html": "Mağaza sahibi misiniz? <a href=\"/admin\" class=\"text-link\">Buradan oturum açın</a>",
+      "admin_link_html": "Mağaza sahibi misiniz? <a href=\"\/admin\" class=\"text-link\">Buradan oturum açın<\/a>",
       "password_link": "Parola kullanarak girin",
       "powered_by_shopify_html": "Bu mağaza {{ shopify }} tarafından desteklenir"
     },
@@ -88,14 +88,14 @@
       "note": "Satıcıya özel talimatlar",
       "subtotal": "Alt toplam",
       "taxes_and_shipping_at_checkout": "Vergiler ve kargo, ödeme sayfasında hesaplanır",
-      "taxes_and_shipping_policy_at_checkout_html": "Vergiler ve <a href=\"{{ link }}\">kargo</a>, ödeme sayfasında hesaplanır",
+      "taxes_and_shipping_policy_at_checkout_html": "Vergiler ve <a href=\"{{ link }}\">kargo<\/a>, ödeme sayfasında hesaplanır",
       "taxes_included_but_shipping_at_checkout": "Vergi dahildir ve kargo, ödeme sayfasında hesaplanır",
-      "taxes_included_and_shipping_policy_html": "Vergi dahildir. <a href=\"{{ link }}\">Kargo</a>, ödeme sayfasında hesaplanır.",
+      "taxes_included_and_shipping_policy_html": "Vergi dahildir. <a href=\"{{ link }}\">Kargo<\/a>, ödeme sayfasında hesaplanır.",
       "update": "Sepeti Güncelle",
       "checkout": "Ödeme Yap",
       "empty": "Sepetiniz şu anda boş.",
       "cookies_required": "Alışveriş sepetini kullanmak için çerezleri etkinleştirin",
-      "continue_browsing_html": "<a href=\"{{ link }}\">Buradan</a> gezinmeye devam edin.",
+      "continue_browsing_html": "<a href=\"{{ link }}\">Buradan<\/a> gezinmeye devam edin.",
       "savings_html": "{{ price }} tasarruf ediyorsunuz",
       "continue_shopping": "Alışverişe devam et"
     },
@@ -153,7 +153,7 @@
       "address1": "Adres 1",
       "address2": "Adres 2",
       "city": "Şehir",
-      "country": "Ülke/Bölge",
+      "country": "Ülke\/Bölge",
       "province": "İl",
       "zip": "Posta Kodu",
       "phone": "Telefon",
@@ -240,7 +240,7 @@
     "map": {
       "address_error": "Bu adres aranırken hata oluştu",
       "address_no_results": "Bu adres için sonuç yok",
-      "address_query_limit_html": "Google API kullanım sınırını aştınız. <a href=\"https://developers.google.com/maps/premium/usage-limits\">Premium Plan</a>'a yükseltmeyi düşünün.",
+      "address_query_limit_html": "Google API kullanım sınırını aştınız. <a href=\"https:\/\/developers.google.com\/maps\/premium\/usage-limits\">Premium Plan<\/a>'a yükseltmeyi düşünün.",
       "auth_error_html": "Google Haritalar hesabınızın kimlik doğrulaması yapılırken sorun oluştu."
     },
     "slideshow": {
@@ -250,7 +250,7 @@
       "play": "Slayt gösterisini oynat",
       "load_slide": "{{ slide_number }}. slaytı yükle",
       "active_slide": "{{ slide_number }}. slayt, mevcut",
-      "navigation_instructions": "Slayt gösterisinde gezinmek için sol/sağ okları kullanın veya mobil cihaz kullanıyorsanız parmağınızı sola/sağa kaydırın"
+      "navigation_instructions": "Slayt gösterisinde gezinmek için sol\/sağ okları kullanın veya mobil cihaz kullanıyorsanız parmağınızı sola\/sağa kaydırın"
     }
   },
   "layout": {
@@ -286,7 +286,7 @@
       "on_sale_from_html": "{{ price }} ile Başlayan Fiyatlarla İndirimde",
       "from_text_html": "{{ price }} hesabından",
       "include_taxes": "Vergi dahildir.",
-      "shipping_policy_html": "<a href=\"{{ link }}\">Kargo</a>, ödeme sayfasında hesaplanır.",
+      "shipping_policy_html": "<a href=\"{{ link }}\">Kargo<\/a>, ödeme sayfasında hesaplanır.",
       "quantity": "Adet",
       "add_to_cart": "Sepete Ekle",
       "item_added_to_cart": "Ürün sepete eklendi!",

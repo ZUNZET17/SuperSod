@@ -88,8 +88,16 @@
     {%- elsif item.properties._method != fulfillment_method -%}
       {%- assign invalid_fulfillment = true -%}
     {%- endif -%}
+  {%- elsif item.properties._bold_bundle_price_rules_external_id != blank -%}
+    {%- assign fulfillment_method = cart.attributes.delivery_method -%}
+    {%- if fulfillment_method == 'delivery' -%}
+      {%- assign contains_delivery_items = true -%}
+    {%- endif -%}
   {%- endif -%}
 {%- endfor -%}
+{%- if fulfillment_method == 'delivery' -%}
+  {%- assign contains_delivery_items = true -%}
+{%- endif -%}
 {%- if contains_delivery_items and contains_pickup_sod -%}
   {%- assign invalid_fulfillment = true -%}
   {%- assign fulfillment_method = 'none' -%}
@@ -110,6 +118,7 @@
           </thead>
           <tbody>
             {%- assign subtotal = 0 -%}
+            {%- assign variant_title = '' -%}
             {% for item in cart.items %}
               <tr class="cart__row responsive-table__row">
                 <td class="cart__table-cell--image small--text-center">
@@ -152,29 +161,40 @@
                     %}
                       <br><small>{{ item.variant.title }}</small>
                     {% endunless %}
+                    {%- unless pickup_address -%}
+                      {%- if item.properties._bold_bundles_price != blank -%}
+                        {%- assign pickup_address = cart.attributes.pickup_address -%}
+                      {%- elsif item.properties._method == 'pickup' -%}
+                        {%- assign pickup_address = item.properties.pickup_location -%}
+                      {%- endif -%}
+                    {%- endunless -%}
                     <br>
-                    {%- if item.properties._bold_bundle_price_rules_external_id != blank and cart.attributes.delivery_method == 'pickup' -%}
-                      <small class="cart__policies">{{ cart.attributes.delivery_method }}</small>
+                    {%- if item.properties._bold_bundle_price_rules_external_id != blank and variant_title == '' -%}
+                      {%- assign variant_title = item.variant.title | downcase -%}
+                    {%- endif -%}
+                    {%- assign possible_pickup = false -%}
+                    {%- if item.properties._bold_bundle_price_rules_external_id != blank -%}
+                      {%- if variant_title contains 'pickup' -%}
+                        {%- assign possible_pickup = true -%}
+                      {%- elsif fulfillment_method == 'pickup' -%}
+                        {%- assign possible_pickup = true -%}
+                      {%- endif -%}
+                    {%- endif -%}
+                    {%- if item.properties._bold_bundle_price_rules_external_id != blank and fulfillment_method == 'pickup' -%}
+                      {%- unless variant_title contains 'delivery' -%}
+                        <small class="cart__policies">{{ 'layout.product.pickup' | t }}:</small>
+                      {%- endunless -%}
                     {%- endif -%}
                     {% if item.properties._method == 'pickup' %}
                       <small class="cart__policies">{{ 'layout.product.pickup' | t }}: {{ item.properties.pickup_location }}</small>
-                    {% elsif item.properties._method == blank and cart.attributes.delivery_method == 'pickup' %}
-                    <small class="cart__policies">{{ cart.attributes.pickup_address }}</small>
+                    {%- elsif variant_title contains 'delivery' -%}{% elsif item.properties._method == blank and fulfillment_method == 'pickup' %}
+                      <small class="cart__policies">{{ pickup_address }}</small>
                     {% endif %}
                   </p>
                   {%- if item.properties._bold_bundle_price_rules_external_id != blank -%}
                     {%- if item.properties._bold_bundles_price == blank -%}
                       <span class="hide js-remove-bundle-from-cart">{{item.id}}</span>
                     {%- endif -%}
-                  {%- endif -%}
-                  {%- if cart.attributes.pickup_address == blank -%}
-                    {%- unless pickup_address -%}
-                      {%- if item.properties._method == 'pickup' -%}
-                        {%- assign pickup_address = item.properties.pickup_location -%}
-                      {%- endif -%}
-                    {%- endunless -%}
-                  {%- else -%}
-                    {%- assign pickup_address = cart.attributes.pickup_address -%}
                   {%- endif -%}
                   <p class="txt--minor">
                     <a href="{{ routes.cart_change_url }}?line={{ forloop.index }}&amp;quantity=0" class="cart__remove hide js-remove-link">{{ 'cart.general.remove' | t }}</a>
@@ -245,7 +265,8 @@
                   <label class="visually-hidden" for="updates_{{ item.key }}">{{ 'cart.label.quantity' | t }}</label>
                   <input class="quantity-selector form__input js-cart-quantity-selector js-cart-quantity-selector-{{forloop.index}}" type="number" name="updates[]"
                     id="updates_{{ item.key }}" value="{{ item.quantity }}"
-                    {% if item.properties._custom_increment %}step="{{item.properties._custom_increment}}" {% endif %}
+                    {% if item.properties._custom_increment %}step="{{item.properties._custom_increment}}"{% endif %}
+                    readonly
                     min="{% if item.properties._custom_increment %}{{item.properties._custom_increment}}{% else %}0{% endif %}">
                   <p class="cart__error-message cart__error-message--invalid-quantity js-invalid-quantity js-invalid-quantity-{{forloop.index}} hide">Please enter a valid quantity</p>
                 </td>
@@ -324,21 +345,30 @@
               <div class="grid__item medium-up--one-third">
                 <p class="cart__delivery-title">{{ 'layout.cart.choose_delivery_type_html' | t }}</p>
                 {%- if fulfillment_method == 'delivery' -%}
-                  <input type="radio" name="attributes[_method]" class="js-delivery-type js-check-dates" id="standard-method" value="standard_delivery" data-price="{{ settings.normal_delivery_price | default: '0' }}">
-                  <label for="standard-method" class="cart__method-label">{{ 'layout.cart.standard_delivery' | t }}</label>
+
+                  <label for="standard-method" class="cart__method-label">
+                    <input type="radio" name="attributes[_method]" class="js-delivery-type js-check-dates" id="standard-method" value="standard_delivery" data-price="{{ settings.normal_delivery_price | default: '0' }}">
+                    <span>{{ 'layout.cart.standard_delivery' | t }}</span>
+	              </label>
                   <p>
                     <dfn class="sr-only">{{ 'layout.cart.standard_delivery' | t }}</dfn>
                     {{ 'layout.cart.standard_delivery_explanation' | t }}
                   </p>
                   {%- unless hide_expedited -%}
-                    <input type="radio" name="attributes[_method]" class="js-delivery-type js-check-dates" id="noon-method" value="before_noon" data-price="{{ settings.before_noon_delivery_price | default: '4999' }}">
-                    <label for="noon-method" class="cart__method-label">{{ 'layout.cart.before_noon' | t }}</label>
+
+                    <label for="noon-method" class="cart__method-label">
+                      <input type="radio" name="attributes[_method]" class="js-delivery-type js-check-dates" id="noon-method" value="before_noon" data-price="{{ settings.before_noon_delivery_price | default: '4999' }}">
+                      <span>{{ 'layout.cart.before_noon' | t }}</span>
+                    </label>
                     <p>
                       <dfn class="sr-only">{{ 'layout.cart.before_noon' | t }}</dfn>
                       {{ 'layout.cart.before_noon_explanation' | t }}
                     </p>
-                    <input type="radio" name="attributes[_method]" class="js-delivery-type js-check-dates" id="truck-method" value="first_off_truck" data-price="{{ settings.before_nine_delivery_price | default: '9999' }}">
-                    <label for="truck-method" class="cart__method-label">{{ 'layout.cart.first_off_truck' | t }}</label>
+
+                    <label for="truck-method" class="cart__method-label">
+                      <input type="radio" name="attributes[_method]" class="js-delivery-type js-check-dates" id="truck-method" value="first_off_truck" data-price="{{ settings.before_nine_delivery_price | default: '9999' }}">
+                      <span>{{ 'layout.cart.first_off_truck' | t }}</span>
+                    </label>
                     <p>
                       <dfn class="sr-only">{{ 'layout.cart.first_off_truck' | t }}</dfn>
                       {{ 'layout.cart.first_off_truck_explanation' | t }}
@@ -348,7 +378,7 @@
                   <div>
                     <label for="pickup-method" class="cart__method-label">
                       <input type="radio" name="attributes[_method]" class="js-delivery-type js-check-dates" id="pickup-method" value="pickup" data-price="0">
-                      {{ 'layout.cart.pickup' | t }}
+                      <span>{{ 'layout.cart.pickup' | t }}</span>
                     </label>
                   </div>
                 {%- endif -%}
@@ -456,11 +486,12 @@
         </footer>
         {%- comment -%}{% render 'shipping-calculator' %}{%- endcomment -%}
         {%- if invalid_fulfillment == false and has_custom_pricing == true -%}
-          <input type="hidden" data-name="latitude" name="attributes[customer_latitude]" class="js-cart-attribute js-address-latitude" value="{{cart.attributes.customer_latitude}}">
-          <input type="hidden" data-name="longitude" name="attributes[customer_longitude]" class="js-cart-attribute js-address-longitude" value="{{cart.attributes.customer_longitude}}">
-          <input type="hidden" data-name="zipcode" name="attributes[zip_code]" class="js-cart-attribute js-address-zip" value="{{cart.attributes.zip_code}}">
           {%- if pickup_address != blank -%}
             <input type="hidden" data-name="pickup_address" name="attributes[pickup_address]" class="js-cart-attribute js-address-pickup" value="{{pickup_address}}">
+          {%- else -%}
+            <input type="hidden" data-name="latitude" name="attributes[customer_latitude]" class="js-cart-attribute js-address-latitude" value="{{cart.attributes.customer_latitude}}">
+            <input type="hidden" data-name="longitude" name="attributes[customer_longitude]" class="js-cart-attribute js-address-longitude" value="{{cart.attributes.customer_longitude}}">
+            <input type="hidden" data-name="zipcode" name="attributes[zip_code]" class="js-cart-attribute js-address-zip" value="{{cart.attributes.zip_code}}">
           {%- endif -%}
         {%- endif -%}
       </form>
@@ -487,14 +518,12 @@
     window.localStorage.removeItem('delivery_method');
     window.localStorage.removeItem('delivery_address');
     window.localStorage.removeItem('delivery_zipcode');
-    const cartDeliveryMethod = '{{ cart.attributes.delivery_method }}';
+    const cartDeliveryMethod = '{{ fulfillment_method }}';
     const cartDeliveryAddress = '{{ cart.attributes.customer_address }}';
     const cartPickupAddress = '{{ pickup_address }}';
     const cartZipCode = '{{ cart.attributes.zip_code }}';
     {% if first_zip != '' %}
-      const regex = /\d{5}/gm;
-      const exec = regex.exec('{{first_zip}}');
-      const firstZip = (exec != null && exec.length > 0) ? exec[0] : '';
+      const firstZipAddress = '{{first_zip}}';
     {% endif %}
     const cartItems = [{% for item in cart.items %}{
         {%- assign item_value = 0 -%}
@@ -510,7 +539,7 @@
         {%- if item.properties._bold_bundles_price != blank -%}
           {%- assign product_type = 'bundle' -%}
           {%- assign item_price = item.properties._bold_bundles_price | times: item.quantity | money_without_currency | replace: ',', '' -%}
-          full_price: {{item.final_line_price | times: 0.01}},
+          full_price: {{item.final_price | times: 0.01}},
         {%- endif -%}
         variant_id: {{item.id}}, quantity: {{item.quantity}}, price: {{item_price}},
         {%- if item.properties -%}

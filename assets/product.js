@@ -114,9 +114,10 @@ const Product = (function () {
 
   const checkZipCode = function (ev) {
     const input = $('.js-zip-code')[0];
-    const zipCode = (input.value).trim();
+    let zipCode = '';
     const deliveryMethod = $('.js-delivery-method:checked').val();
     if (deliveryMethod === 'delivery') {
+      zipCode = (input.value).trim();
       if (!zipCode || zipCode == '' || zipCode.length < 5) {
         toggleSubmitButton('disable');
         return;
@@ -618,6 +619,18 @@ const Product = (function () {
           unit_price: unitPrice,
           total_price: totalPrice
         });
+
+        if (typeof isBundle !== 'undefined' && isBundle) {
+          toggleSubmitButton('show', 'bold_clone');
+          $('.bold_clone').removeClass('js-product-submit');
+          showButtonMessage('pickup');
+          if (
+            typeof usesVariantToggle !== 'undefined' ||
+            typeof usesRegularToggle !== 'undefined'
+          ) {
+            checkChosenVariant();
+          }
+        }
       } else if (deliveryMethod === 'delivery') {
         chooseVariant('delivery');
         showProductPricing(data);
@@ -856,19 +869,23 @@ const Product = (function () {
     if (value < 0) {
       $('.js-product-quantity').val(0);
       toggleSubmitButton('disable');
+      toggleSubmitButton('', 'js-product-price-check');
       return;
     } else if (deliveryMethodInput.val() == 'delivery' && value < minimum) {
       $('.js-min-number').html(minimum);
       wrongMinimumQuantityText.removeClass('hide');
       toggleSubmitButton('disable');
+      toggleSubmitButton('', 'js-product-price-check');
       return;
     } else if (value % increment !== 0) {
       $('.js-product-quantity').val(0);
       $('.js-multiple-number').html(increment);
       wrongQuantityText.removeClass('hide');
       toggleSubmitButton('disable');
+      toggleSubmitButton('', 'js-product-price-check');
       return;
     }
+    toggleSubmitButton('show', 'js-product-price-check');
 
     $('.js-product-quantity').val(value);
     const zipCode = (document.querySelector('.js-zip-code').value).trim();
@@ -948,12 +965,14 @@ const Product = (function () {
 
     const parameters = [
       { parameter: 'zip_code', value: zipCode },
-      { parameter: 'delivery_method', value: deliveryMethodInput.value },
       {
         parameter: 'customer_address',
         value: $('.js-autocomplete-address').val(),
       }
     ];
+    if (typeof isBundle !== 'undefined' && isBundle) {
+      parameters.push({ parameter: 'delivery_method', value: deliveryMethodInput.value });
+    }
     Utils.addToCartParameters(parameters);
   };
 

@@ -1,0 +1,254 @@
+<!doctype html>
+<html class="supports-no-js" lang="{{ shop.locale }}">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="{{ settings.color_primary_color }}">
+  {%- if shop.permanent_domain contains 'supersod-staging' -%}
+    <meta name="robots" content="noindex">
+  {%- endif -%}
+  <link rel="canonical" href="{{ canonical_url }}">
+  <link rel="manifest" href="/apps/litefy/manifest/">
+
+  {%- if settings.favicon -%}
+    <link rel="shortcut icon" href="{{ settings.favicon | img_url: '32x32' }}" type="image/png" />
+    <link rel="apple-touch-icon" href="{{ settings.favicon | img_url: '32x32' }}">
+  {%- endif -%}
+
+  <title>
+  {{ page_title }}{% if current_tags %}{% assign meta_tags = current_tags | join: ', ' %} &ndash; {{ 'general.meta.tags' | t: tags: meta_tags }}{% endif %}{% if current_page != 1 %} &ndash; {{ 'general.meta.page' | t: page: current_page }}{% endif %}{% unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless %}
+  </title>
+
+  {% if page_description %}
+    <meta name="description" content="{{ page_description | escape }}">
+  {% endif %}
+
+  {% include 'social-meta-tags' %}
+
+  <script>
+    document.documentElement.className = document.documentElement.className.replace('supports-no-js', 'supports-js');
+
+    var theme = {
+      mapStrings: {
+        addressError: {{ 'homepage.map.address_error' | t | json }},
+        addressNoResults: {{ 'homepage.map.address_no_results' | t | json }},
+        addressQueryLimit: {{ 'homepage.map.address_query_limit_html' | t | json }},
+        authError: {{ 'homepage.map.auth_error_html' | t | json }}
+      }
+    }
+  </script>
+  {%- assign use_pallet = false -%}
+  {%- comment -%}{%- if template.name == 'product' and product.tags contains 'pallet' -%}
+    {%- assign use_pallet = true -%}
+  {%- endif -%}{%- endcomment -%}
+  <link rel="stylesheet" href="{{ 'theme.scss.css' | asset_url }}">
+  <link rel="stylesheet" href="{{ 'header.scss.css' | asset_url }}">
+  <link rel="stylesheet" href="{{ 'forms.scss.css' | asset_url }}">
+  {%- if template.name == 'account' or template.name == 'order' or template.name == 'addresses' -%}
+    <link rel="stylesheet" href="{{'account.scss.css' | asset_url}}">
+  {%- endif -%}
+  {%- if template.name == 'index' -%}
+    <link rel="preload" as="style" href="{{ 'home.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
+  {%- endif -%}
+  <link rel="preload" as="style" href="{{ 'site-footer.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
+  {%- unless request.page_type == 'cart' -%}
+    <link rel="preload" as="style" href="{{ 'sidebar-cart.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
+  {%- endunless -%}
+  {%- if template.name == 'login' or template.name == 'register' -%}
+    <link rel="preload" as="style" href="{{ 'sign-in-up.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
+  {%- endif -%}
+  {%- if template.name == 'product' or template.name == 'collection' or template.name == 'search' -%}
+    <link rel="preload" as="style" href="{{ 'products-collections.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
+  {%- endif -%}
+  {%- if template.name == 'product' -%}
+    <link rel="preload" as="style" href="{{ 'tabs.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
+  {%- endif -%}
+  {%- if template.name == 'product' or template.name == 'cart' -%}
+    <link rel="preload" as="style" href="{{ 'product.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
+  {%- endif -%}
+  {%- if template.name == 'collection' -%}
+    <link rel="preload" as="style" href="{{ 'collection.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
+  {%- endif -%}
+  {%- if template.name == 'index' -%}
+    <link rel="preload" as="style" href="{{ 'collection-grid-item.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
+  {%- endif -%}
+  {%- if template.name == 'cart' -%}
+    <link rel="preload" as="style" href="{{ 'tail.datetime-harx-light.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" as="style" href="{{ 'cart.scss.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
+  {%- endif -%}
+</head>
+{%- assign show_breadcrumb = true -%}
+{%- assign show_hr = false -%}
+{%- assign show_sidebar = true -%}
+{%- assign show_account_sidebar = false -%}
+{%- if settings.show_breadcrumb_nav -%}
+  {%- if template.name == 'login' -%}
+    {%- assign show_breadcrumb = false -%}
+    {%- assign show_hr = false -%}
+    {%- assign show_sidebar = false -%}
+  {%- elsif template.name == 'register' -%}
+    {%- assign show_breadcrumb = false -%}
+    {%- assign show_hr = false -%}
+    {%- assign show_sidebar = false -%}
+  {%- elsif request.page_type == 'index' -%}
+    {%- assign show_breadcrumb = false -%}
+  {%- elsif template.name == 'account' or template.name == 'order' or template.name == 'addresses' -%}
+    {%- assign show_hr = false -%}
+    {%- assign show_account_sidebar = true -%}
+    {%- assign show_sidebar = false -%}
+  {%- endif -%}
+{%- endif -%}
+<body id="{{ page_title | handle }}" class="{% if customer %}customer-logged-in {% endif %}template-{{ request.page_type | handle }}">
+
+  <a class="in-page-link visually-hidden skip-link" href="#MainContent">{{ 'general.accessibility.skip_to_content' | t }}</a>
+
+    {% comment %}
+    <hr class="small--hide hr--small">
+    {% endcomment %}
+  {% section "header" %}
+  <div id="page-wrap" class="site-wrapper">
+    <div class="grid">
+      {%- if show_sidebar == true -%}
+        {% section "sidebar" %}
+      {%- elsif show_account_sidebar == true -%}
+        {% section 'account-sidebar' %}
+      {%- endif -%}
+      <main class="main-content grid__item{% if show_sidebar == true or show_account_sidebar == true %} medium-up--four-fifths{% endif %}" id="MainContent" role="main">
+        {%- if show_hr == true -%}
+          <hr class="hr--border-top small--hide">
+          {%- endif -%}
+        {%- if show_breadcrumb == true -%}
+          {% include 'breadcrumb-nav' %}
+        {%- endif -%}
+        {{ content_for_layout }}
+      </main>
+      {%- if template.name != 'cart' -%}
+        {% section 'cart-drawer' %}
+      {%- endif -%}
+    </div>
+  </div>
+  {%- if use_pallet == true -%}
+    {% section 'product-pallet-banner' %}
+  {%- endif -%}
+  {% section "footer" %}
+  {%- if request.page_type == 'index' -%}
+    <p id="slideshow-info" class="visually-hidden" aria-hidden="true">
+      {{- 'homepage.slideshow.navigation_instructions' | t -}}
+    </p>
+  {%- endif -%}
+  {% if request.page_type == 'product' or request.page_type == 'index' %}
+    {{ 'option_selection.js' | shopify_asset_url | script_tag }}
+  {% endif %}
+  <script>
+    // Set a global variable for theme.js to use on product single init
+    window.theme = window.theme || {};
+    theme.moneyFormat = {{ shop.money_format | json }};
+    theme.productSingleObject = {{ product | json }};
+  </script>
+
+  <ul hidden>
+    <li id="a11y-refresh-page-message">{{ 'general.accessibility.refresh_page' | t }}</li>
+    <li id="a11y-selection-message">{{ 'general.accessibility.selection_help' | t }}</li>
+  </ul>
+  <div hidden>
+    <span id="new-window-0">Opens in a new window</span>
+    <span id="new-window-1">Opens an external site</span>
+    <span id="new-window-2">Opens an external site in a new window</span>
+  </div>
+  <script>
+    window.theme = window.theme || {};
+    theme.routes = {
+      root_url: '{{ routes.root_url }}',
+      account_url: '{{ routes.account_url }}',
+      account_login_url: '{{ routes.account_login_url }}',
+      account_logout_url: '{{ routes.account_logout_url }}',
+      account_recover_url: '{{ routes.account_recover_url }}',
+      account_register_url: '{{ routes.account_register_url }}',
+      account_addresses_url: '{{ routes.account_addresses_url }}',
+      collections_url: '{{ routes.collections_url }}',
+      all_products_collection_url: '{{ routes.all_products_collection_url }}',
+      search_url: '{{ routes.search_url }}',
+      cart_url: '{{ routes.cart_url }}',
+      cart_add_url: '{{ routes.cart_add_url }}',
+      cart_change_url: '{{ routes.cart_change_url }}',
+      cart_clear_url: '{{ routes.cart_clear_url }}',
+      validation_tool_url: '{{ settings.validation_tool_url }}',
+      validation_tool_shop: '{{ settings.validation_tool_shop }}'
+    };
+  </script>
+  <!-- Shopify marketing and plugin stuff -->
+  {%- capture shopify_scripts -%}
+    {{ content_for_header }}
+  {%- endcapture -%}
+  {% comment %}{%- assign shopify_scripts = shopify_scripts | replace: 'var setCookieIfThankYouPage', ';var setCookieIfThankYouPage'
+    | replace: 'var trekkie = window', ';var trekkie = window'
+    | strip_newlines | replace: '  ', '' | replace: '	', '' | strip -%}
+  {%- assign shopify_scripts = shopify_scripts
+    | replace: "getElementsByTagName('script')[0]", "getElementsByClassName('js-last-defer')[0]"
+    | replace: "getElementsByTagName('head')[0]", "getElementsByClassName('js-last-defer')[0].parentNode"
+    | replace: '.async = true', '.defer = true' -%}{% endcomment %}
+  {{ shopify_scripts | strip }}
+  {% comment %} {{ shopify_scripts | replace: 'previewBarInjector.init();', '' | strip }} {% endcomment %}
+  <!-- End shopify marketing and plugin stuff -->
+  <script src="{{ 'lazysizes.min.js' | asset_url }}" defer></script>
+  {% if request.page_type contains 'customers/'  or template.name == 'cart' %}
+    <script src="{{ 'shopify_common.js' | shopify_asset_url }}" defer></script>
+    <script src="{{ 'customer_area.js' | shopify_asset_url }}" defer></script>
+  {% endif %}
+  <script src="{{ 'jquery.js' | asset_url }}" defer></script>
+  <script src="{{ 'modernizr.min.js' | asset_url }}" defer></script>
+  <script src="{{ 'theme.js' | asset_url }}" defer></script>
+  <script src="{{ 'sidebar-cart.js' | asset_url }}" defer></script>
+  <script src="{{ 'utils.js' | asset_url }}" defer></script>
+  {%- if template.name == 'account' -%}
+    <script src="{{ 'account.js' | asset_url }}" defer></script>
+  {%- endif -%}
+  {%- if template.name == 'product' -%}
+    <script src="https://maps.googleapis.com/maps/api/js?libraries=places,geometry&key=AIzaSyBDNbFA4quUVSMGdxSn_lqnZVcp72c5K9k" defer></script>
+    <script src="{{ 'product.js' | asset_url }}" defer></script>
+    <script src="{{ 'tabs.js' | asset_url }}" defer></script>
+  {%- endif -%}
+  {%- if template.name == 'cart' -%}
+    <script src="{{ 'tail.datetime.min.js' | asset_url }}" defer></script>
+    <script src="{{ 'cart.js' | asset_url }}" defer></script>
+  {%- endif -%}
+  <script>
+    const loadPreloadedStyles = function () {
+      let elements = document.querySelectorAll('link[as=style]');
+      if (elements.length < 1) {
+        return;
+      }
+      elements.forEach(function (element) {
+        element.rel = 'stylesheet';
+        element.onload = null;
+      });
+    };
+    loadPreloadedStyles();
+  </script>
+
+  <!-- begin olark code -->
+  <script type="text/javascript">
+    ;(function(o,l,a,r,k,y){if(o.olark)return;
+      r="script";y=l.createElement(r);r=l.getElementsByTagName(r)[0];
+      y.async=1;y.src="//"+a;r.parentNode.insertBefore(y,r);
+      y=o.olark=function(){k.s.push(arguments);k.t.push(+new Date)};
+      y.extend=function(i,j){y("extend",i,j)};
+      y.identify=function(i){y("identify",k.i=i)};
+      y.configure=function(i,j){y("configure",i,j);k.c[i]=j};
+      k=y._={s:[],t:[+new Date],c:{},l:a};
+      })(window,document,"static.olark.com/jsclient/loader.js");
+      /* Add configuration calls below this comment */
+      olark.identify('7324-564-10-6259');
+  </script>
+  <!-- end olark code -->
+
+  {%- if template.name != 'index' and template.name != 'collection' and template.name != 'account'-%}
+    {%- render 'bold-common' -%}
+  {%- endif -%}
+  {%- if template.name == 'product' -%}
+    {%- render 'bold-ro-init' -%}
+    {%- render 'bold-subscription-widget' -%}
+  {%- endif -%}
+</body>
+</html>

@@ -5,8 +5,8 @@
       {%- if section.settings.heading != blank -%}
         <h2 class="recommendations-title section-header__title h3">{{ section.settings.heading | escape }}</h2>
       {%- endif -%}
-      <div class="grid grid--uniform">
-        {%- assign grid_item_width = 'medium-up--one-quarter small--one-half' -%}
+      <div class="flex flex--row flex--wrap flex--has-gutter">
+        {%- assign grid_item_width = 'col-3 col-6--tablet-only' -%}
 
         {%- for product in recommendations.products -%}
           {%- if collection -%}

@@ -12,7 +12,7 @@
     },
     "404": {
       "title": "404 Halaman Tidak Dijumpai",
-      "subtext_html": "Halaman yang anda minta tidak wujud. Klik <a href=\"{{ link }}\">di sini</a> untuk meneruskan membeli-belah."
+      "subtext_html": "Halaman yang anda minta tidak wujud. Klik <a href=\"{{ link }}\">di sini<\/a> untuk meneruskan membeli-belah."
     },
     "password_page": {
       "login_form_heading": "Masuk kedai menggunakan kata laluan",
@@ -21,7 +21,7 @@
       "login_form_submit": "Masukkan",
       "signup_form_email_label": "E-mel",
       "signup_form_success": "Kami akan menghantar e-mel kepada anda sebelum kami buka!",
-      "admin_link_html": "Adakah anda pemilik kedai? <a href=\"/admin\" class=\"text-link\">Log masuk di sini</a>",
+      "admin_link_html": "Adakah anda pemilik kedai? <a href=\"\/admin\" class=\"text-link\">Log masuk di sini<\/a>",
       "password_link": "Masuk menggunakan kata laluan",
       "powered_by_shopify_html": "Kedai ini akan dikuasakan oleh {{ shopify }}"
     },
@@ -88,14 +88,14 @@
       "note": "Arahan khas untuk penjual",
       "subtotal": "Subjumlah",
       "taxes_and_shipping_at_checkout": "Cukai dan penghantaran dikira semasa daftar keluar",
-      "taxes_and_shipping_policy_at_checkout_html": "Cukai dan <a href=\"{{ link }}\">penghantaran</a> dikira semasa daftar keluar",
+      "taxes_and_shipping_policy_at_checkout_html": "Cukai dan <a href=\"{{ link }}\">penghantaran<\/a> dikira semasa daftar keluar",
       "taxes_included_but_shipping_at_checkout": "Termasuk cukai dan penghantaran dikira semasa daftar keluar",
-      "taxes_included_and_shipping_policy_html": "Termasuk cukai. <a href=\"{{ link }}\">Penghantaran</a> dikira semasa daftar keluar.",
+      "taxes_included_and_shipping_policy_html": "Termasuk cukai. <a href=\"{{ link }}\">Penghantaran<\/a> dikira semasa daftar keluar.",
       "update": "Kemas Kini Troli",
       "checkout": "Daftar Keluar",
       "empty": "Troli anda kosong pada masa ini.",
       "cookies_required": "Dayakan kuki untuk menggunakan troli beli-belah",
-      "continue_browsing_html": "Teruskan melayari <a href=\"{{ link }}\">di sini</a>.",
+      "continue_browsing_html": "Teruskan melayari <a href=\"{{ link }}\">di sini<\/a>.",
       "savings_html": "Anda menyimpan {{ price }}",
       "continue_shopping": "Teruskan membeli-belah"
     },
@@ -153,9 +153,9 @@
       "address1": "Alamat1",
       "address2": "Alamat2",
       "city": "Bandar",
-      "country": "Negara/Wilayah",
+      "country": "Negara\/Wilayah",
       "province": "Wilayah",
-      "zip": "Poskod/Kod Zip",
+      "zip": "Poskod\/Kod Zip",
       "phone": "Telefon",
       "set_default": "Tetapkan sebagai alamat lalai",
       "add": "Tambah Alamat",
@@ -240,7 +240,7 @@
     "map": {
       "address_error": "Ralat mencari alamat itu",
       "address_no_results": "Tiada hasil untuk alamat itu",
-      "address_query_limit_html": "Anda telah melebihi had penggunaan API Google. Pertimbangkan untuk menaik taraf ke <a href=\"https://developers.google.com/maps/premium/usage-limits\">Pelan Premium</a>.",
+      "address_query_limit_html": "Anda telah melebihi had penggunaan API Google. Pertimbangkan untuk menaik taraf ke <a href=\"https:\/\/developers.google.com\/maps\/premium\/usage-limits\">Pelan Premium<\/a>.",
       "auth_error_html": "Terdapat masalah mengesahkan akaun Peta Google anda."
     },
     "slideshow": {
@@ -250,7 +250,7 @@
       "play": "Main tayangan slaid",
       "load_slide": "Muatkan slaid {{ slide_number }}",
       "active_slide": "Slaid {{ slide_number }}, semasa",
-      "navigation_instructions": "Gunakan anak panah kiri/kanan untuk menavigasi tayangan slaid atau leret ke kiri/kanan jika menggunakan peranti mudah alih"
+      "navigation_instructions": "Gunakan anak panah kiri\/kanan untuk menavigasi tayangan slaid atau leret ke kiri\/kanan jika menggunakan peranti mudah alih"
     }
   },
   "layout": {
@@ -286,7 +286,7 @@
       "on_sale_from_html": "Dijual dari {{ price }}",
       "from_text_html": "Dari {{ price }}",
       "include_taxes": "Termasuk cukai.",
-      "shipping_policy_html": "<a href=\"{{ link }}\">Penghantaran</a> dikira semasa daftar keluar.",
+      "shipping_policy_html": "<a href=\"{{ link }}\">Penghantaran<\/a> dikira semasa daftar keluar.",
       "quantity": "Kuantiti",
       "add_to_cart": "Tambah ke Troli",
       "item_added_to_cart": "Item ditambah ke troli!",

@@ -121,6 +121,9 @@
                 {% endfor %}
               </select>
 
+{% render 'paywhirl-plan-selector', product: product %}
+
+
               {% if section.settings.product_quantity_enable %}
                 <div class="product-single__quantity">
                   <label for="Quantity">{{ 'products.product.quantity' | t }}</label>

@@ -9,8 +9,12 @@ $desk: 1100px;
   max-width: 398px;
 }
 
+.form--product .form__input--quantity {
+  margin-bottom: 0;
+}
+
 .product-single__cart-submit-wrapper {
-  margin-top: 32px;
+  margin: 10px 0 0;
 }
 
 .form--product {

@@ -127,7 +127,7 @@ $mobile-icon-line-thickness: 5px;
 {{ base_font_bold_italic | font_face }}
 {{ header_font_bold | font_face }}
 
-$font-stack-header: {{ header_font.family }}, {{ header_font.fallback_families }};
+$font-stack-header: 'museo-sans', {{ header_font.fallback_families }};
 $font-weight-header: {{ header_font.weight }};
 $font-weight-header--bold: {{ header_font_bold.weight | default: 700 }};
 $font-style-header: {{ header_font.style }};
@@ -141,7 +141,7 @@ $nav-link-height: $font-size-nav * 3;
 
 $font-weight-body: {{ base_font.weight }};
 $font-weight-body--bold: {{ base_font_bold.weight | default: 700 }};
-$font-stack-body: {{ base_font.family }}, {{ base_font.fallback_families }};
+$font-stack-body: 'museo-sans', {{ base_font.fallback_families }};
 $font-stack-style: {{ base_font.style }};
 $font-size-base: {{ settings.type_base_size }}; // Henceforth known as 1em
 
@@ -1642,8 +1642,7 @@ hr {
 body,
 input,
 textarea,
-button,
-select {
+button {
   font-size: $font-size-base;
   font-family: $font-stack-body;
   font-style: $font-stack-style;
@@ -1899,9 +1898,9 @@ a {
   }
 }
 
-a[href^="tel"] {
+/* a[href^="tel"] {
   color: inherit;
-}
+} */
 
 /*================ Text links ================*/
 .link-body-color {
@@ -2623,15 +2622,7 @@ html[xmlns] .slides { display: block; }
 
 // scss-lint:disable ColorVariable
 input,
-textarea,
-select {
-  @include placeholder-text($color-body-text, 0.6);
-  border-radius: 0;
-  max-width: 100%;
-  background-color: $color-form;
-  border: 0;
-  padding: $padding-form;
-
+textarea {
   &[disabled],
   &.disabled {
     cursor: default;
@@ -2645,7 +2636,7 @@ select {
 
   &.input--error {
     @include placeholder-text($color-error, 0.6);
-    border: 1px solid $color-error;
+    border-color: $color-error;
     background-color: $color-error-bg;
     color: $color-error;
   }
@@ -2655,30 +2646,11 @@ textarea {
   min-height: 150px;
 }
 
-/*================ Custom select style ================*/
-select {
-  @include prefix(appearance, none, webkit moz spec);
-  background-position: right center;
-  background: {
-    image: url($svg-select-icon);
-    repeat: no-repeat;
-    position: right 10px center;
-  }
-  padding-right: 28px;
-  text-indent: 0.01px;
-  text-overflow: '';
-  cursor: pointer;
-}
-
-select::-ms-expand {
-  display: none;
-}
 
 /*============ Form fields stacked =========== */
 
 .form-vertical {
   input,
-  select,
   textarea {
     display: block;
     margin-bottom: $padding-form;
@@ -3386,73 +3358,6 @@ select::-ms-expand {
 
 /*====== Cart page styles ======*/
 
-.cart-table {
-  width: 100%;
-  margin-bottom: $gutter;
-
-  th:first-child {
-    padding-left: 0;
-  }
-
-  @include media-query($medium-down) {
-    thead {
-      display: none;
-    }
-
-    tr {
-      display: block;
-    }
-
-    th,
-    td {
-      display: block;
-      text-align: right;
-      padding: $gutter / 2;
-      margin: 0;
-    }
-
-    td::before {
-      content: attr(data-label);
-      float: left;
-      text-align: center;
-      padding-right: 10px;
-    }
-
-    .responsive-table__row + .responsive-table__row,
-    tfoot > .responsive-table__row:first-child {
-      position: relative;
-      margin-top: 10px;
-      padding-top: $gutter / 2;
-
-      &::after {
-        content: '';
-        display: block;
-        position: absolute;
-        top: 0;
-        left: $gutter / 2;
-        right: $gutter / 2;
-        border-bottom: 1px solid $color-border;
-      }
-    }
-  }
-
-  .cart__table-cell--image {
-    padding-left: 25%;
-    padding-right: 25%;
-
-    @include media-query($medium-up) {
-      padding-left: 35%;
-      padding-right: 35%;
-    }
-
-    @include media-query($large-up) {
-      padding-left: 0;
-      padding-right: 0;
-      width: 15%;
-    }
-  }
-}
-
 .cart__image-wrapper {
   margin: 0 auto;
 }
@@ -3494,32 +3399,6 @@ select::-ms-expand {
 
 .update-cart {
   margin-right: 4px;
-}
-
-@include media-query($large-up) {
-
-  .cart__table-cell--meta {
-    padding-left: $gutter / 2;
-    padding-right: $gutter / 2;
-    padding-top: 0;
-    padding-bottom: 0;
-    width: 30%;
-  }
-
-  .cart__table-cell--price,
-  .cart__table-cell--line-price,
-  .cart__table-cell--quantity {
-    width: auto;
-    padding: 0;
-
-    span {
-      white-space: nowrap;
-    }
-  }
-
-  .cart__table-cell--price {
-    width: 25%;
-  }
 }
 
 .cart--empty-message {

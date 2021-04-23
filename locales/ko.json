@@ -12,7 +12,7 @@
     },
     "404": {
       "title": "404 페이지를 찾을 없음",
-      "subtext_html": "요청하신 페이지가 존재하지 않습니다. <a href=\"{{ link }}\">여기를 클릭</a> 하여 쇼핑 계속하십시오."
+      "subtext_html": "요청하신 페이지가 존재하지 않습니다. <a href=\"{{ link }}\">여기를 클릭<\/a> 하여 쇼핑 계속하십시오."
     },
     "password_page": {
       "login_form_heading": "비밀번호 사용하여 스토어 열기",
@@ -21,7 +21,7 @@
       "login_form_submit": "입력",
       "signup_form_email_label": "이메일",
       "signup_form_success": "개장 직전에 이메일을 송신해드립니다!",
-      "admin_link_html": "스토어 소유주입니까? <a href=\"/admin\" class=\"text-link\">여기에 로그인 하기</a>",
+      "admin_link_html": "스토어 소유주입니까? <a href=\"\/admin\" class=\"text-link\">여기에 로그인 하기<\/a>",
       "password_link": "비밀번호를 사용하여 입력하십시오.",
       "powered_by_shopify_html": "이 상점은 {{ shopify }}에 의해 운영됩니다."
     },
@@ -88,14 +88,14 @@
       "note": "판매자 특별 지침",
       "subtotal": "소계",
       "taxes_and_shipping_at_checkout": "결제 시 세금 및 배송료가 계산됨",
-      "taxes_and_shipping_policy_at_checkout_html": "결제 시 세금 및 <a href=\"{{ link }}\">배송료</a> 가 계산됨",
+      "taxes_and_shipping_policy_at_checkout_html": "결제 시 세금 및 <a href=\"{{ link }}\">배송료<\/a> 가 계산됨",
       "taxes_included_but_shipping_at_checkout": "결제 시 세금이 포함되며 배송료가 계산됨",
-      "taxes_included_and_shipping_policy_html": "세금이 포함됨 결제 시 <a href=\"{{ link }}\">배송료</a> 가 계산됨",
+      "taxes_included_and_shipping_policy_html": "세금이 포함됨 결제 시 <a href=\"{{ link }}\">배송료<\/a> 가 계산됨",
       "update": "카트 업데이트",
       "checkout": "결제",
       "empty": "현재 카트가 비어 있습니다.",
       "cookies_required": "쿠키를 사용하여 쇼핑 카드 사용 ",
-      "continue_browsing_html": "<a href=\"{{ link }}\">여기</a> 를 계속 탐색하십시오.",
+      "continue_browsing_html": "<a href=\"{{ link }}\">여기<\/a> 를 계속 탐색하십시오.",
       "savings_html": "{{ price }} 를 저장 중입니다",
       "continue_shopping": "쇼핑 계속하기"
     },
@@ -152,9 +152,9 @@
       "company": "회사",
       "address1": "주소 1",
       "address2": "주소 2",
-      "city": "구/군/시",
-      "country": "국가/지역",
-      "province": "시/도",
+      "city": "구\/군\/시",
+      "country": "국가\/지역",
+      "province": "시\/도",
       "zip": "우편 번호",
       "phone": "전화",
       "set_default": "기본 주소로 설정",
@@ -240,7 +240,7 @@
     "map": {
       "address_error": "주소 찾기 오류",
       "address_no_results": "주소 검색 결과 없음",
-      "address_query_limit_html": "Google API 사용 제한을 초과하였습니다. <a href=\"https://developers.google.com/maps/premium/usage-limits\">프리미엄 플랜</a> 으로 업그레이드를 고려하십시오.",
+      "address_query_limit_html": "Google API 사용 제한을 초과하였습니다. <a href=\"https:\/\/developers.google.com\/maps\/premium\/usage-limits\">프리미엄 플랜<\/a> 으로 업그레이드를 고려하십시오.",
       "auth_error_html": "Google 지도 계정을 인증하는 중에 문제가 발생했습니다."
     },
     "slideshow": {
@@ -250,7 +250,7 @@
       "play": "슬라이드 쇼 재상",
       "load_slide": "{{ slide_number }} 슬라이드 로드",
       "active_slide": "현재 {{ slide_number }} 슬라이드",
-      "navigation_instructions": "왼쪽 / 오른쪽 화살표를 사용하여 슬라이드 쇼를 탐색하거나 모바일 장치를 사용하는 경우 왼쪽 / 오른쪽으로 스와이프합니다."
+      "navigation_instructions": "왼쪽 \/ 오른쪽 화살표를 사용하여 슬라이드 쇼를 탐색하거나 모바일 장치를 사용하는 경우 왼쪽 \/ 오른쪽으로 스와이프합니다."
     }
   },
   "layout": {
@@ -286,7 +286,7 @@
       "on_sale_from_html": "{{ price }} 부터 판매",
       "from_text_html": "{{ price }}에서",
       "include_taxes": "세금이 포함됨",
-      "shipping_policy_html": "결제 시 <a href=\"{{ link }}\">배송료</a> 가 계산됨",
+      "shipping_policy_html": "결제 시 <a href=\"{{ link }}\">배송료<\/a> 가 계산됨",
       "quantity": "수량",
       "add_to_cart": "카트에 추가",
       "item_added_to_cart": "카트에 추가된 품목",

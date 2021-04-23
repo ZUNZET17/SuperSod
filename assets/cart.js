@@ -7,25 +7,31 @@ const Cart = (function () {
   const initDatePicker = function (dates) {
     for (let index = 0; index < 3; index++) {
       const fieldSelector = '.js-tail-datetime-field-' + (index + 1);
-      const handle = applyDatePickerConfig(fieldSelector, dates);
-      handle.on('change', function () {
-        updateCalendars(index);
-      });
-      calendarHandles.push(handle);
+      applyDatePickerConfig(fieldSelector, dates, index);
     }
   };
 
-  const applyDatePickerConfig = function (fieldSelector, dates) {
-    return tail.DateTime(fieldSelector, {
-      dateEnd: 9999954000000,
-      dateBlacklist: false,
-      dateRanges: dates,
-      days: ['TUE', 'WED', 'THU', 'FRI', 'SAT'],
-      timeFormat: false,
-      position: 'bottom',
-      startOpen: false,
-      stayOpen: false
-    })
+  const applyDatePickerConfig = function (fieldSelector, dates, index) {
+    $(fieldSelector).Zebra_DatePicker({
+      direction: true,
+      disabled_dates: ['* * *'],
+      enabled_dates: dates,
+      format: 'Y-m-d',
+      onSelect: function(chosenDate) {
+        const newDates = dates.filter(function (date) {
+          return date !== chosenDate;
+        });
+
+        for (let i = 0; i < 3; i++) {
+          if (i !== index) {
+            const element = $(fieldSelector).data('Zebra_DatePicker');
+            element.update({
+              enabled_dates: newDates
+            });
+          }
+        }
+      }
+    });
   };
 
   const updateCalendars = function (index) {
@@ -89,6 +95,7 @@ const Cart = (function () {
     const originalText = button.html();
     const endpoint = 'available_dates';
     const addedValue = parseFloat(input.data('price'));
+    const firstZip = Utils.extractZip(typeof firstZipAddress !== 'undefined' ? firstZipAddress : '');
     let ajaxZip = cartZipCode !== '' ? cartZipCode : (typeof firstZip !== 'undefined' ? firstZip : '');
     if (cartDeliveryMethod === 'pickup') {
       ajaxZip = (typeof firstZip !== 'undefined' ? firstZip : '');
@@ -123,8 +130,8 @@ const Cart = (function () {
         }
       }
 
-      const dateRangesMilliseconds = getDateRangesMilliseconds(data.available_dates);
-      initDatePicker(dateRangesMilliseconds);
+      const dates = datesWithoutHour(data.available_dates);
+      initDatePicker(dates);
       button.html(originalText);
       $('.js-go-to-checkout').prop('disabled', false);
       const subtotalElement = $('.js-cart-subtotal')
@@ -149,6 +156,12 @@ const Cart = (function () {
         end: milliseconds,
         start: milliseconds
       };
+    });
+  };
+
+  const datesWithoutHour = function (dates) {
+    return dates.map(function (date) {
+      return date.replace(/T.+/g, '').split('-').reverse().join(' ');
     });
   };
 
@@ -246,6 +259,7 @@ const Cart = (function () {
 
   const getCartAttributesElementsValue = function () {
     let cartAttributes = '';
+    const firstZip = Utils.extractZip(typeof firstZipAddress !== 'undefined' ? firstZipAddress : '');
     $('.js-cart-attribute').each(function (i, el) {
       cartAttributes += (cartAttributes !== '' ? '&' : '');
       if (el.dataset.name === 'zipcode' && el.value === '') {
@@ -275,8 +289,16 @@ const Cart = (function () {
     const cartItemsString = getCartItemsString();
     const cartAttributes = getCartAttributesElementsValue();
     const deliveryType = $('.js-delivery-type:checked').val();
-    const deliveryTypeText = $('.js-delivery-type:checked + label').html();
+    const deliveryTypeText = $('.js-delivery-type:checked + span').html();
     const note = $('.js-cart-note').val();
+    let pickupZip = '';
+    if (deliveryType === 'pickup') {
+      const found = Utils.extractZip(cartPickupAddress);
+      if (found !== null && found.length > 0) {
+        pickupZip = '&zipcode=' + found;
+      }
+    }
+
     const ajaxData =
       'delivery_type=' + deliveryType +
       '&shop_domain=' + theme.routes.validation_tool_shop +
@@ -284,7 +306,7 @@ const Cart = (function () {
         (cartDeliveryMethod === 'delivery' ? 'Delivery address:' + cartDeliveryAddress + ', ' + deliveryTypeText : 'Pick up in: ' + cartPickupAddress) +
       '&schedule_dates=' + (settings.dates.join(',')) +
       '&discount_code=' + $('.js-discount-code').val() +
-      '&' + cartAttributes +
+      '&' + cartAttributes + pickupZip +
       '&' + cartItemsString;
 
     window.localStorage.setItem('delivery_type', deliveryType);

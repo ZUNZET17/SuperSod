@@ -12,7 +12,7 @@
     },
     "404": {
       "title": "404 Strani ni mogoče najti",
-      "subtext_html": "Stran, ki ste jo zahtevali, ne obstaja. Če želite nadaljevati z nakupovanjem, kliknite <a href=\"{{ link }}\">tukaj</a>."
+      "subtext_html": "Stran, ki ste jo zahtevali, ne obstaja. Če želite nadaljevati z nakupovanjem, kliknite <a href=\"{{ link }}\">tukaj<\/a>."
     },
     "password_page": {
       "login_form_heading": "Vstopite v trgovino z geslom",
@@ -21,7 +21,7 @@
       "login_form_submit": "Vstop",
       "signup_form_email_label": "E-poštni naslov",
       "signup_form_success": "Tik pred otvoritvijo vam bomo poslali e-pošto.",
-      "admin_link_html": "Ali ste lastnik trgovine? <a href=\"/admin\" class=\"text-link\">Prijavite se tukaj</a>",
+      "admin_link_html": "Ali ste lastnik trgovine? <a href=\"\/admin\" class=\"text-link\">Prijavite se tukaj<\/a>",
       "password_link": "Vstop z geslom",
       "powered_by_shopify_html": "To trgovino bo omogočala platforma {{ shopify }}"
     },
@@ -88,14 +88,14 @@
       "note": "Posebna navodila za prodajalca",
       "subtotal": "Vmesna vsota",
       "taxes_and_shipping_at_checkout": "Davki in dostava se obračunajo ob zaključku nakupa",
-      "taxes_and_shipping_policy_at_checkout_html": "Davki in <a href=\"{{ link }}\">dostava</a> se obračunajo ob zaključku nakupa",
+      "taxes_and_shipping_policy_at_checkout_html": "Davki in <a href=\"{{ link }}\">dostava<\/a> se obračunajo ob zaključku nakupa",
       "taxes_included_but_shipping_at_checkout": "Vključen davek in dostava se obračunata ob zaključku nakupa",
-      "taxes_included_and_shipping_policy_html": "Vključno z davkom. <a href=\"{{ link }}\">Dostava</a> se obračuna ob zaključku nakupa.",
+      "taxes_included_and_shipping_policy_html": "Vključno z davkom. <a href=\"{{ link }}\">Dostava<\/a> se obračuna ob zaključku nakupa.",
       "update": "Posodobi košarico",
       "checkout": "Zaključi nakup",
       "empty": "Vaša košarica je trenutno prazna.",
       "cookies_required": "Za uporabo nakupovalne košarice morate omogočiti piškotke",
-      "continue_browsing_html": "Z brskanjem nadaljujte <a href=\"{{ link }}\">tukaj</a>.",
+      "continue_browsing_html": "Z brskanjem nadaljujte <a href=\"{{ link }}\">tukaj<\/a>.",
       "savings_html": "Prihranili boste {{ price }}",
       "continue_shopping": "Nadaljuj nakup"
     },
@@ -153,7 +153,7 @@
       "address1": "Naslov 1",
       "address2": "Naslov 2",
       "city": "Kraj",
-      "country": "Država/regija",
+      "country": "Država\/regija",
       "province": "Območje",
       "zip": "Poštna številka",
       "phone": "Telefonska številka",
@@ -240,7 +240,7 @@
     "map": {
       "address_error": "Pri iskanju tega naslova je prišlo do napake",
       "address_no_results": "Ni rezultatov za ta naslov",
-      "address_query_limit_html": "Prekoračili ste omejitev uporabe Googlovega API-ja. Razmislite o nadgradnji na <a href=\"https://developers.google.com/maps/premium/usage-limits\">paket Premium</a>.",
+      "address_query_limit_html": "Prekoračili ste omejitev uporabe Googlovega API-ja. Razmislite o nadgradnji na <a href=\"https:\/\/developers.google.com\/maps\/premium\/usage-limits\">paket Premium<\/a>.",
       "auth_error_html": "Pri preverjanju pristnosti vašega računa za storitev Google Zemljevidi je prišlo do težave."
     },
     "slideshow": {
@@ -250,7 +250,7 @@
       "play": "Predvajaj diaprojekcijo",
       "load_slide": "Naloži diapozitiv {{ slide_number }}",
       "active_slide": "Diapozitiv {{ slide_number }}, trenutni",
-      "navigation_instructions": "Za pomikanje po diaprojekciji uporabite tipki levo/desno oz. podrsnite v levo/desno, če uporabljate mobilno napravo"
+      "navigation_instructions": "Za pomikanje po diaprojekciji uporabite tipki levo\/desno oz. podrsnite v levo\/desno, če uporabljate mobilno napravo"
     }
   },
   "layout": {
@@ -286,7 +286,7 @@
       "on_sale_from_html": "Že od {{ price }}",
       "from_text_html": "Od {{ price }}",
       "include_taxes": "Vključno z davkom.",
-      "shipping_policy_html": "<a href=\"{{ link }}\">Dostava</a> se obračuna ob zaključku nakupa.",
+      "shipping_policy_html": "<a href=\"{{ link }}\">Dostava<\/a> se obračuna ob zaključku nakupa.",
       "quantity": "Količina",
       "add_to_cart": "Dodaj v košarico",
       "item_added_to_cart": "Izdelek je dodan v košarico.",

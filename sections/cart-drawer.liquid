@@ -105,94 +105,96 @@
           <form class="cart-form cart-summary__section" action="{{ routes.cart_url }}" method="post">
             {% for item in cart.items %}
               <div class="cart-summary-item">
-                <div class="cart-summary-item__image">
-                  <a href="{{ item.url }}">
-                    <img src="{{ item | img_url: '60x' }}" alt="{{ item.title | escape }}"
-                        srcset="{{ item | img_url: '60x' }} 60w,
-                                {{ item | img_url: '120x' }} 120w" sizes="60px"
-                        alt="photo for {{ item.product.title | strip_html }}">
-                  </a>
-                </div>
-                <div class="cart-summary-item__detail">
-                  <div class="cart-summary-item__title-variant">
-                    <a class="cart-summary-item__title" href="{{ item.url }}">{{ item.product.title }}</a>
-                    {% unless item.product.has_only_default_variant %}
-                      <div class="cart-summary-item__variant">
-                        {% if item.properties._method == 'pickup' %}{{ 'layout.cart.pickup' | t }}{% endif %}
-                      </div>
-                    {% endunless %}
+                <div class="cart-summary-item__row">
+                  <div class="cart-summary-item__image">
+                    <a href="{{ item.url }}">
+                      <img src="{{ item | img_url: '85x' }}" alt="{{ item.title | escape }}"
+                          srcset="{{ item | img_url: '85x' }} 85w,
+                                  {{ item | img_url: '170x' }} 170w" sizes="85px"
+                          alt="photo for {{ item.product.title | strip_html }}">
+                    </a>
                   </div>
-                  <div class="cart-summary-item__price">
-                    {%- if item.properties._custom_price != blank -%}
-                      <span class="cart-summary-item__price-current theme-money">{{item.properties._custom_price | times: 100 | money}}</span>
-                    {%- else -%}
-                      {%- assign final_price = item.final_line_price -%}
-                      {% if item.original_line_price != item.final_line_price %}
-                        {%- if item.properties._bold_bundles_price -%}
-                          {%- assign final_price = item.properties._bold_bundles_price | times: item.quantity -%}
-                        {%- endif -%}
-                        <span class="reduced-price cart-summary-item__price-current theme-money">{{ final_price | money }}</span>&nbsp;
-                        <del class="theme-money struck-out-price">{{ item.original_line_price | money }}</del>
-                      {% elsif item.variant.compare_at_price != blank and item.variant.price < item.variant.compare_at_price %}
-                        {%- if item.properties._bold_bundles_price -%}
-                          {%- assign final_price = item.properties._bold_bundles_price | times: item.quantity -%}
-                        {%- endif -%}
-                        <span class="reduced-price cart-summary-item__price-current theme-money">{{ final_price | money }}</span>&nbsp;
-                        <del class="theme-money struck-out-price">{{ item.variant.compare_at_price | times: item.quantity | money }}</del>
-                      {% else %}
-                        {%- if item.properties._bold_bundles_price -%}
-                          {%- assign final_price = item.properties._bold_bundles_price | times: item.quantity -%}
-                          <span class="cart-summary-item__price-current theme-money">{{ final_price | money }}</span>&nbsp;
-                        {%- endif -%}
-                        <{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %} class="cart-summary-item__price-current theme-money">{{ item.final_line_price | money }}</{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %}>
-                      {% endif %}
-                      {% render 'unit-price', variant: item %}
-                    {%- endif -%}
-                  </div>
-
-                  {% if item.line_level_discount_allocations.size > 0 %}
-                    <ul class="cart-discount-list align-right">
-                    {% for discount_allocation in item.line_level_discount_allocations %}
-                      <li class="cart-discount cart-discount--inline cart-discount--flex">
-                        <span class="cart-discount__label">{{ discount_allocation.discount_application.title }}</span>
-                        <span class="cart-discount__amount theme-money">{{ discount_allocation.amount | money }}</span>
-                      </li>
-                    {% endfor %}
-                    </ul>
-                  {% endif %}
-                  {%- assign item_value = 0 -%}
-                  {%- if item.properties._custom_price != blank -%}
-                    {%- assign item_value = item.properties._custom_price | times: 100 -%}
-                  {%- elsif item.original_price != item.final_price -%}
-                    {%- assign item_value = item.final_price -%}
-                  {%- else -%}
-                    {%- assign item_value = item.original_price -%}
-                  {%- endif -%}
-                  {%- assign item_price = item_value | money_without_currency | replace: ',', '' -%}
-                  <div class="cart-summary-item__quantity">
-                    <div class="qty-adjuster qty-adjuster--with-remove qty-adjuster--ajax" data-line-item-id="{{ item.id }}" {% if item.variant.inventory_management == 'shopify' and item.variant.inventory_policy == 'deny' %}data-limit="{{ item.variant.inventory_quantity }}"{% endif %}>
-                      <div class="qty-adjuster__inner">
-                        <button class="qty-adjuster__down">{% render 'svg-minus' %}</button>
-                        <input class="qty-adjuster__value"
-                          type="text" pattern="[0-9]*" name="updates[]" value="{{ item.quantity }}"
-                          aria-label="{{ 'cart.label.quantity' | t | escape }}"
-                          {% if cart.attributes.customer_latitude != blank %} data-latitude="{{cart.attributes.customer_latitude}}"{% endif %}
-                          {% if cart.attributes.customer_longitude != blank %} data-longitude="{{cart.attributes.customer_longitude}}"{% endif %}
-                          data-original-price="{{item_value | money_without_currency}}"
-                          data-product-id="{{item.product.id}}"
-                          data-line="{{forloop.index}}"
-                          data-quantity="{{item.quantity}}"
-                          data-properties='{{item.properties | json}}'
-                          {% if item.properties._zip != blank %} data-zip="{{item.properties._zip}}"{% endif %}
-                          {% if item.properties._custom_increment != blank %} step="{{item.properties._custom_increment}}"{% endif %}>
-                        <button class="qty-adjuster__up"
-                            {% if item.variant.inventory_management == 'shopify' and item.variant.inventory_policy == 'deny' and item.variant.inventory_quantity == item.quantity %}disabled{% endif %}
-                            >
-                          {%- render 'svg-plus' -%}
-                        </button>
-                      </div>
-                      <a class="qty-adjuster__remove" href="#">{{ 'cart.general.remove' | t }}</a>
+                  <div class="cart-summary-item__detail">
+                    <div class="cart-summary-item__title-variant">
+                      <a class="cart-summary-item__title" href="{{ item.url }}">{{ item.product.title }}</a>
+                      {% unless item.product.has_only_default_variant %}
+                        <div class="cart-summary-item__variant">
+                          {% if item.properties._method == 'pickup' %}{{ 'layout.cart.pickup' | t }}{% endif %}
+                        </div>
+                      {% endunless %}
                     </div>
+                    <div class="cart-summary-item__price">
+                      {%- if item.properties._custom_price != blank -%}
+                        <span class="cart-summary-item__price-current theme-money">{{item.properties._custom_price | times: 100 | money}}</span>
+                      {%- else -%}
+                        {%- assign final_price = item.final_line_price -%}
+                        {% if item.original_line_price != item.final_line_price %}
+                          {%- if item.properties._bold_bundles_price -%}
+                            {%- assign final_price = item.properties._bold_bundles_price | times: item.quantity -%}
+                          {%- endif -%}
+                          <span class="reduced-price cart-summary-item__price-current theme-money">{{ final_price | money }}</span>&nbsp;
+                          <del class="theme-money struck-out-price">{{ item.original_line_price | money }}</del>
+                        {% elsif item.variant.compare_at_price != blank and item.variant.price < item.variant.compare_at_price %}
+                          {%- if item.properties._bold_bundles_price -%}
+                            {%- assign final_price = item.properties._bold_bundles_price | times: item.quantity -%}
+                          {%- endif -%}
+                          <span class="reduced-price cart-summary-item__price-current theme-money">{{ final_price | money }}</span>&nbsp;
+                          <del class="theme-money struck-out-price">{{ item.variant.compare_at_price | times: item.quantity | money }}</del>
+                        {% else %}
+                          {%- if item.properties._bold_bundles_price -%}
+                            {%- assign final_price = item.properties._bold_bundles_price | times: item.quantity -%}
+                            <span class="cart-summary-item__price-current theme-money">{{ final_price | money }}</span>&nbsp;
+                          {%- endif -%}
+                          <{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %} class="cart-summary-item__price-current theme-money">{{ item.final_line_price | money }}</{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %}>
+                        {% endif %}
+                        {% render 'unit-price', variant: item %}
+                      {%- endif -%}
+                    </div>
+
+                    {% if item.line_level_discount_allocations.size > 0 %}
+                      <ul class="cart-discount-list align-right">
+                      {% for discount_allocation in item.line_level_discount_allocations %}
+                        <li class="cart-discount cart-discount--inline cart-discount--flex">
+                          <span class="cart-discount__label">{{ discount_allocation.discount_application.title }}</span>
+                          <span class="cart-discount__amount theme-money">{{ discount_allocation.amount | money }}</span>
+                        </li>
+                      {% endfor %}
+                      </ul>
+                    {% endif %}
+                  </div>
+                </div>
+                {%- assign item_value = 0 -%}
+                {%- if item.properties._custom_price != blank -%}
+                {%- assign item_value = item.properties._custom_price | times: 100 -%}
+                {%- elsif item.original_price != item.final_price -%}
+                {%- assign item_value = item.final_price -%}
+                {%- else -%}
+                {%- assign item_value = item.original_price -%}
+                {%- endif -%}
+                {%- assign item_price = item_value | money_without_currency | replace: ',', '' -%}
+                <div class="cart-summary-item__quantity">
+                  <div class="qty-adjuster qty-adjuster--with-remove qty-adjuster--ajax" data-line-item-id="{{ item.id }}" {% if item.variant.inventory_management == 'shopify' and item.variant.inventory_policy == 'deny' %}data-limit="{{ item.variant.inventory_quantity }}"{% endif %}>
+                    <div class="qty-adjuster__inner">
+                      {% comment %}{% if item.properties._custom_increment == blank %}<button class="qty-adjuster__down">{% render 'svg-minus' %}</button>{% endif %}{% endcomment %}
+                      <input readonly class="qty-adjuster__value"
+                              type="text" pattern="[0-9]*" name="updates[]" value="{{ item.quantity }}"
+                              aria-label="{{ 'cart.label.quantity' | t | escape }}"
+                              {% if cart.attributes.customer_latitude != blank %} data-latitude="{{cart.attributes.customer_latitude}}"{% endif %}
+                              {% if cart.attributes.customer_longitude != blank %} data-longitude="{{cart.attributes.customer_longitude}}"{% endif %}
+                              data-original-price="{{item_value | money_without_currency}}"
+                              data-product-id="{{item.product.id}}"
+                              data-line="{{forloop.index}}"
+                              data-quantity="{{item.quantity}}"
+                              data-properties='{{item.properties | json}}'
+                              {% if item.properties._zip != blank %} data-zip="{{item.properties._zip}}"{% endif %}
+                              {% if item.properties._custom_increment != blank %} readonly step="{{item.properties._custom_increment}}"{% endif %}>
+                      {% comment %}{% if item.properties._custom_increment == blank %}<button class="qty-adjuster__up"
+                              {% if item.variant.inventory_management == 'shopify' and item.variant.inventory_policy == 'deny' and item.variant.inventory_quantity == item.quantity %}disabled{% endif %}
+                              >
+                        {%- render 'svg-plus' -%}
+                      </button>{% endif %}{% endcomment %}
+                    </div>
+                    <a class="qty-adjuster__remove" href="#">{{ 'cart.general.remove' | t }}</a>
                   </div>
                 </div>
               </div>
@@ -260,7 +262,7 @@
                           </div>
                           <div class="cart-summary-item__detail">
                             <div class="cart-summary-item__title-variant">
-                              <a class="cart-summary-item__title" href="{{ promo_product.url }}">{{ promo_product.title }}</a>
+                              <a class="cart-summary-item__title clamp" href="{{ promo_product.url }}">{{ promo_product.title }}</a>
                               {%- if settings.product_grid_show_weight -%}
                                 {%- if promo_product.variants.first.weight > 0 -%}
                                   {%- assign a_weight = promo_product.variants.first.weight -%}

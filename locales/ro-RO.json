@@ -12,7 +12,7 @@
     },
     "404": {
       "title": "404 Pagina nu a fost găsită",
-      "subtext_html": "Pagina solicitată nu există. Dă clic <a href=\"{{ link }}\">aici</a> pentru a continua cumpărăturile."
+      "subtext_html": "Pagina solicitată nu există. Dă clic <a href=\"{{ link }}\">aici<\/a> pentru a continua cumpărăturile."
     },
     "password_page": {
       "login_form_heading": "Intră în magazin folosind parola",
@@ -21,7 +21,7 @@
       "login_form_submit": "Intră",
       "signup_form_email_label": "E-mail",
       "signup_form_success": "Îți vom trimite un e-mail chiar înainte de deschidere!",
-      "admin_link_html": "Ești proprietarul magazinului? <a href=\"/admin\" class=\"text-link\">Conectează-te aici</a>",
+      "admin_link_html": "Ești proprietarul magazinului? <a href=\"\/admin\" class=\"text-link\">Conectează-te aici<\/a>",
       "password_link": "Intră folosind parola",
       "powered_by_shopify_html": "Acest magazin va fi susținut de {{ shopify }}"
     },
@@ -88,14 +88,14 @@
       "note": "Instrucțiuni speciale pentru vânzător",
       "subtotal": "Subtotal",
       "taxes_and_shipping_at_checkout": "Taxele și transportul sunt calculate la finalizarea comenzii",
-      "taxes_and_shipping_policy_at_checkout_html": "Taxele și <a href=\"{{ link }}\">transportul</a> sunt calculate la finalizarea comenzii",
+      "taxes_and_shipping_policy_at_checkout_html": "Taxele și <a href=\"{{ link }}\">transportul<\/a> sunt calculate la finalizarea comenzii",
       "taxes_included_but_shipping_at_checkout": "Taxele sunt incluse și transportul este calculat la finalizarea comenzii",
-      "taxes_included_and_shipping_policy_html": "Taxe incluse. <a href=\"{{ link }}\">Transportul</a> este calculat la finalizarea comenzii.",
+      "taxes_included_and_shipping_policy_html": "Taxe incluse. <a href=\"{{ link }}\">Transportul<\/a> este calculat la finalizarea comenzii.",
       "update": "Actualizează coșul",
       "checkout": "Finalizează comanda",
       "empty": "Coșul tău este momentan gol.",
       "cookies_required": "Permite modulele cookie ca să utilizezi coșul de cumpărături",
-      "continue_browsing_html": "Continuă navigarea <a href=\"{{ link }}\">aici</a>.",
+      "continue_browsing_html": "Continuă navigarea <a href=\"{{ link }}\">aici<\/a>.",
       "savings_html": "Economisești {{ price }}",
       "continue_shopping": "Continuă cumpărăturile"
     },
@@ -153,8 +153,8 @@
       "address1": "Adresă1",
       "address2": "Adresă2",
       "city": "Localitate",
-      "country": "Țară/Regiune",
-      "province": "Județ/provincie",
+      "country": "Țară\/Regiune",
+      "province": "Județ\/provincie",
       "zip": "Cod poștal",
       "phone": "Telefon",
       "set_default": "Setează ca adresă implicită",
@@ -240,7 +240,7 @@
     "map": {
       "address_error": "Eroare la căutarea adresei respective",
       "address_no_results": "Nu există rezultate pentru adresa respectivă",
-      "address_query_limit_html": "Ai depășit limita de utilizare a API-ului Google. Ia în considerare trecerea la un <a href=\"https://developers.google.com/maps/premium/usage-limits\">Plan Premium</a>.",
+      "address_query_limit_html": "Ai depășit limita de utilizare a API-ului Google. Ia în considerare trecerea la un <a href=\"https:\/\/developers.google.com\/maps\/premium\/usage-limits\">Plan Premium<\/a>.",
       "auth_error_html": "A apărut o problemă la autentificarea contului tău Google Maps."
     },
     "slideshow": {
@@ -250,7 +250,7 @@
       "play": "Redă prezentarea de diapozitive",
       "load_slide": "Încarcă diapozitivul {{ slide_number }}",
       "active_slide": "Diapozitiv {{ slide_number }}, curent",
-      "navigation_instructions": "Utilizează săgețile stânga/dreapta pentru a naviga în prezentare sau glisează stânga/dreapta dacă folosești un dispozitiv mobil"
+      "navigation_instructions": "Utilizează săgețile stânga\/dreapta pentru a naviga în prezentare sau glisează stânga\/dreapta dacă folosești un dispozitiv mobil"
     }
   },
   "layout": {
@@ -286,7 +286,7 @@
       "on_sale_from_html": "La ofertă, începând cu {{ price }}",
       "from_text_html": "Începând cu {{ price }}",
       "include_taxes": "Taxe incluse.",
-      "shipping_policy_html": "<a href=\"{{ link }}\">Transportul</a> este calculat la finalizarea comenzii.",
+      "shipping_policy_html": "<a href=\"{{ link }}\">Transportul<\/a> este calculat la finalizarea comenzii.",
       "quantity": "Cantitate",
       "add_to_cart": "Adaugă în coș",
       "item_added_to_cart": "Articol adăugat la coș!",

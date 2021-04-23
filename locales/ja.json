@@ -12,7 +12,7 @@
     },
     "404": {
       "title": "ページが見つかりません",
-      "subtext_html": "お探しのページが存在しません。 <a href=\"{{ link }}\">こちらをクリックして</a>買い物を続ける。"
+      "subtext_html": "お探しのページが存在しません。 <a href=\"{{ link }}\">こちらをクリックして<\/a>買い物を続ける。"
     },
     "password_page": {
       "login_form_heading": "ストアのパスワードを入力してください",
@@ -21,7 +21,7 @@
       "login_form_submit": "入力する",
       "signup_form_email_label": "メール",
       "signup_form_success": "ストアがオープンする直前にメールでお知らせします！",
-      "admin_link_html": "あなたはストアのオーナーですか？<a href=\"/admin\" class=\"text-link\">こちらからログインする</a>",
+      "admin_link_html": "あなたはストアのオーナーですか？<a href=\"\/admin\" class=\"text-link\">こちらからログインする<\/a>",
       "password_link": "パスワードを入力してください",
       "powered_by_shopify_html": "このお店は{{ shopify }}を使用しています"
     },
@@ -88,14 +88,14 @@
       "note": "ストアへの特記事項",
       "subtotal": "小計",
       "taxes_and_shipping_at_checkout": "税と配送料は購入手続き時に計算されます",
-      "taxes_and_shipping_policy_at_checkout_html": "税と<a href=\"{{ link }}\">配送料</a>は購入手続き時に計算されます",
+      "taxes_and_shipping_policy_at_checkout_html": "税と<a href=\"{{ link }}\">配送料<\/a>は購入手続き時に計算されます",
       "taxes_included_but_shipping_at_checkout": "税込みで配送料は購入手続き時に計算されます。",
-      "taxes_included_and_shipping_policy_html": "税込価格。<a href=\"{{ link }}\">配送料</a>は購入手続き時に計算されます。",
+      "taxes_included_and_shipping_policy_html": "税込価格。<a href=\"{{ link }}\">配送料<\/a>は購入手続き時に計算されます。",
       "update": "カートをアップデートする",
       "checkout": "ご購入手続きへ",
       "empty": "カート内に商品がありません。",
       "cookies_required": "カートを使うためにCookieを有効にする",
-      "continue_browsing_html": "ショッピングを<a href=\"{{ link }}\">続ける</a>.",
+      "continue_browsing_html": "ショッピングを<a href=\"{{ link }}\">続ける<\/a>.",
       "savings_html": "{{ price }}を節約しました",
       "continue_shopping": "買い物を続ける"
     },
@@ -153,7 +153,7 @@
       "address1": "住所",
       "address2": "住所",
       "city": "市区町村",
-      "country": "国 / 地域",
+      "country": "国 \/ 地域",
       "province": "都道府県",
       "zip": "郵便番号",
       "phone": "電話番号",
@@ -240,7 +240,7 @@
     "map": {
       "address_error": "住所を調べる際にエラーが発生しました",
       "address_no_results": "その住所は見つかりませんでした",
-      "address_query_limit_html": "Google APIの使用量の制限を超えました。<a href=\"https://developers.google.com/maps/premium/usage-limits\">プレミアムプラン</a>へのアップグレードをご検討ください。",
+      "address_query_limit_html": "Google APIの使用量の制限を超えました。<a href=\"https:\/\/developers.google.com\/maps\/premium\/usage-limits\">プレミアムプラン<\/a>へのアップグレードをご検討ください。",
       "auth_error_html": "あなたのGoogle Mapsのアカウント認証で問題が発生しました。"
     },
     "slideshow": {
@@ -286,7 +286,7 @@
       "on_sale_from_html": "{{ price }}からセール中",
       "from_text_html": "{{ price }}より",
       "include_taxes": "税込",
-      "shipping_policy_html": "<a href=\"{{ link }}\">配送料</a>は購入手続き時に計算されます。",
+      "shipping_policy_html": "<a href=\"{{ link }}\">配送料<\/a>は購入手続き時に計算されます。",
       "quantity": "個数",
       "add_to_cart": "カートに追加する",
       "item_added_to_cart": "商品がカートに追加されました！",
