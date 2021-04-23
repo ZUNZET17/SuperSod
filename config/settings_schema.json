@@ -2431,6 +2431,14 @@
           "en": "Validation tool shop",
           "es": "Tienda de herramienta de validación"
         }
+      },
+      {
+        "id": "honeybadger_key",
+        "type": "text",
+        "label": {
+          "en": "Honeybadger API key",
+          "es": "Clave de API Honeybadger"
+        }
       }
     ]
   },
