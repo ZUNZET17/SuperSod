@@ -142,12 +142,12 @@
             hide = true;
           }
 
+          const container = labels[i].parentNode.parentNode.parentNode;
+          const input = container.getElementsByClassName('input-radio');
           if (hide === true) {
-            const container = labels[i].parentNode.parentNode.parentNode;
-            const input = container.getElementsByClassName('input-radio');
             container.classList.add('display-none');
-            input[0].checked = false;
           }
+          input[0].checked = !hide;
         }
       };
 
