@@ -352,6 +352,10 @@ const Cart = (function () {
   };
 
   const showFixedPrices = function () {
+    if (typeof cartItems === 'undefined') {
+      return;
+    }
+
     for (let i = 0; i < cartItems.length; i++) {
       const element = cartItems[i];
       if (
