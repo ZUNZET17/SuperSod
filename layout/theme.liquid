@@ -301,8 +301,8 @@
   {%- endif -%}
   <script src="{{ 'api.jquery.js' | shopify_asset_url }}" defer></script>
   <script src="{{ 'modernizr.min.js' | asset_url }}" defer></script>
-  <script src="{{ 'theme.js' | asset_url }}" defer crossorigin></script>
-  <script src="{{ 'sidebar-cart.js' | asset_url }}" defer crossorigin></script>
+  <script src="{{ 'theme.js' | asset_url }}" defer></script>
+  {% comment %}<script src="{{ 'sidebar-cart.js' | asset_url }}" defer crossorigin></script>{% endcomment %}
   <script src="{{ 'utils.js' | asset_url }}" defer crossorigin></script>
   {%- if template.name == 'account' -%}
     <script src="{{ 'account.js' | asset_url }}" defer crossorigin></script>
