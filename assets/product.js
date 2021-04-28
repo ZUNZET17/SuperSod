@@ -1118,6 +1118,10 @@ const Product = (function () {
     $('.js-address-latitude').val('');
     $('.js-address-longitude').val('');
 
+    if (typeof place === 'undefined') {
+      return
+    }
+
     if (typeof place.geometry !== 'undefined') {
       productObject.geometry = {
         latitude: place.geometry.location.lat(),
@@ -1130,7 +1134,12 @@ const Product = (function () {
       parameters.push({parameter: 'customer_address', value: $('.js-autocomplete-address').val()});
     }
 
-    for (const component of place.address_components) {
+    if (typeof place.address_components === 'undefined') {
+      return;
+    }
+
+    for (let i = 0; i < place.address_components.length; i++) {
+      const component = place.address_components[i];
       const addressType = component.types[0];
 
       if (document.getElementById(addressType) && componentForm[addressType]) {

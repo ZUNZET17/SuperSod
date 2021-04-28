@@ -277,12 +277,14 @@
   <script>
     const loadPreloadedStyles = function () {
       let elements = document.querySelectorAll('link[as=style]');
-      if (elements.length < 1) {
+      if (typeof elements === 'undefined' || elements.length < 1) {
         return;
       }
+
       elements.forEach(function (element) {
         element.rel = 'stylesheet';
         element.onload = null;
+        element.removeAttribute('as');
       });
     };
     loadPreloadedStyles();
