@@ -281,11 +281,12 @@
         return;
       }
 
-      elements.forEach(function (element) {
+      for (let i = 0; i < elements.length; i++) {
+        const element = elements[i];
         element.rel = 'stylesheet';
         element.onload = null;
         element.removeAttribute('as');
-      });
+      }
     };
     loadPreloadedStyles();
   </script>
