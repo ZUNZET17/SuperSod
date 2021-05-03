@@ -741,8 +741,7 @@ const Product = (function () {
     const zipCode = $('.js-zip-code').val();
     if (zipCode == '' || zipCode == null) {
       return;
-    }
-    if (typeof usesVariantToggle !== 'undefined') {
+    } else if (typeof usesVariantToggle !== 'undefined') {
       checkChosenVariant();
       return;
     }
@@ -846,6 +845,7 @@ const Product = (function () {
     $('.js-quantity-input-' + (input.value)).trigger('change');
     $('.js-increment-value').val( $('.js-quantity-input-' + (input.value)).prop('min') );
     $('.bold_clone').addClass('js-product-submit');
+    $('.js-product-pickup-variants').prop('disabled', input.value === 'delivery');
     updateBundleSelector();
   };
 
