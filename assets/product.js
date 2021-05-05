@@ -564,7 +564,7 @@ const Product = (function () {
     const deliveryMethod = $('.js-delivery-method:checked').val();
     const latitude = $('.js-address-latitude').val();
     const longitude = $('.js-address-longitude').val();
-    const quantity = $('.js-product-quantity').val();
+    const quantity = $('.js-quantity-input-' + deliveryMethod).val();
     let ajaxData = {
       latitude: latitude,
       longitude: longitude,
