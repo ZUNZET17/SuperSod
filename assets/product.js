@@ -26,6 +26,7 @@ const Product = (function () {
       .on('click', '.js-product-price-check', checkZipCode)
       .on('click', '.js-product-single-thumbnail', switchImage)
       .on('change keyup', '.js-zip-code', validateZipCode)
+      .on('change keyup', '.js-autocomplete-address', resetAddressInput)
       .on('change', '.js-delivery-method', changeDeliveryForm)
       .on('change', '.js-product-pickup-variants', selectPickupVariant)
       .on('change', '.js-product-variants', changeLabelPrice)
@@ -120,9 +121,12 @@ const Product = (function () {
       zipCode = (input.value).trim();
       if (!zipCode || zipCode == '' || zipCode.length < 5) {
         toggleSubmitButton('disable');
+        $('.js-invalid-address').removeClass('hide');
         return;
       }
     }
+
+    $('.js-invalid-address').addClass('hide');
 
     if (
       typeof usesVariantToggle !== 'undefined' ||
@@ -1082,6 +1086,18 @@ const Product = (function () {
     }
   };
 
+  const resetAddressInput = function (ev) {
+    const input = ev.target;
+    const value = input.value.trim();
+
+    if (value.length < 6) {
+      $('.js-address-latitude').val('');
+      $('.js-address-longitude').val('');
+      $('.js-zip-code').val('');
+      $('.js-customer-address').val('');
+    }
+  };
+
   const initAutocomplete = function () {
     if (typeof google === 'undefined') {
       return;
@@ -1117,9 +1133,13 @@ const Product = (function () {
     productObject.geometry = null;
     $('.js-address-latitude').val('');
     $('.js-address-longitude').val('');
+    $('.js-zip-code').val('');
+    $('.js-customer-address').val('');
 
     if (typeof place === 'undefined') {
       return
+    } else if (typeof place.address_components === 'undefined') {
+      return;
     }
 
     if (typeof place.geometry !== 'undefined') {
@@ -1127,15 +1147,6 @@ const Product = (function () {
         latitude: place.geometry.location.lat(),
         longitude: place.geometry.location.lng()
       };
-      $('.js-address-latitude').val(productObject.geometry.latitude);
-      $('.js-address-longitude').val(productObject.geometry.longitude);
-      parameters.push({parameter: 'customer_latitude', value: productObject.geometry.latitude});
-      parameters.push({parameter: 'customer_longitude', value: productObject.geometry.longitude});
-      parameters.push({parameter: 'customer_address', value: $('.js-autocomplete-address').val()});
-    }
-
-    if (typeof place.address_components === 'undefined') {
-      return;
     }
 
     for (let i = 0; i < place.address_components.length; i++) {
@@ -1147,8 +1158,8 @@ const Product = (function () {
         document.getElementById(addressType).value = val;
         $('#' + addressType).trigger('change');
         if (addressType === 'postal_code') {
-          parameters.push({parameter: 'zip_code', value: val});
           productObject.geometry.zipCode = val;
+          parameters.push({parameter: 'zip_code', value: productObject.geometry.zipCode});
         }
       }
     }
@@ -1156,6 +1167,16 @@ const Product = (function () {
     const hasZipCode = parameters.some(function (data) {
       return data.parameter === 'zip_code';
     });
+
+    if (typeof productObject.geometry.zipCode !== 'undefined') {
+      const customerAddress = $('.js-autocomplete-address').val()
+      $('.js-customer-address').val(customerAddress);
+      $('.js-address-latitude').val(productObject.geometry.latitude);
+      $('.js-address-longitude').val(productObject.geometry.longitude);
+      parameters.push({parameter: 'customer_latitude', value: productObject.geometry.latitude});
+      parameters.push({parameter: 'customer_longitude', value: productObject.geometry.longitude});
+      parameters.push({parameter: 'customer_address', value: customerAddress});
+    }
 
     if (!hasZipCode) {
       parameters.push({parameter: 'zip_code', value: ''});
