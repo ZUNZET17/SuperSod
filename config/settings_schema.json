@@ -2433,11 +2433,11 @@
         }
       },
       {
-        "id": "honeybadger_key",
+        "id": "sentry_key",
         "type": "text",
         "label": {
-          "en": "Honeybadger API key",
-          "es": "Clave de API Honeybadger"
+          "en": "Sentry DSN key",
+          "es": "Clave de DSN Sentry"
         }
       }
     ]

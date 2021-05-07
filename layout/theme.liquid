@@ -127,9 +127,9 @@
       <link rel="stylesheet" href="{{ 'cart.css' | asset_url }}">
     {%- endif -%}
   </noscript>
-  <!-- honeybadger -->
-  {%- if settings.honeybadger_key -%}
-    <script src="//js.honeybadger.io/v3.1/honeybadger.min.js"></script>
+  <!-- sentry -->
+  {%- if settings.sentry_key -%}
+    <script src="//browser.sentry-cdn.com/6.3.3/bundle.min.js"></script>
   {%- endif -%}
 </head>
 
@@ -209,33 +209,15 @@
     <span id="new-window-1">Opens an external site</span>
     <span id="new-window-2">Opens an external site in a new window</span>
   </div>
-  <!-- honeybadger -->
-  {%- if settings.honeybadger_key -%}
+  <!-- sentry -->
+  {%- if settings.sentry_key -%}
     <script>
-      const honeyBadgerContext = {};
-      if (typeof Honeybadger !== 'undefined') {
-        {%- if template.name == 'cart' -%}
-          if (typeof cartItems !== 'undefined') {
-            honeyBadgerContext.cartItems = cartItems;
-            honeyBadgerContext.cartDeliveryMethod = cartDeliveryMethod;
-
-            if (cartDeliveryMethod === 'pickup') {
-              honeyBadgerContext.cartPickupAddress = cartPickupAddress;
-            } else if (cartDeliveryMethod === 'delivery') {
-              honeyBadgerContext.cartDeliveryAddress = cartDeliveryAddress;
-            }
-          }
-        {%- endif -%}
-        {%- if customer -%}
-          honeyBadgerContext.user_id: {{customer.id}};
-          honeyBadgerContext.user_email: {{customer.email}};
-        {%- endif -%}
-
-        Honeybadger.configure({
-          apiKey: 'a7862485',
-          environment: 'production'
+      if (typeof Sentry !== 'undefined') {
+        Sentry.init({
+          dsn: "{{settings.sentry_key}}",
+          maxBreadcrumbs: 50,
+          debug: true,
         });
-        Honeybadger.setContext(honeyBadgerContext);
       }
     </script>
   {%- endif -%}
