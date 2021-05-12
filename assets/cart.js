@@ -302,8 +302,8 @@ const Cart = (function () {
     const ajaxData =
       'delivery_type=' + deliveryType +
       '&shop_domain=' + theme.routes.validation_tool_shop +
-      '&note=' + (note !== '' ? note + '. ': '') + 'Dates for ' + cartDeliveryMethod + ': ' + (settings.dates.join(',')) + '. ' +
-        (cartDeliveryMethod === 'delivery' ? 'Delivery address:' + cartDeliveryAddress + ', ' + deliveryTypeText : 'Pick up in: ' + cartPickupAddress) +
+      '&note=' + note +
+      '&customer_address=' + (cartDeliveryMethod === 'delivery' ? 'Delivery address:' + cartDeliveryAddress : 'Pick up in: ' + cartPickupAddress) +
       '&schedule_dates=' + (settings.dates.join(',')) +
       '&discount_code=' + $('.js-discount-code').val() +
       '&' + cartAttributes + pickupZip +
