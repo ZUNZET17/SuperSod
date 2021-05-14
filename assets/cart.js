@@ -91,6 +91,8 @@ const Cart = (function () {
       return;
     }
 
+    $('.js-delivery-empty').addClass('hide');
+
     const noDatesInfo = $('.js-no-dates');
     const originalText = button.html();
     const endpoint = 'available_dates';
@@ -236,6 +238,16 @@ const Cart = (function () {
       return;
     }
 
+    const phoneMessage = $('.js-no-phone-message');
+    const phoneNumber = (document.querySelector('.js-phone').value).trim().replace(/\s{2,}/g, ' ');
+    if (phoneNumber === '') {
+      document.querySelector('.js-phone').focus();
+      phoneMessage.removeClass('hide');
+      return;
+    }
+    phoneMessage.addClass('hide');
+    Utils.addToCartParameters([{parameter: 'phone', value: phoneNumber}]);
+
     const settings = {
       button: button,
       dates: dates,
@@ -291,6 +303,7 @@ const Cart = (function () {
     const deliveryType = $('.js-delivery-type:checked').val();
     const deliveryTypeText = $('.js-delivery-type:checked + span').html();
     const note = $('.js-cart-note').val();
+    const phoneNumber = (document.querySelector('.js-phone').value).trim().replace(/\s{2,}/g, ' ');
     let pickupZip = '';
     if (deliveryType === 'pickup') {
       const found = Utils.extractZip(cartPickupAddress);
@@ -314,6 +327,7 @@ const Cart = (function () {
       window.localStorage.setItem('delivery_method', cartDeliveryMethod);
       window.localStorage.setItem('delivery_address', cartDeliveryAddress);
       window.localStorage.setItem('delivery_zipcode', cartZipCode);
+      window.localStorage.setItem('delivery_phone', phoneNumber);
     }
     const ajax = $.ajax({
       type: 'GET',
@@ -390,6 +404,16 @@ const Cart = (function () {
     let isInvalid = false;
 
     $('.js-update-cart-button').prop('disabled', true);
+    const phoneMessage = $('.js-no-phone-message');
+    const phoneNumber = (document.querySelector('.js-phone').value).trim().replace(/\s{2,}/g, ' ');
+    if (phoneNumber === '') {
+      document.querySelector('.js-phone').focus();
+      phoneMessage.removeClass('hide');
+      return;
+    }
+    phoneMessage.addClass('hide');
+    Utils.addToCartParameters([{parameter: 'phone', value: phoneNumber}]);
+
     if (typeof hasCustomPricing === 'undefined') {
       removeInvalidBundleProducts(function () {
         form.submit();

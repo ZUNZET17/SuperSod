@@ -295,9 +295,11 @@
       "notes_placeholder": "example: product placement if delivered, narrow roads, dead ends, gate code, etc.",
       "cannot_mix_methods": "Pickups and Deliveries cannot be combined in the same order.",
       "no_checkout_available": "An error ocurred while processing your request",
-      "chosen_delivery_address": "Your address",
-      "chosen_delivery_address_message": "If your address above is not complete, please provide the full address and/or details in the notes field below. If you want to change it then you will need to go to the product page and add it/them again with the right address.",
-      "select_option_in_step_one": "To select your dates, please choose an option in Step 1"
+      "chosen_delivery_address": "Delivery address",
+      "chosen_delivery_address_message": "Your product(s) will be delivered to the address listed above.  If this is not the correct delivery address, please go back to the product page and enter your desired delivery address.",
+      "select_option_in_step_one": "To select your dates, please choose an option in Step 1",
+      "confirm_phone_number": "Mobile Phone Number (Required for Delivery Updates and Communication)",
+      "no_phone_number_added": "Please add your phone number"
     },
     "checkout": {
       "back_to_cart": "Go back to cart"

@@ -421,6 +421,13 @@
                   <p class="cart__error-message cart__error-message--warning">{{ 'layout.cart.chosen_delivery_address_message' | t }}</p>
                 </div>
               {%- endif -%}
+              <div class="grid">
+                <div class="grid__item medium-up--one-half">
+                  <label for="phoneNumber">{{ 'layout.cart.confirm_phone_number' | t }}</label>
+                  <input type="tel" name="attributes[phone]" id="phoneNumber" class="form__input js-cart-attribute js-phone" data-name="phone" value="{% if customer %}{{ customer.phone }}{% endif %}" required>
+                  <p class="cart__error-message hide js-no-phone-message">{{ 'layout.cart.no_phone_number_added' | t }}</p>
+                </div>
+              </div>
               {%- if has_custom_pricing == false -%}
                 <label for="CartSpecialInstructions" class="cart__note-label label--block">{{ 'cart.general.note' | t }}</label>
                 <textarea name="note" id="CartSpecialInstructions" class="input--block js-cart-note form__input cart__note{{textarea_extra_class}}" placeholder="{{ 'layout.cart.notes_placeholder' | t }}">{{ cart.note }}</textarea>
@@ -517,6 +524,7 @@
 </div>
 {%- if cart.item_count > 0 -%}
   <script>
+    const cartAttributes = {{cart.attributes | json}};
     const chooseStepOneMessage = "{{ 'layout.cart.select_option_in_step_one' | t }}";
     {%- if invalid_fulfillment == false and has_custom_pricing == true -%}
       const hasCustomPricing = true;
@@ -525,6 +533,7 @@
     window.localStorage.removeItem('delivery_method');
     window.localStorage.removeItem('delivery_address');
     window.localStorage.removeItem('delivery_zipcode');
+    window.localStorage.removeItem('delivery_phone');
     const cartDeliveryMethod = '{{ fulfillment_method }}';
     const cartDeliveryAddress = '{{ cart.attributes.customer_address }}';
     const cartPickupAddress = '{{ pickup_address }}';

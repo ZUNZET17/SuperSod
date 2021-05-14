@@ -179,10 +179,33 @@
         fillAddress('shipping');
       };
 
+      const triggerEvent = (eventName, selector) => {
+        const event = document.createEvent('HTMLEvents');
+        const elements = document.querySelectorAll(selector);
+        elements.forEach(function (el) {
+          event.initEvent(eventName, true, false);
+          el.dispatchEvent(event);
+        });
+      };
+
       const fillAddress = function (checkoutType) {
         const parts = (window.localStorage.getItem('delivery_address')).split(', ');
         if (parts.length < 1) {
           return;
+        }
+
+        if (typeof parts[3] !== 'undefined') {
+          const elementId = 'checkout_' + checkoutType + '_address_country';
+          const element = document.getElementById(elementId);
+          for (let i = 0; i < element.options.length; i++) {
+            const option = element.options[i];
+            if (parts[3].indexOf(option.dataset.code) > -1) {
+              option.selected = true;
+              element.readOnly = true;
+              triggerEvent('change', '#' + elementId);
+              break;
+            }
+          }
         }
 
         const elementIds = ['address_address1', 'address_city', 'address_province'];
@@ -199,6 +222,12 @@
           window.localStorage.getItem('delivery_zipcode') !== ''
         ) {
           document.getElementById('checkout_' + checkoutType + '_address_zip').value = window.localStorage.getItem('delivery_zipcode');
+        }
+        if (
+          window.localStorage.getItem('delivery_phone') !== null &&
+          window.localStorage.getItem('delivery_phone') !== ''
+        ) {
+          document.getElementById('checkout_' + checkoutType + '_address_phone').value = window.localStorage.getItem('delivery_phone');
         }
       };
 
