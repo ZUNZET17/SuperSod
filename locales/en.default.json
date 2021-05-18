@@ -290,7 +290,7 @@
       "same_dates": "Please select 3 different Delivery\/Pickup dates",
       "empty_dates": "Please select 3 preferred Delivery\/Pickup dates",
       "empty_delivery": "Please select your delivery type",
-      "delivery_soil_level_mix": "Due to high demand your BigYellowBag of Soil³ Compost and\/or Level Mix will be delivered on or before May 8th.  Please be on the lookout for a text message from us the day before your delivery with your delivery time window.",
+      "delivery_soil_level_mix": "Due to high demand your BigYellowBag of Soil³ Compost and\/or Level Mix will be delivered on or before May 29th.  Please be on the lookout for a text message from us the day before your delivery with your delivery time window.",
       "notes_placeholder": "example: product placement if delivered, narrow roads, dead ends, gate code, etc.",
       "cannot_mix_methods": "Pickups and Deliveries cannot be combined in the same order.",
       "no_checkout_available": "An error ocurred while processing your request",
@@ -313,7 +313,7 @@
     "product": {
       "delivery": "Delivery",
       "pickup": "Pickup",
-      "location": "Choose your nearest location to pickup",
+      "location": "Please Choose a Pickup Location",
       "your_address_delivery": "Please enter your address",
       "your_address_pickup": "Please enter your address to know your nearest pickup location",
       "minimum_quantity": "There is a minimum order amount of %placeholder% to deliver to your address",
@@ -369,7 +369,7 @@
       "description": "Description",
       "full_details": "Full details",
       "pallet_text_html": "Currently there is a <b>maximum<\/b> order of 6 pallets (3,000 sq ft) when ordering online.<br><br>If you wish to purchase more than 6 pallets, then please visit our <a target='_blank' rel='noopener' href='https:\/\/info.supersod.com\/sod-prices-free-sod-quote'><b>sod quote page.<\/b><\/a>",
-      "pallet_unavailable_html": "This product is currently unavailable to purchase online. Please call us at <a href='tel:+1-888-360-1125'><b>888-360-1125<\/b><\/a> for pricing and to check availability in your area, or <a target='_blank' rel='noopener' href='https:\/\/info.supersod.com\/sod-prices-free-sod-quote' aria-describedby='new-window-2'><b>click here<\/b><\/a> for a quote. Thanks!",
+      "pallet_unavailable_html": "Currently not available to purchase online. Please call us at <a href='tel:+1-888-360-1125'><b>888-360-1125<\/b><\/a> for pricing and to check availability in your area, or <a target='_blank' rel='noopener' href='https:\/\/info.supersod.com\/sod-prices-free-sod-quote' aria-describedby='new-window-2'><b>click here<\/b><\/a> for a quote. Thanks!",
       "pickup_unavailable_html": "This product is currently not available for pickup. Please call us at <a href='tel:+1-888-360-1125'><b>888-360-1125<\/b><\/a>, or email us at <a href='mailto:onlinesales@supersod.com'><b>onlinesales@supersod.com<\/b><\/a> with any questions.",
       "sod_picker_text_html": "10 sq. ft. = 1 Roll (2 ft. x 5 ft.)<br>500 sq. ft. = 50 Rolls = 1 Pallet (~2,500 lbs.)<br><br><b>You don't know how much to order?<\/b><br>Use our <a target='_blank' rel='noopener' href='https:\/\/www.supersod.com\/yard-area-calculator' aria-describedby='new-window-2'><b>Yard Area Calculator<\/b><\/a>",
       "soil_calculator_text_html": "<b>You don't know how much to order?<\/b><br>Use our <a target='_blank' rel='noopener' href='https:\/\/soil3.com\/how-much-soil3-to-use\/#calculator' aria-describedby='new-window-2'><b>Soil Calculator<\/b><\/a>"
