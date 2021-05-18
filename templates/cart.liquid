@@ -391,7 +391,7 @@
               {%- assign textarea_extra_class = '' -%}
               {%- if invalid_fulfillment == false and has_custom_pricing == true -%}
                 {%- assign textarea_extra_class = ' cart__note--full' -%}
-                <p class="cart__delivery-title">{{ 'layout.cart.delivery_title_html' | t }}</p>
+                <p class="cart__delivery-title">{% if fulfillment_method == 'delivery' %}{{ 'layout.cart.delivery_title_html' | t }}{% else %}{{ 'layout.cart.pickup_title_html' | t }}{% endif %}</p>
                 <p class="cart__delivery-message">{{ 'layout.cart.delivery_message' | t }}</p>
                 <div class="grid">
                   <div class="grid__item medium-up--one-third">
@@ -413,6 +413,13 @@
                 <p class="cart__error-message hide js-dates-empty">{{ 'layout.cart.empty_dates' | t }}</p>
                 <p class="cart__error-message hide js-dates-same">{{ 'layout.cart.same_dates' | t }}</p>
                 <p class="cart__error-message hide js-dates-invalid">{{ 'layout.cart.invalid_dates' | t }}</p>
+              {%- endif -%}
+              {%- if fulfillment_method == 'delivery' -%}
+                <div>
+                  <label for="chosen_delivery_address">{{ 'layout.cart.chosen_delivery_address' | t }}</label>
+                  <input type="text" id="chosen_delivery_address" name="chosen_delivery_address" class="form__input" value="{{ cart.attributes.customer_address }}" readonly disabled>
+                  <p class="cart__error-message cart__error-message--warning">{{ 'layout.cart.chosen_delivery_address_message' | t }}</p>
+                </div>
               {%- endif -%}
               {%- if has_custom_pricing == false -%}
                 <label for="CartSpecialInstructions" class="cart__note-label label--block">{{ 'cart.general.note' | t }}</label>

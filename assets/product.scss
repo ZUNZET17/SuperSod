@@ -2,6 +2,8 @@ $border-color: #B7B7B7;
 $text-color: #333333;
 $white: #FFFFFF;
 $color_primary: #54A45B;
+$color-warn-bg: #fffde4;
+$color-warn: #928800;
 $tablet: 750px;
 $desk: 1100px;
 
@@ -25,9 +27,24 @@ $desk: 1100px;
   margin-top: 0;
 }
 
+.product-single__warn-msg {
+  background-color: $color-warn-bg;
+  border: 1px solid $color-warn;
+  border-radius: 4px;
+  font-size: 14px;
+  line-height: 1.4;
+  padding: 10px 11px;
+
+  a {
+    color: $color_primary;
+    text-decoration: underline;
+  }
+}
+
 .product-single__pallet-msg {
   background-color: #F9FFF9;
   border: 1px solid $color_primary;
+  border-radius: 4px;
   font-size: 16px;
   line-height: 18px;
   margin-top: 30px;
