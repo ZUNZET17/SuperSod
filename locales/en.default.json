@@ -297,7 +297,9 @@
       "no_checkout_available": "An error ocurred while processing your request",
       "chosen_delivery_address": "Delivery address",
       "chosen_delivery_address_message": "Your product(s) will be delivered to the address listed above.  If this is not the correct delivery address, please go back to the product page and enter your desired delivery address.",
-      "select_option_in_step_one": "To select your dates, please choose an option in Step 1"
+      "select_option_in_step_one": "To select your dates, please choose an option in Step 1",
+      "confirm_phone_number": "Mobile Phone Number (Required for Delivery Updates and Communication)",
+      "no_phone_number_added": "Please add your phone number"
     },
     "checkout": {
       "back_to_cart": "Go back to cart"
