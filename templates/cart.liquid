@@ -447,7 +447,7 @@
                   <textarea name="note" id="CartSpecialInstructions" class="input--block js-cart-note form__input cart__note{{textarea_extra_class}}" placeholder="{{ 'layout.cart.notes_placeholder' | t }}">{{ cart.note }}</textarea>
                 </div>
             {%- elsif invalid_fulfillment and has_custom_pricing == true -%}
-              {%- assign push_class = ' large-up--push-two-thirds' -%}
+              {%- assign push_class = '' -%}
             {%- endif -%}
             <div class="grid__item text-center large-up--one-third large-up--text-right{{push_class}}">
               {%- if cart.cart_level_discount_applications != blank -%}
