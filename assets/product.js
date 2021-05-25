@@ -892,11 +892,17 @@ const Product = (function () {
     toggleSubmitButton('show', 'js-product-price-check');
 
     $('.js-product-quantity').val(value);
-    const zipCode = (document.querySelector('.js-zip-code').value).trim();
-    if (!zipCode || zipCode == '' || zipCode.length < 5) {
-      toggleSubmitButton('disable');
-      return;
+
+    const deliveryInput = document.querySelector('.js-delivery-method:checked');
+    const deliveryMethod = deliveryInput.value;
+    if (deliveryMethod === 'delivery') {
+      const zipCode = (document.querySelector('.js-zip-code').value).trim();
+      if (!zipCode || zipCode == '' || zipCode.length < 5) {
+        toggleSubmitButton('disable');
+        return;
+      }
     }
+
     toggleSubmitButton('enable');
   };
 
