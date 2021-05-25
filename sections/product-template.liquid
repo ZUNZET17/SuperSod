@@ -3,6 +3,8 @@
 {%- assign use_check = false -%}
 {%- assign uses_normal_toggle = false -%}
 {%- assign use_variant_toggle = false -%}
+{%- assign is_pickup_only = false -%}
+{%- assign is_delivery_only = false -%}
 {%- if product.tags contains 'pallet' -%}
   {%- assign use_pallet = true -%}
   {%- assign use_check = true -%}
@@ -13,6 +15,11 @@
 {%- elsif product.tags contains 'use-variant-fixed-toggle' -%}
   {%- assign use_check = true -%}
   {%- assign use_variant_toggle = true -%}
+{%- endif -%}
+{%- if product.tags contains 'delivery-only' -%}
+  {%- assign is_delivery_only = true -%}
+{%- elsif product.tags contains 'pickup-only' -%}
+  {%- assign is_pickup_only = true -%}
 {%- endif -%}
 <div itemscope itemtype="http://schema.org/Product" id="ProductSection" data-section-id="{{ section.id }}" data-section-type="product-template" data-image-zoom-type="{{ section.settings.product_image_zoom_type }}" data-show-extra-tab="{{ section.settings.show_extra_tab }}" data-extra-tab-content="{{ section.settings.extra_tab_content }}" data-cart-enable-ajax="{{ settings.cart_enable_ajax }}" data-enable-history-state="true">
 
@@ -200,140 +207,161 @@
       {% form 'product', product, class: product_classes, data-ajax-add-to-cart: true, data-product-id: product.id, data-enable-history-state: history_state_data %}
       {%- if use_check == true or uses_normal_toggle == true -%}
 
-      <input type="hidden" name="properties[pickup_location]" class="js-pickup-location" value="">
+        <input type="hidden" name="properties[pickup_location]" class="js-pickup-location" value="">
 
-      <fieldset class="product-single__methods">
-        <legend>Choose delivery or pickup</legend>
-        <input type="radio" name="properties[_method]" class="toggle-input hide js-delivery-method" id="delivery-method" value="delivery" checked>
-        <label for="delivery-method" class="toggle-label">
-          {{ 'layout.product.delivery' | t }}
-          {% if product.type == 'Sod' or product.type == 'sod' %}<small class="toggle-label__instructions">Minimum order of 500 square feet of sod</small>{% endif %}
-        </label>
-        <input type="radio" name="properties[_method]" class="toggle-input hide js-delivery-method" id="pickup-method" value="pickup">
-        <label for="pickup-method" class="toggle-label">
-          {{ 'layout.product.pickup' | t }}
-          <small class="toggle-label__instructions">Pickup will be at your nearest store.</small>
-        </label>
-      </fieldset>
+        <fieldset class="product-single__methods">
+          <legend>Choose delivery or pickup</legend>
+          {%- unless is_pickup_only -%}
+            <input type="radio" name="properties[_method]" class="toggle-input hide js-delivery-method" id="delivery-method" value="delivery" checked>
+            <label for="delivery-method" class="toggle-label">
+              {{ 'layout.product.delivery' | t }}
+              {% if product.type == 'Sod' or product.type == 'sod' %}<small class="toggle-label__instructions">Minimum order of 500 square feet of sod</small>{% endif %}
+            </label>
+          {%- endunless -%}
 
-      <fieldset class="product-single__methods js-quantity-block js-delivery-quantity-block">
+          {%- unless is_delivery_only -%}
+            <input type="radio" name="properties[_method]" class="toggle-input hide js-delivery-method" id="pickup-method" value="pickup"{% if is_pickup_only %} checked{% endif %}>
+            <label for="pickup-method" class="toggle-label">
+              {{ 'layout.product.pickup' | t }}
+              <small class="toggle-label__instructions">Pickup will be at your nearest store.</small>
+            </label>
+          {%- endunless -%}
 
-        <legend>Find the closest and freshest product</legend>
-        <div>
-          <label for="customer-address-product">{{ 'layout.product.your_address_delivery' | t }}</label>
-          <input class="form__input full-width js-autocomplete-address" type="text" name="_address" value="{{cart.attributes['customer_address']}}" id="customer-address-product">
-          <input class="js-customer-address" type="hidden" name="properties[_address]" value="{{cart.attributes['customer_address']}}">
-        </div>
-        <p class="hide js-invalid-address product-single__pallet-msg product-single__pallet-msg--unavailable product-single__pallet-msg--wrong-quantity">Please enter a valid address</p>
-        <p class="product-single__warn-msg">{{ 'layout.product.customer_address_extra_info' | t }}</p>
-      </fieldset>
+        </fieldset>
+
+        {%- unless is_pickup_only -%}
+          <fieldset class="product-single__methods js-quantity-block js-delivery-quantity-block">
+
+            <legend>Find the closest and freshest product</legend>
+            <div>
+              <label for="customer-address-product">{{ 'layout.product.your_address_delivery' | t }}</label>
+              <input class="form__input full-width js-autocomplete-address" type="text" name="_address" value="{{cart.attributes['customer_address']}}" id="customer-address-product">
+              <input class="js-customer-address" type="hidden" name="properties[_address]" value="{{cart.attributes['customer_address']}}">
+            </div>
+            <p class="hide js-invalid-address product-single__pallet-msg product-single__pallet-msg--unavailable product-single__pallet-msg--wrong-quantity">Please enter a valid address</p>
+            <p class="product-single__warn-msg">{{ 'layout.product.customer_address_extra_info' | t }}</p>
+          </fieldset>
+        {%- endunless -%}
+
 
         <div class="hide">
           <label for="customer-address-product">{{ 'layout.product.your_address_pickup' | t }}</label>
         </div>
 
-        <div class="js-quantity-block js-delivery-quantity-block">
-          <label for="zip_code" class="form__label hide">{{ 'customer.addresses.zip' | t }}</label>
-          <input type="hidden" pattern="[0-9]{5}" name="properties[_zip]" id="postal_code" class="form__input full-width js-zip-code" value="{{cart.attributes['zip_code']}}" required readonly>
-          <p class="product-single__pallet-msg product-single__pallet-msg--unavailable js-zip-not-found hide">Zip Code not found</p>
-        </div>
+        {%- unless is_pickup_only -%}
+          <div class="js-quantity-block js-delivery-quantity-block">
+            <label for="zip_code" class="form__label hide">{{ 'customer.addresses.zip' | t }}</label>
+            <input type="hidden" pattern="[0-9]{5}" name="properties[_zip]" id="postal_code" class="form__input full-width js-zip-code" value="{{cart.attributes['zip_code']}}" required readonly>
+            <p class="product-single__pallet-msg product-single__pallet-msg--unavailable js-zip-not-found hide">Zip Code not found</p>
+          </div>
+        {%- endunless -%}
+
       {%- endif -%}
 
       <div>
         {%- if product.options.size > 1 -%}
-        {%- for product_option in product.options_with_values limit: 1 -%}
-        <label class="form__label" for="first_product_variant">{{ product_option.name }}</label>
-        <select class="form__input full-width js-first-product-variant js-product-variant" id="first_product_variant">
-          {% for value in product_option.values %}
-          <option {% if product_option.selected_value == value %}selected{% endif %}>
-            {{ value }}
-          </option>
-          {% endfor %}
-        </select>
-        {%- endfor -%}
-        {%- unless use_check -%}
-        {%- for product_option in product.options_with_values offset: 1 -%}
-        <label class="form__label" for="first_product_variant">{{ product_option.name }}</label>
-        <select class="form__input full-width js-product-variant" id="product_variant_{{forloop.index}}">
-          {% for value in product_option.values %}
-          <option {% if product_option.selected_value == value %}selected{% endif %}>
-            {{ value }}
-          </option>
-          {% endfor %}
-        </select>
-        {%- endfor -%}
-        {%- endunless -%}
+          {%- for product_option in product.options_with_values limit: 1 -%}
+            <label class="form__label" for="first_product_variant">{{ product_option.name }}</label>
+            <select class="form__input full-width js-first-product-variant js-product-variant" id="first_product_variant">
+              {% for value in product_option.values %}
+              <option {% if product_option.selected_value == value %}selected{% endif %}>
+                {{ value }}
+              </option>
+              {% endfor %}
+            </select>
+          {%- endfor -%}
+          {%- unless use_check -%}
+            {%- for product_option in product.options_with_values offset: 1 -%}
+              <label class="form__label" for="first_product_variant">{{ product_option.name }}</label>
+              <select class="form__input full-width js-product-variant" id="product_variant_{{forloop.index}}">
+              {% for value in product_option.values %}
+                <option {% if product_option.selected_value == value %}selected{% endif %}>
+                  {{ value }}
+                </option>
+              {% endfor %}
+            </select>
+            {%- endfor -%}
+          {%- endunless -%}
         {%- endif -%}
         {%- assign hide = false -%}
         {%- assign multi_options = false -%}
         {%- if product.has_only_default_variant -%}
-        {%- assign hide = true -%}
+          {%- assign hide = true -%}
         {%- elsif use_check == true or uses_normal_toggle == true -%}
-        {%- assign hide = true -%}
+          {%- assign hide = true -%}
         {%- elsif product.options.size > 1 -%}
-        {%- unless use_check -%}
-        {%- assign hide = true -%}
-        {%- assign multi_options = true -%}
-        {%- endunless -%}
+          {%- unless use_check -%}
+            {%- assign hide = true -%}
+            {%- assign multi_options = true -%}
+          {%- endunless -%}
         {%- endif -%}
         <select name="id" id="ProductSelect-{{ section.id }}" class="form__input full-width js-product-variants{% if hide %} hide{% endif %}">
           {% for variant in product.variants %}
-          {% if variant.available %}
-          <option {% if variant == product.selected_or_first_available_variant %} selected="selected" {% endif %}
-                  {% if use_pallet == true %} data-sod-zips="{{ variant.metafields.sod.zips }}" data-price="{{ variant.price | money_with_currency }}"{% endif %}
-                  {% if variant.compare_at_price %} data-compare-val="{{ variant.compare_at_price | money_without_currency }}"{% endif %}
-                  data-sku="{{ variant.sku }}" value="{{ variant.id }}" data-price-val="{{ variant.price | money_without_currency }}">{{ variant.title }}</option>
-          {% endif %}
+            {% if variant.available %}
+            <option {% if variant == product.selected_or_first_available_variant %} selected="selected" {% endif %}
+                    {% if use_pallet == true %} data-sod-zips="{{ variant.metafields.sod.zips }}" data-price="{{ variant.price | money_with_currency }}"{% endif %}
+                    {% if variant.compare_at_price %} data-compare-val="{{ variant.compare_at_price | money_without_currency }}"{% endif %}
+                    data-sku="{{ variant.sku }}" value="{{ variant.id }}" data-price-val="{{ variant.price | money_without_currency }}">{{ variant.title }}</option>
+            {% endif %}
           {% endfor %}
         </select>
       </div>
 
       <div class="flex flex--row flex--wrap flex--has-gutter flex--vertical-bottom" style="margin-bottom: 1em;">
         {% if section.settings.product_quantity_enable %}
-        <div class="flex__item col-{% if uses_normal_toggle == true or use_variant_toggle == true %}3{% else %}4{% endif %}">
-          {%- if use_pallet == true or use_check == true -%}
-          {%- assign min_delivery_quantity = 500 -%}
-          {%- assign min_pickup_quantity = 10 -%}
-          <input type="hidden" name="quantity" class="js-product-quantity">
-          {%- if uses_normal_toggle == false and use_variant_toggle == false -%}
-          <input type="hidden" name="properties[_custom_price]" value="0" class="js-custom-value">
-          <input type="hidden" name="properties[_custom_increment]" value="0" class="js-increment-value">
-          {%- endif -%}
-          {%- if uses_normal_toggle == true or use_variant_toggle == true -%}
-          {%- assign min_delivery_quantity = 1 -%}
-          {%- assign min_pickup_quantity = 1 -%}
-          {%- endif -%}
-          <div class="js-quantity-block js-delivery-quantity-block">
-            <label for="delivery-quantity" class="form__label">{{ 'products.product.quantity' | t }}{% if uses_normal_toggle == false and use_variant_toggle == false %} (sq ft){% endif %}</label>
-            <input type="number" id="delivery-quantity" name="quantity-delivery" value="{{min_delivery_quantity}}"
-                   min="{{min_delivery_quantity}}" step="{{min_delivery_quantity}}" class="form__input form__input--quantity full-width js-quantity-input js-quantity-input-delivery" required>
+          <div class="flex__item col-{% if uses_normal_toggle == true or use_variant_toggle == true %}3{% else %}4{% endif %}">
+            {%- if use_pallet == true or use_check == true -%}
+              {%- assign min_delivery_quantity = 500 -%}
+              {%- assign min_pickup_quantity = 10 -%}
+              <input type="hidden" name="quantity" class="js-product-quantity">
+              {%- if uses_normal_toggle == false and use_variant_toggle == false -%}
+                <input type="hidden" name="properties[_custom_price]" value="0" class="js-custom-value">
+                <input type="hidden" name="properties[_custom_increment]" value="0" class="js-increment-value">
+              {%- endif -%}
+              {%- if uses_normal_toggle == true or use_variant_toggle == true -%}
+                {%- assign min_delivery_quantity = 1 -%}
+                {%- assign min_pickup_quantity = 1 -%}
+              {%- endif -%}
+              {%- unless is_pickup_only -%}
+                <div class="js-quantity-block js-delivery-quantity-block{% if is_pickup_only %} hide{% endif %}">
+                  <label for="delivery-quantity" class="form__label">{{ 'products.product.quantity' | t }}{% if uses_normal_toggle == false and use_variant_toggle == false %} (sq ft){% endif %}</label>
+                  <input type="number" id="delivery-quantity" name="quantity-delivery" value="{{min_delivery_quantity}}"
+                        min="{{min_delivery_quantity}}" step="{{min_delivery_quantity}}" class="form__input form__input--quantity full-width js-quantity-input js-quantity-input-delivery" required>
+                </div>
+              {%- endunless -%}
+              {%- unless is_delivery_only -%}
+                <div class="js-quantity-block js-pickup-quantity-block{% unless is_pickup_only %} hide{% endunless %}">
+                  <label for="pickup-uantity" class="form__label">{{ 'products.product.quantity' | t }}{% if uses_normal_toggle == false and use_variant_toggle == false %} (sq ft){% endif %}</label>
+                  <input type="number" id="pickup-uantity" name="quantity-pickup" value="{{min_pickup_quantity}}"
+                        min="{{min_pickup_quantity}}" step="{{min_pickup_quantity}}" class="form__input form__input--quantity full-width js-quantity-input js-quantity-input-pickup" required>
+                </div>
+              {%- endunless -%}
+            {%- else -%}
+              <label for="Quantity" class="form__label">{{ 'products.product.quantity' | t }}{% if use_pallet == true and uses_normal_toggle == false %} (sq ft){% endif %}</label>
+              <input type="number" id="Quantity" name="quantity" value="1" class="form__input form__input--quantity full-width" required>
+            {%- endif -%}
           </div>
-          <div class="js-quantity-block js-pickup-quantity-block hide">
-            <label for="pickup-uantity" class="form__label">{{ 'products.product.quantity' | t }}{% if uses_normal_toggle == false and use_variant_toggle == false %} (sq ft){% endif %}</label>
-            <input type="number" id="pickup-uantity" name="quantity-pickup" value="{{min_pickup_quantity}}"
-                   min="{{min_pickup_quantity}}" step="{{min_pickup_quantity}}" class="form__input form__input--quantity full-width js-quantity-input js-quantity-input-pickup" required>
-          </div>
-          {%- else -%}
-          <label for="Quantity" class="form__label">{{ 'products.product.quantity' | t }}{% if use_pallet == true and uses_normal_toggle == false %} (sq ft){% endif %}</label>
-          <input type="number" id="Quantity" name="quantity" value="1" class="form__input form__input--quantity full-width" required>
-          {%- endif -%}
-        </div>
         {% endif %}
         <div class="flex__item col-{% if uses_normal_toggle == true or use_variant_toggle == true %}9{% else %}8{% endif %}">
           <div class="product-single__cart-submit-wrapper{% if section.settings.enable_payment_button %} product-single__shopify-payment-btn{% endif %}{% if section.settings.add_to_cart_width == 'full_width' %} product-form--full{% endif %}">
             {%- if use_pallet == true or use_check == true -%}
-            {%- assign delivery_button_text = 'Check delivery price' -%}
-            {%- assign pickup_button_text = 'Check location' -%}
-            {%- if uses_normal_toggle == true or use_variant_toggle == true -%}
-            {%- assign delivery_button_text = 'Check delivery eligibility' -%}
-            {%- assign pickup_button_text = 'Check pickup location' -%}
-            {%- endif -%}
-            <div class="js-quantity-block js-delivery-quantity-block">
-              <button type="button" class="button button--medium button--secondary product-single__cart-submit btn--full js-product-price-check" disabled>{{delivery_button_text}}</button>
-            </div>
-            <div class="js-quantity-block js-pickup-quantity-block hide">
-              <button type="button" class="button button--medium button--secondary product-single__cart-submit btn--full js-product-price-check">{{pickup_button_text}}</button>
-            </div>
+              {%- assign delivery_button_text = 'Check delivery price' -%}
+              {%- assign pickup_button_text = 'Check location' -%}
+              {%- if uses_normal_toggle == true or use_variant_toggle == true -%}
+                {%- assign delivery_button_text = 'Check delivery eligibility' -%}
+                {%- assign pickup_button_text = 'Check pickup location' -%}
+              {%- endif -%}
+              {%- unless is_pickup_only -%}
+                <div class="js-quantity-block js-delivery-quantity-block">
+                  <button type="button" class="button button--medium button--secondary product-single__cart-submit btn--full js-product-price-check" disabled>{{delivery_button_text}}</button>
+                </div>
+              {%- endunless -%}
+              {%- unless is_delivery_only -%}
+                <div class="js-quantity-block js-pickup-quantity-block{% unless is_pickup_only %} hide{% endunless %}">
+                  <button type="button" class="button button--medium button--secondary product-single__cart-submit btn--full js-product-price-check">{{pickup_button_text}}</button>
+                </div>
+              {%- endunless -%}
+
             {%- else -%}
             <button type="submit" name="add" id="AddToCart" class="js-product-submit button button--medium button--secondary product-single__cart-submit btn--full{% if section.settings.enable_payment_button %} shopify-payment-btn btn--secondary{% endif %}" data-cart-url="{{ routes.cart_url }}">
               <span id="AddToCartText">{{ 'products.product.add_to_cart' | t }}</span>
