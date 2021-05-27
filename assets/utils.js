@@ -112,12 +112,27 @@ const Utils = (function () {
     return foundZip;
   };
 
+  const getParameterByName = function (name, url) {
+    const windowUrl = url || window.location.href;
+    const paramName = name.replace(/[\[\]]/g, '\\$&');
+    const regex = new RegExp('[?&]' + paramName + '(=([^&#]*)|&|#|$)');
+    const results = regex.exec(windowUrl);
+    if (!results) {
+      return null;
+    } else if (!results[2]) {
+      return '';
+    }
+
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+  };
+
   return {
     addToCartParameters: addToCartParameters,
     capitalize: capitalize,
     dateStringToMilliseconds: dateStringToMilliseconds,
     formatMoneyWithPrecision: formatMoneyWithPrecision,
     onlyNumbers: onlyNumbers,
-    extractZip: extractZip
+    extractZip: extractZip,
+    getParameterByName: getParameterByName
   };
 })();

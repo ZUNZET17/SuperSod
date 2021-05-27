@@ -11,7 +11,12 @@
 {%- assign hide_expedited = false -%}
 {%- assign contains_bundle_items = false -%}
 {%- assign first_zip = '' -%}
+{%- assign enable_pickup_date_selector = false -%}
+{%- assign is_pickup_date_selector_only = false -%}
 {%- for item in cart.items -%}
+  {%- if item.properties._enable_date_selector -%}
+    {%- assign enable_pickup_date_selector = true -%}
+  {%- endif -%}
   {%- if first_zip == '' -%}
     {%- assign first_zip = item.properties.pickup_location -%}
   {%- endif -%}
@@ -29,16 +34,36 @@
   {%- endif -%}
   {%- if item.product.type contains 'Sod' -%}
     {%- assign contains_sod = true -%}
-    {%- if item.properties._method == 'delivery' -%}
-      {%- assign available_to_deliver = true -%}
-      {%- assign contains_deliverable_sod = true -%}
+    {%- if item.properties._method -%}
+      {%- if item.properties._method == 'delivery' -%}
+        {%- if item.properties._enable_date_selector -%}
+          {%- assign enable_pickup_date_selector = true -%}
+        {%- else -%}
+          {%- assign available_to_deliver = true -%}
+          {%- assign contains_deliverable_sod = true -%}
+          {%- assign is_pickup_date_selector_only = false -%}
+        {%- endif -%}
+      {%- else -%}
+        {%- if item.properties._enable_date_selector -%}
+          {%- assign enable_pickup_date_selector = true -%}
+        {%- else -%}
+          {%- assign contains_pickup_sod = true -%}
+          {%- assign is_pickup_date_selector_only = false -%}
+          {%- assign enable_pickup_date_selector = false -%}
+        {%- endif -%}
+      {%- endif -%}
     {%- else -%}
-      {%- assign contains_pickup_sod = true -%}
+      {%- if item.properties._enable_date_selector -%}
+        {%- assign is_pickup_date_selector_only = true -%}
+        {%- assign enable_pickup_date_selector = true -%}
+      {%- endif -%}
     {%- endif -%}
   {%- elsif item.product.type contains 'Fertilizer' and item.properties._method == 'delivery' -%}
     {%- assign available_to_deliver = true -%}
+    {%- assign is_pickup_date_selector_only = false -%}
   {%- elsif item.product.type contains 'Compost' -%}
     {%- assign contains_sod = true -%}
+    {%- assign is_pickup_date_selector_only = false -%}
     {%- if item.properties._method == 'delivery' -%}
       {%- assign contains_deliverable_sod = true -%}
     {%- endif -%}
@@ -46,6 +71,11 @@
   {%- if item.product.tags contains 'grants-delivery' and item.properties._method == 'delivery' -%}
     {%- assign available_to_deliver = true -%}
     {%- assign contains_deliverable_sod = true -%}
+    {%- assign is_pickup_date_selector_only = false -%}
+    {%- if enable_pickup_date_selector == true -%}
+      {%- assign invalid_fulfillment = true -%}
+      {%- assign fulfillment_method = 'none' -%}
+    {%- endif -%}
   {%- endif -%}
   {%- if item.properties._method != blank -%}
     {%- if fulfillment_method == '' -%}
@@ -55,8 +85,13 @@
         {%- assign invalid_fulfillment = false -%}
         {%- assign fulfillment_method = item.properties._method -%}
       {%- elsif item.product.type contains 'Sod' and item.properties._method == 'pickup' -%}
-        {%- assign invalid_fulfillment = false -%}
-        {%- assign fulfillment_method = item.properties._method -%}
+        {%- if enable_pickup_date_selector == true -%}
+          {%- assign invalid_fulfillment = true -%}
+          {%- assign fulfillment_method = 'none' -%}
+        {%- else -%}
+          {%- assign invalid_fulfillment = false -%}
+          {%- assign fulfillment_method = item.properties._method -%}
+        {%- endif -%}
       {%- elsif contains_deliverable_sod == true and fulfillment_method == 'delivery' -%}
         {%- assign invalid_fulfillment = false -%}
         {%- if item.properties._bold_bundles_lookup_id != blank -%}
@@ -331,7 +366,11 @@
         </table>
 
         {%- if fulfillment_method == '' and has_custom_pricing == true -%}
-          {%- assign fulfillment_method = cart.attributes.delivery_method -%}
+          {%- if enable_pickup_date_selector == true and fulfillment_method == 'delivery' -%}
+            {%- assign invalid_fulfillment = true -%}
+          {%- else -%}
+            {%- assign fulfillment_method = cart.attributes.delivery_method -%}
+          {%- endif -%}
         {%- endif -%}
         {%- if invalid_fulfillment == true and available_to_deliver == true and fulfillment_method == 'delivery' -%}
           {%- assign invalid_fulfillment = false -%}
@@ -343,6 +382,9 @@
           {%- endif -%}
         {%- endif -%}
         {%- if available_to_deliver == true and fulfillment_method == 'none' -%}
+          {%- assign invalid_fulfillment = true -%}
+        {%- endif -%}
+        {%- if enable_pickup_date_selector == true and fulfillment_method == 'delivery' -%}
           {%- assign invalid_fulfillment = true -%}
         {%- endif -%}
         <footer class="cart__footer">
@@ -439,21 +481,32 @@
                 <p class="cart__error-message hide js-dates-empty">{{ 'layout.cart.empty_dates' | t }}</p>
                 <p class="cart__error-message hide js-dates-same">{{ 'layout.cart.same_dates' | t }}</p>
                 <p class="cart__error-message hide js-dates-invalid">{{ 'layout.cart.invalid_dates' | t }}</p>
+                <input type="hidden" class="js-scheduled-dates" name="schedule_dates" value="{{ cart.attributes.schedule_dates }}">
+                <input type="hidden" class="js-location" name="location" value="{{ cart.attributes.location }}">
               {%- endif -%}
-              {%- if fulfillment_method == 'delivery' -%}
-                <div>
-                  <label for="chosen_delivery_address">{{ 'layout.cart.chosen_delivery_address' | t }}</label>
-                  <input type="text" id="chosen_delivery_address" name="chosen_delivery_address" class="form__input" value="{{ cart.attributes.customer_address }}" readonly disabled>
-                  <p class="cart__error-message cart__error-message--warning">{{ 'layout.cart.chosen_delivery_address_message' | t }}</p>
+              {%- unless invalid_fulfillment -%}
+                {%- if fulfillment_method == 'delivery' -%}
+                  <div>
+                    <label for="chosen_delivery_address">{{ 'layout.cart.chosen_delivery_address' | t }}</label>
+                    <input type="text" id="chosen_delivery_address" name="chosen_delivery_address" class="form__input js-delivery-address" value="{{ cart.attributes.customer_address }}" readonly disabled>
+                    <p class="cart__error-message cart__error-message--warning">{{ 'layout.cart.chosen_delivery_address_message' | t }}</p>
+                  </div>
+                {%- endif -%}
+                <div class="grid">
+                  <div class="grid__item medium-up--one-half">
+                    <label for="phoneNumber">{{ 'layout.cart.confirm_phone_number' | t }}</label>
+                    {%- assign phone_number = '' -%}
+                    {%- if customer -%}
+                      {%- assign phone_number = customer.phone -%}
+                    {%- elsif cart.attributes.phone_number -%}
+                      {%- assign phone_number = cart.attributes.phone_number -%}
+                    {%- endif -%}
+                    <input type="tel" name="attributes[phone_number]" id="phoneNumber" class="form__input js-cart-attribute js-phone" data-name="phone" value="{{ phone_number }}" required>
+                    <p class="cart__error-message hide js-no-phone-message">{{ 'layout.cart.no_phone_number_added' | t }}</p>
+                  </div>
                 </div>
-              {%- endif -%}
-              <div class="grid">
-                <div class="grid__item medium-up--one-half">
-                  <label for="phoneNumber">{{ 'layout.cart.confirm_phone_number' | t }}</label>
-                  <input type="tel" name="attributes[phone]" id="phoneNumber" class="form__input js-cart-attribute js-phone" data-name="phone" value="{% if customer %}{{ customer.phone }}{% endif %}" required>
-                  <p class="cart__error-message hide js-no-phone-message">{{ 'layout.cart.no_phone_number_added' | t }}</p>
-                </div>
-              </div>
+              {%- endunless -%}
+
               {%- if has_custom_pricing == false -%}
                 <label for="CartSpecialInstructions" class="cart__note-label label--block">{{ 'cart.general.note' | t }}</label>
                 <textarea name="note" id="CartSpecialInstructions" class="input--block js-cart-note form__input cart__note{{textarea_extra_class}}" placeholder="{{ 'layout.cart.notes_placeholder' | t }}">{{ cart.note }}</textarea>
@@ -464,16 +517,23 @@
               {%- assign push_class = ' large-up--push-two-thirds' -%}
               </div>
               <div class="grid">
-                <div class="grid__item large-up--one-third">
-                  <label for="discount_code" class="cart__note-label label--block">Discount code</label>
-                  <input type="text" name="discount" id="discount_code" class="form__input js-discount-code">
-                </div>
-                <div class="grid__item large-up--two-thirds">
+                {%- unless enable_pickup_date_selector -%}
+                  <div class="grid__item large-up--one-third">
+                    <label for="discount_code" class="cart__note-label label--block">Discount code</label>
+                    <input type="text" name="discount" id="discount_code" class="form__input js-discount-code">
+                  </div>
+                {%- endunless -%}
+                <div class="grid__item{% if enable_pickup_date_selector %} large-up--push-one-third{% endif %} large-up--two-thirds">
                   <label for="CartSpecialInstructions" class="cart__note-label label--block">{{ 'cart.general.note' | t }}</label>
                   <textarea name="note" id="CartSpecialInstructions" class="input--block js-cart-note form__input cart__note{{textarea_extra_class}}" placeholder="{{ 'layout.cart.notes_placeholder' | t }}">{{ cart.note }}</textarea>
                 </div>
+                {%- if enable_pickup_date_selector -%}
+                  </div><div class="grid">
+                {%- endif -%}
             {%- elsif invalid_fulfillment and has_custom_pricing == true -%}
-              {%- assign push_class = '' -%}
+              {%- if enable_pickup_date_selector -%}
+                {%- assign push_class = ' large-up--push-two-thirds' -%}
+              {%- endif -%}
             {%- endif -%}
             <div class="grid__item text-center large-up--one-third large-up--text-right{{push_class}}">
               {%- if cart.cart_level_discount_applications != blank -%}
@@ -498,7 +558,11 @@
                   <p class="cart__error-message">{{ 'layout.cart.cannot_mix_methods' | t }}</p>
                 {%- else -%}
                   {%- if invalid_fulfillment == false and has_custom_pricing == true -%}
-                    <button type="button" name="go_to_checkout" class="btn full-width js-go-to-checkout" disabled>{{ 'cart.general.checkout' | t }}</button>
+                    {%- assign is_draft_button = true -%}
+                    {%- if is_pickup_date_selector_only == true -%}
+                      {%- assign is_draft_button = false -%}
+                    {%- endif -%}
+                    <button type="{% unless is_draft_button %}submit{% else %}button{% endunless%}" name="{% if is_draft_button %}go_to_checkout{% else %}checkout{% endif %}" class="btn full-width {% unless is_draft_button %}js-submit-button{% else %}js-go-to-checkout{% endunless%}" disabled>{{ 'cart.general.checkout' | t }}</button>
                   {%- elsif invalid_fulfillment == false -%}
                     <button type="submit" name="checkout" class="btn full-width" disabled>{{ 'cart.general.checkout' | t }}</button>
                   {%- else -%}
@@ -528,7 +592,7 @@
         {%- if invalid_fulfillment == false and has_custom_pricing == true -%}
           {%- if pickup_address != blank -%}
             <input type="hidden" data-name="pickup_address" name="attributes[pickup_address]" class="js-cart-attribute js-address-pickup" value="{{pickup_address}}">
-          {%- else -%}
+          {%- elsif fulfillment_method == 'delivery' -%}
             <input type="hidden" data-name="latitude" name="attributes[customer_latitude]" class="js-cart-attribute js-address-latitude" value="{{cart.attributes.customer_latitude}}">
             <input type="hidden" data-name="longitude" name="attributes[customer_longitude]" class="js-cart-attribute js-address-longitude" value="{{cart.attributes.customer_longitude}}">
             <input type="hidden" data-name="zipcode" name="attributes[zip_code]" class="js-cart-attribute js-address-zip" value="{{cart.attributes.zip_code}}">
@@ -567,6 +631,9 @@
     {% if first_zip != '' %}
       const firstZipAddress = '{{first_zip}}';
     {% endif %}
+    {%- if invalid_fulfillment == false -%}
+      const cartDeliveryAttribute = '{{ cart.attributes.delivery_method }}';
+    {%- endif -%}
     const cartItems = [{% for item in cart.items %}{
         {%- assign item_value = 0 -%}
         {%- assign product_type = item.product.type | downcase -%}

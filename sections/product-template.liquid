@@ -295,13 +295,15 @@
             {%- assign multi_options = true -%}
           {%- endunless -%}
         {%- endif -%}
-        <select name="id" id="ProductSelect-{{ section.id }}" class="form__input full-width js-product-variants{% if hide %} hide{% endif %}">
+        <select name="id" id="ProductSelect-{{ section.id }}" class="form__input full-width js-product-variants{% if hide %} hide{% endif %}" required>
           {% for variant in product.variants %}
             {% if variant.available %}
             <option {% if variant == product.selected_or_first_available_variant %} selected="selected" {% endif %}
-                    {% if use_pallet == true %} data-sod-zips="{{ variant.metafields.sod.zips }}" data-price="{{ variant.price | money_with_currency }}"{% endif %}
-                    {% if variant.compare_at_price %} data-compare-val="{{ variant.compare_at_price | money_without_currency }}"{% endif %}
-                    data-sku="{{ variant.sku }}" value="{{ variant.id }}" data-price-val="{{ variant.price | money_without_currency }}">{{ variant.title }}</option>
+              value="{% if product.tags contains 'date-selector' and forloop.index == 1 %}{% else %}{{ variant.id }}{% endif %}"
+              {% if product.tags contains 'date-selector' and forloop.index == 1 %} disabled{% endif %}
+              {% if use_pallet == true %} data-sod-zips="{{ variant.metafields.sod.zips }}" data-price="{{ variant.price | money_with_currency }}"{% endif %}
+              {% if variant.compare_at_price %} data-compare-val="{{ variant.compare_at_price | money_without_currency }}"{% endif %}
+              data-sku="{{ variant.sku }}" data-price-val="{{ variant.price | money_without_currency }}">{{ variant.title }}</option>
             {% endif %}
           {% endfor %}
         </select>
@@ -339,6 +341,15 @@
             {%- else -%}
               <label for="Quantity" class="form__label">{{ 'products.product.quantity' | t }}{% if use_pallet == true and uses_normal_toggle == false %} (sq ft){% endif %}</label>
               <input type="number" id="Quantity" name="quantity" value="1" class="form__input form__input--quantity full-width" required>
+            {%- endif -%}
+            {%- if product.tags contains 'date-selector' -%}
+              <input type="hidden" name="properties[_custom_price]" value="{{ product.variants[0].price | money_without_currency}}" class="js-date-selector-custom-value js-custom-value">
+              <input type="hidden" name="properties[_custom_increment]" value="1" class="js-increment-value">
+              <input type="hidden" name="properties[pickup_location]" class="js-pickup-location" value="">
+              <input type="hidden" name="properties[_enable_date_selector]" value="true">
+            {%- endif -%}
+            {%- if is_pickup_only -%}
+              <input type="hidden" name="properties[_method]" value="pickup">
             {%- endif -%}
           </div>
         {% endif %}
@@ -528,7 +539,7 @@
   .split('; ')
   .find(row => row.startsWith('totalsqft='))
   .split('=')[1];
-  
+
   cookieValue = parseInt(cookieValue.replace(/,/g, ''));
   console.log('cookieValue', cookieValue);
 
@@ -542,13 +553,13 @@
       // Updates pickup quantity
       const outputPickup = document.getElementById('pickup-uantity');
       outputPickup.value = Math.ceil(cookieValue/10)*10;
-      
+
       console.log(cookieValue, outputDelivery.value, outputPickup.value);
 
     }
   }
-  // invoke showCookieValue function  
-  showCookieValue();   
+  // invoke showCookieValue function
+  showCookieValue();
 
   const pageUrl = `${window.location.protocol}//${window.location.hostname}${window.location.pathname}`;
   document.querySelectorAll('.product-single__pallet-msg a').forEach(link => {

@@ -128,7 +128,14 @@
     </div>
 
     {{ tracking_code }}
+    {%- capture cart_attributes -%}
+      {%- for attribute in checkout.attributes -%}
+        <input type="hidden" name="checkout[attributes][{{ attribute.first }}]" value="{{ attribute.last }}">
+      {%- endfor -%}
+    {%- endcapture -%}
+    {%- assign cart_attributes = cart_attributes | strip_newlines | strip -%}
     <script>
+      const cartAttributes = '{{ cart_attributes }}';
       const hideShippingMethods = function () {
         const deliveryType = window.localStorage.getItem('delivery_type');
         const labels = [].slice.call(document.getElementsByClassName('radio__label__primary'));
@@ -244,12 +251,45 @@
         }
       };
 
+      const insertAttributes = function () {
+        if (!cartAttributes) {
+          return;
+        }
+
+        document.querySelector('.main__content form').insertAdjacentHTML('beforeend', cartAttributes);
+
+        startCheckoutStepObserver(document.querySelector('main'), function () {
+          document.querySelector('.main__content form').insertAdjacentHTML('beforeend', cartAttributes);
+        });
+      };
+
+      const startCheckoutStepObserver = function (targetNode, callback) {
+        if (!targetNode) {
+          return;
+        }
+
+        const config = { attributes: true, childList: true, characterData: true };
+        const callbackFunction = function (mutationsList, observer) {
+          for (let index = 0; index < mutationsList.length; index++) {
+            const mutation = mutationsList[index];
+            if (mutation.type == 'childList') {
+              observer.disconnect();
+              callback();
+              return;
+            }
+          }
+        };
+        let observer = new MutationObserver(callbackFunction);
+        observer.observe(targetNode, config);
+      };
+
       if (
         Shopify.Checkout.step === 'shipping_method' &&
         window.localStorage.getItem('delivery_type') !== null
       ) {
         hideShippingMethods();
       } else if (Shopify.Checkout.step === 'contact_information') {
+        insertAttributes();
         setTimeout(function () {
           fillStorageAddress();
         }, 1000);

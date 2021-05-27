@@ -46,6 +46,13 @@ const Product = (function () {
       .on('click', '.js-bold-clone', function (ev) {
         ev.preventDefault();
       });
+
+    if (window.location.search.indexOf('variant') > -1) {
+      const searchVariant = Utils.getParameterByName('variant');
+      if (searchVariant) {
+        $('.js-product-variants').trigger('change');
+      }
+    }
   };
 
   const initElements = function () {
@@ -702,15 +709,17 @@ const Product = (function () {
     const longitude = $('.js-address-longitude').val();
     const quantity = $('.js-quantity-input-' + deliveryMethod).val();
     let ajaxData = {
-      latitude: latitude,
-      longitude: longitude,
       product_id: productData.id,
       quantity: quantity,
-      shop_domain: theme.routes.validation_tool_shop,
-      unit_price: $('.js-product-variants option:selected').data('price-val'),
-      zipcode: zipCode
+      shop_domain: theme.routes.validation_tool_shop
     };
     const endpoint = deliveryMethod === 'pickup' ? 'nearest_locations_price' : 'pricing_info';
+    if (deliveryMethod === 'delivery') {
+      ajaxData.latitude = latitude;
+      ajaxData.longitude = longitude;
+      ajaxData.zipcode = zipCode;
+      ajaxData.unit_price = $('.js-product-variants option:selected').data('price-val');
+    }
 
     button.html('Checking ...');
     $('.js-current-price-unit').html('');
@@ -1103,16 +1112,17 @@ const Product = (function () {
     const deliveryMethodInput = $('.js-delivery-method:checked')[0];
     changeDeliveryElements(deliveryMethodInput);
 
-    const parameters = [
-      { parameter: 'zip_code', value: zipCode },
-      {
+    const parameters = [];
+
+    if (deliveryMethodInput.value === 'delivery') {
+      parameters.push({ parameter: 'zip_code', value: zipCode });
+      parameters.push({
         parameter: 'customer_address',
         value: $('.js-autocomplete-address').val(),
-      }
-    ];
-    if (typeof isBundle !== 'undefined' && isBundle) {
-      parameters.push({ parameter: 'delivery_method', value: deliveryMethodInput.value });
+      });
     }
+
+    parameters.push({ parameter: 'delivery_method', value: deliveryMethodInput.value });
     Utils.addToCartParameters(parameters);
   };
 
@@ -1220,6 +1230,10 @@ const Product = (function () {
     if (selectedOption.dataset.compareVal !== null) {
       $('.js-price-compare').html('$' + selectedOption.dataset.compareVal);
     }
+    if (document.querySelector('.js-date-selector-custom-value')) {
+      document.querySelector('.js-date-selector-custom-value').value = selectedOption.dataset.priceVal;
+      document.querySelector('.js-pickup-location').value = selectedOption.text;
+    }
   };
 
   const resetAddressInput = function (ev) {
@@ -1313,6 +1327,8 @@ const Product = (function () {
       parameters.push({parameter: 'customer_longitude', value: productObject.geometry.longitude});
       parameters.push({parameter: 'customer_address', value: customerAddress});
     }
+
+    parameters.push({ parameter: 'delivery_method', value: document.querySelector('.js-delivery-method:checked').value });
 
     if (!hasZipCode) {
       parameters.push({parameter: 'zip_code', value: ''});
