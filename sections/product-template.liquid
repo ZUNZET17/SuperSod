@@ -487,7 +487,47 @@
   {%- endif -%}
 </script>
 
+{% comment %}Yard area cookie detector{% endcomment %}
+<script>
+  // get cookie totalsqft
+  let cookieValue = document.cookie
+  .split('; ')
+  .find(row => row.startsWith('totalsqft='))
+  .split('=')[1];
+  
+  cookieValue = parseInt(cookieValue.replace(/,/g, ''));
+  console.log('cookieValue', cookieValue);
 
+  // update #delivery-quantity value to totalsqft rounded UP to the nearest 500
+  function showCookieValue() {
+    if(cookieValue){
+      // Updates delivery quantity
+      const outputDelivery = document.getElementById('delivery-quantity');
+      outputDelivery.value = Math.ceil(cookieValue/500)*500;
+
+      // Updates pickup quantity
+      const outputPickup = document.getElementById('pickup-uantity');
+      outputPickup.value = Math.ceil(cookieValue/10)*10;
+      
+      console.log(cookieValue, outputDelivery.value, outputPickup.value);
+
+    }
+  }
+  // invoke showCookieValue function  
+  showCookieValue();   
+
+  const pageUrl = `${window.location.protocol}//${window.location.hostname}${window.location.pathname}`;
+  document.querySelectorAll('.product-single__pallet-msg a').forEach(link => {
+    const parsedUrl = new URL(link.href);
+    if(!Object.keys(parsedUrl.searchParams).length) {
+      link.href = `${parsedUrl.href}?return_url=${pageUrl}`;
+    } else {
+      let searchParams = new URLSearchParams(parsedUrl.search);
+      searchParams.set('return_url', pageUrl);
+      link.href = `${parsedUrl.href}${searchParams.toString()}`;
+    }
+  });
+</script>
 
 {% schema %}
 {
