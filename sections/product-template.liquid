@@ -372,18 +372,25 @@
       </div>
       <div>
         {% if use_pallet == true or use_check == true %}
-        <div class="product-locations-dropdown js-quantity-block js-pickup-quantity-block hide">
-          <label for="pickup-select" class="js-product-pickup-variants-title hide">{{ 'layout.product.location' | t }}</label>
-          <select name="properties[pickup_location]" id="pickup-select" class="form__input full-width js-product-pickup-variants hide"></select>
-        </div>
-        {%- if uses_normal_toggle == false and use_variant_toggle == false -%}
-        <p class="product-single__pallet-msg product-single__price product-single__price--pallet-price js-current-price-unit hide"></p>
-        {%- endif -%}
-        <button type="submit" name="add"{% unless product.tags contains 'Bundle' %} id="AddToCart"{% endunless %}{% if use_pallet == true or use_check == true %} disabled{% endif %} class="js-product-submit {% if use_pallet == true or use_check == true %}hide {% endif %}button button--medium button--secondary product-single__cart-submit btn--full{% if section.settings.enable_payment_button %} shopify-payment-btn btn--secondary{% endif %}" data-cart-url="{{ routes.cart_url }}">
-          <span id="AddToCartText">{{ 'products.product.add_to_cart' | t }}</span>
-          <span id="AddToCartText2" class="js-add-to-cart-text-delivery hide">(delivered)</span>
-          <span id="AddToCartText3" class="js-add-to-cart-text-pickup hide">(pickup)</span>
-        </button>
+          <div class="product-locations-dropdown js-quantity-block js-pickup-quantity-block hide">
+            <label for="pickup-select" class="js-product-pickup-variants-title hide">{{ 'layout.product.location' | t }}</label>
+            <select name="properties[pickup_location]" id="pickup-select" class="form__input full-width js-product-pickup-variants hide"></select>
+          </div>
+          {%- if uses_normal_toggle == false and use_variant_toggle == false -%}
+            <p class="product-single__pallet-msg product-single__price product-single__price--pallet-price js-current-price-unit hide"></p>
+          {%- endif -%}
+          <button type="submit" name="add"{% unless product.tags contains 'Bundle' %} id="AddToCart"{% endunless %}{% if use_pallet == true or use_check == true %} disabled{% endif %} class="{% unless product.tags contains 'Bundle' %}js-product-submit {% endunless %}{% if use_pallet == true or use_check == true %}hide {% elsif product.tags contains 'Bundle' %} hide{% endif %}button button--medium button--secondary product-single__cart-submit btn--full{% if section.settings.enable_payment_button %} shopify-payment-btn btn--secondary{% endif %}" data-cart-url="{{ routes.cart_url }}">
+            <span id="AddToCartText">{{ 'products.product.add_to_cart' | t }}</span>
+            <span id="AddToCartText2" class="js-add-to-cart-text-delivery hide">(delivered)</span>
+            <span id="AddToCartText3" class="js-add-to-cart-text-pickup hide">(pickup)</span>
+          </button>
+          {% if product.tags contains 'Bundle' %}
+            <button type="button" class="js-product-submit js-bundle-submit button button--medium button--secondary product-single__cart-submit btn--full hide">
+              <span id="AddToCartText">{{ 'products.product.add_to_cart' | t }}</span>
+              <span id="AddToCartText2" class="js-add-to-cart-text-delivery hide">(delivered)</span>
+              <span id="AddToCartText3" class="js-add-to-cart-text-pickup hide">(pickup)</span>
+            </button>
+          {% endif %}
         {%- endif -%}
         {% if section.settings.enable_payment_button %}
         {{ form | payment_button }}
@@ -485,6 +492,33 @@
   {%- if product.tags contains 'delivers-everywhere' -%}
     const isDeliveredEverywhere = true;
   {%- endif -%}
+  const cartItems = [{% for item in cart.items %}{
+    {%- assign item_value = 0 -%}
+    {%- assign product_type = item.product.type | downcase -%}
+    {%- if item.properties._custom_price != blank -%}
+      {%- assign item_value = item.properties._custom_price | times: 100 | times: item.quantity -%}
+    {%- elsif item.original_price != item.final_price -%}
+      {%- assign item_value = item.final_price -%}
+    {%- else -%}
+      {%- assign item_value = item.original_price -%}
+    {%- endif -%}
+    {%- assign item_price = item_value | money_without_currency | replace: ',', '' -%}
+    {%- if item.properties._bold_bundles_price != blank -%}
+      {%- assign product_type = 'bundle' -%}
+      {%- assign item_price = item.properties._bold_bundles_price | times: item.quantity | money_without_currency | replace: ',', '' -%}
+      full_price: {{item.final_price | times: 0.01}},
+    {%- endif -%}
+    variant_id: {{item.id}}, quantity: {{item.quantity}}, price: {{item_price}},
+    {%- if item.properties -%}
+      properties: {
+        {%- for prop in item.properties -%}
+          {{prop[0] | json}}: {{prop[1] | json}}{%- unless forloop.last -%},{%- endunless -%}
+        {%- endfor -%}
+      },
+    {%- endif -%}
+    product_type: {{product_type | json}}, product_id: {{item.product.id}},
+    product_name: '{{item.product.title}}', product_image: '{{item.image | img_url: "100x100"}}'
+  }{%- unless forloop.last -%},{%- endunless -%}{% endfor %}];
 </script>
 
 {% comment %}Yard area cookie detector{% endcomment %}

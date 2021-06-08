@@ -9,6 +9,7 @@
 {%- assign contains_pickup_sod = false -%}
 {%- assign contains_delivery_items = false -%}
 {%- assign hide_expedited = false -%}
+{%- assign contains_bundle_items = false -%}
 {%- assign first_zip = '' -%}
 {%- for item in cart.items -%}
   {%- if first_zip == '' -%}
@@ -16,8 +17,10 @@
   {%- endif -%}
   {%- if item.properties._bold_bundles_price != blank -%}
     {%- assign hide_expedited = true -%}
+    {%- assign contains_bundle_items = true -%}
   {%- endif -%}
   {%- if item.product.title contains 'Humus Compost'
+    or item.product.title contains 'Bulk Compost'
     or item.product.title contains 'Raised Garden Kit'
     or item.product.title contains 'Workshop Bundle'
     or item.product.title contains 'Level Mix'
@@ -56,6 +59,10 @@
         {%- assign fulfillment_method = item.properties._method -%}
       {%- elsif contains_deliverable_sod == true and fulfillment_method == 'delivery' -%}
         {%- assign invalid_fulfillment = false -%}
+        {%- if item.properties._bold_bundles_lookup_id != blank -%}
+          {%- assign invalid_fulfillment = true -%}
+          {%- assign fulfillment_method = 'none' -%}
+        {%- endif -%}
       {%- elsif contains_deliverable_sod == true and item.properties._method == 'delivery' -%}
         {%- if contains_pickup_sod -%}
           {%- assign invalid_fulfillment = true -%}
@@ -63,6 +70,10 @@
         {%- else -%}
           {%- assign invalid_fulfillment = false -%}
           {%- assign fulfillment_method = item.properties._method -%}
+          {%- if item.properties._bold_bundles_lookup_id != blank -%}
+            {%- assign invalid_fulfillment = true -%}
+            {%- assign fulfillment_method = 'none' -%}
+          {%- endif -%}
         {%- endif -%}
       {%- else -%}
         {%- assign invalid_fulfillment = true -%}
@@ -164,6 +175,9 @@
                     {%- unless pickup_address -%}
                       {%- if item.properties._bold_bundles_price != blank -%}
                         {%- assign pickup_address = cart.attributes.pickup_address -%}
+                        {%- if item.properties._method == 'pickup' -%}
+                          {%- assign pickup_address = item.properties.pickup_location -%}
+                        {%- endif -%}
                       {%- elsif item.properties._method == 'pickup' -%}
                         {%- assign pickup_address = item.properties.pickup_location -%}
                       {%- endif -%}
@@ -191,10 +205,18 @@
                       <small class="cart__policies">{{ pickup_address }}</small>
                     {% endif %}
                   </p>
-                  {%- if item.properties._bold_bundle_price_rules_external_id != blank -%}
+                  {%- assign is_removable = false -%}
+                  {%- if item.product.tags contains 'only-bundle' -%}
                     {%- if item.properties._bold_bundles_price == blank -%}
-                      <span class="hide js-remove-bundle-from-cart">{{item.id}}</span>
+                      {%- assign is_removable = true -%}
                     {%- endif -%}
+                  {%- elsif item.properties._added_from_bundle != blank -%}
+                    {%- if item.properties._bold_bundles_price == blank -%}
+                      {%- assign is_removable = true -%}
+                    {%- endif -%}
+                  {%- endif -%}
+                  {%- if is_removable == true -%}
+                    <span class="hide js-remove-bundle-from-cart">{{item.id}}</span>
                   {%- endif -%}
                   <p class="txt--minor">
                     <a href="{{ routes.cart_change_url }}?line={{ forloop.index }}&amp;quantity=0" class="cart__remove hide js-remove-link">{{ 'cart.general.remove' | t }}</a>
@@ -315,6 +337,10 @@
           {%- assign invalid_fulfillment = false -%}
         {%- elsif invalid_fulfillment == true and contains_deliverable_sod == true -%}
           {%- assign invalid_fulfillment = false -%}
+          {%- if contains_bundle_items == true and fulfillment_method == 'none' -%}
+            {%- assign invalid_fulfillment = true -%}
+            {%- assign fulfillment_method = 'none' -%}
+          {%- endif -%}
         {%- endif -%}
         {%- if available_to_deliver == true and fulfillment_method == 'none' -%}
           {%- assign invalid_fulfillment = true -%}
@@ -472,7 +498,7 @@
                   <p class="cart__error-message">{{ 'layout.cart.cannot_mix_methods' | t }}</p>
                 {%- else -%}
                   {%- if invalid_fulfillment == false and has_custom_pricing == true -%}
-                    <button type="button" name="checkout" class="btn full-width js-go-to-checkout" disabled>{{ 'cart.general.checkout' | t }}</button>
+                    <button type="button" name="go_to_checkout" class="btn full-width js-go-to-checkout" disabled>{{ 'cart.general.checkout' | t }}</button>
                   {%- elsif invalid_fulfillment == false -%}
                     <button type="submit" name="checkout" class="btn full-width" disabled>{{ 'cart.general.checkout' | t }}</button>
                   {%- else -%}
