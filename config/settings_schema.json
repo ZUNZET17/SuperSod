@@ -1560,31 +1560,6 @@
     },
     "settings": [
       {
-        "type": "checkbox",
-        "id": "cart_enable_ajax",
-        "label": {
-          "da": "Bliv på aktuel side, når vare lægges i indkøbskurven",
-          "de": "Auf der aktuellen Seite bleiben, wenn Artikel zum Warenkorb hinzugefügt wird",
-          "en": "Stay on current page when item is added to cart",
-          "es": "Permanece en la página actual al agregar el artículo al carrito.",
-          "fi": "Pysy nykyisellä sivulla, kun tuote lisätään ostoskoriin",
-          "fr": "Rester sur la page actuelle lorsqu'un article est ajouté au panier",
-          "hi": "जब वस्तु कार्ट में जोड़ी जाती है तो वर्तमान पेज पर रहें",
-          "it": "Resta sulla pagina attuale quando l'articolo viene aggiunto al carrello",
-          "ja": "アイテムがカートに追加されたときに現在のページにとどまる",
-          "ko": "카트에 품목이 추가되면 현재 페이지에 머무십시오",
-          "nb": "Bli på nåværende side når vare legges i handlekurven",
-          "nl": "Blijf op de huidige pagina wanneer het product is toegevoegd",
-          "pt-BR": "Permanecer na página atual quando o item for adicionado ao carrinho",
-          "pt-PT": "Permanecer na página atual quando o item é adicionado ao carrinho",
-          "sv": "Stanna på nuvarande sida när objektet läggs i kundvagnen",
-          "th": "อยู่ในหน้าปัจจุบันเมื่อมีการเพิ่มรายการลงในตะกร้าสินค้า",
-          "zh-CN": "在将产品添加到购物车时停留在当前页面",
-          "zh-TW": "商品加入購物車時留在目前頁面"
-        },
-        "default": true
-      },
-      {
         "type": "header",
         "content": "Delivery prices",
         "info": "For cart including calculated price products"
@@ -1609,6 +1584,18 @@
         "default": "9999",
         "label": "Before 9 am delivery price (in cents)",
         "info": "$49.99 equals 4999 cents"
+      },
+      {
+        "type": "header",
+        "content": "Discounts",
+        "info": "Discounts applied in cart (visually)"
+      },
+      {
+        "type": "number",
+        "id": "byb_discount",
+        "label": "Soil3 discount when added with sod (in cents)",
+        "info": "$49.99 equals 4999 cents",
+        "default": 0
       }
     ]
   },
