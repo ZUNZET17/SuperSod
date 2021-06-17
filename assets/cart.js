@@ -136,7 +136,8 @@ const Cart = (function () {
       initDatePicker(dates);
       button.html(originalText);
       $('.js-go-to-checkout').prop('disabled', false);
-      const subtotalElement = $('.js-cart-subtotal')
+      $('.js-submit-button').prop('disabled', false);
+      const subtotalElement = $('.js-cart-subtotal');
       const subtotal = parseFloat(subtotalElement.data('value')) + addedValue;
       const formattedSubtotal =
         typeof Shopify.formatMoney !== 'undefined'
@@ -388,6 +389,80 @@ const Cart = (function () {
     }
   };
 
+  const areDatesValid = function () {
+    let dates = document.querySelectorAll('input[class*="js-tail-datetime-field-"]');
+    let containsEmpty = false;
+    dates = Array.prototype.slice.call(dates);
+    const validIndexes = [true, true, true];
+    const filledDates = dates.length;
+
+    dates = dates.map(function (input) {
+      return input.value;
+    }).filter(function (value, index, self) {
+      if (self.indexOf(value) !== index || value === '') {
+        validIndexes[index] = false;
+        containsEmpty = true;
+      }
+      return self.indexOf(value) === index;
+    }).filter(function (value) {
+      return value !== '';
+    });
+
+    checkValidDateIndexes({
+      dates: dates,
+      validIndexes: validIndexes,
+      filledDates: filledDates,
+      containsEmpty: containsEmpty
+    });
+
+    const datesAreValid = validIndexes.reduce(function (acc, item) {
+      return acc && item;
+    }, true);
+
+    return datesAreValid;
+  };
+
+  const checkValidDateIndexes = function (settings) {
+    const datesAreValid = settings.validIndexes.reduce(function (acc, item) {
+      return acc && item;
+    }, true);
+
+    for (let i = 0; i < settings.validIndexes.length; i++) {
+      $('.js-tail-datetime-field-' + (i + 1)).removeClass('form__input--date-missing');
+    }
+
+    let invalidTextSelector = '';
+    if (settings.dates.length === 0) {
+      invalidTextSelector = '.js-dates-empty';
+    } else if (settings.filledDates > settings.dates.length || settings.containsEmpty) {
+      invalidTextSelector = '.js-dates-same';
+    } else if (!datesAreValid) {
+      invalidTextSelector = '.js-dates-invalid';
+    }
+
+    if (invalidTextSelector !== '') {
+      $(invalidTextSelector).removeClass('hide');
+    }
+
+    for (let i = 0; i <settings. validIndexes.length; i++) {
+      const isValid = settings.validIndexes[i];
+      if (!isValid) {
+        $('.js-tail-datetime-field-' + (i + 1)).addClass('form__input--date-missing');
+      }
+    }
+  };
+
+  const isDeliveryTypeChosen = function () {
+    let radioGroup = $('.js-delivery-type:checked');
+    if(radioGroup.length === 0) {
+      $('.js-delivery-empty').removeClass('hide');
+      return false;
+    }
+
+    $('.js-delivery-empty').addClass('hide');
+    return true;
+  };
+
   const interceptCartSubmit = function (ev) {
     const deliveryType = $('.js-delivery-type:checked').val();
 
@@ -398,9 +473,15 @@ const Cart = (function () {
       window.localStorage.setItem('delivery_zipcode', cartZipCode);
     }
 
+    const button = $('.js-submit-button');
+    const originalText = button.html();
+
+    button.html('Checking ...');
+
     const form = ev.target;
     ev.preventDefault();
     const changes = [];
+    const cartParameters = [];
     let isInvalid = false;
 
     $('.js-update-cart-button').prop('disabled', true);
@@ -412,7 +493,55 @@ const Cart = (function () {
       return;
     }
     phoneMessage.addClass('hide');
-    Utils.addToCartParameters([{parameter: 'phone', value: phoneNumber}]);
+
+    if (document.querySelector('.js-tail-datetime-field-1')) {
+      if (! isDeliveryTypeChosen()) {
+        ev.preventDefault();
+        return;
+      }
+
+      let scheduleDates = '';
+      const dateFields = document.querySelectorAll('[class*="js-tail-datetime-field-"]');
+
+      for (let i = 0; i < dateFields.length; i++) {
+        if (scheduleDates !== '') {
+          scheduleDates += ',';
+        }
+        scheduleDates += dateFields[i].value;
+      }
+
+      if (scheduleDates !== '' && areDatesValid()) {
+        let customerAddress = firstZipAddress;
+        const addressParts = firstZipAddress.split('-');
+
+        $('.js-scheduled-dates').val(scheduleDates);
+        $('.js-location').val(addressParts[0].trim());
+
+        let addressPrefix = 'Delivery address: ';
+        if (document.querySelector('.js-delivery-address')) {
+          customerAddress = document.querySelector('.js-delivery-address').value;
+        }
+
+        if (deliveryType === 'pickup') {
+          addressPrefix = 'Pick up in: ';
+          cartParameters.push({parameter: 'customer_latitude', value: ''});
+          cartParameters.push({parameter: 'customer_longitude', value: ''});
+          cartParameters.push({parameter: 'zip_code', value: ''});
+        }
+
+        cartParameters.push({parameter: 'schedule_dates', value: scheduleDates});
+        cartParameters.push({parameter: 'delivery_type', value: deliveryType});
+        cartParameters.push({parameter: 'customer_address', value: addressPrefix + customerAddress});
+        cartParameters.push({parameter: 'location', value: addressParts[0].trim()});
+      } else {
+        button.html(originalText);
+        ev.preventDefault();
+        return;
+      }
+    }
+
+    cartParameters.push({parameter: 'phone_number', value: phoneNumber});
+    Utils.addToCartParameters(cartParameters);
 
     if (typeof hasCustomPricing === 'undefined') {
       removeInvalidBundleProducts(function () {
@@ -443,6 +572,7 @@ const Cart = (function () {
     });
 
     if (isInvalid) {
+      button.html(originalText);
       $('.js-update-cart-button').prop('disabled', null);
       return;
     }
@@ -451,7 +581,9 @@ const Cart = (function () {
 
   const changeCartItemsProperties = function (changes, form) {
     if (changes.length < 1) {
-      form.submit();
+      setTimeout(() => {
+        form.submit();
+      }, 3500);
       return;
     }
     const current = changes.shift();
@@ -505,10 +637,22 @@ const Cart = (function () {
     }, 3000);
   };
 
+  const setCartDeliveryAttribute = function (deliveryMethod) {
+    Utils.addToCartParameters('delivery_method', deliveryMethod);
+  };
+
   const init = function () {
     setEvents();
     showFixedPrices();
     showRemoveLinks();
+
+    if (
+      typeof cartDeliveryAttribute !== undefined &&
+      cartDeliveryAttribute !== '' &&
+      cartDeliveryAttribute !== cartDeliveryMethod
+    ) {
+      setCartDeliveryAttribute(cartDeliveryMethod);
+    }
   };
 
   const setEvents = function () {
