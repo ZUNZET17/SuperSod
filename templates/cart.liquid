@@ -294,14 +294,20 @@
                       <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_price" data-item-key="{{item.key}}" style="display:none !important;"></span>
                       <span>{{ item.original_price | money }}</span><br>
                     {%- elsif item.product.tags contains 'BYB_DISCOUNT' -%}
-                      {%- if contains_sod -%}
-                        {%- unless item.properties._bold_bundles_price -%}
-                          {%- assign discount_value = 2000 | times: item.quantity -%}
-                          {%- assign discounted_price = item.original_price | minus: 2000 -%}
-                          {%- assign tag_name = 'del' -%}
-                          <span>{{ discounted_price | money }}</span><br>
-                        {%- endunless -%}
+                      {%- assign has_discount = false -%}
+                      {%- if item.variant.compare_at_price and item.variant.compare_at_price != item.final_price -%}
+                        {%- assign has_discount = true -%}
                       {%- endif -%}
+                      {%- unless has_discount -%}
+                        {%- if contains_sod -%}
+                          {%- unless item.properties._bold_bundles_price -%}
+                            {%- assign discount_value = settings.byb_discount | times: item.quantity -%}
+                            {%- assign discounted_price = item.original_price | minus: settings.byb_discount -%}
+                            {%- assign tag_name = 'del' -%}
+                            <span>{{ discounted_price | money }}</span><br>
+                          {%- endunless -%}
+                        {%- endif -%}
+                      {%- endunless -%}
                     {%- endif -%}
                     <{{tag_name}}>{{ item.final_price | money }}</{{tag_name}}>
                   {%- endif -%}
@@ -344,12 +350,18 @@
                     {%- if item.properties._bold_bundles_price -%}
                       <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_total" data-item-key="{{item.key}}" style="display:none !important;"></span>
                     {%- elsif item.product.tags contains 'BYB_DISCOUNT' -%}
-                      {%- if contains_sod -%}
-                        {%- unless item.properties._bold_bundles_price -%}
-                          {%- assign discount_value = 2000 | times: item.quantity -%}
-                          {%- assign final_line_price = item.final_line_price | minus: discount_value -%}
-                        {%- endunless -%}
+                      {%- assign has_discount = false -%}
+                      {%- if item.variant.compare_at_price and item.variant.compare_at_price != item.final_price -%}
+                        {%- assign has_discount = true -%}
                       {%- endif -%}
+                      {%- unless has_discount -%}
+                        {%- if contains_sod -%}
+                          {%- unless item.properties._bold_bundles_price -%}
+                            {%- assign discount_value = settings.byb_discount | times: item.quantity -%}
+                            {%- assign final_line_price = item.final_line_price | minus: discount_value -%}
+                          {%- endunless -%}
+                        {%- endif -%}
+                      {%- endunless -%}
                     {%- endif -%}
                     {%- if item.properties._bold_bundles_price -%}
                       {%- assign item_bundle_price = item.properties._bold_bundles_price | times: item.quantity -%}
