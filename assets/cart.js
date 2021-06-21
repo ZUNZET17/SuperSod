@@ -313,13 +313,14 @@ const Cart = (function () {
       }
     }
 
+    const discountCode = $('.js-discount-code').val();
     const ajaxData =
       'delivery_type=' + deliveryType +
       '&shop_domain=' + theme.routes.validation_tool_shop +
       '&note=' + note +
       '&customer_address=' + (cartDeliveryMethod === 'delivery' ? 'Delivery address:' + cartDeliveryAddress : 'Pick up in: ' + cartPickupAddress) +
       '&schedule_dates=' + (settings.dates.join(',')) +
-      '&discount_code=' + $('.js-discount-code').val() +
+      (discountCode ? '&discount_code=' + discountCode : '') +
       '&' + cartAttributes + pickupZip +
       '&' + cartItemsString;
 
@@ -330,10 +331,11 @@ const Cart = (function () {
       window.localStorage.setItem('delivery_zipcode', cartZipCode);
       window.localStorage.setItem('delivery_phone', phoneNumber);
     }
+
     const ajax = $.ajax({
       type: 'GET',
       url: theme.routes.validation_tool_url + 'draft_orders',
-      data: ajaxData,
+      data: ajaxData.replace(/#/g, '%23'),
       timeout: 3000
     });
 
