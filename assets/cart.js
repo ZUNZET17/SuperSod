@@ -540,6 +540,16 @@ const Cart = (function () {
         ev.preventDefault();
         return;
       }
+    } else if (typeof hasCustomPricing === 'undefined') {
+      let addressPrefix = 'Delivery address: ';
+      let customerAddress = firstZipAddress;
+      if (cartDeliveryMethod === 'pickup') {
+        addressPrefix = 'Pick up in: ';
+        customerAddress = cartPickupAddress;
+        cartParameters.push({parameter: 'customer_latitude', value: ''});
+        cartParameters.push({parameter: 'customer_longitude', value: ''});
+      }
+      cartParameters.push({parameter: 'customer_address', value: addressPrefix + customerAddress});
     }
 
     cartParameters.push({parameter: 'phone_number', value: phoneNumber});
@@ -547,7 +557,9 @@ const Cart = (function () {
 
     if (typeof hasCustomPricing === 'undefined') {
       removeInvalidBundleProducts(function () {
-        form.submit();
+        setTimeout(function () {
+          form.submit();
+        }, 1000);
       });
       return;
     }

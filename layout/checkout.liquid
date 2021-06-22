@@ -70,6 +70,13 @@
           background-image: url({{ settings.checkout_background_image | img_url: 'master' }});
         }
       {% endif %}
+
+      .content-box__row.display-none + .content-box__row:not(.display-none) {
+        border-top-width: 0;
+      }
+      .content-box__row:not(.display-none) ~ .content-box__row:not(.display-none) {
+        border-top-width: 1px;
+      }
     </style>
     {{ checkout_scripts }}
   </head>
@@ -159,13 +166,17 @@
       };
 
       const fillStorageAddress = function () {
+        const deliveryInput1 = document.querySelector('input[name="checkout[attributes][delivery_method]"]');
+        const deliveryInput2 = document.querySelector('input[name="checkout[attributes][delivery_type]"]');
+        const deliveryMethod = deliveryInput1 ? deliveryInput1.value : (deliveryInput2 ? deliveryInput2.value : null);
+
         if (
           window.localStorage.getItem('delivery_address') === null ||
           window.localStorage.getItem('delivery_address') === '' ||
           window.localStorage.getItem('delivery_method') === null ||
-          window.localStorage.getItem('delivery_method') === 'pickup'
+          window.localStorage.getItem('delivery_method') === 'pickup' ||
+          deliveryMethod === 'pickup'
         ) {
-          fillShippingPickupAddress();
           return;
         }
 
@@ -257,10 +268,6 @@
         }
 
         document.querySelector('.main__content form').insertAdjacentHTML('beforeend', cartAttributes);
-
-        startCheckoutStepObserver(document.querySelector('main'), function () {
-          document.querySelector('.main__content form').insertAdjacentHTML('beforeend', cartAttributes);
-        });
       };
 
       const startCheckoutStepObserver = function (targetNode, callback) {
@@ -283,6 +290,88 @@
         observer.observe(targetNode, config);
       };
 
+      const checkContactDelivery = function () {
+        const deliveryInput1 = document.querySelector('input[name="checkout[attributes][delivery_method]"]');
+        const deliveryInput2 = document.querySelector('input[name="checkout[attributes][delivery_type]"]');
+        const deliveryMethod = deliveryInput1 ? deliveryInput1.value : (deliveryInput2 ? deliveryInput2.value : null);
+
+        if (!deliveryMethod || !document.querySelector('#section-delivery-title')) {
+          return;
+        }
+
+        const contentBox = document.querySelector('#checkout_pick_up_in_store_selected + .content-box');
+        const labels = [].slice.call(contentBox.getElementsByClassName('radio__label__primary'));
+        for (let i = 0; i < labels.length; i++) {
+          const label = labels[i].innerHTML.trim();
+          let hide = false;
+
+          if (deliveryMethod === 'pickup' && label.indexOf('ick') < 0) {
+            hide = true;
+          } else if (deliveryMethod !== 'pickup' && label.indexOf('ick') > -1) {
+            hide = true;
+          }
+
+          const container = labels[i].parentNode.parentNode.parentNode;
+          const input = container.getElementsByClassName('input-radio');
+          if (hide === true) {
+            container.classList.add('display-none');
+          }
+
+          input[0].checked = !hide;
+        }
+
+        checkCustomerAddress();
+        startCheckoutStepObserver(document.querySelector('div[data-delivery-pickup-info] div[data-pickup-tab-content]'), function () {
+          checkCustomerAddress();
+        });
+      };
+
+      const checkCustomerAddress = function () {
+        const addressInput = document.querySelector('input[name="checkout[attributes][customer_address]"]');
+        if (!addressInput) {
+          return;
+        }
+
+        const addressParts = addressInput.value.split('-');
+        if (addressParts.length < 1) {
+          return;
+        }
+
+        const storeAddress = addressParts[addressParts.length - 1].trim().replace(/,/g, ' ').replace(/\s{2,}/g, ' ').toLocaleLowerCase();
+        findAndSelectPickupStore(storeAddress.replace(/\s[0-9]+$/g, ''));
+      };
+
+      const findAndSelectPickupStore = function (addressPart) {
+        const storeSelects = document.querySelectorAll('div[data-pickup-tab-content] .radio__label__primary');
+        let found = false;
+
+        if (addressPart.length > 1) {
+          for (let i = 0; i < storeSelects.length; i++) {
+            const store = storeSelects[i];
+            const storeAddress = store.querySelector('.small-text').textContent.trim().replace(/,/g, ' ').replace(/\s{2,}/g, ' ').toLocaleLowerCase();
+            const input = (store.parentNode.parentNode).querySelector('.input-radio');
+            input.parentNode.parentNode.parentNode.classList.add('display-none');
+
+            if (
+              storeAddress === addressPart ||
+              storeAddress.indexOf(addressPart) > -1 ||
+              addressPart.indexOf(storeAddress) > -1
+            ) {
+              input.checked = true;
+              input.parentNode.parentNode.parentNode.classList.remove('display-none');
+              found = true;
+            }
+          }
+        }
+
+        if (!found) {
+          for (let i = 0; i < storeSelects.length; i++) {
+            const input = (storeSelects[i].parentNode.parentNode).querySelector('.input-radio');
+            input.parentNode.parentNode.parentNode.classList.remove('display-none');
+          }
+        }
+      };
+
       if (
         Shopify.Checkout.step === 'shipping_method' &&
         window.localStorage.getItem('delivery_type') !== null
@@ -290,9 +379,15 @@
         hideShippingMethods();
       } else if (Shopify.Checkout.step === 'contact_information') {
         insertAttributes();
+        checkContactDelivery();
         setTimeout(function () {
           fillStorageAddress();
         }, 1000);
+
+        startCheckoutStepObserver(document.querySelector('main'), function () {
+          insertAttributes();
+          checkContactDelivery();
+        });
       }
 
       checkBreadcrumbLinks();
