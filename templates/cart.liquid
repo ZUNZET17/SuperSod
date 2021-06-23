@@ -13,6 +13,7 @@
 {%- assign first_zip = '' -%}
 {%- assign enable_pickup_date_selector = false -%}
 {%- assign is_pickup_date_selector_only = false -%}
+{%- assign pickup_stores = '' -%}
 {%- for item in cart.items -%}
   {%- if item.properties._enable_date_selector -%}
     {%- assign enable_pickup_date_selector = true -%}
@@ -140,6 +141,23 @@
       {%- assign contains_delivery_items = true -%}
     {%- endif -%}
   {%- endif -%}
+  {%- if fulfillment_method == 'pickup' -%}
+    {%- if item.properties._bold_bundles_price != blank -%}
+      {%- if pickup_stores != '' -%}
+        {%- assign pickup_stores = pickup_stores | append: ';;'-%}
+      {%- endif -%}
+      {%- if item.properties._method == 'pickup' -%}
+        {%- assign pickup_stores = pickup_stores | append: item.properties.pickup_location -%}
+      {%- else -%}
+        {%- assign pickup_stores = pickup_stores | append: cart.attributes.pickup_address -%}
+      {%- endif -%}
+    {%- elsif item.properties._method == 'pickup' -%}
+      {%- if pickup_stores != '' -%}
+        {%- assign pickup_stores = pickup_stores | append: ';;'-%}
+      {%- endif -%}
+      {%- assign pickup_stores = pickup_stores | append: item.properties.pickup_location -%}
+    {%- endif -%}
+  {%- endif -%}
 {%- endfor -%}
 {%- if fulfillment_method == 'delivery' -%}
   {%- assign contains_delivery_items = true -%}
@@ -147,6 +165,9 @@
 {%- if contains_delivery_items and contains_pickup_sod -%}
   {%- assign invalid_fulfillment = true -%}
   {%- assign fulfillment_method = 'none' -%}
+{%- endif -%}
+{%- if pickup_stores != '' -%}
+  {%- assign pickup_stores = pickup_stores | split: ';;' | uniq | join: ';;' -%}
 {%- endif -%}
 <div class="grid">
   <div class="grid__item">
@@ -399,6 +420,9 @@
         {%- if enable_pickup_date_selector == true and fulfillment_method == 'delivery' -%}
           {%- assign invalid_fulfillment = true -%}
         {%- endif -%}
+        {%- if pickup_stores contains ';;' -%}
+          {%- assign invalid_fulfillment = true -%}
+        {%- endif -%}
         <footer class="cart__footer">
           {%- if contains_soil_level_mix == true and contains_sod == false and fulfillment_method == 'delivery' -%}
             <div class="grid">
@@ -567,7 +591,11 @@
 
               <div>
                 {%- if invalid_fulfillment -%}
-                  <p class="cart__error-message">{{ 'layout.cart.cannot_mix_methods' | t }}</p>
+                  {%- if pickup_stores contains ';;' -%}
+                    <p class="cart__error-message">{{ 'layout.cart.cannot_mix_pickups' | t }}</p>
+                  {%- else -%}
+                    <p class="cart__error-message">{{ 'layout.cart.cannot_mix_methods' | t }}</p>
+                  {%- endif -%}
                 {%- else -%}
                   {%- if invalid_fulfillment == false and has_custom_pricing == true -%}
                     {%- assign is_draft_button = true -%}

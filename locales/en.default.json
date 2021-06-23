@@ -294,6 +294,7 @@
       "delivery_soil_level_mix": "Due to high demand your BigYellowBag of Soil³ Compost and\/or Level Mix will be delivered on or before July 2nd.  Please be on the lookout for a text message from us the day before your delivery with your delivery time window.",
       "notes_placeholder": "example: product placement if delivered, narrow roads, dead ends, gate code, etc.",
       "cannot_mix_methods": "Pickups and Deliveries cannot be combined in the same order.",
+      "cannot_mix_pickups": "Pickup stores cannot be combined in the same order.",
       "no_checkout_available": "An error ocurred while processing your request",
       "chosen_delivery_address": "Delivery address",
       "chosen_delivery_address_message": "Your product(s) will be delivered to the address listed above.  If this is not the correct delivery address, please go back to the product page and enter your desired delivery address.",
