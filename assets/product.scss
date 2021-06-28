@@ -229,3 +229,74 @@ button[class*="bold-ro__custombutton-"] + .btn--full {
 .rktheme-product-price-wrap {
   display: none;
 }
+
+/* ask lawn planted BOX  */
+/* -------------------- */
+.lawn-planted {
+  height: 50px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.lawn-planted-question {
+  font-size: 0.75rem;
+  margin-top: 15px;
+}
+
+.text-group-field {
+  width: 48%;
+  height: 100%;
+  border: 1px solid white;
+}
+
+.inner-block {
+  display: flex;
+  height: 100%;
+}
+
+.radio-custom {
+  display: none;
+}
+
+.radio-custom:checked ~ label {
+  color: white;
+  background-color: #54a45b;
+}
+
+.radio-custom-label {
+  background-color: lightgray;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px !important;
+  border-radius: 25px;
+  transition: all 0.3s ease-in-out;
+}
+
+.product-form label {
+  display: inline-flex;
+}
+
+.lawn-planted-warning-hide {
+  display: none;
+}
+
+.lawn-planted-warning {
+  font-size: 12px;
+  color: red;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .lawn-planted-question {
+    font-size: 16px;
+    margin-top: 15px;
+  }
+
+  .lawn-planted-warning {
+    margin-left: 35%;
+  }
+}

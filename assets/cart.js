@@ -322,6 +322,7 @@ const Cart = (function () {
       '&schedule_dates=' + (settings.dates.join(',')) +
       (discountCode ? '&discount_code=' + discountCode : '') +
       '&' + cartAttributes + pickupZip +
+      '&lawn_planted=' + isLawnAnswer +
       '&' + cartItemsString;
 
     window.localStorage.setItem('delivery_type', deliveryType);
@@ -543,6 +544,7 @@ const Cart = (function () {
     }
 
     cartParameters.push({parameter: 'phone_number', value: phoneNumber});
+    cartParameters.push({parameter: 'lawn_planted', value: isLawnAnswer});
     Utils.addToCartParameters(cartParameters);
 
     if (typeof hasCustomPricing === 'undefined') {
