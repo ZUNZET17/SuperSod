@@ -308,30 +308,29 @@
           {% endfor %}
         </select>
       </div>
-
-    {% comment %} SSOD-235 Show Question for Essential and Champ Products ONLY {% endcomment %}
+      {% comment %} SSOD-235 {% endcomment %}
       {% if product.tags contains 'ask-planted-12m' %}
-      {%- assign has-lawn-planted = true -%}
-      <p class="lawn-planted-question">Was your lawn planted in the last 12 months?*</p>
-      <div class="lawn-planted">
+      <div class="flex flex--row lawn-planted">
+        <div class="flex_item col-12">
+          <p class="lawn-planted-question">
+            <span id="AddToCartText">{{ 'products.product.answer_the_question' | t }}</span>
+          </p>
+        </div>
+      </div>
 
-        <div class="text-group-field">
-          <div class="inner-block">
-            <input type="radio" name="properties[_lawn_planted]" value="yes" class="radio-custom" id="lawn-planted-yes">
-            <label for="lawn-planted-yes" class="radio-custom-label">Yes</label>
-          </div>
+      <div class="flex flex--row flex--jc-between">
+        <div class="flex_item col-6">
+          <input type="radio" name="properties[_lawn_planted]" value="yes" class="radio-custom lawn-planted-yes" id="lawn-planted-yes">
+          <label for="lawn-planted-yes" class="radio-custom-label">Yes</label>
         </div>
 
-        <div class="text-group-field">
-          <div class="inner-block">
-            <input type="radio" name="properties[_lawn_planted]" value="no" class="radio-custom" id="lawn-planted-no">
-            <label for="lawn-planted-no" class="radio-custom-label">No</label>
-          </div>
+        <div class="flex_item col-6">
+          <input type="radio" name="properties[_lawn_planted]" value="no" class="radio-custom lawn-planted-no" id="lawn-planted-no">
+          <label for="lawn-planted-no" class="radio-custom-label">No</label>
         </div>
-
-      </div>  
+      </div>
       {% endif %}
-    {% comment %} End SSOD-235 {% endcomment %}
+
       <div class="flex flex--row flex--wrap flex--has-gutter flex--vertical-bottom" style="margin-bottom: 1em;">
         {% if section.settings.product_quantity_enable %}
           <div class="flex__item col-{% if uses_normal_toggle == true or use_variant_toggle == true %}3{% else %}4{% endif %}">
@@ -404,7 +403,13 @@
           </div>
         </div>
       </div>
-        <p class="lawn-planted-warning lawn-planted-warning-hide" id="lawn-planted-warning">please answer the lawn question*</p>
+
+      <div class="flex flex--row">
+        <div class="flex_item col-12">
+          <p class="lawn-planted-warning lawn-planted-warning-hide">please answer the lawn question*</p>
+        </div>
+      </div>
+
       <div>
         {% if use_pallet == true or use_check == true %}
           <div class="product-locations-dropdown js-quantity-block js-pickup-quantity-block hide">

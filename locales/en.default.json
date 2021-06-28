@@ -369,6 +369,7 @@
       "include_taxes": "Tax included.",
       "shipping_policy_html": "<a href=\"{{ link }}\">Shipping<\/a> calculated at checkout.",
       "quantity": "Quantity",
+      "answer_the_question": "Was your lawn planted in the last 12 months?*",
       "add_to_cart": "Add to Cart",
       "item_added_to_cart": "Item added to cart!",
       "view_cart": "View cart",
