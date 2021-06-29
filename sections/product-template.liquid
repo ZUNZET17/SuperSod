@@ -309,6 +309,28 @@
         </select>
       </div>
 
+      {% if product.tags contains 'ask-planted-12m' %}
+      <div class="flex flex--row lawn-planted">
+        <div class="flex__item col-12">
+          <p class="lawn-planted-question">
+            <span>{{ 'products.product.answer_the_question' | t }}</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="flex flex--row flex--jc-between">
+        <div class="flex__item col-12">
+          <input type="radio" name="properties[_lawn_planted]" value="yes" class="radio-custom js-lawn-planted-yes" id="lawn-planted-yes">
+          <label for="lawn-planted-yes" class="radio-custom-label">Yes</label>
+        </div>
+
+        <div class="flex__item col-12 radio-custom-wraper">
+          <input type="radio" name="properties[_lawn_planted]" value="no" class="radio-custom js-lawn-planted-no" id="lawn-planted-no">
+          <label for="lawn-planted-no" class="radio-custom-label">No</label>
+        </div>
+      </div>
+      {% endif %}
+
       <div class="flex flex--row flex--wrap flex--has-gutter flex--vertical-bottom" style="margin-bottom: 1em;">
         {% if section.settings.product_quantity_enable %}
           <div class="flex__item col-{% if uses_normal_toggle == true or use_variant_toggle == true %}3{% else %}4{% endif %}">
@@ -374,13 +396,20 @@
               {%- endunless -%}
 
             {%- else -%}
-            <button type="submit" name="add" id="AddToCart" class="js-product-submit button button--medium button--secondary product-single__cart-submit btn--full{% if section.settings.enable_payment_button %} shopify-payment-btn btn--secondary{% endif %}" data-cart-url="{{ routes.cart_url }}">
+            <button type="submit" name="add" id="AddToCart" class="js-product-submit js-lawn-planted button button--medium button--secondary product-single__cart-submit btn--full{% if section.settings.enable_payment_button %} shopify-payment-btn btn--secondary{% endif %}" data-cart-url="{{ routes.cart_url }}">
               <span id="AddToCartText">{{ 'products.product.add_to_cart' | t }}</span>
             </button>
             {%- endif -%}
           </div>
         </div>
       </div>
+
+      <div class="flex flex--row">
+        <div class="flex__item col-12 lawn-planted-warning-wraper">
+          <span class="lawn-planted-warning lawn-planted-warning-hide js-lawn-planted-warning">{{ 'products.product.answer_the_question_warning' | t }}</span>
+        </div>
+      </div>
+
       <div>
         {% if use_pallet == true or use_check == true %}
           <div class="product-locations-dropdown js-quantity-block js-pickup-quantity-block hide">

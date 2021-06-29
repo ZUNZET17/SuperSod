@@ -186,7 +186,13 @@
           <tbody>
             {%- assign subtotal = 0 -%}
             {%- assign variant_title = '' -%}
+            {%- assign is_lawn_planted = false -%}
+            {%- assign is_lawn_answer = 'no' -%}
             {% for item in cart.items %}
+              {%- if item.properties._lawn_planted != blank -%}
+                {%- assign is_lawn_planted = true -%}
+                {%- assign is_lawn_answer = item.properties._lawn_planted -%}
+              {%- endif -%}
               <tr class="cart__row responsive-table__row">
                 <td class="cart__table-cell--image small--text-center">
                   {% unless item.image == blank %}
@@ -654,6 +660,8 @@
 </div>
 {%- if cart.item_count > 0 -%}
   <script>
+    const isLawnPlanted = {{ is_lawn_planted }};
+    const isLawnAnswer = '{{ is_lawn_answer }}';
     const cartAttributes = {{cart.attributes | json}};
     const chooseStepOneMessage = "{{ 'layout.cart.select_option_in_step_one' | t }}";
     {%- if invalid_fulfillment == false and has_custom_pricing == true -%}

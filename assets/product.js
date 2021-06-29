@@ -27,6 +27,7 @@ const Product = (function () {
       .on('click', '.js-product-price-check', checkZipCode)
       .on('click', '.js-product-single-thumbnail', switchImage)
       .on('click', '.js-bundle-submit', interceptBundleSubmit)
+      .on('click', '.js-lawn-planted', checkLawnPlantedAnswer)
       .on('change keyup', '.js-zip-code', validateZipCode)
       .on('change keyup', '.js-autocomplete-address', resetAddressInput)
       .on('change', '.js-delivery-method', changeDeliveryForm)
@@ -54,6 +55,17 @@ const Product = (function () {
       }
     }
   };
+
+  const checkLawnPlantedAnswer = function (ev) {
+    let yesOption = document.querySelector('.js-lawn-planted-yes');
+    let noOption = document.querySelector('.js-lawn-planted-no');
+    let lawnPlantedWarning = document.querySelector(".js-lawn-planted-warning")
+
+    if ( !yesOption.checked && !noOption.checked) {
+      lawnPlantedWarning.classList.remove('lawn-planted-warning-hide');
+      ev.preventDefault();
+    }
+  }
 
   const initElements = function () {
     $('.js-show-youtube-popup').magnificPopup( { type:'iframe' } );
