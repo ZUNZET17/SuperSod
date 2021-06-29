@@ -308,24 +308,24 @@
           {% endfor %}
         </select>
       </div>
-      {% comment %} SSOD-235 {% endcomment %}
+
       {% if product.tags contains 'ask-planted-12m' %}
       <div class="flex flex--row lawn-planted">
-        <div class="flex_item col-12">
+        <div class="flex__item col-12">
           <p class="lawn-planted-question">
-            <span id="AddToCartText">{{ 'products.product.answer_the_question' | t }}</span>
+            <span>{{ 'products.product.answer_the_question' | t }}</span>
           </p>
         </div>
       </div>
 
       <div class="flex flex--row flex--jc-between">
-        <div class="flex_item col-6">
-          <input type="radio" name="properties[_lawn_planted]" value="yes" class="radio-custom lawn-planted-yes" id="lawn-planted-yes">
+        <div class="flex__item col-12">
+          <input type="radio" name="properties[_lawn_planted]" value="yes" class="radio-custom js-lawn-planted-yes" id="lawn-planted-yes">
           <label for="lawn-planted-yes" class="radio-custom-label">Yes</label>
         </div>
 
-        <div class="flex_item col-6">
-          <input type="radio" name="properties[_lawn_planted]" value="no" class="radio-custom lawn-planted-no" id="lawn-planted-no">
+        <div class="flex__item col-12 radio-custom-wraper">
+          <input type="radio" name="properties[_lawn_planted]" value="no" class="radio-custom js-lawn-planted-no" id="lawn-planted-no">
           <label for="lawn-planted-no" class="radio-custom-label">No</label>
         </div>
       </div>
@@ -405,8 +405,8 @@
       </div>
 
       <div class="flex flex--row">
-        <div class="flex_item col-12">
-          <p class="lawn-planted-warning lawn-planted-warning-hide">please answer the lawn question*</p>
+        <div class="flex__item col-12 lawn-planted-warning-wraper">
+          <span class="lawn-planted-warning lawn-planted-warning-hide">{{ 'products.product.answer_the_question_warning' | t }}</span>
         </div>
       </div>
 

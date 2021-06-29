@@ -57,8 +57,8 @@ const Product = (function () {
   };
 
   const checkLawnPlantedAnswer = function (ev) {
-    let yesOption = document.querySelector('.lawn-planted-yes');
-    let noOption = document.querySelector('.lawn-planted-no');
+    let yesOption = document.querySelector('.js-lawn-planted-yes');
+    let noOption = document.querySelector('.js-lawn-planted-no');
     let lawnPlantedWarning = document.querySelector(".lawn-planted-warning")
 
     if ( !yesOption.checked && !noOption.checked) {
