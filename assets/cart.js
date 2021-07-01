@@ -322,7 +322,7 @@ const Cart = (function () {
       '&schedule_dates=' + (settings.dates.join(',')) +
       (discountCode ? '&discount_code=' + discountCode : '') +
       '&' + cartAttributes + pickupZip +
-      '&lawn_planted=' + isLawnAnswer +
+      (typeof isLawnAnswer !== 'undefined' ? '&lawn_planted=' + isLawnAnswer : '') +
       '&' + cartItemsString;
 
     window.localStorage.setItem('delivery_type', deliveryType);
