@@ -42,6 +42,9 @@
       {% endif %}
 
       <h1 class="product-single__title" itemprop="name">{{ product.title }}</h1>
+      {%- if product.tags contains 'time-limit-21d' -%}
+      <p class="product-single__warn-msg">{{ 'products.product.time_limit_21d' | t }}</p>
+      {%- endif -%}
 
       <meta itemprop="priceCurrency" content="{{ cart.currency.iso_code }}">
 
