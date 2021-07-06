@@ -2,6 +2,7 @@ const Product = (function () {
   let minimumQuantity = null;
   let themeCart = null;
   let autocomplete;
+  let checkPULocationsTimeout = null;
   const componentForm = {
     street_number: 'short_name',
     route: 'long_name',
@@ -379,7 +380,8 @@ const Product = (function () {
                 button: button,
                 originalText: originalText,
                 deliveryMethod: deliveryMethod,
-                zipCode: zipCode
+                zipCode: zipCode,
+                skipShowSubmitButton: true
               });
             }
 
@@ -530,7 +532,11 @@ const Product = (function () {
     // $('.js-delivery-method').trigger('change');
     const submitButton = $('.js-product-submit');
     if (submitButton.hasClass('hide')) {
-      toggleSubmitButton('show');
+      if (options.skipShowSubmitButton) {
+        toggleSubmitButton('disable');
+      } else {
+        toggleSubmitButton('show');
+      }
     }
     $('.js-not-available-text').addClass('hide');
   };
@@ -848,8 +854,9 @@ const Product = (function () {
           (typeof customLocation.distance !== 'undefined' ? ' (' + customLocation.distance + ' miles away)' : '') +
           "</option>"
         );
-      }, '');
+      }, '<option value="">Select a pickup location</option>');
       dropdown.html(options);
+      dropdown.removeAttr('disabled')
     }
     dropdown.removeClass('hide');
   };
@@ -987,7 +994,7 @@ const Product = (function () {
     }
   };
 
-  const changeDeliveryElements = function (input) {
+  const changeDeliveryElements = function (input, skipTriggers) {
     $('.js-quantity-block').addClass('hide');
     $('.js-quantity-input').prop('disabled', true);
     $('.js-quantity-input-' + (input.value)).removeAttr('disabled');
@@ -996,6 +1003,9 @@ const Product = (function () {
 
     if (input.value === 'delivery' && minimumQuantity != null) {
       $('.js-quantity-input-' + (input.value)).prop('min', minimumQuantity);
+    }
+    if (input.value === 'pickup' && !skipTriggers) {
+      updatePickUpLocations();
     }
 
     $('.js-quantity-input-' + (input.value)).trigger('change');
@@ -1015,6 +1025,12 @@ const Product = (function () {
 
     if (ev.type === 'keyup' || ev.type === 'input') {
       hideSubmitButton();
+      if (checkPULocationsTimeout) {
+        clearTimeout(checkPULocationsTimeout);
+      }
+      checkPULocationsTimeout = setTimeout(() => {
+        updatePickUpLocations();
+      }, 300);
     }
 
     wrongQuantityText.addClass('hide');
@@ -1122,7 +1138,7 @@ const Product = (function () {
 
   const updateForm = function (zipCode) {
     const deliveryMethodInput = $('.js-delivery-method:checked')[0];
-    changeDeliveryElements(deliveryMethodInput);
+    changeDeliveryElements(deliveryMethodInput, true);
 
     const parameters = [];
 
@@ -1148,6 +1164,14 @@ const Product = (function () {
 
     let fullValue = 0;
     let unitPrice = 0;
+    if (select.id === 'pickup-select') {
+      if (selectedVariant) {
+        toggleSubmitButton('show');
+      } else {
+        toggleSubmitButton('disable');
+      }
+    }
+
     if (
       typeof usesVariantToggle === 'undefined' &&
       typeof usesRegularToggle === 'undefined' &&
@@ -1459,6 +1483,17 @@ const Product = (function () {
         dropdown.classList.add('sr-only');
       }
     }
+  };
+
+  const updatePickUpLocations = function () {
+    const fakeButton = document.createElement('button');
+    const dropdown = $('.js-product-pickup-variants');
+    dropdown.removeClass('hide')
+    dropdown.html('<option value="" selected="selected" disabled="true">Loading...</option>');
+    setTimeout(() => {
+      dropdown[0].setAttribute('disabled', 1);
+    }, 0)
+    checkZipCode({ target: fakeButton });
   };
 
   return {
