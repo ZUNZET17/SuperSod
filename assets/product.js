@@ -546,14 +546,17 @@ const Product = (function () {
     ajax.done(function (data) {
       const deliveryMethod = $('.js-delivery-method:checked').val();
       if (
-        typeof data.error !== 'undefined' ||
-        (
+        typeof data.error !== 'undefined'
+      ) {
+        if (
           deliveryMethod === 'pickup' &&
           typeof data.nearest_locations === 'undefined'
-        )
-      ) {
+        ) {
+          hideFormElements('.js-not-available-pickup-text');
+          return;
+        }
+
         availiabilityError({zipCode: ''});
-        hideFormElements('.js-not-available-pickup-text');
         return;
       }
 
