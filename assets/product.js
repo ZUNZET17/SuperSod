@@ -854,7 +854,7 @@ const Product = (function () {
           (typeof customLocation.distance !== 'undefined' ? ' (' + customLocation.distance + ' miles away)' : '') +
           "</option>"
         );
-      }, '<option value="" disabled>Select a pickup location</option>');
+      }, '<option value="" disabled selected="selected" >Select a pickup location</option>');
       dropdown.html(options);
       dropdown.removeAttr('disabled')
     }
