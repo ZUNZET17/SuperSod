@@ -1190,7 +1190,7 @@ const Product = (function () {
     } else {
       // If the select triggered is the pick up selector and there is no value do nothing 
       if (select.id === 'pickup-select' && !selectedVariant) {
-          return 
+        return;
       }
       fullValue = $('.js-product-variants option:selected').data('price-val') * $('.js-product-quantity').val();
       unitPrice = $('.js-product-variants option:selected').data('price-val') * 1;
