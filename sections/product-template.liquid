@@ -443,6 +443,7 @@
 
       {% endform %}
       {%- if use_pallet == true or use_check == true -%}
+      <p class="product-single__pallet-msg product-single__pallet-msg--unavailable js-not-available-delivery hide">{{ 'products.product.delivery_unavailable_html' | t }}</p>
       <p class="product-single__pallet-msg product-single__pallet-msg--unavailable js-not-available-text hide">{{ 'products.product.pallet_unavailable_html' | t }}</p>
       <p class="product-single__pallet-msg product-single__pallet-msg--unavailable js-not-available-pickup-text hide">{{ 'products.product.pickup_unavailable_html' | t }}</p>
       {%- if uses_normal_toggle == false and use_variant_toggle == false -%}
