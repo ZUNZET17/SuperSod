@@ -194,7 +194,6 @@ const Product = (function () {
       const count = (ids.match(/&/g) || []).length;
       button.html(originalText);
       if (count < 1) {
-        console.log(1)
         $('.js-not-available-text').removeClass('hide');
       } else {
         $('.js-not-available-text').addClass('hide');
@@ -203,7 +202,6 @@ const Product = (function () {
       return;
     } else if (handles.length < 1 && ids === null) {
       button.html(originalText);
-      console.log(3)
       $('.js-not-available-text').removeClass('hide');
       return;
     }
