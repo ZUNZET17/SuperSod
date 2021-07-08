@@ -1461,11 +1461,12 @@ const Product = (function () {
       }
     }
   };
-  const choosePickUpMode = function () {
+  const choosePickUpMode = function (ev) {
+    ev.preventDefault();
     $('.js-not-available-delivery').addClass('hide');
     const pickUpButton = document.querySelector('.js-delivery-method[value="pickup"]');
     if (pickUpButton) {
-      pickUpButton.click()
+      pickUpButton.click();
     }
   }
   return {
