@@ -544,7 +544,9 @@ const Cart = (function () {
     }
 
     cartParameters.push({parameter: 'phone_number', value: phoneNumber});
-    cartParameters.push({parameter: 'lawn_planted', value: isLawnAnswer});
+    if (typeof isLawnAnswer !== 'undefined') {
+      cartParameters.push({parameter: 'lawn_planted', value: isLawnAnswer});
+    }
     Utils.addToCartParameters(cartParameters);
 
     if (typeof hasCustomPricing === 'undefined') {
