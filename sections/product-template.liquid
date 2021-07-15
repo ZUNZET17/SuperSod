@@ -390,8 +390,9 @@
                 </div>
               {%- endunless -%}
               {%- unless is_delivery_only -%}
-                <div class="js-quantity-block js-pickup-quantity-block{% unless is_pickup_only %} hide{% endunless %}">
-                  <button type="button" class="button button--medium button--secondary product-single__cart-submit btn--full js-product-price-check">{{pickup_button_text}}</button>
+                <div class="product-locations-dropdown js-quantity-block js-pickup-quantity-block hide">
+                  <label for="pickup-select" class="js-product-pickup-variants-title hide">{{ 'layout.product.location' | t }}</label>
+                  <select name="properties[pickup_location]" id="pickup-select" class="form__input full-width js-product-pickup-variants hide"></select>
                 </div>
               {%- endunless -%}
 
@@ -412,10 +413,6 @@
 
       <div>
         {% if use_pallet == true or use_check == true %}
-          <div class="product-locations-dropdown js-quantity-block js-pickup-quantity-block hide">
-            <label for="pickup-select" class="js-product-pickup-variants-title hide">{{ 'layout.product.location' | t }}</label>
-            <select name="properties[pickup_location]" id="pickup-select" class="form__input full-width js-product-pickup-variants hide"></select>
-          </div>
           {%- if uses_normal_toggle == false and use_variant_toggle == false -%}
             <p class="product-single__pallet-msg product-single__price product-single__price--pallet-price js-current-price-unit hide"></p>
           {%- endif -%}

@@ -102,13 +102,13 @@ const Cart = (function () {
     if (cartDeliveryMethod === 'pickup') {
       ajaxZip = (typeof firstZip !== 'undefined' ? firstZip : '');
     }
-    const ajaxData = {
-      latitude: $('.js-address-latitude').val(),
-      longitude: $('.js-address-longitude').val(),
-      type_delivery_pickup: input.val(),
-      shop_domain: theme.routes.validation_tool_shop,
-      zipcode: ajaxZip
-    };
+    let ajaxData = 'type_delivery_pickup=' + input.val() +
+      '&shop_domain=' + theme.routes.validation_tool_shop +
+      '&zipcode=' + ajaxZip;
+
+    for (let i = 0; i < cartItems.length; i++) {
+      ajaxData += '&products[]shopify_product_id=' + cartItems[i].product_id;
+    }
 
     button.html('Checking ...');
     noDatesInfo.addClass('hide');
@@ -544,7 +544,9 @@ const Cart = (function () {
     }
 
     cartParameters.push({parameter: 'phone_number', value: phoneNumber});
-    cartParameters.push({parameter: 'lawn_planted', value: isLawnAnswer});
+    if (typeof isLawnAnswer !== 'undefined') {
+      cartParameters.push({parameter: 'lawn_planted', value: isLawnAnswer});
+    }
     Utils.addToCartParameters(cartParameters);
 
     if (typeof hasCustomPricing === 'undefined') {

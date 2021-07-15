@@ -293,3 +293,13 @@ button[class*="bold-ro__custombutton-"] + .btn--full {
   color: red;
   text-align: center;
 }
+.product-locations-dropdown {
+  margin: 0;
+}
+.product-locations-dropdown .form__input {
+  font-size: 0.9em;
+  margin: 0;
+}
+.product-locations-dropdown .form__input:focus {
+  margin: 0;
+}
