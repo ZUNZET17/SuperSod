@@ -362,7 +362,7 @@
       "regular_price": "Regular price",
       "sale_price": "Sale price",
       "sold_out": "Sold Out ",
-      "time_limit_21d": "This product is guaranteed to be sent in less than 21 days",
+      "time_limit_21d": "This product will be delivered within the next 21 days and you will receive a text message reminder the day before your delivery.",
       "unavailable": "Unavailable",
       "on_sale": "Sale",
       "on_sale_from_html": "On Sale from {{ price }}",
