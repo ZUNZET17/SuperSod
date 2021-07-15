@@ -25,6 +25,7 @@ const Product = (function () {
 
   const setEvents = function () {
     $(document)
+      .on('click', '.js-pickup-shorcut', choosePickUpMode)
       .on('click', '.js-product-price-check', checkZipCode)
       .on('click', '.js-product-single-thumbnail', switchImage)
       .on('click', '.js-bundle-submit', interceptBundleSubmit)
@@ -388,7 +389,7 @@ const Product = (function () {
             return;
           }
           button.html(originalText);
-          hideFormElements();
+          hideFormElements('.js-not-available-delivery');
 
           return;
         } else if (response.data[0][deliveryMethod] === false && deliveryMethod === 'pickup' ) {
@@ -620,7 +621,7 @@ const Product = (function () {
           }
 
           button.html(originalText);
-          hideFormElements();
+          hideFormElements('.js-not-available-delivery');
           return;
         } else if (response.data[0][deliveryMethod] === false && deliveryMethod === 'pickup' ) {
           if (typeof isSod !== 'undefined') {
@@ -1494,6 +1495,15 @@ const Product = (function () {
       if (hasDeliveryVariant) {
         dropdown.classList.add('sr-only');
       }
+    }
+  };
+
+  const choosePickUpMode = function (ev) {
+    ev.preventDefault();
+    $('.js-not-available-delivery').addClass('hide');
+    const pickUpButton = document.querySelector('.js-delivery-method[value="pickup"]');
+    if (pickUpButton) {
+      pickUpButton.click();
     }
   };
 
