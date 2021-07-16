@@ -116,7 +116,7 @@ const Cart = (function () {
       type: 'GET',
       url: theme.routes.validation_tool_url + endpoint,
       data: ajaxData,
-      timeout: 3000
+      timeout: 5000
     });
     ajax.done(function (data) {
       if (!data || typeof data.available_dates === 'undefined') {
