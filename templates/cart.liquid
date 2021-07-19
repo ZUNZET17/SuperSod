@@ -610,7 +610,7 @@
                     {%- endif -%}
                     <button type="{% unless is_draft_button %}submit{% else %}button{% endunless%}" name="{% if is_draft_button %}go_to_checkout{% else %}checkout{% endif %}" class="btn full-width {% unless is_draft_button %}js-submit-button{% else %}js-go-to-checkout{% endunless%}" disabled>{{ 'cart.general.checkout' | t }}</button>
                   {%- elsif invalid_fulfillment == false -%}
-                    <button type="submit" name="checkout" class="btn full-width" disabled>{{ 'cart.general.checkout' | t }}</button>
+                    <button type="submit" name="checkout" class="btn full-width js-submit-button">{{ 'cart.general.checkout' | t }}</button>
                   {%- else -%}
                     <button type="submit" name="checkout" class="btn full-width">{{ 'cart.general.checkout' | t }}</button>
                   {%- endif -%}
