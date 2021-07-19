@@ -453,7 +453,7 @@ const Product = (function () {
 
       if (!isAvailable) {
         button.html(originalText);
-        
+
         hideFormElements();
         return;
       }
@@ -788,7 +788,10 @@ const Product = (function () {
           total_price: totalPrice
         });
 
-        if (!!isBundle) {
+        if (
+          typeof isBundle !== 'undefined' &&
+          !!isBundle
+        ) {
           // Disable show submit button when it's a pickup type in order to force the user to select a pickup location
           // toggleSubmitButton('show', 'js-product-submit');
           showButtonMessage('pickup');
@@ -1035,8 +1038,10 @@ const Product = (function () {
       if (checkPULocationsTimeout) {
         clearTimeout(checkPULocationsTimeout);
       }
-      checkPULocationsTimeout = setTimeout(() => {
-        updatePickUpLocations();
+      checkPULocationsTimeout = setTimeout(function () {
+        if (input.classList.contains('js-quantity-input-pickup')) {
+          updatePickUpLocations();
+        }
       }, 300);
     }
 
@@ -1192,7 +1197,7 @@ const Product = (function () {
       unitPrice = foundVariant[0].priceValue * 1;
       selectVariant(foundVariant[0]);
     } else {
-      // If the select triggered is the pick up selector and there is no value do nothing 
+      // If the select triggered is the pick up selector and there is no value do nothing
       if (select.id === 'pickup-select' && !selectedVariant) {
         return;
       }
