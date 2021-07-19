@@ -543,14 +543,19 @@ const Cart = (function () {
       }
     } else if (typeof hasCustomPricing === 'undefined') {
       let addressPrefix = 'Delivery address: ';
-      let customerAddress = firstZipAddress;
+      let customerAddress = '';
+      if (typeof firstZipAddress !== 'undefined') {
+        customerAddress = firstZipAddress;
+      }
       if (cartDeliveryMethod === 'pickup') {
         addressPrefix = 'Pick up in: ';
         customerAddress = cartPickupAddress;
         cartParameters.push({parameter: 'customer_latitude', value: ''});
         cartParameters.push({parameter: 'customer_longitude', value: ''});
       }
-      cartParameters.push({parameter: 'customer_address', value: addressPrefix + customerAddress});
+      if (customerAddress !== '') {
+        cartParameters.push({parameter: 'customer_address', value: addressPrefix + customerAddress});
+      }
     }
 
     cartParameters.push({parameter: 'phone_number', value: phoneNumber});
