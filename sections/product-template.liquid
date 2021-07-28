@@ -299,11 +299,12 @@
           {%- endunless -%}
         {%- endif -%}
         <select name="id" id="ProductSelect-{{ section.id }}" class="form__input full-width js-product-variants{% if hide %} hide{% endif %}" required>
+          {%- assign variants_size = product.variants | size -%}
           {% for variant in product.variants %}
             {% if variant.available %}
             <option {% if variant == product.selected_or_first_available_variant %} selected="selected" {% endif %}
-              value="{% if product.tags contains 'date-selector' and forloop.index == 1 %}{% else %}{{ variant.id }}{% endif %}"
-              {% if product.tags contains 'date-selector' and forloop.index == 1 %} disabled{% endif %}
+              value="{% if product.tags contains 'date-selector' and forloop.index == 1 and variants_size > 1 %}{% else %}{{ variant.id }}{% endif %}"
+              {% if product.tags contains 'date-selector' and forloop.index == 1 and variants_size > 1 %} disabled{% endif %}
               {% if use_pallet == true %} data-sod-zips="{{ variant.metafields.sod.zips }}" data-price="{{ variant.price | money_with_currency }}"{% endif %}
               {% if variant.compare_at_price %} data-compare-val="{{ variant.compare_at_price | money_without_currency }}"{% endif %}
               data-sku="{{ variant.sku }}" data-price-val="{{ variant.price | money_without_currency }}">{{ variant.title }}</option>

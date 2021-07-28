@@ -670,7 +670,7 @@ const Cart = (function () {
     showRemoveLinks();
 
     if (
-      typeof cartDeliveryAttribute !== undefined &&
+      typeof cartDeliveryAttribute !== 'undefined' &&
       cartDeliveryAttribute !== '' &&
       cartDeliveryAttribute !== cartDeliveryMethod
     ) {

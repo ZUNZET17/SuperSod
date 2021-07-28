@@ -11,12 +11,12 @@
 {%- assign hide_expedited = false -%}
 {%- assign contains_bundle_items = false -%}
 {%- assign first_zip = '' -%}
-{%- assign enable_pickup_date_selector = false -%}
+{%- assign enable_date_selector = false -%}
 {%- assign is_pickup_date_selector_only = false -%}
 {%- assign pickup_stores = '' -%}
 {%- for item in cart.items -%}
   {%- if item.properties._enable_date_selector -%}
-    {%- assign enable_pickup_date_selector = true -%}
+    {%- assign enable_date_selector = true -%}
   {%- endif -%}
   {%- if first_zip == '' -%}
     {%- assign first_zip = item.properties.pickup_location -%}
@@ -38,7 +38,7 @@
     {%- if item.properties._method -%}
       {%- if item.properties._method == 'delivery' -%}
         {%- if item.properties._enable_date_selector -%}
-          {%- assign enable_pickup_date_selector = true -%}
+          {%- assign enable_date_selector = true -%}
         {%- else -%}
           {%- assign available_to_deliver = true -%}
           {%- assign contains_deliverable_sod = true -%}
@@ -46,17 +46,17 @@
         {%- endif -%}
       {%- else -%}
         {%- if item.properties._enable_date_selector -%}
-          {%- assign enable_pickup_date_selector = true -%}
+          {%- assign enable_date_selector = true -%}
         {%- else -%}
           {%- assign contains_pickup_sod = true -%}
           {%- assign is_pickup_date_selector_only = false -%}
-          {%- assign enable_pickup_date_selector = false -%}
+          {%- assign enable_date_selector = false -%}
         {%- endif -%}
       {%- endif -%}
     {%- else -%}
       {%- if item.properties._enable_date_selector -%}
         {%- assign is_pickup_date_selector_only = true -%}
-        {%- assign enable_pickup_date_selector = true -%}
+        {%- assign enable_date_selector = true -%}
       {%- endif -%}
     {%- endif -%}
   {%- elsif item.product.type contains 'Fertilizer' and item.properties._method == 'delivery' -%}
@@ -73,7 +73,7 @@
     {%- assign available_to_deliver = true -%}
     {%- assign contains_deliverable_sod = true -%}
     {%- assign is_pickup_date_selector_only = false -%}
-    {%- if enable_pickup_date_selector == true -%}
+    {%- if enable_date_selector == true -%}
       {%- assign invalid_fulfillment = true -%}
       {%- assign fulfillment_method = 'none' -%}
     {%- endif -%}
@@ -86,7 +86,7 @@
         {%- assign invalid_fulfillment = false -%}
         {%- assign fulfillment_method = item.properties._method -%}
       {%- elsif item.product.type contains 'Sod' and item.properties._method == 'pickup' -%}
-        {%- if enable_pickup_date_selector == true -%}
+        {%- if enable_date_selector == true -%}
           {%- assign invalid_fulfillment = true -%}
           {%- assign fulfillment_method = 'none' -%}
         {%- else -%}
@@ -405,7 +405,7 @@
         </table>
 
         {%- if fulfillment_method == '' and has_custom_pricing == true -%}
-          {%- if enable_pickup_date_selector == true and fulfillment_method == 'delivery' -%}
+          {%- if enable_date_selector == true and fulfillment_method == 'delivery' -%}
             {%- assign invalid_fulfillment = true -%}
           {%- else -%}
             {%- assign fulfillment_method = cart.attributes.delivery_method -%}
@@ -423,7 +423,7 @@
         {%- if available_to_deliver == true and fulfillment_method == 'none' -%}
           {%- assign invalid_fulfillment = true -%}
         {%- endif -%}
-        {%- if enable_pickup_date_selector == true and fulfillment_method == 'delivery' -%}
+        {%- if enable_date_selector == true and fulfillment_method == 'none' -%}
           {%- assign invalid_fulfillment = true -%}
         {%- endif -%}
         {%- if pickup_stores contains ';;' -%}
@@ -559,21 +559,21 @@
               {%- assign push_class = ' large-up--push-two-thirds' -%}
               </div>
               <div class="grid">
-                {%- unless enable_pickup_date_selector -%}
+                {%- unless enable_date_selector -%}
                   <div class="grid__item large-up--one-third">
                     <label for="discount_code" class="cart__note-label label--block">Discount code</label>
                     <input type="text" name="discount" id="discount_code" class="form__input js-discount-code">
                   </div>
                 {%- endunless -%}
-                <div class="grid__item{% if enable_pickup_date_selector %} large-up--push-one-third{% endif %} large-up--two-thirds">
+                <div class="grid__item{% if enable_date_selector %} large-up--push-one-third{% endif %} large-up--two-thirds">
                   <label for="CartSpecialInstructions" class="cart__note-label label--block">{{ 'cart.general.note' | t }}</label>
                   <textarea name="note" id="CartSpecialInstructions" class="input--block js-cart-note form__input cart__note{{textarea_extra_class}}" placeholder="{{ 'layout.cart.notes_placeholder' | t }}">{{ cart.note }}</textarea>
                 </div>
-                {%- if enable_pickup_date_selector -%}
+                {%- if enable_date_selector -%}
                   </div><div class="grid">
                 {%- endif -%}
             {%- elsif invalid_fulfillment and has_custom_pricing == true -%}
-              {%- if enable_pickup_date_selector -%}
+              {%- if enable_date_selector -%}
                 {%- assign push_class = ' large-up--push-two-thirds' -%}
               {%- endif -%}
             {%- endif -%}
