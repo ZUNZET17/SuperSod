@@ -110,6 +110,13 @@ $desk: 1100px;
   line-height: 17px;
 }
 
+@media (min-width: 1280px) {
+  .product-single__description {
+    font-size: 21px;
+    line-height: 1.5;
+  }
+}
+
 .recommendations-separator {
   margin-top: 0;
   margin-bottom: 48px;
