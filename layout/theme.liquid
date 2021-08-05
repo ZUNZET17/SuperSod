@@ -90,6 +90,7 @@
   {%- endif -%}
   {%- if template.name == 'cart' -%}
     <link rel="preload" as="style" href="{{ 'zebra_datepicker.min.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" as="style" href="{{ 'magnific-popup.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
     <link rel="preload" as="style" href="{{ 'cart.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
   {%- endif -%}
   <noscript>
@@ -124,6 +125,7 @@
     {%- endif -%}
     {%- if template.name == 'cart' -%}
       <link rel="stylesheet" href="{{ 'zebra_datepicker.min.css' | asset_url }}">
+      <link rel="stylesheet" href="{{ 'magnific-popup.css' | asset_url }}">
       <link rel="stylesheet" href="{{ 'cart.css' | asset_url }}">
     {%- endif -%}
   </noscript>
@@ -297,6 +299,7 @@
   {%- endif -%}
   {%- if template.name == 'cart' -%}
     <script src="{{ 'zebra_datepicker.min.js' | asset_url }}" defer></script>
+    <script src="{{ 'jquery.magnific-popup.min.js' | asset_url }}" defer></script>
     <script src="{{ 'cart.js' | asset_url }}" defer crossorigin></script>
   {%- endif -%}
 

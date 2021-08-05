@@ -14,6 +14,7 @@
 {%- assign enable_date_selector = false -%}
 {%- assign is_pickup_date_selector_only = false -%}
 {%- assign pickup_stores = '' -%}
+{%- assign sod_quantity = 0 -%}
 {%- for item in cart.items -%}
   {%- if item.properties._enable_date_selector -%}
     {%- assign enable_date_selector = true -%}
@@ -35,6 +36,7 @@
   {%- endif -%}
   {%- if item.product.type contains 'Sod' -%}
     {%- assign contains_sod = true -%}
+    {%- assign sod_quantity = sod_quantity | plus: item.quantity -%}
     {%- if item.properties._method -%}
       {%- if item.properties._method == 'delivery' -%}
         {%- if item.properties._enable_date_selector -%}
@@ -608,7 +610,12 @@
                     {%- if is_pickup_date_selector_only == true -%}
                       {%- assign is_draft_button = false -%}
                     {%- endif -%}
-                    <button type="{% unless is_draft_button %}submit{% else %}button{% endunless%}" name="{% if is_draft_button %}go_to_checkout{% else %}checkout{% endif %}" class="btn full-width {% unless is_draft_button %}js-submit-button{% else %}js-go-to-checkout{% endunless%}" disabled>{{ 'cart.general.checkout' | t }}</button>
+                    {%- if contains_sod and settings.use_soil3_promo -%}
+                      <a href="#soil3-modal" class="hide js-open-soil3-modal">Show soil3 modal</a>
+                      <button type="button" name="open_soil_modal" class="btn full-width js-go-to-checkout" data-quantity="{{ sod_quantity }}" disabled>{{ 'cart.general.checkout' | t }}</button>
+                    {%- else -%}
+                      <button type="{% unless is_draft_button %}submit{% else %}button{% endunless%}" name="{% if is_draft_button %}go_to_checkout{% else %}checkout{% endif %}" class="btn full-width {% unless is_draft_button %}js-submit-button{% else %}js-go-to-checkout{% endunless%}" disabled>{{ 'cart.general.checkout' | t }}</button>
+                    {%- endif -%}
                   {%- elsif invalid_fulfillment == false -%}
                     <button type="submit" name="checkout" class="btn full-width js-submit-button">{{ 'cart.general.checkout' | t }}</button>
                   {%- else -%}
@@ -658,6 +665,28 @@
     {% endif %}
   </div>
 </div>
+{%- if contains_sod and settings.use_soil3_promo -%}
+  {%- assign promo_title = settings.soil3_title_500_more -%}
+  {%- assign promo_message = settings.soil3_message_500_more -%}
+  {%- assign promo_handle = settings.soil3_product_500_more -%}
+  {%- if sod_quantity < 500 -%}
+    {%- assign promo_title = settings.soil3_title_500_less -%}
+    {%- assign promo_message = settings.soil3_message_500_less -%}
+    {%- assign promo_handle = settings.soil3_product_500_less -%}
+  {%- endif -%}
+  <section id="soil3-modal" class="soil3-modal mfp-hide">
+    <h2 class="soil3-modal__title text-center">{{ promo_title }}</h2>
+    <p class="soil3-modal__message">{{ promo_message }}</p>
+      {%- if promo_handle -%}
+        {%- assign promo_product = all_products[promo_handle] -%}
+        {% render 'product-modal-card', product: promo_product %}
+      {%- endif -%}
+      <div class="text-center">
+        <button type="button" class="btn js-soil3-continue-to-checkout js-go-to-checkout">{{ 'cart.general.checkout' | t }}</button>
+      </div>
+    </div>
+  </section>
+{%- endif -%}
 {%- if cart.item_count > 0 -%}
   <script>
     const isLawnPlanted = {{ is_lawn_planted }};

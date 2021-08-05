@@ -1596,6 +1596,50 @@
         "label": "Soil3 discount when added with sod (in cents)",
         "info": "$49.99 equals 4999 cents",
         "default": 0
+      },
+      {
+        "type": "header",
+        "content": "Soil3 promo"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_soil3_promo",
+        "label": "Enable promo",
+        "default": false
+      },
+      {
+        "type": "product",
+        "id": "soil3_product_500_more",
+        "label":"Soil3 promoted product when customer has 500 or more sq ft of sod"
+      },
+      {
+        "type": "text",
+        "id": "soil3_title_500_more",
+        "label":"Soil3 promoted title when customer has 500 or more sq ft of sod",
+        "default": "Special offer"
+      },
+      {
+        "type": "textarea",
+        "id": "soil3_message_500_more",
+        "label":"Soil3 promoted message when customer has 500 or more sq ft of sod",
+        "default": "What are you putting under your sod? You only have one shot at correcting your poor soil. We recommend 1 Soil3 for every 1-2 pallets of sod."
+      },
+      {
+        "type": "product",
+        "id": "soil3_product_500_less",
+        "label":"Soil3 promoted product when customer has 500 or less sq ft of sod"
+      },
+      {
+        "type": "text",
+        "id": "soil3_title_500_less",
+        "label":"Soil3 promoted title when customer has 500 or less sq ft of sod",
+        "default": "Special offer"
+      },
+      {
+        "type": "textarea",
+        "id": "soil3_message_500_less",
+        "label":"Soil3 promoted message when customer has 500 or less sq ft of sod",
+        "default": "What are you putting under your sod? You only have one shot at correcting your poor soil. We recommend 1 Soil3 for every 1-2 pallets of sod."
       }
     ]
   },
