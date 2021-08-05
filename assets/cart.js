@@ -466,6 +466,17 @@ const Cart = (function () {
     return true;
   };
 
+  const updateCartNote = function () {
+    $.ajax({
+      type: 'POST',
+      url: '/cart/update.js',
+      dataType: 'json',
+      data: {
+        note: document.querySelector('.js-cart-note').value
+      }
+    });
+  };
+
   const interceptCartSubmit = function (ev) {
     const deliveryType = $('.js-delivery-type:checked').val();
 
@@ -563,6 +574,7 @@ const Cart = (function () {
       cartParameters.push({parameter: 'lawn_planted', value: isLawnAnswer});
     }
     Utils.addToCartParameters(cartParameters);
+    updateCartNote();
 
     if (typeof hasCustomPricing === 'undefined') {
       removeInvalidBundleProducts(function () {
