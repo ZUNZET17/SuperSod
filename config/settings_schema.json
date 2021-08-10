@@ -1639,7 +1639,7 @@
         "type": "textarea",
         "id": "soil3_message_500_less",
         "label":"Soil3 promoted message when customer has 500 or less sq ft of sod",
-        "default": "What are you putting under your sod? You only have one shot at correcting your poor soil. We recommend 1 Soil3 for every 1-2 pallets of sod."
+        "default": "We recommend 1 Mini Cube for every 4 rolls of sod."
       }
     ]
   },
