@@ -256,6 +256,7 @@ const Cart = (function () {
     };
 
     if (document.querySelector('.js-open-soil3-modal')) {
+      button.html(originalText);
       showSoil3Modal(function () {
         sendOrderData(settings);
       });
@@ -724,7 +725,12 @@ const Cart = (function () {
     });
 
     $('.js-open-soil3-modal').magnificPopup({
-      type:'inline'
+      type:'inline',
+      callbacks: {
+        close: function () {
+          $('.js-open-soil3-modal').removeClass('js-open-soil3-modal');
+        }
+      }
     });
   };
 
