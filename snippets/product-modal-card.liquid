@@ -1,0 +1,73 @@
+{% assign on_sale = false %}
+{% assign sale_text = 'products.product.sale' | t %}
+{% if product.compare_at_price > product.price %}
+  {% assign on_sale = true %}
+{% endif %}
+
+{% assign sold_out = true %}
+{% assign sold_out_text = 'products.product.sold_out' | t %}
+{% if product.available %}
+  {% assign sold_out = false %}
+{% endif %}
+
+{%- assign show_price = true -%}
+{%- unless product.tags contains 'Bundle' -%}
+  {%- if collection_handle == 'sod' -%}
+  	{%- assign show_price = false -%}
+  {%- endif -%}
+{%- endunless -%}
+
+{%- assign img_url = product.featured_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+
+<section class="soil3-modal__card">
+  <a class="cart__image-container" href="{{ product.url | within: collections.all }}" style="padding-top:{{ 1 | divided_by: product.featured_image.aspect_ratio | times: 100}}%;">
+    <img
+      class="cart__image lazyload"
+      src="{{ product.featured_image | img_url: '100x100' }}"
+      data-src="{{ img_url }}"
+      data-widths="[180, 230, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+      data-aspectratio="{{ product.featured_image.aspect_ratio }}"
+      data-sizes="auto"
+      alt="{{ product.title | strip_html }}"
+      itemprop="image">
+  </a>
+  <div class="product-card__meta">
+    <h3>
+      <a href="{{ product.url | within: collections.all }}">{{ product.title | strip_html }}</a>
+    </h3>
+  </div>
+  <div class="product-card__bottom">
+    <div class="product-card__price">
+      {% if product.compare_at_price > product.price %}
+        <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
+        <s>{{ product.compare_at_price | money }}</s>
+        <span class="product__price--on-sale">
+          {% if product.price_varies %}
+            {% assign sale_price = product.price | money %}
+            {{ 'products.product.on_sale_from_html' | t: price: sale_price }}
+          {% else %}
+            <strong class="visually-hidden">{{ 'products.product.sale_price' | t }}</strong>
+            {{ product.price | money }}
+          {% endif %}
+        </span>
+      {% else %}
+        <span class="product__price">
+          {% if product.price_varies %}
+            {%- assign price = product.price | money -%}
+            <span class="product-card__from-label">{{ 'products.product.from_text_html' | t: price: price }}</span>
+          {% else %}
+            <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
+            {{ product.price | money }}
+          {% endif %}
+        </span>
+      {% endif %}
+
+      {% if sold_out %}— <strong class="sold-out-text">{{ 'products.product.sold_out' | t }}</strong>{% endif %}
+
+      {% if product.price_varies == false %}
+        {% render 'product-unit-price', variant: product.selected_or_first_available_variant %}
+      {% endif %}
+    </div>
+    <a href="{{ product.url | within: collection }}" class="product-card__cta button button--primary button--outlined">Buy now</a>
+  </div>
+</section>

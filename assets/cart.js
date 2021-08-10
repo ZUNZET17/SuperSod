@@ -254,8 +254,20 @@ const Cart = (function () {
       dates: dates,
       originalText: originalText
     };
-    sendOrderData(settings);
+
+    if (document.querySelector('.js-open-soil3-modal')) {
+      showSoil3Modal(function () {
+        sendOrderData(settings);
+      });
+    } else {
+      sendOrderData(settings);
+    }
   };
+
+  const showSoil3Modal = function (callback) {
+    $('.js-open-soil3-modal').trigger('click');
+    $('.js-soil3-continue-to-checkout').on('click', callback);
+  }
 
   const processDates = function (settings) {
     const ajaxData = {
@@ -709,6 +721,10 @@ const Cart = (function () {
       if(radioGroup.length === 0) {
         alert(chooseStepOneMessage);
       }
+    });
+
+    $('.js-open-soil3-modal').magnificPopup({
+      type:'inline'
     });
   };
 
