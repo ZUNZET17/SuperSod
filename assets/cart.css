@@ -228,6 +228,37 @@
   }
 }
 
+.cart__buttons {
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 45px;
+}
+
+.cart__buttons .btn {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.cart__buttons .btn + .btn {
+  margin-left: -1px;
+}
+
+@media only screen and (min-width: 768px) {
+  .cart__buttons {
+    justify-content: flex-end;
+  }
+
+  .cart__buttons .btn + .btn {
+    margin-left: 13px;
+  }
+}
+
+@media only screen and (min-width: 990px) {
+  .cart__buttons {
+    margin-bottom: 31px;
+  }
+}
+
 .cart__subtotal-container {
   font-size: 14px;
 }

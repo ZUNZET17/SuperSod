@@ -441,9 +441,13 @@
               </div>
               <div class="grid__item medium-up--one-half large-up--five-twelfths">
           {%- endif -%}
-          <div class="text-right">
-            <span class="cart__error-message cart__error-message--warning js-update-cart-message hide">Please update your cart <span class="arrow arrow--right"></span></span>
-            <button type="submit" name="update" class="btn btn--secondary update-cart js-update-cart-button">
+          <div class="cart__buttons flex flex--wrap">
+            <span class="cart__error-message cart__error-message--warning update-cart-message js-update-cart-message hide">Please update your cart <span class="arrow arrow--right"></span></span>
+            <a href="{{ routes.cart_clear_url }}" class="btn btn--secondary">
+              {% render 'icon-clear' %}
+              {{ 'cart.general.clear' | t }}
+            </a>
+            <button type="submit" name="update" class="btn js-update-cart-button">
               {% include 'icon-update' %}
               <span>{{ 'cart.general.update' | t }}</span>
             </button>
