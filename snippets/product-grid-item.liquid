@@ -20,7 +20,7 @@
 
 {%- assign show_price = true -%}
 {%- unless product.tags contains 'Bundle' -%}
-  {%- if collection_handle == 'sod' -%}
+  {%- if product.tags contains 'Sod' or product.tags contains 'pallet' or product.tags contains 'no-buy' -%}
   	{%- assign show_price = false -%}
   {%- endif -%}
 {%- endunless -%}
@@ -28,7 +28,7 @@
 {%- assign img_url = product.featured_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
 
 <!-- <div class="product grid__item {{ grid_item_width }} slide-up-animation animated" role="listitem">
-  
+
   <div class="product__prices text-center{% unless show_price %} hide{% endunless %}">
     {% if product.compare_at_price > product.price %}
 
@@ -84,7 +84,7 @@
 <div class="product-card-wrapper flex__item {{ grid_item_width }}" role="listitem">
 
   <div class="product-card">
-    
+
     {% if sold_out %}
       <span class="product-card__badge product-card__badge--red"><span>{{ 'products.product.sold_out' | t }}</span></span>
     {% endif %}
@@ -93,7 +93,7 @@
       <span class="product-card__badge product-card__badge--green"><span>{{ 'products.product.on_sale' | t }}</span></span>
     {% endif %}
 
-    {% unless product.featured_image == blank %}  
+    {% unless product.featured_image == blank %}
     <div class="product-card__image-wrapper" style="background-image: url({{product.featured_image | img_url: '300x'}});">
       <a href="{{ product.url | within: collection }}" class="product__block-link" title="{{ product.title | escape }}" data-image-link>
         <img class="product-card__image lazyload"
@@ -130,17 +130,17 @@
 
     <div class="product-card__meta">
       <a class="product-card__title clamp" href="{{ product.url | within: collection }}">{{ product.title }}</a>
-      
+
       <dl class="screen-reader-text">
         <dt>Price</dt>
         <dd>$199.99</dd>
       </dl>
     </div>
-    
+
     <div class="product-card__bottom">
       <div class="product-card__price {% unless show_price %} hide{% endunless %}" aria-hidden="true">
         {% if product.compare_at_price > product.price %}
-        
+
         <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
         <s>{{ product.compare_at_price | money }}</s>
 
@@ -176,7 +176,9 @@
         {% include 'product-unit-price', variant: product.selected_or_first_available_variant %}
         {% endif %}
       </div>
-      <a href="{{ product.url | within: collection }}" class="product-card__cta button button--primary button--outlined">Buy now</a>
+      {%- unless product.tags contains 'no-buy' -%}
+        <a href="{{ product.url | within: collection }}" class="product-card__cta button button--primary button--outlined">Buy now</a>
+      {%- endunless -%}
     </div>
   </div>
 
