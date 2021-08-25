@@ -307,7 +307,8 @@ const Cart = (function () {
         '&products[]product_id=' + item.product_id +
         (item.product_type.toLowerCase() === 'sod' ? '&products[]product_name=' + item.product_name : '') +
         (item.product_type.toLowerCase() === 'sod' ? '&products[]product_image=' + item.product_image : '') +
-        '&products[]product_type=' + item.product_type
+        '&products[]product_type=' + item.product_type +
+        '&products[]pickup_location=' + (typeof item.properties.pickup_location !== 'undefined' ? item.properties.pickup_location : '')
     }, '');
   }
 
