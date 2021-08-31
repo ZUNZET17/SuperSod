@@ -599,11 +599,17 @@ const Product = (function () {
       const deliveryMethod = $('.js-delivery-method:checked').val();
       if (
         typeof response.message !== 'undefined' ||
-        response.data.length < 1 ||
-        response.data[0].available_in_zone === false ||
-        response.data[0][deliveryMethod] === false
+        typeof response.error !== 'undefined' ||
+        (typeof response.data !== 'undefined' &&
+          (response.data.length < 1 ||
+            response.data[0].available_in_zone === false ||
+            response.data[0][deliveryMethod] === false))
       ) {
-        if (typeof response.message !== 'undefined' && response.message.indexOf('not available') > -1) {
+        if (
+          (typeof response.message !== 'undefined' &&
+            response.message.indexOf('not available') > -1) ||
+          typeof response.error !== 'undefined'
+        ) {
           if (deliveryMethod === 'pickup') {
             if (typeof isSod !== 'undefined') {
               button.html(originalText);
@@ -613,7 +619,7 @@ const Product = (function () {
                 button: button,
                 originalText: originalText,
                 deliveryMethod: deliveryMethod,
-                zipCode: zipCode
+                zipCode: zipCode,
               });
             }
 
@@ -623,7 +629,10 @@ const Product = (function () {
           button.html(originalText);
           hideFormElements('.js-not-available-delivery');
           return;
-        } else if (response.data[0][deliveryMethod] === false && deliveryMethod === 'pickup' ) {
+        } else if (
+          response.data[0][deliveryMethod] === false &&
+          deliveryMethod === 'pickup'
+        ) {
           if (typeof isSod !== 'undefined') {
             button.html(originalText);
             checkProductPricing(zipCode, button);
@@ -643,8 +652,15 @@ const Product = (function () {
         const latitude = $('.js-address-latitude').val();
         const productString = getUnavailableInZoneProductString();
         const queryData =
-          'zipcode=' + zipCode + productString +
-          '&shop_domain=' + theme.routes.validation_tool_shop + '&longitude=' + longitude + '&latitude=' + latitude;
+          'zipcode=' +
+          zipCode +
+          productString +
+          '&shop_domain=' +
+          theme.routes.validation_tool_shop +
+          '&longitude=' +
+          longitude +
+          '&latitude=' +
+          latitude;
         checkProductMethodAvailability({
           button: button,
           originalText: originalText,
