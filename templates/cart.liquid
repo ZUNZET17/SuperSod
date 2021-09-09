@@ -168,6 +168,14 @@
   {%- assign invalid_fulfillment = true -%}
   {%- assign fulfillment_method = 'none' -%}
 {%- endif -%}
+{%- if enable_date_selector -%}
+  {%- assign hide_expedited = true -%}
+  {%- unless contains_bundle_items -%}
+    {%- if contains_pickup_sod or contains_deliverable_sod -%}
+      {%- assign hide_expedited = false -%}
+    {%- endif -%}
+  {%- endunless -%}
+{%- endif -%}
 {%- if pickup_stores != '' -%}
   {%- assign pickup_stores = pickup_stores | split: ';;' | uniq | join: ';;' -%}
 {%- endif -%}
@@ -565,13 +573,11 @@
               {%- assign push_class = ' large-up--push-two-thirds' -%}
               </div>
               <div class="grid">
-                {%- unless enable_date_selector -%}
-                  <div class="grid__item large-up--one-third">
-                    <label for="discount_code" class="cart__note-label label--block">Discount code</label>
-                    <input type="text" name="discount" id="discount_code" class="form__input js-discount-code">
-                  </div>
-                {%- endunless -%}
-                <div class="grid__item{% if enable_date_selector %} large-up--push-one-third{% endif %} large-up--two-thirds">
+                <div class="grid__item large-up--one-third">
+                  <label for="discount_code" class="cart__note-label label--block">Discount code</label>
+                  <input type="text" name="discount" id="discount_code" class="form__input js-discount-code">
+                </div>
+                <div class="grid__item large-up--two-thirds">
                   <label for="CartSpecialInstructions" class="cart__note-label label--block">{{ 'cart.general.note' | t }}</label>
                   <textarea name="note" id="CartSpecialInstructions" class="input--block js-cart-note form__input cart__note{{textarea_extra_class}}" placeholder="{{ 'layout.cart.notes_placeholder' | t }}">{{ cart.note }}</textarea>
                 </div>
