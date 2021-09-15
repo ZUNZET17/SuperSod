@@ -539,8 +539,8 @@ const Cart = (function () {
       }
 
       if (scheduleDates !== '' && areDatesValid()) {
-        let customerAddress = firstZipAddress;
-        const addressParts = firstZipAddress.split('-');
+        let customerAddress = typeof firstZipAddress !== 'undefined' ? firstZipAddress : '';
+        const addressParts = customerAddress.split('-');
 
         $('.js-scheduled-dates').val(scheduleDates);
         $('.js-location').val(addressParts[0].trim());
@@ -587,8 +587,9 @@ const Cart = (function () {
     if (typeof isLawnAnswer !== 'undefined') {
       cartParameters.push({parameter: 'lawn_planted', value: isLawnAnswer});
     }
-    Utils.addToCartParameters(cartParameters);
-    updateCartNote();
+    Utils.addToCartParameters(cartParameters).always(function () {
+      updateCartNote();
+    });
 
     if (typeof hasCustomPricing === 'undefined') {
       removeInvalidBundleProducts(function () {
