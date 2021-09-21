@@ -238,8 +238,8 @@
             <legend>Find the closest and freshest product</legend>
             <div>
               <label for="customer-address-product">{{ 'layout.product.your_address_delivery' | t }}</label>
-              <input class="form__input full-width js-autocomplete-address" type="text" name="_address" value="{{cart.attributes['customer_address']}}" id="customer-address-product">
-              <input class="js-customer-address" type="hidden" name="properties[_address]" value="{{cart.attributes['customer_address']}}">
+              <input class="form__input full-width js-autocomplete-address" type="text" name="_address" value="{% unless cart.attributes.customer_address contains 'ick up' %}{{cart.attributes['customer_address']}}{% endunless %}" id="customer-address-product">
+              <input class="js-customer-address" type="hidden" name="properties[_address]" value="{% unless cart.attributes.customer_address contains 'ick up' %}{{cart.attributes['customer_address']}}{% endunless %}">
             </div>
             <p class="hide js-invalid-address product-single__pallet-msg product-single__pallet-msg--unavailable product-single__pallet-msg--wrong-quantity">Please enter a valid address</p>
             <p class="product-single__warn-msg">{{ 'layout.product.customer_address_extra_info' | t }}</p>
@@ -254,7 +254,7 @@
         {%- unless is_pickup_only -%}
           <div class="js-quantity-block js-delivery-quantity-block">
             <label for="zip_code" class="form__label hide">{{ 'customer.addresses.zip' | t }}</label>
-            <input type="hidden" pattern="[0-9]{5}" name="properties[_zip]" id="postal_code" class="form__input full-width js-zip-code" value="{{cart.attributes['zip_code']}}" required readonly>
+            <input type="hidden" pattern="[0-9]{5}" name="properties[_zip]" id="postal_code" class="form__input full-width js-zip-code" value="{% unless cart.attributes.customer_address contains 'ick up' %}{{cart.attributes['zip_code']}}{% endunless %}" required readonly>
             <p class="product-single__pallet-msg product-single__pallet-msg--unavailable js-zip-not-found hide">Zip Code not found</p>
           </div>
         {%- endunless -%}
