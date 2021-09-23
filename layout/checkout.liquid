@@ -141,8 +141,57 @@
       {%- endfor -%}
     {%- endcapture -%}
     {%- assign cart_attributes = cart_attributes | strip_newlines | strip -%}
+    {%- assign hide_delivery = false -%}
+    {%- assign hide_pickup = false -%}
+    {%- for item in checkout.line_items -%}
+      {%- assign product = item.product -%}
+      {%- if product.tags contains 'delivery-only' -%}
+        {%- assign hide_pickup = true -%}
+        {% break %}
+      {%- elsif product.tags contains 'pickup-only' -%}
+        {%- assign hide_delivery = true -%}
+        {% break %}
+      {%- endif -%}
+    {%- endfor -%}
     <script>
+      {%- if hide_delivery -%}
+        const hideDelivery = true;
+      {%- elsif hide_pickup -%}
+        const hidePickup = true;
+      {%- endif -%}
       const cartAttributes = '{{ cart_attributes }}';
+
+      const hideDeliveryOptions = function () {
+        if (typeof hideDelivery !== 'undefined') {
+          hideOption('pickup');
+        } else if (typeof hidePickup !== 'undefined') {
+          hideOption('delivery');
+        }
+      };
+
+      const hideOption = function (deliveryMethod) {
+        const contentBox = document.querySelector('#checkout_pick_up_in_store_selected + .content-box');
+        const labels = [].slice.call(contentBox.getElementsByClassName('radio__label__primary'));
+        for (let i = 0; i < labels.length; i++) {
+          const label = labels[i].innerHTML.trim();
+          let hide = false;
+
+          if (deliveryMethod === 'pickup' && label.indexOf('ick') < 0) {
+            hide = true;
+          } else if (deliveryMethod !== 'pickup' && label.indexOf('ick') > -1) {
+            hide = true;
+          }
+
+          const container = labels[i].parentNode.parentNode.parentNode;
+          const input = container.getElementsByClassName('input-radio');
+          if (hide === true) {
+            container.classList.add('display-none');
+          }
+
+          input[0].checked = !hide;
+        }
+      }
+
       const hideShippingMethods = function () {
         const deliveryType = window.localStorage.getItem('delivery_type');
         const labels = [].slice.call(document.getElementsByClassName('radio__label__primary'));
@@ -400,12 +449,14 @@
 
       if (
         Shopify.Checkout.step === 'shipping_method' &&
-        window.localStorage.getItem('delivery_type') !== null
+        window.localStorage.getItem('delivery_type') !== null &&
+        window.localStorage.getItem('delivery_type') !== 'undefined'
       ) {
         hideShippingMethods();
       } else if (Shopify.Checkout.step === 'contact_information') {
         insertAttributes();
         checkContactDelivery();
+        hideDeliveryOptions();
         setTimeout(function () {
           fillStorageAddress();
         }, 1000);
@@ -413,6 +464,7 @@
         startCheckoutStepObserver(document.querySelector('main'), function () {
           insertAttributes();
           checkContactDelivery();
+          hideDeliveryOptions();
         });
       }
 
