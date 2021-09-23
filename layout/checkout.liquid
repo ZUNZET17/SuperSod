@@ -146,13 +146,39 @@
       const hideShippingMethods = function () {
         const deliveryType = window.localStorage.getItem('delivery_type');
         const labels = [].slice.call(document.getElementsByClassName('radio__label__primary'));
+        const lowercasedDeliveryType = deliveryType.toLocaleLowerCase();
+
         for (let i = 0; i < labels.length; i++) {
           const label = labels[i].innerHTML.trim();
           let hide = false;
+          let containsMethod = false;
+          const lowercasedLabel = label.toLocaleLowerCase();
+
+          if (cartAttributes.indexOf('[sqft_sod_quantity]') > -1 && lowercasedDeliveryType !== 'pickup') {
+            if (
+              lowercasedLabel.indexOf('include') > -1 &&
+              (
+                lowercasedLabel.indexOf(lowercasedDeliveryType.replace('_', ' ')) > -1 ||
+                lowercasedDeliveryType.replace('_', ' ').indexOf(lowercasedLabel) > -1
+              )
+            ) {
+              containsMethod = true;
+            }
+          } else if (
+            lowercasedLabel.indexOf('include') < 0 &&
+            (
+              lowercasedLabel.indexOf(lowercasedDeliveryType.replace('_', ' ')) > -1 ||
+              lowercasedDeliveryType.replace('_', ' ').indexOf(lowercasedLabel) > -1
+            )
+          ) {
+            containsMethod = true;
+          }
 
           if (deliveryType === 'pickup' && label.indexOf('ick') < 0) {
             hide = true;
           } else if (deliveryType !== 'pickup' && label.indexOf('ick') > -1) {
+            hide = true;
+          } else if (!containsMethod) {
             hide = true;
           }
 

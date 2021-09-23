@@ -168,14 +168,7 @@
   {%- assign invalid_fulfillment = true -%}
   {%- assign fulfillment_method = 'none' -%}
 {%- endif -%}
-{%- if enable_date_selector -%}
-  {%- assign hide_expedited = true -%}
-  {%- unless contains_bundle_items -%}
-    {%- if contains_pickup_sod or contains_deliverable_sod -%}
-      {%- assign hide_expedited = false -%}
-    {%- endif -%}
-  {%- endunless -%}
-{%- endif -%}
+
 {%- if pickup_stores != '' -%}
   {%- assign pickup_stores = pickup_stores | split: ';;' | uniq | join: ';;' -%}
 {%- endif -%}
@@ -461,8 +454,14 @@
             </button>
           </div>
           {%- if contains_soil_level_mix == true and contains_sod == false -%}
+            {%- assign close_divs = true -%}
+            {%- if enable_date_selector == true and fulfillment_method == 'pickup' -%}
+              {%- assign close_divs = false -%}
+            {%- endif -%}
+            {%- if close_divs == true -%}
               </div>
             </div>
+            {%- endif -%}
           {%- endif -%}
           <div class="grid">
             {%- if invalid_fulfillment == false and has_custom_pricing == true -%}
@@ -564,6 +563,12 @@
               {%- endunless -%}
 
               {%- if has_custom_pricing == false -%}
+                {%- if enable_date_selector -%}
+                  <div>
+                    <label for="discount_code" class="cart__note-label label--block">Discount code</label>
+                    <input type="text" name="discount" id="discount_code" class="form__input js-discount-code">
+                  </div>
+                {%- endif -%}
                 <label for="CartSpecialInstructions" class="cart__note-label label--block">{{ 'cart.general.note' | t }}</label>
                 <textarea name="note" id="CartSpecialInstructions" class="input--block js-cart-note form__input cart__note{{textarea_extra_class}}" placeholder="{{ 'layout.cart.notes_placeholder' | t }}">{{ cart.note }}</textarea>
               {%- endif -%}
@@ -615,7 +620,7 @@
                     <p class="cart__error-message">{{ 'layout.cart.cannot_mix_methods' | t }}</p>
                   {%- endif -%}
                 {%- else -%}
-                  {%- if invalid_fulfillment == false and has_custom_pricing == true -%}
+                  {%- if invalid_fulfillment == false and has_custom_pricing == true and contains_sod -%}
                     {%- assign is_draft_button = true -%}
                     {%- if is_pickup_date_selector_only == true -%}
                       {%- assign is_draft_button = false -%}

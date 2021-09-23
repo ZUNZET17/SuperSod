@@ -367,11 +367,17 @@ const Product = (function () {
     ajax.done(function (response) {
       if (
         typeof response.message !== 'undefined' ||
-        response.data.length < 1 ||
-        response.data[0].available_in_zone === false ||
-        response.data[0][deliveryMethod] === false
+        typeof response.error !== 'undefined' ||
+        (typeof response.data !== 'undefined' &&
+          (response.data.length < 1 ||
+            response.data[0].available_in_zone === false ||
+            response.data[0][deliveryMethod] === false))
       ) {
-        if (typeof response.message !== 'undefined' && response.message.indexOf('not available') > -1) {
+        if (
+          (typeof response.message !== 'undefined' &&
+            response.message.indexOf('not available') > -1) ||
+          typeof response.error !== 'undefined'
+        ) {
           if (deliveryMethod === 'pickup') {
             if (typeof isSod !== 'undefined') {
               button.html(originalText);
@@ -392,7 +398,10 @@ const Product = (function () {
           hideFormElements('.js-not-available-delivery');
 
           return;
-        } else if (response.data[0][deliveryMethod] === false && deliveryMethod === 'pickup' ) {
+        } else if (
+          response.data[0][deliveryMethod] === false &&
+          deliveryMethod === 'pickup'
+        ) {
           if (typeof isBundle !== 'undefined' && isBundle) {
             $('.bold_hidden').removeClass('js-product-submit');
             $('.bold_clone').removeClass('js-product-submit');
