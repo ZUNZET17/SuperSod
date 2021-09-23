@@ -298,19 +298,30 @@
             {%- assign multi_options = true -%}
           {%- endunless -%}
         {%- endif -%}
+        {%- assign has_pickup_or_delivery_variant = false -%}
+        {%- for variant in product.variants -%}
+          {%- if variant.title contains 'ickup' or variant.title contains 'elivery' -%}
+            {%- assign has_pickup_or_delivery_variant = true -%}
+            {% break %}
+          {%- endif -%}
+        {%- endfor -%}
         <select name="id" id="ProductSelect-{{ section.id }}" class="form__input full-width js-product-variants{% if hide %} hide{% endif %}" required>
           {%- assign variants_size = product.variants | size -%}
           {% for variant in product.variants %}
             {% if variant.available %}
             {%- assign disable = false -%}
-            {%- if is_pickup_only -%}
-              {%- unless variant.title contains 'ickup' -%}
-                {%- assign disable = true -%}
-              {%- endunless -%}
-            {%- elsif is_delivery_only -%}
-              {%- unless variant.title contains 'elivery' -%}
-                {%- assign disable = true -%}
-              {%- endunless -%}
+            {%- if has_pickup_or_delivery_variant -%}
+              {%- if is_pickup_only -%}
+                {%- unless variant.title contains 'ickup' -%}
+                  {%- assign disable = true -%}
+                {%- endunless -%}
+              {%- elsif is_delivery_only -%}
+                {%- unless variant.title contains 'elivery' -%}
+                  {%- assign disable = true -%}
+                {%- endunless -%}
+              {%- endif -%}
+            {%- elsif variant.title contains 'lick here' -%}
+              {%- assign disable = true -%}
             {%- endif -%}
             <option {% if variant == product.selected_or_first_available_variant %} selected="selected" {% endif %}
               value="{% unless disable %}{{ variant.id }}{% endunless %}"
