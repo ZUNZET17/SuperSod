@@ -195,7 +195,7 @@
       const hideShippingMethods = function () {
         const deliveryType = window.localStorage.getItem('delivery_type');
         const labels = [].slice.call(document.getElementsByClassName('radio__label__primary'));
-        const lowercasedDeliveryType = deliveryType.toLocaleLowerCase();
+        const lowercasedDeliveryType = deliveryType.toLocaleLowerCase() === 'first_off_truck' ? 'before 9am' : deliveryType.toLocaleLowerCase();
 
         for (let i = 0; i < labels.length; i++) {
           const label = labels[i].innerHTML.trim();
@@ -230,6 +230,7 @@
           } else if (!containsMethod) {
             hide = true;
           }
+          console.log(hide, containsMethod, lowercasedLabel, lowercasedDeliveryType)
 
           const container = labels[i].parentNode.parentNode.parentNode;
           const input = container.getElementsByClassName('input-radio');

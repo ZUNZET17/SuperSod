@@ -444,6 +444,7 @@ const Cart = (function () {
       return acc && item;
     }, true);
 
+    $('.js-dates-empty').addClass('hide');
     for (let i = 0; i < settings.validIndexes.length; i++) {
       $('.js-tail-datetime-field-' + (i + 1)).removeClass('form__input--date-missing');
     }
@@ -562,6 +563,7 @@ const Cart = (function () {
         cartParameters.push({parameter: 'customer_address', value: addressPrefix + customerAddress});
         cartParameters.push({parameter: 'location', value: addressParts[0].trim()});
       } else {
+        areDatesValid();
         button.html(originalText);
         ev.preventDefault();
         return;
