@@ -169,6 +169,15 @@
   {%- assign fulfillment_method = 'none' -%}
 {%- endif -%}
 
+{%- if enable_date_selector -%}
+  {%- assign hide_expedited = true -%}
+  {%- unless contains_bundle_items -%}
+    {%- if contains_pickup_sod or contains_deliverable_sod -%}
+      {%- assign hide_expedited = false -%}
+    {%- endif -%}
+  {%- endunless -%}
+{%- endif -%}
+
 {%- if pickup_stores != '' -%}
   {%- assign pickup_stores = pickup_stores | split: ';;' | uniq | join: ';;' -%}
 {%- endif -%}
