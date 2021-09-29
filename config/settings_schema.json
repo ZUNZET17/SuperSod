@@ -2492,6 +2492,53 @@
           "es": "Color de enlaces"
         },
         "default": "#54a45b"
+      },
+      {
+        "type": "header",
+        "content": {
+          "en": "Enable express payments for pick up in store",
+          "es": "Habilitar pagos express para recoger en tienda"
+        }
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_shop_pay",
+        "content": {
+          "en": "Enable Shop Pay",
+          "es": "Habilitar Shop Pay"
+        }
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_apple_pay",
+        "content": {
+          "en": "Enable Apple Pay",
+          "es": "Habilitar Apple Pay"
+        }
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_google_pay",
+        "content": {
+          "en": "Enable Google Pay",
+          "es": "Habilitar Google Pay"
+        }
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_amazon_pay",
+        "content": {
+          "en": "Enable Amazon Pay",
+          "es": "Habilitar Amazon Pay"
+        }
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_paypal_pay",
+        "content": {
+          "en": "Enable PayPal",
+          "es": "Habilitar PayPal"
+        }
       }
     ]
   }

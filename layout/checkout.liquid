@@ -153,6 +153,24 @@
         {% break %}
       {%- endif -%}
     {%- endfor -%}
+    {%- capture pickup_express_methods -%}
+      {%- if settings.enable_shop_pay -%}
+        ,'ShopPay'
+      {%- endif -%}
+      {%- if settings.enable_google_pay -%}
+        ,'GooglePay'
+      {%- endif -%}
+      {%- if settings.enable_apple_pay -%}
+        ,'ApplePay'
+      {%- endif -%}
+      {%- if settings.enable_amazon_pay -%}
+        ,'AmazonPay'
+      {%- endif -%}
+      {%- if settings.enable_paypal_pay -%}
+        ,'PayPal'
+      {%- endif -%}
+    {%- endcapture -%}
+    {%- assign pickup_express_methods = pickup_express_methods | strip_newlines | remove_first: ',' -%}
     <script>
       {%- if hide_delivery -%}
         const hideDelivery = true;
@@ -252,6 +270,9 @@
             container.classList.add('display-none');
           }
           input[0].checked = !hide;
+          if (!hide) {
+            toggleExpressCheckout();
+          }
         }
       };
 
@@ -390,29 +411,35 @@
         }
 
         const contentBox = document.querySelector('#checkout_pick_up_in_store_selected + .content-box');
-        const labels = [].slice.call(contentBox.getElementsByClassName('radio__label__primary'));
-        for (let i = 0; i < labels.length; i++) {
-          const label = labels[i].innerHTML.trim();
-          let hide = false;
+        if (contentBox) {
+          const labels = [].slice.call(contentBox.getElementsByClassName('radio__label__primary'));
+          for (let i = 0; i < labels.length; i++) {
+            const label = labels[i].innerHTML.trim();
+            let hide = false;
 
-          if (deliveryMethod === 'pickup' && label.indexOf('ick') < 0) {
-            hide = true;
-          } else if (deliveryMethod !== 'pickup' && label.indexOf('ick') > -1) {
-            hide = true;
+            if (deliveryMethod === 'pickup' && label.indexOf('ick') < 0) {
+              hide = true;
+            } else if (deliveryMethod !== 'pickup' && label.indexOf('ick') > -1) {
+              hide = true;
+            }
+
+            const container = labels[i].parentNode.parentNode.parentNode;
+            const input = container.getElementsByClassName('input-radio');
+            if (hide === true) {
+              container.classList.add('display-none');
+            }
+
+            input[0].checked = !hide;
           }
-
-          const container = labels[i].parentNode.parentNode.parentNode;
-          const input = container.getElementsByClassName('input-radio');
-          if (hide === true) {
-            container.classList.add('display-none');
-          }
-
-          input[0].checked = !hide;
         }
 
         checkCustomerAddress();
+        toggleExpressCheckout();
         startCheckoutStepObserver(document.querySelector('div[data-delivery-pickup-info] div[data-pickup-tab-content]'), function () {
           checkCustomerAddress();
+        });
+        startCheckoutStepObserver(document.querySelector('.dynamic-checkout__buttons'), function () {
+          toggleExpressCheckout();
         });
       };
 
@@ -462,6 +489,53 @@
         }
       };
 
+      const toggleExpressCheckout = function () {
+        const input = document.querySelector('input[data-delivery-radio-button="pickup"]');
+        if (!input) {
+          return;
+        }
+
+        const dynamicCheckoutContainer = document.querySelector('.dynamic-checkout__buttons');
+        if (!dynamicCheckoutContainer) {
+          return;
+        }
+
+        const expressButtons = dynamicCheckoutContainer.querySelectorAll('div[role="button"]');
+        if (!expressButtons) {
+          return;
+        }
+
+        let showUnsupportedExpressButtons = !input.checked;
+        const supportedButtons = [{{ pickup_express_methods }}];
+        for (let i = 0; i < expressButtons.length; i++) {
+          const button = expressButtons[i];
+          const buttonText = button.innerText.trim();
+          if (supportedButtons.indexOf(buttonText) < 0 && !showUnsupportedExpressButtons) {
+            button.parentElement.classList.add('display-none');
+          } else {
+            button.parentElement.classList.remove('display-none');
+          }
+        }
+
+        if (supportedButtons.length === 0) {
+          document.querySelector('.dynamic-checkout').classList.add('display-none');
+          document.querySelector('.alternative-payment-separator').classList.add('display-none');
+        }
+      };
+
+      const checkDeliveryMethod = function () {
+        const deliveryInput1 = document.querySelector('input[name="checkout[attributes][delivery_method]"]');
+        const deliveryInput2 = document.querySelector('input[name="checkout[attributes][delivery_type]"]');
+        const deliveryMethod = deliveryInput1 ? deliveryInput1.value : (deliveryInput2 ? deliveryInput2.value : null);
+
+        if (!deliveryMethod || !document.querySelector('#section-delivery-title')) {
+          toggleExpressCheckout();
+          return;
+        }
+
+        checkContactDelivery();
+      };
+
       if (
         Shopify.Checkout.step === 'shipping_method' &&
         window.localStorage.getItem('delivery_type') !== null &&
@@ -481,6 +555,15 @@
           checkContactDelivery();
           hideDeliveryOptions();
         });
+        document.addEventListener('change', function (ev) {
+          const target = ev.target;
+          if (
+            typeof target.dataset.deliveryRadioButton !== 'undefined' &&
+            target.dataset.deliveryRadioButton
+          ) {
+            checkDeliveryMethod();
+          }
+        })
       }
 
       checkBreadcrumbLinks();
