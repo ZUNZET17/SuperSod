@@ -560,8 +560,13 @@ const Cart = (function () {
 
         cartParameters.push({parameter: 'schedule_dates', value: scheduleDates});
         cartParameters.push({parameter: 'delivery_type', value: deliveryType});
-        cartParameters.push({parameter: 'customer_address', value: addressPrefix + customerAddress});
+        cartParameters.push({
+          parameter: 'customer_address',
+          value: deliveryType ? addressPrefix + customerAddress : (cartDeliveryMethod === 'pickup' ? firstZipAddress : null)
+        });
         cartParameters.push({parameter: 'location', value: addressParts[0].trim()});
+        $('.js-pickup-address').val(deliveryType ? addressPrefix + customerAddress : (cartDeliveryMethod === 'pickup' ? firstZipAddress : null));
+        $('.js-delivery-type').val(deliveryType ? deliveryType : (cartDeliveryMethod === 'pickup' ? cartDeliveryMethod : null));
       } else {
         areDatesValid();
         button.html(originalText);
@@ -580,9 +585,14 @@ const Cart = (function () {
         cartParameters.push({parameter: 'customer_latitude', value: ''});
         cartParameters.push({parameter: 'customer_longitude', value: ''});
       }
-      if (customerAddress !== '') {
-        cartParameters.push({parameter: 'customer_address', value: addressPrefix + customerAddress});
-      }
+
+      cartParameters.push({parameter: 'customer_address', value: deliveryType ? addressPrefix + customerAddress : (cartDeliveryMethod === 'pickup' ? firstZipAddress : null)});
+      cartParameters.push({
+        parameter: 'delivery_type',
+        value: deliveryType ? deliveryType : (cartDeliveryMethod === 'pickup' ? cartDeliveryMethod : null)
+      });
+      $('.js-pickup-address').val(deliveryType ? addressPrefix + customerAddress : (cartDeliveryMethod === 'pickup' ? firstZipAddress : null));
+      $('.js-delivery-type').val(deliveryType ? deliveryType : (cartDeliveryMethod === 'pickup' ? cartDeliveryMethod : null));
     }
 
     cartParameters.push({parameter: 'phone_number', value: phoneNumber});

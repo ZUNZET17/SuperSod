@@ -213,16 +213,17 @@
       const hideShippingMethods = function () {
         const deliveryType = window.localStorage.getItem('delivery_type');
         const labels = [].slice.call(document.getElementsByClassName('radio__label__primary'));
-        let lowercasedDeliveryType = deliveryType.toLocaleLowerCase() === 'first_off_truck' ? 'before 9am' : deliveryType.toLocaleLowerCase();
+        let lowercasedDeliveryType = deliveryType ? deliveryType.toLocaleLowerCase() === 'first_off_truck' ? 'before 9am' : deliveryType.toLocaleLowerCase() : '';
         if (
           lowercasedDeliveryType === 'standard_delivery' ||
+          lowercasedDeliveryType === 'undefined' ||
           cartAttributes.indexOf('freight') > -1
         ) {
           lowercasedDeliveryType = 'standard';
         }
 
         for (let i = 0; i < labels.length; i++) {
-          const label = labels[i].innerHTML.trim();
+          const label = labels[i].innerText.trim();
           let hide = false;
           let containsMethod = false;
           const lowercasedLabel = label.toLocaleLowerCase();
@@ -262,7 +263,6 @@
           } else if (!containsMethod) {
             hide = true;
           }
-          console.log(hide, containsMethod, lowercasedLabel, lowercasedDeliveryType)
 
           const container = labels[i].parentNode.parentNode.parentNode;
           const input = container.getElementsByClassName('input-radio');
@@ -410,17 +410,53 @@
           return;
         }
 
+        const lowercasedDeliveryType = deliveryMethod.toLocaleLowerCase();
         const contentBox = document.querySelector('#checkout_pick_up_in_store_selected + .content-box');
         if (contentBox) {
           const labels = [].slice.call(contentBox.getElementsByClassName('radio__label__primary'));
           for (let i = 0; i < labels.length; i++) {
-            const label = labels[i].innerHTML.trim();
+            const label = labels[i].innerText.trim();
             let hide = false;
+            let containsMethod = false;
 
-            if (deliveryMethod === 'pickup' && label.indexOf('ick') < 0) {
+            const lowercasedLabel = label.toLocaleLowerCase();
+
+            if (cartAttributes.indexOf('[sqft_sod_quantity]') > -1 && lowercasedDeliveryType !== 'pickup') {
+              if (
+                lowercasedLabel.indexOf('include') > -1 &&
+                (
+                  lowercasedLabel.indexOf(lowercasedDeliveryType.replace('_', ' ')) > -1 ||
+                  lowercasedDeliveryType.replace('_', ' ').indexOf(lowercasedLabel) > -1
+                )
+              ) {
+                containsMethod = true;
+              } else if (
+                lowercasedLabel.indexOf('include') < 0 &&
+                (
+                  lowercasedLabel.indexOf(lowercasedDeliveryType.replace('_', ' ')) > -1 ||
+                  lowercasedDeliveryType.replace('_', ' ').indexOf(lowercasedLabel) > -1
+                )
+              ) {
+                containsMethod = true;
+              }
+            } else if (
+              lowercasedLabel.indexOf('include') < 0 &&
+              (
+                lowercasedLabel.indexOf(lowercasedDeliveryType.replace('_', ' ')) > -1 ||
+                lowercasedDeliveryType.replace('_', ' ').indexOf(lowercasedLabel) > -1
+              )
+            ) {
+              containsMethod = true;
+            }
+
+            if (lowercasedDeliveryType === 'pickup' && label.indexOf('ick') < 0) {
               hide = true;
-            } else if (deliveryMethod !== 'pickup' && label.indexOf('ick') > -1) {
+            } else if (lowercasedDeliveryType !== 'pickup' && label.indexOf('ick') > -1) {
               hide = true;
+            } else if (!containsMethod) {
+              if (lowercasedDeliveryType !== deliveryMethod) {
+                hide = true;
+              }
             }
 
             const container = labels[i].parentNode.parentNode.parentNode;

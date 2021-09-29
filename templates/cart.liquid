@@ -555,6 +555,8 @@
                     <input type="text" id="chosen_delivery_address" name="chosen_delivery_address" class="form__input js-delivery-address" value="{{ cart.attributes.customer_address }}" readonly disabled>
                     <p class="cart__error-message cart__error-message--warning">{{ 'layout.cart.chosen_delivery_address_message' | t }}</p>
                   </div>
+                {%- else -%}
+                  <input type="hidden" class="js-pickup-address" name="attributes[customer_address]" value="{{ first_zip }}">
                 {%- endif -%}
                 <div class="grid">
                   <div class="grid__item medium-up--one-half">
@@ -577,6 +579,8 @@
                     <label for="discount_code" class="cart__note-label label--block">Discount code</label>
                     <input type="text" name="discount" id="discount_code" class="form__input js-discount-code">
                   </div>
+                {%- else -%}
+                  <input type="hidden" name="attributes[delivery_type]" class="js-delivery-type" value="">
                 {%- endif -%}
                 <label for="CartSpecialInstructions" class="cart__note-label label--block">{{ 'cart.general.note' | t }}</label>
                 <textarea name="note" id="CartSpecialInstructions" class="input--block js-cart-note form__input cart__note{{textarea_extra_class}}" placeholder="{{ 'layout.cart.notes_placeholder' | t }}">{{ cart.note }}</textarea>
@@ -726,7 +730,7 @@
     window.localStorage.removeItem('delivery_zipcode');
     window.localStorage.removeItem('delivery_phone');
     const cartDeliveryMethod = '{{ fulfillment_method }}';
-    const cartDeliveryAddress = '{{ cart.attributes.customer_address }}';
+    const cartDeliveryAddress = cartDeliveryMethod ? '{{{ cart.attributes.customer_address }}' : '';
     const cartPickupAddress = '{{ pickup_address }}';
     const cartZipCode = '{{ cart.attributes.zip_code }}';
     {% if first_zip != '' %}

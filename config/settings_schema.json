@@ -2503,7 +2503,7 @@
       {
         "type": "checkbox",
         "id": "enable_shop_pay",
-        "content": {
+        "label": {
           "en": "Enable Shop Pay",
           "es": "Habilitar Shop Pay"
         }
@@ -2511,7 +2511,7 @@
       {
         "type": "checkbox",
         "id": "enable_apple_pay",
-        "content": {
+        "label": {
           "en": "Enable Apple Pay",
           "es": "Habilitar Apple Pay"
         }
@@ -2519,7 +2519,7 @@
       {
         "type": "checkbox",
         "id": "enable_google_pay",
-        "content": {
+        "label": {
           "en": "Enable Google Pay",
           "es": "Habilitar Google Pay"
         }
@@ -2527,7 +2527,7 @@
       {
         "type": "checkbox",
         "id": "enable_amazon_pay",
-        "content": {
+        "label": {
           "en": "Enable Amazon Pay",
           "es": "Habilitar Amazon Pay"
         }
@@ -2535,7 +2535,7 @@
       {
         "type": "checkbox",
         "id": "enable_paypal_pay",
-        "content": {
+        "label": {
           "en": "Enable PayPal",
           "es": "Habilitar PayPal"
         }
