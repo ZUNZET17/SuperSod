@@ -179,18 +179,6 @@
     </div>
     {% endif %}
 
-    {%- if shop.taxes_included or shop.shipping_policy.body != blank -%}
-    <div class="product-single__policies rte">
-      {%- if shop.taxes_included -%}
-      {{ 'products.product.include_taxes' | t }}
-      {%- endif -%}
-      {%- if shop.shipping_policy.body != blank -%}
-      {{ 'products.product.shipping_policy_html' | t: link: shop.shipping_policy.url }}
-      {%- endif -%}
-    </div>
-    {%- endif -%}
-
-
     {% if section.settings.social_sharing_products %}
     {% include 'social-sharing', share_title: product.title, share_permalink: product.url, share_image: product %}
     {% endif %}
@@ -208,6 +196,23 @@
       <input type="hidden" class="js-address-longitude" value="{{cart.attributes.customer_longitude}}">
 
       {% form 'product', product, class: product_classes, data-ajax-add-to-cart: true, data-product-id: product.id, data-enable-history-state: history_state_data %}
+      
+      <!-- HC - Shopify Pay Installments added - 30 Sep '21 -->
+      <div class="hc-installments-wrapper">
+        {{ form | payment_terms }}
+      </div>
+      
+      {%- if shop.taxes_included or shop.shipping_policy.body != blank -%}
+      <div class="product-single__policies rte">
+        {%- if shop.taxes_included -%}
+        {{ 'products.product.include_taxes' | t }}
+        {%- endif -%}
+        {%- if shop.shipping_policy.body != blank -%}
+        {{ 'products.product.shipping_policy_html' | t: link: shop.shipping_policy.url }}
+        {%- endif -%}
+      </div>
+      {%- endif -%}
+      
       {%- if use_check == true or uses_normal_toggle == true -%}
 
         <input type="hidden" name="properties[pickup_location]" class="js-pickup-location" value="">
