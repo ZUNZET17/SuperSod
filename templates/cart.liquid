@@ -730,7 +730,7 @@
     window.localStorage.removeItem('delivery_zipcode');
     window.localStorage.removeItem('delivery_phone');
     const cartDeliveryMethod = '{{ fulfillment_method }}';
-    const cartDeliveryAddress = cartDeliveryMethod ? '{{{ cart.attributes.customer_address }}' : '';
+    const cartDeliveryAddress = cartDeliveryMethod ? '{{ cart.attributes.customer_address }}' : '';
     const cartPickupAddress = '{{ pickup_address }}';
     const cartZipCode = '{{ cart.attributes.zip_code }}';
     {% if first_zip != '' %}
