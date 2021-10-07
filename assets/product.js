@@ -509,7 +509,6 @@ const Product = (function () {
       const latitude = $('.js-address-latitude').val();
       const quantity = $('.js-product-quantity').val()
       checkNearestPickupLocations({
-        customer_type: 'retail',
         latitude: latitude,
         longitude: longitude,
         product_id: productData.id,
@@ -548,6 +547,7 @@ const Product = (function () {
         toggleSubmitButton('disable');
       } else {
         toggleSubmitButton('show');
+        $('.js-not-available-delivery').addClass('hide');
       }
     }
     $('.js-not-available-text').addClass('hide');
@@ -716,6 +716,7 @@ const Product = (function () {
 
   const checkProductMethodAvailability = function (options) {
     const endpoint = 'check_products';
+
     const ajax = $.ajax({
       type: 'GET',
       url: theme.routes.validation_tool_url + endpoint,
@@ -757,13 +758,14 @@ const Product = (function () {
     const latitude = $('.js-address-latitude').val();
     const longitude = $('.js-address-longitude').val();
     const quantity = $('.js-quantity-input-' + deliveryMethod).val();
-    const ajaxData = {
+    let ajaxData = {
       customer_type: 'retail',
       product_id: productData.id,
       quantity: quantity,
-      shop_domain: theme.routes.validation_tool_shop,
+      shop_domain: theme.routes.validation_tool_shop
     };
     const endpoint = deliveryMethod === 'pickup' ? 'nearest_locations_price' : 'pricing_info';
+
     if (deliveryMethod === 'delivery') {
       ajaxData.latitude = latitude;
       ajaxData.longitude = longitude;
@@ -782,6 +784,8 @@ const Product = (function () {
       timeout: 3000
     });
     ajax.done(function (data) {
+      console.log("data");
+      console.log(data);
       if (
         typeof data.error !== 'undefined' ||
         (
@@ -854,14 +858,7 @@ const Product = (function () {
   };
 
   const availiabilityError = function (data) {
-    if (
-      typeof data !== 'undefined' &&
-      data &&
-      typeof data.zipCode !== 'undefined'
-    ) {
-      updateForm(data.zipCode);
-    }
-
+    updateForm(data.zipCode);
     showProductPricing();
     hideFormElements();
     toggleSubmitButton('show', 'js-product-price-check');
@@ -892,11 +889,6 @@ const Product = (function () {
           (typeof customLocation.unit_price !== 'undefined'
             ? ' data-price="' + customLocation.unit_price + '"'
             : "") +
-          (
-            typeof customLocation.pickup !== 'undefined'
-            ? ' data-available="' + customLocation.pickup + '"'
-            : ''
-          ) +
           ">" +
           (typeof customLocation.location_name !== 'undefined' ? customLocation.location_name : customLocation) +
           (typeof customLocation.distance !== 'undefined' ? ' (' + customLocation.distance + ' miles away)' : '') +
@@ -1203,6 +1195,7 @@ const Product = (function () {
 
     parameters.push({ parameter: 'delivery_method', value: deliveryMethodInput.value });
     Utils.addToCartParameters(parameters);
+
   };
 
   const selectPickupVariant = function (ev) {
@@ -1213,35 +1206,24 @@ const Product = (function () {
       return selectedVariant.indexOf(variant.text) > -1;
     });
     const hasQuantityError = !$('.js-wrong-quantity').hasClass('hide');
-    const selectedOption = select.options[select.selectedIndex];
-
-    if (selectedOption.disabled) {
-      toggleSubmitButton('disable');
-      return;
-    }
 
     let fullValue = 0;
     let unitPrice = 0;
     if (select.id === 'pickup-select') {
-      let isEnabled = true;
-      if (typeof selectedOption.dataset.available !== 'undefined') {
-        isEnabled = (/true/i).test(selectedOption.dataset.available);
-      }
-
-      if (selectedVariant && isEnabled && !hasQuantityError) {
+      if (selectedVariant && !hasQuantityError) {
         toggleSubmitButton('show');
       } else {
-        availiabilityError();
+        toggleSubmitButton('disable');
       }
     }
 
     if (
       typeof usesVariantToggle === 'undefined' &&
       typeof usesRegularToggle === 'undefined' &&
-      typeof selectedOption.dataset.price !== 'undefined'
+      typeof select.options[select.selectedIndex].dataset.price !== 'undefined'
     ) {
-      fullValue = selectedOption.dataset.price * $('.js-product-quantity').val();
-      unitPrice = selectedOption.dataset.price * 1;
+      fullValue = select.options[select.selectedIndex].dataset.price * $('.js-product-quantity').val();
+      unitPrice = select.options[select.selectedIndex].dataset.price * 1;
     } else if (foundVariant.length > 0) {
       fullValue = foundVariant[0].priceValue * $('.js-product-quantity').val();
       unitPrice = foundVariant[0].priceValue * 1;
