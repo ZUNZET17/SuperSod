@@ -607,6 +607,7 @@ const Product = (function () {
     });
     ajax.done(function (response) {
       const deliveryMethod = $('.js-delivery-method:checked').val();
+
       if (
         typeof response.message !== 'undefined' ||
         typeof response.error !== 'undefined' ||
@@ -655,6 +656,12 @@ const Product = (function () {
             });
           }
 
+          return;
+        } else if (response.data[0].delivery === false && response.data[0].pickup === false){
+          $('.js-not-available-text').removeClass('hide');
+          $('.product-single__pallet-msg--unavailable:not(.js-not-available-text)').addClass('hide');
+          $('.js-delivery-method').prop('disabled', 1 );
+          $('.product-single__methods label' ).addClass('not-available')
           return;
         }
 
@@ -716,7 +723,6 @@ const Product = (function () {
 
   const checkProductMethodAvailability = function (options) {
     const endpoint = 'check_products';
-
     const ajax = $.ajax({
       type: 'GET',
       url: theme.routes.validation_tool_url + endpoint,
@@ -758,14 +764,15 @@ const Product = (function () {
     const latitude = $('.js-address-latitude').val();
     const longitude = $('.js-address-longitude').val();
     const quantity = $('.js-quantity-input-' + deliveryMethod).val();
-    let ajaxData = {
+
+    const ajaxData = {
       customer_type: 'retail',
       product_id: productData.id,
       quantity: quantity,
-      shop_domain: theme.routes.validation_tool_shop
+      shop_domain: theme.routes.validation_tool_shop,
     };
-    const endpoint = deliveryMethod === 'pickup' ? 'nearest_locations_price' : 'pricing_info';
 
+    const endpoint = deliveryMethod === 'pickup' ? 'nearest_locations_price' : 'pricing_info';
     if (deliveryMethod === 'delivery') {
       ajaxData.latitude = latitude;
       ajaxData.longitude = longitude;
@@ -784,7 +791,7 @@ const Product = (function () {
       timeout: 3000
     });
     ajax.done(function (data) {
-      console.log("data");
+      console.log("ajaxData");
       console.log(data);
       if (
         typeof data.error !== 'undefined' ||
@@ -798,7 +805,7 @@ const Product = (function () {
         hideFormElements();
         return;
       }
-
+      console.log("still here");
       data.fulfillment = deliveryMethod;
       button.html(originalText);
       updateForm(zipCode);
@@ -806,8 +813,9 @@ const Product = (function () {
       showButtonMessage(deliveryMethod);
 
       $('.js-not-available-text').addClass('hide');
-
+      console.log("we hare now");
       if (deliveryMethod === 'pickup') {
+        console.log("now are we here in pickup");
         enableNearestLocations(typeof data.nearest_locations !== 'undefined' ? data.nearest_locations : null);
         $('.js-product-pickup-variants').trigger('change');
         const unitPrice = $('.js-product-pickup-variants option:selected').data('price');
@@ -833,9 +841,13 @@ const Product = (function () {
             checkChosenVariant();
           }
         }
+
       } else if (deliveryMethod === 'delivery') {
+        console.log("and now here delivery");
         chooseVariant('delivery');
         showProductPricing(data);
+        console.log("showProductPricing(data)");
+        console.log(showProductPricing(data));
       }
     }).fail(function () {
       button.html(originalText);
@@ -858,7 +870,14 @@ const Product = (function () {
   };
 
   const availiabilityError = function (data) {
-    updateForm(data.zipCode);
+    if (
+      typeof data !== 'undefined' &&
+      data &&
+      typeof data.zipCode !== 'undefined'
+    ) {
+      updateForm(data.zipCode);
+    }
+
     showProductPricing();
     hideFormElements();
     toggleSubmitButton('show', 'js-product-price-check');
@@ -871,7 +890,6 @@ const Product = (function () {
   const enableNearestLocations = function (data) {
     $('.js-product-pickup-variants-title').removeClass('hide');
     const deliveryOption = $('.js-delivery-method:checked').val();
-
     if (deliveryOption !== 'pickup') {
       return;
     }
@@ -889,6 +907,11 @@ const Product = (function () {
           (typeof customLocation.unit_price !== 'undefined'
             ? ' data-price="' + customLocation.unit_price + '"'
             : "") +
+          (
+            typeof customLocation.pickup !== 'undefined'
+            ? ' data-available="' + customLocation.pickup + '"'
+            : ''
+          ) +
           ">" +
           (typeof customLocation.location_name !== 'undefined' ? customLocation.location_name : customLocation) +
           (typeof customLocation.distance !== 'undefined' ? ' (' + customLocation.distance + ' miles away)' : '') +
@@ -1195,7 +1218,6 @@ const Product = (function () {
 
     parameters.push({ parameter: 'delivery_method', value: deliveryMethodInput.value });
     Utils.addToCartParameters(parameters);
-
   };
 
   const selectPickupVariant = function (ev) {
@@ -1206,24 +1228,35 @@ const Product = (function () {
       return selectedVariant.indexOf(variant.text) > -1;
     });
     const hasQuantityError = !$('.js-wrong-quantity').hasClass('hide');
+    const selectedOption = select.options[select.selectedIndex];
+
+    if (selectedOption.disabled) {
+      toggleSubmitButton('disable');
+      return;
+    }
 
     let fullValue = 0;
     let unitPrice = 0;
     if (select.id === 'pickup-select') {
-      if (selectedVariant && !hasQuantityError) {
+      let isEnabled = true;
+      if (typeof selectedOption.dataset.available !== 'undefined') {
+        isEnabled = (/true/i).test(selectedOption.dataset.available);
+      }
+
+      if (selectedVariant && isEnabled && !hasQuantityError) {
         toggleSubmitButton('show');
       } else {
-        toggleSubmitButton('disable');
+        availiabilityError();
       }
     }
 
     if (
       typeof usesVariantToggle === 'undefined' &&
       typeof usesRegularToggle === 'undefined' &&
-      typeof select.options[select.selectedIndex].dataset.price !== 'undefined'
+      typeof selectedOption.dataset.price !== 'undefined'
     ) {
-      fullValue = select.options[select.selectedIndex].dataset.price * $('.js-product-quantity').val();
-      unitPrice = select.options[select.selectedIndex].dataset.price * 1;
+      fullValue = selectedOption.dataset.price * $('.js-product-quantity').val();
+      unitPrice = selectedOption.dataset.price * 1;
     } else if (foundVariant.length > 0) {
       fullValue = foundVariant[0].priceValue * $('.js-product-quantity').val();
       unitPrice = foundVariant[0].priceValue * 1;
@@ -1547,12 +1580,13 @@ const Product = (function () {
   const updatePickUpLocations = function () {
     const fakeButton = document.createElement('button');
     const dropdown = $('.js-product-pickup-variants');
-    dropdown.removeClass('hide')
+    dropdown.removeClass('hide');
     dropdown.html('<option value="" selected="selected" disabled="true">Loading...</option>');
     setTimeout(() => {
       dropdown[0].setAttribute('disabled', 1);
     }, 0)
     checkZipCode({ target: fakeButton });
+
   };
 
   return {

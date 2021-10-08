@@ -73,7 +73,7 @@ $white: #FFFFFF;
 .toggle-label ~ .toggle-label {
   margin-left: -3px;
 }
- 
+
 .toggle-input:checked + .toggle-label {
   color: $white;
   background-color: $color_primary;
