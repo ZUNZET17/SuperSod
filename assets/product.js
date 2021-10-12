@@ -791,8 +791,6 @@ const Product = (function () {
       timeout: 3000
     });
     ajax.done(function (data) {
-      console.log("ajaxData");
-      console.log(data);
       if (
         typeof data.error !== 'undefined' ||
         (
@@ -805,7 +803,6 @@ const Product = (function () {
         hideFormElements();
         return;
       }
-      console.log("still here");
       data.fulfillment = deliveryMethod;
       button.html(originalText);
       updateForm(zipCode);
@@ -813,9 +810,7 @@ const Product = (function () {
       showButtonMessage(deliveryMethod);
 
       $('.js-not-available-text').addClass('hide');
-      console.log("we hare now");
       if (deliveryMethod === 'pickup') {
-        console.log("now are we here in pickup");
         enableNearestLocations(typeof data.nearest_locations !== 'undefined' ? data.nearest_locations : null);
         $('.js-product-pickup-variants').trigger('change');
         const unitPrice = $('.js-product-pickup-variants option:selected').data('price');
@@ -843,11 +838,8 @@ const Product = (function () {
         }
 
       } else if (deliveryMethod === 'delivery') {
-        console.log("and now here delivery");
         chooseVariant('delivery');
         showProductPricing(data);
-        console.log("showProductPricing(data)");
-        console.log(showProductPricing(data));
       }
     }).fail(function () {
       button.html(originalText);
