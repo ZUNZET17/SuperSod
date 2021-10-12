@@ -244,7 +244,6 @@ const Product = (function () {
         return parseInt(option.value);
       }
     }
-
     return false;
   };
 
@@ -391,7 +390,6 @@ const Product = (function () {
                 skipShowSubmitButton: true
               });
             }
-
             return;
           }
           button.html(originalText);
@@ -417,7 +415,6 @@ const Product = (function () {
               zipCode: zipCode
             });
           }
-
           return;
         }
 
@@ -462,7 +459,6 @@ const Product = (function () {
 
       if (!isAvailable) {
         button.html(originalText);
-
         hideFormElements();
         return;
       }
@@ -573,7 +569,6 @@ const Product = (function () {
           hideFormElements('.js-not-available-pickup-text');
           return;
         }
-
         availiabilityError({zipCode: ''});
         return;
       }
@@ -633,7 +628,6 @@ const Product = (function () {
                 zipCode: zipCode,
               });
             }
-
             return;
           }
 
@@ -655,7 +649,6 @@ const Product = (function () {
               zipCode: zipCode
             });
           }
-
           return;
         } else if (response.data[0].delivery === false && response.data[0].pickup === false){
           $('.js-not-available-text').removeClass('hide');
