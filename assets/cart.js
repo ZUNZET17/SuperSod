@@ -84,6 +84,14 @@ const Cart = (function () {
     }
   };
 
+  const phoneValidator = function (phoneNumber) {
+    const regexPhoneNumber = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+    if (!phoneNumber.match(regexPhoneNumber)) {
+      return false;
+    }
+  };
+
+
   const searchAvailableDates = function (ev) {
     const input = $(ev.target);
     const button = $('.js-checking-dates');
@@ -243,8 +251,7 @@ const Cart = (function () {
     const invalidPhoneMessage = $('.js-invalid-phone-message');
     const phoneNumber = (document.querySelector('.js-phone').value).trim().replace(/\s{2,}/g, ' ');
 
-
-    if (regexPhoneNumber(phoneNumber) === false ) {
+    if (phoneValidator(phoneNumber) === false ) {
       if(phoneNumber === '' ) {
         document.querySelector('.js-phone').focus();
         phoneMessage.removeClass('hide');
@@ -507,13 +514,6 @@ const Cart = (function () {
   const interceptCartSubmit = function (ev) {
     const deliveryType = $('.js-delivery-type:checked').val();
 
-    window.localStorage.setItem('delivery_type', deliveryType);
-    if (cartDeliveryMethod === 'delivery') {
-      window.localStorage.setItem('delivery_method', cartDeliveryMethod);
-      window.localStorage.setItem('delivery_address', cartDeliveryAddress);
-      window.localStorage.setItem('delivery_zipcode', cartZipCode);
-    }
-
     const button = $('.js-submit-button');
     const originalText = button.html();
 
@@ -530,14 +530,7 @@ const Cart = (function () {
     const invalidPhoneMessage = $('.js-invalid-phone-message');
     const phoneNumber = (document.querySelector('.js-phone').value).trim().replace(/\s{2,}/g, ' ');
 
-    function regexPhoneNumber(str) {
-    	const regexPhoneNumber = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
-    	if (!str.match(regexPhoneNumber)) {
-        return false;
-    	}
-    }
-
-    if (regexPhoneNumber(phoneNumber) === false ) {
+    if (phoneValidator(phoneNumber) === false ) {
       if(phoneNumber === '' ) {
         document.querySelector('.js-phone').focus();
         phoneMessage.removeClass('hide');
@@ -552,6 +545,14 @@ const Cart = (function () {
     }
     phoneMessage.addClass('hide');
     invalidPhoneMessage.addClass('hide');
+
+    window.localStorage.setItem('delivery_type', deliveryType);
+    if (cartDeliveryMethod === 'delivery') {
+      window.localStorage.setItem('delivery_method', cartDeliveryMethod);
+      window.localStorage.setItem('delivery_address', cartDeliveryAddress);
+      window.localStorage.setItem('delivery_zipcode', cartZipCode);
+      window.localStorage.setItem('delivery_phone', phoneNumber);
+    }
 
     if (document.querySelector('.js-tail-datetime-field-1')) {
       if (! isDeliveryTypeChosen()) {
