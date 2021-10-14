@@ -240,13 +240,25 @@ const Cart = (function () {
     }
 
     const phoneMessage = $('.js-no-phone-message');
+    const invalidPhoneMessage = $('.js-invalid-phone-message');
     const phoneNumber = (document.querySelector('.js-phone').value).trim().replace(/\s{2,}/g, ' ');
-    if (phoneNumber === '') {
-      document.querySelector('.js-phone').focus();
-      phoneMessage.removeClass('hide');
-      return;
+
+
+    if (regexPhoneNumber(phoneNumber) === false ) {
+      if(phoneNumber === '' ) {
+        document.querySelector('.js-phone').focus();
+        phoneMessage.removeClass('hide');
+        invalidPhoneMessage.addClass('hide');
+        return;
+      } else {
+        document.querySelector('.js-phone').focus();
+        invalidPhoneMessage.removeClass('hide');
+        phoneMessage.addClass('hide');
+        return;
+      }
     }
     phoneMessage.addClass('hide');
+    invalidPhoneMessage.addClass('hide');
     Utils.addToCartParameters([{parameter: 'phone', value: phoneNumber}]);
 
     const settings = {
@@ -515,13 +527,31 @@ const Cart = (function () {
 
     $('.js-update-cart-button').prop('disabled', true);
     const phoneMessage = $('.js-no-phone-message');
+    const invalidPhoneMessage = $('.js-invalid-phone-message');
     const phoneNumber = (document.querySelector('.js-phone').value).trim().replace(/\s{2,}/g, ' ');
-    if (phoneNumber === '') {
-      document.querySelector('.js-phone').focus();
-      phoneMessage.removeClass('hide');
-      return;
+
+    function regexPhoneNumber(str) {
+    	const regexPhoneNumber = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+    	if (!str.match(regexPhoneNumber)) {
+        return false;
+    	}
+    }
+
+    if (regexPhoneNumber(phoneNumber) === false ) {
+      if(phoneNumber === '' ) {
+        document.querySelector('.js-phone').focus();
+        phoneMessage.removeClass('hide');
+        invalidPhoneMessage.addClass('hide');
+        return;
+      } else {
+        document.querySelector('.js-phone').focus();
+        invalidPhoneMessage.removeClass('hide');
+        phoneMessage.addClass('hide');
+        return;
+      }
     }
     phoneMessage.addClass('hide');
+    invalidPhoneMessage.addClass('hide');
 
     if (document.querySelector('.js-tail-datetime-field-1')) {
       if (! isDeliveryTypeChosen()) {

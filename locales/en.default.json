@@ -301,7 +301,8 @@
       "chosen_delivery_address_message": "Your product(s) will be delivered to the address listed above.  If this is not the correct delivery address, please go back to the product page and enter your desired delivery address.",
       "select_option_in_step_one": "To select your dates, please choose an option in Step 1",
       "confirm_phone_number": "Mobile Phone Number (Required for Pickup\/Delivery Texts)",
-      "no_phone_number_added": "Please add your phone number"
+      "no_phone_number_added": "Please add your phone number",
+      "invalid_phone_number_added": "Please add a valid phone number"
     },
     "checkout": {
       "back_to_cart": "Go back to cart"

@@ -569,6 +569,7 @@
                     {%- endif -%}
                     <input type="tel" name="attributes[phone_number]" id="phoneNumber" class="form__input js-cart-attribute js-phone" data-name="phone" value="{{ phone_number }}" required>
                     <p class="cart__error-message hide js-no-phone-message">{{ 'layout.cart.no_phone_number_added' | t }}</p>
+                    <p class="cart__error-message hide js-invalid-phone-message">{{ 'layout.cart.invalid_phone_number_added' | t }}</p>
                   </div>
                 </div>
               {%- endunless -%}
