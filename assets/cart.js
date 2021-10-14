@@ -84,14 +84,6 @@ const Cart = (function () {
     }
   };
 
-  const phoneValidator = function (phoneNumber) {
-    const regexPhoneNumber = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
-    if (!phoneNumber.match(regexPhoneNumber)) {
-      return false;
-    }
-  };
-
-
   const searchAvailableDates = function (ev) {
     const input = $(ev.target);
     const button = $('.js-checking-dates');
@@ -251,21 +243,19 @@ const Cart = (function () {
     const invalidPhoneMessage = $('.js-invalid-phone-message');
     const phoneNumber = (document.querySelector('.js-phone').value).trim().replace(/\s{2,}/g, ' ');
 
-    if (phoneValidator(phoneNumber) === false ) {
-      if(phoneNumber === '' ) {
-        document.querySelector('.js-phone').focus();
-        phoneMessage.removeClass('hide');
-        invalidPhoneMessage.addClass('hide');
-        return;
-      } else {
-        document.querySelector('.js-phone').focus();
-        invalidPhoneMessage.removeClass('hide');
+    if (regexPhoneNumber(phoneNumber) === false ) {
+          document.querySelector('.js-phone').focus();
+          if (phoneNumber === '' ) {
+            phoneMessage.removeClass('hide');
+            invalidPhoneMessage.addClass('hide');
+          } else {
+            invalidPhoneMessage.removeClass('hide');
+            phoneMessage.addClass('hide');
+          }
+          return;
+        }
         phoneMessage.addClass('hide');
-        return;
-      }
-    }
-    phoneMessage.addClass('hide');
-    invalidPhoneMessage.addClass('hide');
+        invalidPhoneMessage.addClass('hide');
     Utils.addToCartParameters([{parameter: 'phone', value: phoneNumber}]);
 
     const settings = {
@@ -511,6 +501,15 @@ const Cart = (function () {
     });
   };
 
+  const regexPhoneNumber = function (str) {
+     const regexPhoneNumber = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+     if (!str.match(regexPhoneNumber)) {
+       return false;
+     }
+
+     return true;
+   };
+
   const interceptCartSubmit = function (ev) {
     const deliveryType = $('.js-delivery-type:checked').val();
 
@@ -530,18 +529,16 @@ const Cart = (function () {
     const invalidPhoneMessage = $('.js-invalid-phone-message');
     const phoneNumber = (document.querySelector('.js-phone').value).trim().replace(/\s{2,}/g, ' ');
 
-    if (phoneValidator(phoneNumber) === false ) {
-      if(phoneNumber === '' ) {
-        document.querySelector('.js-phone').focus();
+    if (regexPhoneNumber(phoneNumber) === false ) {
+      document.querySelector('.js-phone').focus();
+      if (phoneNumber === '' ) {
         phoneMessage.removeClass('hide');
         invalidPhoneMessage.addClass('hide');
-        return;
       } else {
-        document.querySelector('.js-phone').focus();
         invalidPhoneMessage.removeClass('hide');
         phoneMessage.addClass('hide');
-        return;
       }
+      return;
     }
     phoneMessage.addClass('hide');
     invalidPhoneMessage.addClass('hide');
