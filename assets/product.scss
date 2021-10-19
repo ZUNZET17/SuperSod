@@ -290,12 +290,8 @@ button[class*="bold-ro__custombutton-"] + .btn--full {
   }
 }
 
-.product-single__methods {
-  label {
-    &.not-available{
-      border-color: red;
-    }
-  }
+.toggle-label.not-available {
+  border-color: red;
 }
 
 .lawn-planted-warning-hide {

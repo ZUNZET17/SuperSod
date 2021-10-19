@@ -505,6 +505,7 @@ const Product = (function () {
       const latitude = $('.js-address-latitude').val();
       const quantity = $('.js-product-quantity').val()
       checkNearestPickupLocations({
+        customer_type: 'retail',
         latitude: latitude,
         longitude: longitude,
         product_id: productData.id,
@@ -652,9 +653,9 @@ const Product = (function () {
           return;
         } else if (response.data[0].delivery === false && response.data[0].pickup === false){
           $('.js-not-available-text').removeClass('hide');
-          $('.product-single__pallet-msg--unavailable:not(.js-not-available-text)').addClass('hide');
+          $('.js-pallet__msg-unavailable:not(.js-not-available-text)').addClass('hide');
           $('.js-delivery-method').prop('disabled', 1 );
-          $('.product-single__methods label' ).addClass('not-available')
+          $('.js-msg-availability' ).addClass('not-available')
           return;
         }
 
