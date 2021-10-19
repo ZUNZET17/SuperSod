@@ -653,7 +653,7 @@ const Product = (function () {
           return;
         } else if (response.data[0].delivery === false && response.data[0].pickup === false){
           $('.js-not-available-text').removeClass('hide');
-          $('.js-pallet__msg-unavailable:not(.js-not-available-text)').addClass('hide');
+          $('.js-pallet-msg-unavailable:not(.js-not-available-text)').addClass('hide');
           $('.js-delivery-method').prop('disabled', 1 );
           $('.js-msg-availability' ).addClass('not-available')
           return;
