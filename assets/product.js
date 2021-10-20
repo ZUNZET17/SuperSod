@@ -244,7 +244,6 @@ const Product = (function () {
         return parseInt(option.value);
       }
     }
-
     return false;
   };
 
@@ -391,7 +390,6 @@ const Product = (function () {
                 skipShowSubmitButton: true
               });
             }
-
             return;
           }
           button.html(originalText);
@@ -417,7 +415,6 @@ const Product = (function () {
               zipCode: zipCode
             });
           }
-
           return;
         }
 
@@ -462,7 +459,6 @@ const Product = (function () {
 
       if (!isAvailable) {
         button.html(originalText);
-
         hideFormElements();
         return;
       }
@@ -548,6 +544,7 @@ const Product = (function () {
         toggleSubmitButton('disable');
       } else {
         toggleSubmitButton('show');
+        $('.js-not-available-delivery').addClass('hide');
       }
     }
     $('.js-not-available-text').addClass('hide');
@@ -573,7 +570,6 @@ const Product = (function () {
           hideFormElements('.js-not-available-pickup-text');
           return;
         }
-
         availiabilityError({zipCode: ''});
         return;
       }
@@ -607,6 +603,7 @@ const Product = (function () {
     });
     ajax.done(function (response) {
       const deliveryMethod = $('.js-delivery-method:checked').val();
+
       if (
         typeof response.message !== 'undefined' ||
         typeof response.error !== 'undefined' ||
@@ -632,7 +629,6 @@ const Product = (function () {
                 zipCode: zipCode,
               });
             }
-
             return;
           }
 
@@ -654,7 +650,12 @@ const Product = (function () {
               zipCode: zipCode
             });
           }
-
+          return;
+        } else if (response.data[0].delivery === false && response.data[0].pickup === false){
+          $('.js-not-available-text').removeClass('hide');
+          $('.js-pallet-msg-unavailable:not(.js-not-available-text)').addClass('hide');
+          $('.js-delivery-method').prop('disabled', 1 );
+          $('.js-msg-availability' ).addClass('not-available')
           return;
         }
 
@@ -757,12 +758,14 @@ const Product = (function () {
     const latitude = $('.js-address-latitude').val();
     const longitude = $('.js-address-longitude').val();
     const quantity = $('.js-quantity-input-' + deliveryMethod).val();
+
     const ajaxData = {
       customer_type: 'retail',
       product_id: productData.id,
       quantity: quantity,
       shop_domain: theme.routes.validation_tool_shop,
     };
+
     const endpoint = deliveryMethod === 'pickup' ? 'nearest_locations_price' : 'pricing_info';
     if (deliveryMethod === 'delivery') {
       ajaxData.latitude = latitude;
@@ -794,7 +797,6 @@ const Product = (function () {
         hideFormElements();
         return;
       }
-
       data.fulfillment = deliveryMethod;
       button.html(originalText);
       updateForm(zipCode);
@@ -802,7 +804,6 @@ const Product = (function () {
       showButtonMessage(deliveryMethod);
 
       $('.js-not-available-text').addClass('hide');
-
       if (deliveryMethod === 'pickup') {
         enableNearestLocations(typeof data.nearest_locations !== 'undefined' ? data.nearest_locations : null);
         $('.js-product-pickup-variants').trigger('change');
@@ -829,6 +830,7 @@ const Product = (function () {
             checkChosenVariant();
           }
         }
+
       } else if (deliveryMethod === 'delivery') {
         chooseVariant('delivery');
         showProductPricing(data);
@@ -874,7 +876,6 @@ const Product = (function () {
   const enableNearestLocations = function (data) {
     $('.js-product-pickup-variants-title').removeClass('hide');
     const deliveryOption = $('.js-delivery-method:checked').val();
-
     if (deliveryOption !== 'pickup') {
       return;
     }
@@ -1565,12 +1566,13 @@ const Product = (function () {
   const updatePickUpLocations = function () {
     const fakeButton = document.createElement('button');
     const dropdown = $('.js-product-pickup-variants');
-    dropdown.removeClass('hide')
+    dropdown.removeClass('hide');
     dropdown.html('<option value="" selected="selected" disabled="true">Loading...</option>');
     setTimeout(() => {
       dropdown[0].setAttribute('disabled', 1);
     }, 0)
     checkZipCode({ target: fakeButton });
+
   };
 
   return {
