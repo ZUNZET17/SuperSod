@@ -135,11 +135,18 @@
     </div>
 
     {{ tracking_code }}
+    {%- assign shipping_address = '' -%}
     {%- capture cart_attributes -%}
       {%- for attribute in checkout.attributes -%}
         <input type="hidden" name="checkout[attributes][{{ attribute.first }}]" value="{{ attribute.last }}">
+        {%- if attribute.first == 'customer_address' -%}
+          {%- assign shipping_address = attribute.last | replace: 'Delivery address:', '' -%}
+        {%- endif -%}
       {%- endfor -%}
     {%- endcapture -%}
+    {%- if shipping_address == '' -%}
+      {%- assign shipping_address = checkout.shipping_address.address1 -%}
+    {%- endif -%}
     {%- assign cart_attributes = cart_attributes | strip_newlines | strip -%}
     {%- assign hide_delivery = false -%}
     {%- assign hide_pickup = false -%}
@@ -178,7 +185,7 @@
         const hidePickup = true;
       {%- endif -%}
       const cartAttributes = '{{ cart_attributes }}';
-      const shippingAddress = '{{ checkout.shipping_address.address1 }}';
+      const shippingAddress = '{{ shipping_address }}';
       const cartAttributesValues = {
         {%- for attribute in checkout.attributes -%}
           {{ attribute.first | json }}: {{ attribute.last | json }}{%- unless forloop.last -%},{%- endunless -%}
