@@ -139,12 +139,14 @@
     {%- capture cart_attributes -%}
       {%- for attribute in checkout.attributes -%}
         <input type="hidden" name="checkout[attributes][{{ attribute.first }}]" value="{{ attribute.last }}">
-        {%- if attribute.first == 'customer_address' -%}
-          {%- assign shipping_address = attribute.last | replace: 'Delivery address:', '' -%}
+        {%- if checkout.attributes.delivery_method != 'pickup' -%}
+          {%- if attribute.first == 'customer_address' -%}
+            {%- assign shipping_address = attribute.last | replace: 'Delivery address:', '' -%}
+          {%- endif -%}
         {%- endif -%}
       {%- endfor -%}
     {%- endcapture -%}
-    {%- if shipping_address == '' -%}
+    {%- if shipping_address == '' and checkout.attributes.delivery_method != 'pickup' -%}
       {%- assign shipping_address = checkout.shipping_address.address1 -%}
     {%- endif -%}
     {%- assign cart_attributes = cart_attributes | strip_newlines | strip -%}
