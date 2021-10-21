@@ -1515,7 +1515,13 @@ const Product = (function () {
   };
 
   const hideAddToCart = function () {
-    $('.js-quantity-input').trigger('keyup');
+    const quantityInputs = $('.js-quantity-input#delivery-quantity');
+    if (quantityInputs.length === 1) {
+      const synteticEv = {
+        target: quantityInputs[0]
+      }
+      checkQuantityIncrement(synteticEv);
+    }
   };
 
   const startBundleObserver = function () {
