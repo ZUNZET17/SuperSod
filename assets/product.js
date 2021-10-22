@@ -507,7 +507,7 @@ const Product = (function () {
     if (options.deliveryMethod === 'pickup') {
       const longitude = $('.js-address-longitude').val();
       const latitude = $('.js-address-latitude').val();
-      const quantity = $('.js-product-quantity').val()
+      const quantity = $('.js-product-quantity').val();
       checkNearestPickupLocations({
         customer_type: 'retail',
         latitude: latitude,
@@ -580,6 +580,7 @@ const Product = (function () {
 
       enableNearestLocations(typeof data.nearest_locations !== 'undefined' ? data.nearest_locations : null);
       $('.js-product-pickup-variants').trigger('change');
+
       if (typeof doneCallback === 'function') {
         doneCallback();
       }
@@ -884,6 +885,8 @@ const Product = (function () {
     chooseVariant('pickup');
     if (data != null && typeof data !== 'undefined') {
       const options = data.reduce(function (acc, customLocation) {
+        // SSOD-307 Example quantity to add into data option
+        let locationQuantity = Math.floor(Math.random() * 100) + 1;
         return (
           acc +
           '<option value="' +
@@ -891,6 +894,9 @@ const Product = (function () {
           '"' +
           (typeof customLocation.unit_price !== 'undefined'
             ? ' data-price="' + customLocation.unit_price + '"'
+            : "") +
+          (typeof locationQuantity !== 'undefined'
+            ? ' data-minimum="' + locationQuantity + '"'
             : "") +
           (
             typeof customLocation.pickup !== 'undefined'
@@ -1208,6 +1214,8 @@ const Product = (function () {
   const selectPickupVariant = function (ev) {
     const select = ev.target;
     const selectedVariant = select.value;
+    // Pick the quantity from the option selected, this will have the minimum quantity for this zone
+    const selectedMinimumQuantity = $(this).find(":selected").attr('data-minimum');
     const variants = getVariants();
     const foundVariant = variants.filter(function (variant) {
       return selectedVariant.indexOf(variant.text) > -1;
@@ -1215,6 +1223,9 @@ const Product = (function () {
     const hasQuantityError = !$('.js-wrong-quantity').hasClass('hide');
     const selectedOption = select.options[select.selectedIndex];
 
+    if (typeof selectedMinimumQuantity !== 'undefined'){
+      $('.js-quantity-input-pickup').attr('min', selectedMinimumQuantity).val(selectedMinimumQuantity);
+    }
     if (selectedOption.disabled) {
       toggleSubmitButton('disable');
       return;
