@@ -1224,6 +1224,7 @@ const Product = (function () {
     let fullValue = 0;
     let unitPrice = 0;
     if (select.id === 'pickup-select') {
+      console.log("selecteeeed");
       let isEnabled = true;
       if (typeof selectedOption.dataset.available !== 'undefined') {
         isEnabled = (/true/i).test(selectedOption.dataset.available);
@@ -1231,6 +1232,7 @@ const Product = (function () {
 
       if (selectedVariant && isEnabled && !hasQuantityError) {
         toggleSubmitButton('show');
+        $('.js-not-available-text').addClass('hide');
       } else {
         availiabilityError();
       }
