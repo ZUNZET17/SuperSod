@@ -1224,7 +1224,6 @@ const Product = (function () {
     let fullValue = 0;
     let unitPrice = 0;
     if (select.id === 'pickup-select') {
-      console.log("selecteeeed");
       let isEnabled = true;
       if (typeof selectedOption.dataset.available !== 'undefined') {
         isEnabled = (/true/i).test(selectedOption.dataset.available);
