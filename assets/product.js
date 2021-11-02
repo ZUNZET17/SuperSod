@@ -1231,6 +1231,7 @@ const Product = (function () {
 
       if (selectedVariant && isEnabled && !hasQuantityError) {
         toggleSubmitButton('show');
+        $('.js-not-available-text').addClass('hide');
       } else {
         availiabilityError();
       }
