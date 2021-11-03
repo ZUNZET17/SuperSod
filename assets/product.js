@@ -653,24 +653,41 @@ const Product = (function () {
           }
           return;
         } else if (response.data[0].delivery === false || response.data[0].pickup === false){
+
           if(response.data[0].delivery === false && response.data[0].pickup === true){
-            $('.js-not-available-delivery').removeClass('hide');
+
+            hideFormElements('.js-not-available-delivery');
+
           } else if (response.data[0].delivery === true && response.data[0].pickup === false) {
-            $('.js-not-available-pickup').removeClass('hide');
+
+            hideFormElements('.js-not-available-pickup');
+
           } else if (response.data[0].delivery === false && response.data[0].pickup === false) {
-            $('.js-not-available-text').removeClass('hide');
+
+            hideFormElements();
+
           }
 
           $('.js-delivery-method').prop('disabled', 1 );
+
           $('.js-msg-availability' ).addClass('not-available');
+
           checkProductPricing(zipCode,button);
+
           return;
+
         } else if (response.data[0].delivery === true || response.data[0].pickup === true){
+
           $('.js-not-available-text').addClass('hide');
+
           if (!$('.js-not-available-text').hasClass('hide')){$(this).addClass('hide')}
+
           $('.js-delivery-method').prop('disabled', 0 );
+
           $('.js-msg-availability' ).removeClass('not-available');
+
           checkProductPricing(zipCode,button);
+
           return;
         }
 
@@ -762,8 +779,16 @@ const Product = (function () {
 
       hideFormElements();
     }).fail(function () {
+
+      const deliveryMethod = $('.js-delivery-method:checked').val();
       options.button.html(options.originalText);
-      hideFormElements();
+
+      if(deliveryMethod === 'delivery'){
+          hideFormElements('.js-not-available-delivery');
+      } else {
+          hideFormElements('.js-not-available-pickup-text');
+      }
+
     });
   };
 
@@ -885,7 +910,13 @@ const Product = (function () {
     }
 
     showProductPricing();
-    hideFormElements();
+
+    if (data === 'pickup-select') {
+      hideFormElements('.js-not-available-pickup-text');
+    } else {
+      hideFormElements();
+    }
+
     toggleSubmitButton('show', 'js-product-price-check');
     const submitButton = $('.js-product-submit');
     if (!submitButton.hasClass('hide')) {
@@ -1256,7 +1287,7 @@ const Product = (function () {
         toggleSubmitButton('show');
         $('.js-not-available-text').addClass('hide');
       } else {
-        availiabilityError();
+        availiabilityError(select.id);
       }
     }
 
