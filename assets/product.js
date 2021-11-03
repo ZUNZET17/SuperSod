@@ -601,8 +601,18 @@ const Product = (function () {
       data: ajaxData,
       timeout: 3000
     });
+
     ajax.done(function (response) {
       const deliveryMethod = $('.js-delivery-method:checked').val();
+
+      if (response.data[0].delivery === true || response.data[0].pickup === true){
+        $('.js-not-available-text').addClass('hide');
+        if (!$('.js-not-available-text').hasClass('hide')){$(this).addClass('hide')}
+        $('.js-delivery-method').prop('disabled', 0 );
+        $('.js-msg-availability' ).removeClass('not-available');
+        checkProductPricing(zipCode,button);
+        return;
+      }
 
       if (
         typeof response.message !== 'undefined' ||
@@ -655,7 +665,8 @@ const Product = (function () {
           $('.js-not-available-text').removeClass('hide');
           $('.js-pallet-msg-unavailable:not(.js-not-available-text)').addClass('hide');
           $('.js-delivery-method').prop('disabled', 1 );
-          $('.js-msg-availability' ).addClass('not-available')
+          $('.js-msg-availability' ).addClass('not-available');
+          checkProductPricing(zipCode,button);
           return;
         }
 
@@ -799,11 +810,16 @@ const Product = (function () {
       }
       data.fulfillment = deliveryMethod;
       button.html(originalText);
-      updateForm(zipCode);
-      toggleSubmitButton('show');
-      showButtonMessage(deliveryMethod);
 
-      $('.js-not-available-text').addClass('hide');
+
+      const deliveryIsDisabled = $('.js-delivery-method').prop('disabled');
+      if(!deliveryIsDisabled){
+        toggleSubmitButton('show');
+        showButtonMessage(deliveryMethod);
+        $('.js-not-available-text').addClass('hide');
+        updateForm(zipCode);
+      }
+
       if (deliveryMethod === 'pickup') {
         enableNearestLocations(typeof data.nearest_locations !== 'undefined' ? data.nearest_locations : null);
         $('.js-product-pickup-variants').trigger('change');
@@ -1345,6 +1361,14 @@ const Product = (function () {
   const resetAddressInput = function (ev) {
     const input = ev.target;
     const value = input.value.trim();
+    $('.js-not-available-text').addClass('hide');
+    $('.js-not-available-text').addClass('hide');
+    $('.js-delivery-method').prop('disabled', 0 );
+    $('.js-msg-availability' ).removeClass('not-available');
+    $('.js-current-price-unit').addClass('hide');
+
+    const submitButton = $('.js-product-price-check');
+    submitButton.html('Check delivery price');
 
     if (value.length < 6) {
       $('.js-address-latitude').val('');
