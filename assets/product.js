@@ -605,15 +605,6 @@ const Product = (function () {
     ajax.done(function (response) {
       const deliveryMethod = $('.js-delivery-method:checked').val();
 
-      if (response.data[0].delivery === true || response.data[0].pickup === true){
-        $('.js-not-available-text').addClass('hide');
-        if (!$('.js-not-available-text').hasClass('hide')){$(this).addClass('hide')}
-        $('.js-delivery-method').prop('disabled', 0 );
-        $('.js-msg-availability' ).removeClass('not-available');
-        checkProductPricing(zipCode,button);
-        return;
-      }
-
       if (
         typeof response.message !== 'undefined' ||
         typeof response.error !== 'undefined' ||
@@ -661,11 +652,24 @@ const Product = (function () {
             });
           }
           return;
-        } else if (response.data[0].delivery === false && response.data[0].pickup === false){
-          $('.js-not-available-text').removeClass('hide');
-          $('.js-pallet-msg-unavailable:not(.js-not-available-text)').addClass('hide');
+        } else if (response.data[0].delivery === false || response.data[0].pickup === false){
+          if(response.data[0].delivery === false && response.data[0].pickup === true){
+            $('.js-not-available-delivery').removeClass('hide');
+          } else if (response.data[0].delivery === true && response.data[0].pickup === false) {
+            $('.js-not-available-pickup').removeClass('hide');
+          } else if (response.data[0].delivery === false && response.data[0].pickup === false) {
+            $('.js-not-available-text').removeClass('hide');
+          }
+
           $('.js-delivery-method').prop('disabled', 1 );
           $('.js-msg-availability' ).addClass('not-available');
+          checkProductPricing(zipCode,button);
+          return;
+        } else if (response.data[0].delivery === true || response.data[0].pickup === true){
+          $('.js-not-available-text').addClass('hide');
+          if (!$('.js-not-available-text').hasClass('hide')){$(this).addClass('hide')}
+          $('.js-delivery-method').prop('disabled', 0 );
+          $('.js-msg-availability' ).removeClass('not-available');
           checkProductPricing(zipCode,button);
           return;
         }
@@ -1088,6 +1092,8 @@ const Product = (function () {
     const wrongQuantityText = $('.js-wrong-quantity');
     const wrongMinimumQuantityText = $('.js-wrong-min-quantity');
     const deliveryMethodInput = $('.js-delivery-method:checked');
+    const submitButton = $('.js-product-price-check');
+
 
     if (ev.type === 'keyup' || ev.type === 'input') {
       hideSubmitButton();
@@ -1138,6 +1144,7 @@ const Product = (function () {
       }
     }
 
+    submitButton.html('Check delivery price');
     toggleSubmitButton('enable');
   };
 
