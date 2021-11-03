@@ -652,40 +652,32 @@ const Product = (function () {
             });
           }
           return;
-        } else if (response.data[0].delivery === false || response.data[0].pickup === false){
+        } else if (response.data[0].delivery === false || response.data[0].pickup === false) {
 
-          if(response.data[0].delivery === false && response.data[0].pickup === true){
-
+          if (response.data[0].delivery === false && response.data[0].pickup === true) {
             hideFormElements('.js-not-available-delivery');
-
           } else if (response.data[0].delivery === true && response.data[0].pickup === false) {
-
             hideFormElements('.js-not-available-pickup');
-
           } else if (response.data[0].delivery === false && response.data[0].pickup === false) {
-
             hideFormElements();
-
           }
 
           $('.js-delivery-method').prop('disabled', 1 );
-
           $('.js-msg-availability' ).addClass('not-available');
-
           checkProductPricing(zipCode,button);
 
           return;
 
-        } else if (response.data[0].delivery === true || response.data[0].pickup === true){
+        } else if (response.data[0].delivery === true || response.data[0].pickup === true) {
 
           $('.js-not-available-text').addClass('hide');
 
-          if (!$('.js-not-available-text').hasClass('hide')){$(this).addClass('hide')}
+          if (!$('.js-not-available-text').hasClass('hide')) {
+            $(this).addClass('hide')
+          }
 
           $('.js-delivery-method').prop('disabled', 0 );
-
           $('.js-msg-availability' ).removeClass('not-available');
-
           checkProductPricing(zipCode,button);
 
           return;
@@ -842,7 +834,7 @@ const Product = (function () {
 
 
       const deliveryIsDisabled = $('.js-delivery-method').prop('disabled');
-      if(!deliveryIsDisabled){
+      if (!deliveryIsDisabled) {
         toggleSubmitButton('show');
         showButtonMessage(deliveryMethod);
         $('.js-not-available-text').addClass('hide');
