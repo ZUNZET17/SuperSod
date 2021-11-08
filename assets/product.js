@@ -1229,17 +1229,14 @@ const Product = (function () {
             const selectedMinimumQuantity = result.delivery_pickup_aviability[0].minimum_pickup;
                     
             if (typeof selectedMinimumQuantity !== 'undefined'){
-              console.log(result.delivery_pickup_aviability[0].minimum_pickup);
               $('.js-quantity-input-pickup').attr('min', selectedMinimumQuantity).attr('value', selectedMinimumQuantity).trigger('change');
-              $('.js-minimum-quantity-alert').removeClass('hide').html('There is a minimum order amount of <span class="minimum-quantity-alert-hl">' + selectedMinimumQuantity + ' sq ft </span> to pickup from this location');
-              console.log($('.js-quantity-input').value);            
+              $('.js-minimum-quantity-alert').removeClass('hide').html('There is a minimum order amount of <span class="minimum-quantity-alert-hl">' + selectedMinimumQuantity + ' sq ft </span> to pickup from this location');       
             }
             return result.delivery_pickup_aviability[0].minimum_pickup;
                 }
         });
       }
     };
-    console.log(selectedVariant.length);
     const variants = getVariants();
     const foundVariant = variants.filter(function (variant) {
       return selectedVariant.indexOf(variant.text) > -1;
