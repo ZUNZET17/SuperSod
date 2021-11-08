@@ -463,6 +463,7 @@
         {{ form | payment_button }}
         {% endif %}
       </div>
+      <p class="product-single__pallet-msg js-minimum-quantity-alert hide"></p>
       {%- if section.settings.product_quantity_enable and use_check -%}
       <p class="product-single__pallet-msg product-single__pallet-msg--unavailable product-single__pallet-msg--wrong-quantity js-wrong-min-quantity hide">{{ 'layout.product.minimum_quantity' | t | replace: '%placeholder%', '<span class="js-min-number">500</span>' }}</p>
       <p class="product-single__pallet-msg product-single__pallet-msg--unavailable product-single__pallet-msg--wrong-quantity js-wrong-quantity hide">{{ 'layout.product.multiples_value' | t }} <span class="js-multiple-number">500</span></p>
@@ -479,7 +480,7 @@
       {%- elsif product.type == 'Soil' -%}
       <p class="product-single__pallet-msg">{{ 'products.product.soil_calculator_text_html' | t }}</p>
       {%- endif -%}
-
+      
       <ul class="list--inline payment-icons">
         {%- for type in shop.enabled_payment_types -%}
         <li>
@@ -548,7 +549,7 @@
   const cartAttributes = {{cart.attributes | json}};
   const productData = {
     id: {{product.id}},
-    name: {{product.name | json}},
+    name: {{product.title | json}},
     type: {{product.type | json}}
   };
   {%- if product.options.size > 1 -%}

@@ -884,9 +884,9 @@ const Product = (function () {
     dropdown.html('');
     chooseVariant('pickup');
     if (data != null && typeof data !== 'undefined') {
+      dropdown.addClass("js-dropdown-with-minimums");
       const options = data.reduce(function (acc, customLocation) {
-        // SSOD-307 Example quantity to add into data option
-        let locationQuantity = Math.floor(Math.random() * 100) + 1;
+        // SSOD-307 
         return (
           acc +
           '<option value="' +
@@ -895,24 +895,23 @@ const Product = (function () {
           (typeof customLocation.unit_price !== 'undefined'
             ? ' data-price="' + customLocation.unit_price + '"'
             : "") +
-          (typeof locationQuantity !== 'undefined'
-            ? ' data-minimum="' + locationQuantity + '"'
-            : "") +
           (
             typeof customLocation.pickup !== 'undefined'
             ? ' data-available="' + customLocation.pickup + '"'
             : ''
           ) +
-          ">" +
+          'class="js-store-option"' + ">" +
           (typeof customLocation.location_name !== 'undefined' ? customLocation.location_name : customLocation) +
           (typeof customLocation.distance !== 'undefined' ? ' (' + customLocation.distance + ' miles away)' : '') +
           "</option>"
         );
       }, '<option value="" disabled selected="selected" >Select a pickup location</option>');
       dropdown.html(options);
-      dropdown.removeAttr('disabled')
+      dropdown.removeAttr('disabled');
+      
     }
     dropdown.removeClass('hide');
+
   };
 
   const showProductPricing = function (data) {
@@ -1214,8 +1213,33 @@ const Product = (function () {
   const selectPickupVariant = function (ev) {
     const select = ev.target;
     const selectedVariant = select.value;
+    
     // Pick the quantity from the option selected, this will have the minimum quantity for this zone
-    const selectedMinimumQuantity = $(this).find(":selected").attr('data-minimum');
+    if (select.classList.contains('js-product-pickup-variants')) {
+      const productString = '&products[]id=' + productData.id + '&products[]quantity=' + $('.js-product-quantity').val() + '&products[]type=' + productData.type + '&products[]name=' + productData.name;
+      const dataString = 'zipcode=' + productString + '&shop_domain=' + theme.routes.validation_tool_shop + '&customer_type=retail';
+      const endpoint = 'check_products';
+      if (select.classList.contains('js-dropdown-with-minimums') && selectedVariant.length > 0 ) {
+        $.ajax({
+          type: 'GET',
+          url: theme.routes.validation_tool_url + endpoint,
+          data: dataString,
+          timeout: 3000,
+          success: function(result){
+            const selectedMinimumQuantity = result.delivery_pickup_aviability[0].minimum_pickup;
+                    
+            if (typeof selectedMinimumQuantity !== 'undefined'){
+              console.log(result.delivery_pickup_aviability[0].minimum_pickup);
+              $('.js-quantity-input-pickup').attr('min', selectedMinimumQuantity).attr('value', selectedMinimumQuantity).trigger('change');
+              $('.js-minimum-quantity-alert').removeClass('hide').html('There is a minimum order amount of <span class="minimum-quantity-alert-hl">' + selectedMinimumQuantity + ' sq ft </span> to pickup from this location');
+              console.log($('.js-quantity-input').value);            
+            }
+            return result.delivery_pickup_aviability[0].minimum_pickup;
+                }
+        });
+      }
+    };
+    console.log(selectedVariant.length);
     const variants = getVariants();
     const foundVariant = variants.filter(function (variant) {
       return selectedVariant.indexOf(variant.text) > -1;
@@ -1223,9 +1247,6 @@ const Product = (function () {
     const hasQuantityError = !$('.js-wrong-quantity').hasClass('hide');
     const selectedOption = select.options[select.selectedIndex];
 
-    if (typeof selectedMinimumQuantity !== 'undefined'){
-      $('.js-quantity-input-pickup').attr('min', selectedMinimumQuantity).val(selectedMinimumQuantity);
-    }
     if (selectedOption.disabled) {
       toggleSubmitButton('disable');
       return;
