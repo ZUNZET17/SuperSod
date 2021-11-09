@@ -988,6 +988,10 @@ const Product = (function () {
       return;
     }
 
+    $('.js-not-available-text').addClass('hide');
+    $('.js-not-available-delivery-text').addClass('hide');
+    $('.js-not-available-pickup-text').addClass('hide');
+
     changeDeliveryElements(input);
     const submitButton = $('.js-product-submit');
     if (!submitButton.hasClass('hide')) {
@@ -1278,6 +1282,7 @@ const Product = (function () {
       if (selectedVariant && isEnabled && !hasQuantityError) {
         toggleSubmitButton('show');
         $('.js-not-available-text').addClass('hide');
+        $('.js-not-available-pickup-text').addClass('hide');
       } else {
         availiabilityError(select.id);
       }
@@ -1392,7 +1397,8 @@ const Product = (function () {
     const input = ev.target;
     const value = input.value.trim();
     $('.js-not-available-text').addClass('hide');
-    $('.js-not-available-text').addClass('hide');
+    $('.js-not-available-delivery-text').addClass('hide');
+    $('.js-not-available-pickup-text').addClass('hide');
     $('.js-delivery-method').prop('disabled', 0 );
     $('.js-msg-availability' ).removeClass('not-available');
     $('.js-current-price-unit').addClass('hide');
