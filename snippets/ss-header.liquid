@@ -190,7 +190,7 @@
                           </a>
 
                         </li>
-                        
+
                         <li class="mega-menu__child">
                           <a class="mega-menu__link mega-menu__child-link" href="https://www.supersod.com/yard-area-calculator">
                             Yard Area Calculator
@@ -356,27 +356,29 @@
 
             <div class="hs-search-field">
               <div class="hs-search-field__bar">
-                <form action="https://www.supersod.com/search-results">
+                {% if settings.ss_enable %}
+                  <form action="/collections/{{ settings.ss_collection_handle }}" method="get">
+                    <input type="text" class="searchspring-ac hs-search-field__input" name="term" autocomplete="off" aria-label="Search"
+                      placeholder="Search">
+                  </form>
+                {% else %}
+                  <form action="https://www.supersod.com/search-results">
 
-                  <input type="text" class="hs-search-field__input" name="term" autocomplete="off" aria-label="Search"
-                    placeholder="Search">
+                    <input type="text" class="hs-search-field__input" name="term" autocomplete="off" aria-label="Search"
+                      placeholder="Search">
 
+                    <input type="hidden" name="type" value="SITE_PAGE">
 
-                  <input type="hidden" name="type" value="SITE_PAGE">
+                    <input type="hidden" name="type" value="BLOG_POST">
+                    <input type="hidden" name="type" value="LISTING_PAGE">
+                    <input type="hidden" name="groupId" value="6783375859">
+                    <input type="hidden" name="groupId" value="4964708814">
+                    <input type="hidden" name="domain" value="www.supersod.com">
+                    <input type="hidden" name="domain" value="blog.supersod.com">
 
+                  </form>
+                {% endif %}
 
-
-                  <input type="hidden" name="type" value="BLOG_POST">
-                  <input type="hidden" name="type" value="LISTING_PAGE">
-                  <input type="hidden" name="groupId" value="6783375859">
-                  <input type="hidden" name="groupId" value="4964708814">
-                  <input type="hidden" name="domain" value="www.supersod.com">
-                  <input type="hidden" name="domain" value="blog.supersod.com">
-
-
-
-
-                </form>
               </div>
               <ul class="hs-search-field__suggestions"></ul>
             </div>
@@ -599,7 +601,7 @@
                 <a href="https://blog.supersod.com">see all posts</a>
               </div>
               <div class="ss-mm__track">
-        
+
 
                 <a class="ss-mm__post card card--16-9" href="https://blog.supersod.com/10-reasons-sod-is-the-best-erosion-control">
                   <figure>
@@ -665,27 +667,28 @@
 
         <div class="hs-search-field">
           <div class="hs-search-field__bar">
-            <form action="https://www.supersod.com/search-results">
+            {% if settings.ss_enable %}
+              <form action="/collections/{{ settings.ss_collection_handle }}" method="get">
+                <input type="text" class="searchspring-ac hs-search-field__input" name="term" autocomplete="off" aria-label="Search"
+                  placeholder="Search">
+              </form>
+            {% else %}
+              <form action="https://www.supersod.com/search-results">
 
-              <input type="text" class="hs-search-field__input" name="term" autocomplete="off" aria-label="Search"
-                placeholder="Search">
+                <input type="text" class="hs-search-field__input" name="term" autocomplete="off" aria-label="Search"
+                  placeholder="Search">
 
+                <input type="hidden" name="type" value="SITE_PAGE">
 
-              <input type="hidden" name="type" value="SITE_PAGE">
+                <input type="hidden" name="type" value="BLOG_POST">
+                <input type="hidden" name="type" value="LISTING_PAGE">
+                <input type="hidden" name="groupId" value="6783375859">
+                <input type="hidden" name="groupId" value="4964708814">
+                <input type="hidden" name="domain" value="www.supersod.com">
+                <input type="hidden" name="domain" value="blog.supersod.com">
 
-
-
-              <input type="hidden" name="type" value="BLOG_POST">
-              <input type="hidden" name="type" value="LISTING_PAGE">
-              <input type="hidden" name="groupId" value="6783375859">
-              <input type="hidden" name="groupId" value="4964708814">
-              <input type="hidden" name="domain" value="www.supersod.com">
-              <input type="hidden" name="domain" value="blog.supersod.com">
-
-
-
-
-            </form>
+              </form>
+            {% endif %}
           </div>
           <ul class="hs-search-field__suggestions"></ul>
         </div>
