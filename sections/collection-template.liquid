@@ -23,7 +23,7 @@
             </select>
           </div>
         {% endif %}
-        {% if section.settings.collection_sort_enable and collection.products.size > 1 %}
+        {% if section.settings.collection_sort_enable and collection.products.size > 1 or collection.handle == settings.ss_collection_handle %}
           <div class="collection-sorting__dropdown">
             <label for="SortBy" class="label--hidden">{{ 'collections.sorting.title' | t }}</label>
             {% assign sort_by = collection.sort_by | default: collection.default_sort_by %}
@@ -44,59 +44,70 @@
     {% endif %}
   </header>
 
-  <div class="flex flex--row flex--wrap flex--has-gutter" role="list">
+  {% if collection.handle == settings.ss_collection_handle %}
+  	<div id="searchspring-content"></div>
+  {% else %}
+    <div class="flex flex--row flex--wrap flex--has-gutter" role="list">
 
-    {% for product in collection.products %}
-      {% if collection.products.size == 1 %}
-        {% assign grid_item_width = 'col-4' %}
-      {% endif %}
-      {% include 'product-grid-item', collection_handle: collection.handle %}
-    {% else %}
-      {% comment %}
-        Add default products to help with onboarding for collections/all only.
-
-        The onboarding styles and products are only loaded if the
-        store has no products.
-      {% endcomment %}
-      {% if shop.products_count == 0 and collection.handle == 'all' %}
-        {% unless onboardingLoaded %}
-          {% comment %}
-            Only load onboarding styles if they have not already been loaded.
-          {% endcomment %}
-          {% assign onboardingLoaded = true %}
-        {% endunless %}
-        <div class="grid__item">
-          <div class="grid grid--uniform">
-            {% assign collection_index = 1 %}
-            {% for i in (1..6) %}
-              <div class="grid__item small--one-half medium-up--one-third text-center">
-                <a href="/admin/products" class="grid__image">
-                  {% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
-                  {{ 'product-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}
-                </a>
-                <div class="product__title"><a href="/admin/products">{{ 'homepage.onboarding.product_title' | t }}</a></div>
-                <div class="product__price">$19.99</div>
-              </div>
-              {% assign collection_index = collection_index | plus: 1 %}
-            {% endfor %}
-          </div>
-        </div>
+      {% for product in collection.products %}
+        {% if collection.products.size == 1 %}
+          {% assign grid_item_width = 'col-4' %}
+        {% endif %}
+        {% include 'product-grid-item', collection_handle: collection.handle %}
       {% else %}
         {% comment %}
-          If collection exists but is empty, display message
-        {% endcomment %}
-        <div class="grid__item">
-          <p>{{ 'collections.general.no_matches' | t }}</p>
-        </div>
-      {% endif %}
-    {% endfor %}
-  </div>
+          Add default products to help with onboarding for collections/all only.
 
-  {% if paginate.pages > 1 %}
-    <div class="pagination text-center">
-      {{ paginate | default_pagination }}
+          The onboarding styles and products are only loaded if the
+          store has no products.
+        {% endcomment %}
+        {% if shop.products_count == 0 and collection.handle == 'all' %}
+          {% unless onboardingLoaded %}
+            {% comment %}
+              Only load onboarding styles if they have not already been loaded.
+            {% endcomment %}
+            {% assign onboardingLoaded = true %}
+          {% endunless %}
+          <div class="grid__item">
+            <div class="grid grid--uniform">
+              {% assign collection_index = 1 %}
+              {% for i in (1..6) %}
+                <div class="grid__item small--one-half medium-up--one-third text-center">
+                  <a href="/admin/products" class="grid__image">
+                    {% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
+                    {{ 'product-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}
+                  </a>
+                  <div class="product__title"><a href="/admin/products">{{ 'homepage.onboarding.product_title' | t }}</a></div>
+                  <div class="product__price">$19.99</div>
+                </div>
+                {% assign collection_index = collection_index | plus: 1 %}
+              {% endfor %}
+            </div>
+          </div>
+        {% else %}
+          {% comment %}
+            If collection exists but is empty, display message
+          {% endcomment %}
+          <div class="grid__item">
+            <p>{{ 'collections.general.no_matches' | t }}</p>
+          </div>
+        {% endif %}
+      {% endfor %}
     </div>
   {% endif %}
+
+  {% if collection.handle == settings.ss_collection_handle %}
+    <div class="pagination text-center">
+      <div id="searchspring-pagination"></div>
+  	</div>
+  {% else %}
+    {% if paginate.pages > 1 %}
+      <div class="pagination text-center">
+        {{ paginate | default_pagination }}
+      </div>
+    {% endif %}
+  {% endif %}
+
  </div>
 
 {% endpaginate %}
