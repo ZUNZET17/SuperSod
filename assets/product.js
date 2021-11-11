@@ -1216,8 +1216,9 @@ const Product = (function () {
     
     // Pick the quantity from the option selected, this will have the minimum quantity for this zone
     if (select.classList.contains('js-product-pickup-variants')) {
+      const zipcode = selectedVariant.match(/\s\d{5}/);
       const productString = '&products[]id=' + productData.id + '&products[]quantity=' + $('.js-product-quantity').val() + '&products[]type=' + productData.type + '&products[]name=' + productData.name;
-      const dataString = 'zipcode=' + productString + '&shop_domain=' + theme.routes.validation_tool_shop + '&customer_type=retail';
+      const dataString = 'zipcode=' + zipcode[0] + productString + '&shop_domain=' + theme.routes.validation_tool_shop + '&customer_type=retail';
       const endpoint = 'check_products';
       if (select.classList.contains('js-dropdown-with-minimums') && selectedVariant.length > 0 ) {
         $.ajax({
@@ -1231,6 +1232,8 @@ const Product = (function () {
             if (typeof selectedMinimumQuantity !== 'undefined'){
               $('.js-quantity-input-pickup').attr('min', selectedMinimumQuantity).attr('value', selectedMinimumQuantity).trigger('change');
               $('.js-minimum-quantity-alert').removeClass('hide').html('There is a minimum order amount of <span class="minimum-quantity-alert-hl">' + selectedMinimumQuantity + ' sq ft </span> to pickup from this location');       
+              console.log(zipcode)
+              console.log(zipcode.length);
             }
             return result.delivery_pickup_aviability[0].minimum_pickup;
                 }
