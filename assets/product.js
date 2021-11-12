@@ -1231,7 +1231,8 @@ const Product = (function () {
                     
             if (typeof selectedMinimumQuantity !== 'undefined'){
               $('.js-quantity-input-pickup').attr('min', selectedMinimumQuantity).attr('value', selectedMinimumQuantity).trigger('change');
-              $('.js-minimum-quantity-alert').removeClass('hide').html('There is a minimum order amount of <span class="minimum-quantity-alert-hl">' + selectedMinimumQuantity + ' sq ft </span> to pickup from this location');       
+              $('.js-minimum-quantity-alert').removeClass('hide')
+              $('.js-minimum-quantity-alert-value').text(selectedMinimumQuantity);       
             }
             return result.delivery_pickup_aviability[0].minimum_pickup;
                 }
