@@ -307,24 +307,24 @@
                     <input type="hidden" name="custom_values" class="js-item-custom-price" data-index="{{forloop.index}}" data-units="{{item.quantity}}" value="{{item.properties._custom_price}}">
                   {%- elsif item.original_price != item.final_price -%}
                     <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
-                    <del class="js-item-price-{{forloop.index}}">{{ item.original_price | money }}</del>
+                    <del>{{ item.original_price | money }}</del>
                     <span class="visually-hidden">{{ 'products.product.sale_price' | t }}</span>
                     <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_price" data-item-key="{{item.key}}" style="display:none !important;"></span>
                     {%- if item.properties._bold_bundles_price -%}
                       {%- assign has_custom_pricing = true -%}
                       <span class="js-item-price-{{forloop.index}}">{{ item.original_price | money }}</span><br>
                     {%- endif -%}
-                    <{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %} class="order-discount js-item-price-{{forloop.index}}">{{ item.final_price | money }}</{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %}>
+                    <{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %} >{{ item.final_price | money }}</{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %}>
                   {%- elsif item.variant.compare_at_price and item.variant.compare_at_price != item.final_price -%}
                     <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
-                    <del class="js-item-price-{{forloop.index}}">{{ item.variant.compare_at_price | money }}</del>
+                    <del>{{ item.variant.compare_at_price | money }}</del>
                     <span class="visually-hidden">{{ 'products.product.sale_price' | t }}</span>
                     <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_price" data-item-key="{{item.key}}" style="display:none !important;"></span>
                     {%- if item.properties._bold_bundles_price -%}
                       {%- assign has_custom_pricing = true -%}
                       <span class="js-item-price-{{forloop.index}}">{{ item.original_price | money }}</span><br>
                     {%- endif -%}
-                    <{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %} class="order-discount js-item-price-{{forloop.index}}">{{ item.final_price | money }}</{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %}>
+                    <{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %} >{{ item.final_price | money }}</{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %}>
                   {%- else -%}
                     {%- assign tag_name = 'span' -%}
                     {%- if item.properties._bold_bundles_price -%}
@@ -348,7 +348,7 @@
                         {%- endif -%}
                       {%- endunless -%}
                     {%- endif -%}
-                    <{{tag_name}} class="js-item-price-{{forloop.index}}">{{ item.final_price | money }}</{{tag_name}}>
+                    <{{tag_name}}>{{ item.final_price | money }}</{{tag_name}}>
                   {%- endif -%}
 
                   {% include 'product-unit-price', variant: item, available: item.variant.available %}
