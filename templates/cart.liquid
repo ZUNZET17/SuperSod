@@ -372,7 +372,7 @@
                     min="{% if item.properties._custom_increment %}{{item.properties._custom_increment}}{% else %}0{% endif %}">
                   <p class="cart__error-message cart__error-message--invalid-quantity js-invalid-quantity js-invalid-quantity-{{forloop.index}} hide">Please enter a valid quantity</p>
                 </td>
-                <td id="js-line-price{{ forloop.index }}" data-item-price="{{ item.final_price | money_without_currency}}" data-label="{{ 'cart.label.total' | t }}" class="text-right cart__table-cell--line-price js-line-price">
+                <td id="js-line-price{{ forloop.index }}" data-line-price="{{ item.final_price | money_without_currency}}" data-label="{{ 'cart.label.total' | t }}" class="text-right cart__table-cell--line-price js-line-price">
                   {%- if item.properties._custom_price != blank -%}
                     {%- assign item_value = item.properties._custom_price | times: 100 | times: item.quantity -%}
                     {%- assign subtotal = subtotal | plus: item_value -%}

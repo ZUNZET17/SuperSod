@@ -402,13 +402,12 @@ const Cart = (function () {
     let linePrice = document.querySelector('#js-line-price' + index);   
     let linePriceTotal = Utils.formatMoneyWithPrecision(( newQuantity * price ).toFixed(2));
     let dataItemPrice = newQuantity * price;
-    linePrice.setAttribute('data-item-price', dataItemPrice )
+    linePrice.setAttribute('data-line-price', dataItemPrice )
     linePrice.innerHTML = linePriceTotal;
 
-    let linePrices = [...$('.js-line-price')].map(x => parseFloat(x.dataset.itemPrice));
+    let linePrices = [...$('.js-line-price')].map(x => parseFloat(x.dataset.linePrice));
     let subTotal = Utils.formatMoneyWithPrecision(linePrices.reduce((a, b) => a + b).toFixed(2));
     $('.js-cart-subtotal').text(subTotal);
-    console.log(linePrices);
     jQuery.post('/cart/change.js', { quantity: newQuantity, line: index });
   };
 
