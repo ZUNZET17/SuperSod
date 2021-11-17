@@ -391,6 +391,26 @@ const Cart = (function () {
   const highlightUpdateButton = function (ev) {
     $('.js-update-cart-message').removeClass('hide');
   };
+//ticket SSOD-310
+  const updateTotals = function (ev) {
+    debugger;
+    let input = ev.target;
+    let newQuantity = parseFloat(input.value);
+    const regex = /(\d*\,)*(\d*\.)*\d{2,}/g;
+    let index = input.dataset.inputIndex;
+    let price = parseFloat($('.js-item-price-' + index).text().match(regex)[0]);
+    let linePrice = document.querySelector('#js-line-price' + index);   
+    let linePriceTotal = Utils.formatMoneyWithPrecision(( newQuantity * price ).toFixed(2));
+    let dataItemPrice = newQuantity * price;
+    linePrice.setAttribute('data-item-price', dataItemPrice )
+    linePrice.innerHTML = linePriceTotal;
+
+    let linePrices = [...$('.js-line-price')].map(x => parseFloat(x.dataset.itemPrice));
+    let subTotal = Utils.formatMoneyWithPrecision(linePrices.reduce((a, b) => a + b).toFixed(2));
+    $('.js-cart-subtotal').text(subTotal);
+    console.log(linePrices);
+    jQuery.post('/cart/change.js', { quantity: newQuantity, line: index });
+  };
 
   const showFixedPrices = function () {
     if (typeof cartItems === 'undefined') {
@@ -750,7 +770,8 @@ const Cart = (function () {
       .on('click', '.js-check-dates', searchAvailableDates)
       .on('change', '.js-delivery-type', resetCheckoutForm)
       .on('click', '.js-go-to-checkout', validateCheckout)
-      .on('change keyup input', '.js-cart-quantity-selector', highlightUpdateButton)
+      .on('change keyup input', '.js-cart-quantity-selector', highlightUpdateButton)     
+      .on('change', '.js-cart-quantity-selector', updateTotals)
       .on('submit', '.js-cart-form', interceptCartSubmit);
     for (let index = 0; index < 3; index++) {
       const fieldSelector = '.js-tail-datetime-field-' + (index + 1);
