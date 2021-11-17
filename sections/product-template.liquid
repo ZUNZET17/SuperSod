@@ -463,7 +463,6 @@
         {{ form | payment_button }}
         {% endif %}
       </div>
-      <p class="product-single__pallet-msg js-minimum-quantity-alert hide">{{ section.settings.sods_pallet_minimum_alert }}</p>
       {%- if section.settings.product_quantity_enable and use_check -%}
       <p class="product-single__pallet-msg product-single__pallet-msg--unavailable product-single__pallet-msg--wrong-quantity js-wrong-min-quantity hide">{{ 'layout.product.minimum_quantity' | t | replace: '%placeholder%', '<span class="js-min-number">500</span>' }}</p>
       <p class="product-single__pallet-msg product-single__pallet-msg--unavailable product-single__pallet-msg--wrong-quantity js-wrong-quantity hide">{{ 'layout.product.multiples_value' | t }} <span class="js-multiple-number">500</span></p>
@@ -480,7 +479,7 @@
       {%- elsif product.type == 'Soil' -%}
       <p class="product-single__pallet-msg">{{ 'products.product.soil_calculator_text_html' | t }}</p>
       {%- endif -%}
-      
+
       <ul class="list--inline payment-icons">
         {%- for type in shop.enabled_payment_types -%}
         <li>
@@ -549,7 +548,7 @@
   const cartAttributes = {{cart.attributes | json}};
   const productData = {
     id: {{product.id}},
-    name: {{product.title | json}},
+    name: {{product.name | json}},
     type: {{product.type | json}}
   };
   {%- if product.options.size > 1 -%}
@@ -766,15 +765,6 @@
         "en": "Button link",
         "es": "Enlace del botón"
       }
-    },
-    {
-      "type": "textarea",
-      "id": "sods_pallet_minimum_alert",
-      "label": {
-        "en": "Minimum pickup message ",
-        "es": "mensaje de cantidad minima"
-      },
-      "default": "There is a mimum pickup amount of <span class='js-minimum-quantity-alert-value'></span> for this store."
     },
     {
       "type": "header",

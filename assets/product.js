@@ -503,7 +503,7 @@ const Product = (function () {
     if (options.deliveryMethod === 'pickup') {
       const longitude = $('.js-address-longitude').val();
       const latitude = $('.js-address-latitude').val();
-      const quantity = $('.js-product-quantity').val();
+      const quantity = $('.js-product-quantity').val()
       checkNearestPickupLocations({
         customer_type: 'retail',
         latitude: latitude,
@@ -576,7 +576,6 @@ const Product = (function () {
 
       enableNearestLocations(typeof data.nearest_locations !== 'undefined' ? data.nearest_locations : null);
       $('.js-product-pickup-variants').trigger('change');
-
       if (typeof doneCallback === 'function') {
         doneCallback();
       }
@@ -928,9 +927,7 @@ const Product = (function () {
     dropdown.html('');
     chooseVariant('pickup');
     if (data != null && typeof data !== 'undefined') {
-      dropdown.addClass("js-dropdown-with-minimums");
       const options = data.reduce(function (acc, customLocation) {
-        // SSOD-307 
         return (
           acc +
           '<option value="' +
@@ -944,18 +941,16 @@ const Product = (function () {
             ? ' data-available="' + customLocation.pickup + '"'
             : ''
           ) +
-          'class="js-store-option"' + ">" +
+          ">" +
           (typeof customLocation.location_name !== 'undefined' ? customLocation.location_name : customLocation) +
           (typeof customLocation.distance !== 'undefined' ? ' (' + customLocation.distance + ' miles away)' : '') +
           "</option>"
         );
       }, '<option value="" disabled selected="selected" >Select a pickup location</option>');
       dropdown.html(options);
-      dropdown.removeAttr('disabled');
-      
+      dropdown.removeAttr('disabled')
     }
     dropdown.removeClass('hide');
-
   };
 
   const showProductPricing = function (data) {
@@ -1264,32 +1259,6 @@ const Product = (function () {
   const selectPickupVariant = function (ev) {
     const select = ev.target;
     const selectedVariant = select.value;
-    
-    // Pick the quantity from the option selected, this will have the minimum quantity for this zone
-    if (select.classList.contains('js-product-pickup-variants')) {
-      const zipcode = selectedVariant.match(/\s\d{5}/);
-      const productString = '&products[]id=' + productData.id + '&products[]quantity=' + $('.js-product-quantity').val() + '&products[]type=' + productData.type + '&products[]name=' + productData.name;
-      const dataString = 'zipcode=' + zipcode[0] + productString + '&shop_domain=' + theme.routes.validation_tool_shop + '&customer_type=retail';
-      const endpoint = 'check_products';
-      if (select.classList.contains('js-dropdown-with-minimums') && selectedVariant.length > 0 ) {
-        $.ajax({
-          type: 'GET',
-          url: theme.routes.validation_tool_url + endpoint,
-          data: dataString,
-          timeout: 3000,
-          success: function(result){
-            const selectedMinimumQuantity = result.delivery_pickup_aviability[0].minimum_pickup;
-                    
-            if (typeof selectedMinimumQuantity !== 'undefined'){
-              $('.js-quantity-input-pickup').attr('min', selectedMinimumQuantity).attr('value', selectedMinimumQuantity).trigger('change');
-              $('.js-minimum-quantity-alert').removeClass('hide')
-              $('.js-minimum-quantity-alert-value').text(selectedMinimumQuantity);       
-            }
-            return result.delivery_pickup_aviability[0].minimum_pickup;
-                }
-        });
-      }
-    };
     const variants = getVariants();
     const foundVariant = variants.filter(function (variant) {
       return selectedVariant.indexOf(variant.text) > -1;
