@@ -1078,12 +1078,13 @@ const Product = (function () {
     const deliveryMethodInput = $('.js-delivery-method:checked');
 
     if (ev.type === 'keyup' || ev.type === 'input') {
+      if ( !$('.js-dropdown-with-minimums') )
       hideSubmitButton();
       if (checkPULocationsTimeout) {
         clearTimeout(checkPULocationsTimeout);
       }
       checkPULocationsTimeout = setTimeout(function () {
-        if (input.classList.contains('js-quantity-input-pickup')) {
+        if ( input.classList.contains('js-quantity-input-pickup') && !$('.js-dropdown-with-minimums') ) {
           updatePickUpLocations();
         }
       }, 300);
@@ -1228,11 +1229,14 @@ const Product = (function () {
           timeout: 3000,
           success: function(result){
             const selectedMinimumQuantity = result.delivery_pickup_aviability[0].minimum_pickup;
-                    
-            if (typeof selectedMinimumQuantity !== 'undefined'){
-              $('.js-quantity-input-pickup').attr('min', selectedMinimumQuantity).attr('value', selectedMinimumQuantity).trigger('change');
-              $('.js-minimum-quantity-alert').removeClass('hide')
-              $('.js-minimum-quantity-alert-value').text(selectedMinimumQuantity);       
+            const type = result.delivery_pickup_aviability[0].type;
+            
+            if ( type == 'Sod' ) {
+              if ( typeof(selectedMinimumQuantity) !== 'undefined' && typeof(selectedMinimumQuantity) !== null ){
+                $('.js-quantity-input-pickup').attr('min', selectedMinimumQuantity).attr('value', selectedMinimumQuantity).trigger('change');
+                $('.js-minimum-quantity-alert').removeClass('hide')
+                $('.js-minimum-quantity-alert-value').text(selectedMinimumQuantity);       
+              }
             }
             return result.delivery_pickup_aviability[0].minimum_pickup;
                 }
