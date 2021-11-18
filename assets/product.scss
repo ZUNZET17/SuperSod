@@ -51,13 +51,10 @@ $desk: 1100px;
   margin-top: 30px;
   padding: 10px 11px;
 
-  a, span {
+  a{
     color: $color_primary;
     text-decoration: underline;
     cursor: pointer;
-  }
-  span {
-    font-weight: 700;
   }
 }
 
@@ -285,6 +282,17 @@ button[class*="bold-ro__custombutton-"] + .btn--full {
 
 .product-form label {
   display: inline-flex;
+}
+
+.toggle-input:checked + .toggle-label {
+  &.not-available{
+    box-shadow: 0 0 0 2px red;
+    border-color: red;
+  }
+}
+
+.toggle-label.not-available {
+  border-color: red;
 }
 
 .lawn-planted-warning-hide {

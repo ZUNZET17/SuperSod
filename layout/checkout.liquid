@@ -135,11 +135,20 @@
     </div>
 
     {{ tracking_code }}
+    {%- assign shipping_address = '' -%}
     {%- capture cart_attributes -%}
       {%- for attribute in checkout.attributes -%}
         <input type="hidden" name="checkout[attributes][{{ attribute.first }}]" value="{{ attribute.last }}">
+        {%- if checkout.attributes.delivery_method != 'pickup' -%}
+          {%- if attribute.first == 'customer_address' -%}
+            {%- assign shipping_address = attribute.last | replace: 'Delivery address:', '' -%}
+          {%- endif -%}
+        {%- endif -%}
       {%- endfor -%}
     {%- endcapture -%}
+    {%- if shipping_address == '' and checkout.attributes.delivery_method != 'pickup' -%}
+      {%- assign shipping_address = checkout.shipping_address.address1 -%}
+    {%- endif -%}
     {%- assign cart_attributes = cart_attributes | strip_newlines | strip -%}
     {%- assign hide_delivery = false -%}
     {%- assign hide_pickup = false -%}
@@ -178,6 +187,12 @@
         const hidePickup = true;
       {%- endif -%}
       const cartAttributes = '{{ cart_attributes }}';
+      const shippingAddress = '{{ shipping_address }}';
+      const cartAttributesValues = {
+        {%- for attribute in checkout.attributes -%}
+          {{ attribute.first | json }}: {{ attribute.last | json }}{%- unless forloop.last -%},{%- endunless -%}
+        {%- endfor -%}
+      };
 
       const hideDeliveryOptions = function () {
         if (typeof hideDelivery !== 'undefined') {
@@ -210,16 +225,95 @@
         }
       }
 
-      const hideShippingMethods = function () {
-        const deliveryType = window.localStorage.getItem('delivery_type');
+      const checkChosenMethod = function () {
+        const deliveryType = window.localStorage.getItem('delivery_type') !== 'undefined' ? window.localStorage.getItem('delivery_type') === 'undefined' : null;
         const labels = [].slice.call(document.getElementsByClassName('radio__label__primary'));
         let lowercasedDeliveryType = deliveryType ? deliveryType.toLocaleLowerCase() === 'first_off_truck' ? 'before 9am' : deliveryType.toLocaleLowerCase() : '';
         if (
           lowercasedDeliveryType === 'standard_delivery' ||
           lowercasedDeliveryType === 'undefined' ||
+          lowercasedDeliveryType === '' ||
           cartAttributes.indexOf('freight') > -1
         ) {
-          lowercasedDeliveryType = 'standard';
+          if (
+            lowercasedDeliveryType === '' ||
+            lowercasedDeliveryType === 'undefined'
+          ) {
+            const deliveryInput1 = document.querySelector('input[name="checkout[attributes][delivery_method]"]');
+            const deliveryInput2 = document.querySelector('input[name="checkout[attributes][delivery_type]"]');
+            const deliveryMethod = deliveryInput1 ? deliveryInput1.value : (deliveryInput2 ? deliveryInput2.value : null);
+            lowercasedDeliveryType = deliveryMethod ?
+              deliveryMethod.toLocaleLowerCase() :
+              (
+                cartAttributesValues.delivery_method ?
+                  cartAttributesValues.delivery_method :
+                  'standard'
+              );
+          } else {
+            lowercasedDeliveryType = 'standard';
+          }
+        }
+
+        if (Shopify.Checkout.step !== 'contact_information') {
+          if (
+            (
+              lowercasedDeliveryType === 'pickup' &&
+              shippingAddress !== ''
+            ) ||
+            (
+              lowercasedDeliveryType !== 'pickup' &&
+              shippingAddress === ''
+            )
+          ) {
+            window.location.search = '?step=contact_information';
+            return;
+          }
+        }
+      };
+
+      const hideShippingMethods = function () {
+        const deliveryType = window.localStorage.getItem('delivery_type') !== 'undefined' ? window.localStorage.getItem('delivery_type') === 'undefined' : null;
+        const labels = [].slice.call(document.getElementsByClassName('radio__label__primary'));
+        let lowercasedDeliveryType = deliveryType ? deliveryType.toLocaleLowerCase() === 'first_off_truck' ? 'before 9am' : deliveryType.toLocaleLowerCase() : '';
+        if (
+          lowercasedDeliveryType === 'standard_delivery' ||
+          lowercasedDeliveryType === 'undefined' ||
+          lowercasedDeliveryType === '' ||
+          cartAttributes.indexOf('freight') > -1
+        ) {
+          if (
+            lowercasedDeliveryType === '' ||
+            lowercasedDeliveryType === 'undefined'
+          ) {
+            const deliveryInput1 = document.querySelector('input[name="checkout[attributes][delivery_method]"]');
+            const deliveryInput2 = document.querySelector('input[name="checkout[attributes][delivery_type]"]');
+            const deliveryMethod = deliveryInput1 ? deliveryInput1.value : (deliveryInput2 ? deliveryInput2.value : null);
+            lowercasedDeliveryType = deliveryMethod ?
+              deliveryMethod.toLocaleLowerCase() :
+              (
+                cartAttributesValues.delivery_method ?
+                  cartAttributesValues.delivery_method :
+                  'standard'
+              );
+          } else {
+            lowercasedDeliveryType = 'standard';
+          }
+        }
+
+        if (Shopify.Checkout.step !== 'contact_information') {
+          if (
+            (
+              lowercasedDeliveryType === 'pickup' &&
+              shippingAddress !== ''
+            ) ||
+            (
+              lowercasedDeliveryType !== 'pickup' &&
+              shippingAddress === ''
+            )
+          ) {
+            window.location.search = '?step=contact_information';
+            return;
+          }
         }
 
         for (let i = 0; i < labels.length; i++) {
@@ -249,17 +343,30 @@
           } else if (
             lowercasedLabel.indexOf('include') < 0 &&
             (
-              lowercasedLabel.indexOf(lowercasedDeliveryType.replace('_', ' ')) > -1 ||
-              lowercasedDeliveryType.replace('_', ' ').indexOf(lowercasedLabel) > -1
+              lowercasedLabel.replace(/\s/g, '').indexOf(lowercasedDeliveryType.replace('_', ' ')) > -1 ||
+              lowercasedDeliveryType.replace('_', ' ').indexOf(lowercasedLabel.replace(/\s/g, '')) > -1
             )
           ) {
             containsMethod = true;
           }
 
-          if (deliveryType === 'pickup' && label.indexOf('ick') < 0) {
+          if (
+            (
+              (deliveryType && deliveryType === 'pickup') ||
+              lowercasedDeliveryType === 'pickup'
+            ) &&
+            lowercasedLabel.indexOf('ick') < 0
+          ) {
             hide = true;
-          } else if (deliveryType !== 'pickup' && label.indexOf('ick') > -1) {
+          } else if (
+            (
+              (deliveryType && deliveryType !== 'pickup') ||
+              lowercasedDeliveryType !== 'pickup'
+            ) &&
+            lowercasedLabel.indexOf('ick') > -1
+          ) {
             hide = true;
+            console.log(deliveryType, lowercasedLabel.replace(/\s/g, ''), lowercasedDeliveryType, containsMethod, hide);
           } else if (!containsMethod) {
             hide = true;
           }
@@ -572,12 +679,10 @@
         checkContactDelivery();
       };
 
-      if (
-        Shopify.Checkout.step === 'shipping_method' &&
-        window.localStorage.getItem('delivery_type') !== null &&
-        window.localStorage.getItem('delivery_type') !== 'undefined'
-      ) {
+      if (Shopify.Checkout.step === 'shipping_method') {
         hideShippingMethods();
+      } else if (Shopify.Checkout.step === 'payment_method') {
+        checkChosenMethod();
       } else if (Shopify.Checkout.step === 'contact_information') {
         insertAttributes();
         checkContactDelivery();

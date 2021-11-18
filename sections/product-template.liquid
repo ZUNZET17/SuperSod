@@ -196,12 +196,12 @@
       <input type="hidden" class="js-address-longitude" value="{{cart.attributes.customer_longitude}}">
 
       {% form 'product', product, class: product_classes, data-ajax-add-to-cart: true, data-product-id: product.id, data-enable-history-state: history_state_data %}
-      
+
       <!-- HC - Shopify Pay Installments added - 30 Sep '21 -->
       <div class="hc-installments-wrapper">
         {{ form | payment_terms }}
       </div>
-      
+
       {%- if shop.taxes_included or shop.shipping_policy.body != blank -%}
       <div class="product-single__policies rte">
         {%- if shop.taxes_included -%}
@@ -212,7 +212,7 @@
         {%- endif -%}
       </div>
       {%- endif -%}
-      
+
       {%- if use_check == true or uses_normal_toggle == true -%}
 
         <input type="hidden" name="properties[pickup_location]" class="js-pickup-location" value="">
@@ -221,7 +221,7 @@
           <legend>Choose delivery or pickup</legend>
           {%- unless is_pickup_only -%}
             <input type="radio" name="properties[_method]" class="toggle-input hide js-delivery-method" id="delivery-method" value="delivery" checked>
-            <label for="delivery-method" class="toggle-label">
+            <label for="delivery-method" class="toggle-label js-msg-availability">
               {{ 'layout.product.delivery' | t }}
               {% if product.type == 'Sod' or product.type == 'sod' %}<small class="toggle-label__instructions">Minimum order of 500 square feet of sod</small>{% endif %}
             </label>
@@ -229,7 +229,7 @@
 
           {%- unless is_delivery_only -%}
             <input type="radio" name="properties[_method]" class="toggle-input hide js-delivery-method" id="pickup-method" value="pickup"{% if is_pickup_only %} checked{% endif %}>
-            <label for="pickup-method" class="toggle-label">
+            <label for="pickup-method" class="toggle-label js-msg-availability">
               {{ 'layout.product.pickup' | t }}
               <small class="toggle-label__instructions">Pickup will be at your nearest store.</small>
             </label>
@@ -463,7 +463,6 @@
         {{ form | payment_button }}
         {% endif %}
       </div>
-      <p class="product-single__pallet-msg js-minimum-quantity-alert hide">{{ section.settings.sods_pallet_minimum_alert }}</p>
       {%- if section.settings.product_quantity_enable and use_check -%}
       <p class="product-single__pallet-msg product-single__pallet-msg--unavailable product-single__pallet-msg--wrong-quantity js-wrong-min-quantity hide">{{ 'layout.product.minimum_quantity' | t | replace: '%placeholder%', '<span class="js-min-number">500</span>' }}</p>
       <p class="product-single__pallet-msg product-single__pallet-msg--unavailable product-single__pallet-msg--wrong-quantity js-wrong-quantity hide">{{ 'layout.product.multiples_value' | t }} <span class="js-multiple-number">500</span></p>
@@ -471,16 +470,16 @@
 
       {% endform %}
       {%- if use_pallet == true or use_check == true -%}
-      <p class="product-single__pallet-msg product-single__pallet-msg--unavailable js-not-available-delivery hide">{{ 'products.product.delivery_unavailable_html' | t }}</p>
-      <p class="product-single__pallet-msg product-single__pallet-msg--unavailable js-not-available-text hide">{{ 'products.product.pallet_unavailable_html' | t }}</p>
-      <p class="product-single__pallet-msg product-single__pallet-msg--unavailable js-not-available-pickup-text hide">{{ 'products.product.pickup_unavailable_html' | t }}</p>
+      <p class="product-single__pallet-msg product-single__pallet-msg--unavailable js-pallet-msg-unavailable js-not-available-delivery hide">{{ 'products.product.delivery_unavailable_html' | t }}</p>
+      <p class="product-single__pallet-msg product-single__pallet-msg--unavailable js-pallet-msg-unavailable js-not-available-text hide">{{ 'products.product.pallet_unavailable_html' | t }}</p>
+      <p class="product-single__pallet-msg product-single__pallet-msg--unavailable js-pallet-msg-unavailable js-not-available-pickup-text hide">{{ 'products.product.pickup_unavailable_html' | t }}</p>
       {%- if uses_normal_toggle == false and use_variant_toggle == false -%}
       <p class="product-single__pallet-msg">{{ 'products.product.sod_picker_text_html' | t }}</p>
       {%- endif -%}
       {%- elsif product.type == 'Soil' -%}
       <p class="product-single__pallet-msg">{{ 'products.product.soil_calculator_text_html' | t }}</p>
       {%- endif -%}
-      
+
       <ul class="list--inline payment-icons">
         {%- for type in shop.enabled_payment_types -%}
         <li>
@@ -549,7 +548,7 @@
   const cartAttributes = {{cart.attributes | json}};
   const productData = {
     id: {{product.id}},
-    name: {{product.title | json}},
+    name: {{product.name | json}},
     type: {{product.type | json}}
   };
   {%- if product.options.size > 1 -%}
@@ -766,15 +765,6 @@
         "en": "Button link",
         "es": "Enlace del botón"
       }
-    },
-    {
-      "type": "textarea",
-      "id": "sods_pallet_minimum_alert",
-      "label": {
-        "en": "Minimum pickup message ",
-        "es": "mensaje de cantidad minima"
-      },
-      "default": "There is a mimum pickup amount of <span class='js-minimum-quantity-alert-value'></span> for this store."
     },
     {
       "type": "header",

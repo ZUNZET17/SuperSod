@@ -244,7 +244,6 @@ const Product = (function () {
         return parseInt(option.value);
       }
     }
-
     return false;
   };
 
@@ -391,7 +390,6 @@ const Product = (function () {
                 skipShowSubmitButton: true
               });
             }
-
             return;
           }
           button.html(originalText);
@@ -417,7 +415,6 @@ const Product = (function () {
               zipCode: zipCode
             });
           }
-
           return;
         }
 
@@ -462,7 +459,6 @@ const Product = (function () {
 
       if (!isAvailable) {
         button.html(originalText);
-
         hideFormElements();
         return;
       }
@@ -507,7 +503,7 @@ const Product = (function () {
     if (options.deliveryMethod === 'pickup') {
       const longitude = $('.js-address-longitude').val();
       const latitude = $('.js-address-latitude').val();
-      const quantity = $('.js-product-quantity').val();
+      const quantity = $('.js-product-quantity').val()
       checkNearestPickupLocations({
         customer_type: 'retail',
         latitude: latitude,
@@ -548,6 +544,7 @@ const Product = (function () {
         toggleSubmitButton('disable');
       } else {
         toggleSubmitButton('show');
+        $('.js-not-available-delivery').addClass('hide');
       }
     }
     $('.js-not-available-text').addClass('hide');
@@ -573,14 +570,12 @@ const Product = (function () {
           hideFormElements('.js-not-available-pickup-text');
           return;
         }
-
         availiabilityError({zipCode: ''});
         return;
       }
 
       enableNearestLocations(typeof data.nearest_locations !== 'undefined' ? data.nearest_locations : null);
       $('.js-product-pickup-variants').trigger('change');
-
       if (typeof doneCallback === 'function') {
         doneCallback();
       }
@@ -606,8 +601,10 @@ const Product = (function () {
       data: ajaxData,
       timeout: 3000
     });
+
     ajax.done(function (response) {
       const deliveryMethod = $('.js-delivery-method:checked').val();
+
       if (
         typeof response.message !== 'undefined' ||
         typeof response.error !== 'undefined' ||
@@ -633,7 +630,6 @@ const Product = (function () {
                 zipCode: zipCode,
               });
             }
-
             return;
           }
 
@@ -655,6 +651,34 @@ const Product = (function () {
               zipCode: zipCode
             });
           }
+          return;
+        } else if (response.data[0].delivery === false || response.data[0].pickup === false) {
+
+          if (response.data[0].delivery === false && response.data[0].pickup === true) {
+            hideFormElements('.js-not-available-delivery');
+          } else if (response.data[0].delivery === true && response.data[0].pickup === false) {
+            hideFormElements('.js-not-available-pickup');
+          } else if (response.data[0].delivery === false && response.data[0].pickup === false) {
+            hideFormElements();
+          }
+
+          $('.js-delivery-method').prop('disabled', 1 );
+          $('.js-msg-availability' ).addClass('not-available');
+          checkProductPricing(zipCode,button);
+
+          return;
+
+        } else if (response.data[0].delivery === true || response.data[0].pickup === true) {
+
+          $('.js-not-available-text').addClass('hide');
+
+          if (!$('.js-not-available-text').hasClass('hide')) {
+            $(this).addClass('hide')
+          }
+
+          $('.js-delivery-method').prop('disabled', 0 );
+          $('.js-msg-availability' ).removeClass('not-available');
+          checkProductPricing(zipCode,button);
 
           return;
         }
@@ -747,8 +771,16 @@ const Product = (function () {
 
       hideFormElements();
     }).fail(function () {
+
+      const deliveryMethod = $('.js-delivery-method:checked').val();
       options.button.html(options.originalText);
-      hideFormElements();
+
+      if(deliveryMethod === 'delivery'){
+          hideFormElements('.js-not-available-delivery');
+      } else {
+          hideFormElements('.js-not-available-pickup-text');
+      }
+
     });
   };
 
@@ -758,12 +790,14 @@ const Product = (function () {
     const latitude = $('.js-address-latitude').val();
     const longitude = $('.js-address-longitude').val();
     const quantity = $('.js-quantity-input-' + deliveryMethod).val();
+
     const ajaxData = {
       customer_type: 'retail',
       product_id: productData.id,
       quantity: quantity,
       shop_domain: theme.routes.validation_tool_shop,
     };
+
     const endpoint = deliveryMethod === 'pickup' ? 'nearest_locations_price' : 'pricing_info';
     if (deliveryMethod === 'delivery') {
       ajaxData.latitude = latitude;
@@ -795,14 +829,17 @@ const Product = (function () {
         hideFormElements();
         return;
       }
-
       data.fulfillment = deliveryMethod;
       button.html(originalText);
-      updateForm(zipCode);
-      toggleSubmitButton('show');
-      showButtonMessage(deliveryMethod);
 
-      $('.js-not-available-text').addClass('hide');
+
+      const deliveryIsDisabled = $('.js-delivery-method').prop('disabled');
+      if (!deliveryIsDisabled) {
+        toggleSubmitButton('show');
+        showButtonMessage(deliveryMethod);
+        $('.js-not-available-text').addClass('hide');
+        updateForm(zipCode);
+      }
 
       if (deliveryMethod === 'pickup') {
         enableNearestLocations(typeof data.nearest_locations !== 'undefined' ? data.nearest_locations : null);
@@ -830,6 +867,7 @@ const Product = (function () {
             checkChosenVariant();
           }
         }
+
       } else if (deliveryMethod === 'delivery') {
         chooseVariant('delivery');
         showProductPricing(data);
@@ -864,7 +902,13 @@ const Product = (function () {
     }
 
     showProductPricing();
-    hideFormElements();
+
+    if (data === 'pickup-select') {
+      hideFormElements('.js-not-available-pickup-text');
+    } else {
+      hideFormElements();
+    }
+
     toggleSubmitButton('show', 'js-product-price-check');
     const submitButton = $('.js-product-submit');
     if (!submitButton.hasClass('hide')) {
@@ -875,7 +919,6 @@ const Product = (function () {
   const enableNearestLocations = function (data) {
     $('.js-product-pickup-variants-title').removeClass('hide');
     const deliveryOption = $('.js-delivery-method:checked').val();
-
     if (deliveryOption !== 'pickup') {
       return;
     }
@@ -884,9 +927,7 @@ const Product = (function () {
     dropdown.html('');
     chooseVariant('pickup');
     if (data != null && typeof data !== 'undefined') {
-      dropdown.addClass("js-dropdown-with-minimums");
       const options = data.reduce(function (acc, customLocation) {
-        // SSOD-307 
         return (
           acc +
           '<option value="' +
@@ -900,18 +941,16 @@ const Product = (function () {
             ? ' data-available="' + customLocation.pickup + '"'
             : ''
           ) +
-          'class="js-store-option"' + ">" +
+          ">" +
           (typeof customLocation.location_name !== 'undefined' ? customLocation.location_name : customLocation) +
           (typeof customLocation.distance !== 'undefined' ? ' (' + customLocation.distance + ' miles away)' : '') +
           "</option>"
         );
       }, '<option value="" disabled selected="selected" >Select a pickup location</option>');
       dropdown.html(options);
-      dropdown.removeAttr('disabled');
-      
+      dropdown.removeAttr('disabled')
     }
     dropdown.removeClass('hide');
-
   };
 
   const showProductPricing = function (data) {
@@ -948,6 +987,10 @@ const Product = (function () {
     if (!input.checked) {
       return;
     }
+
+    $('.js-not-available-text').addClass('hide');
+    $('.js-not-available-delivery-text').addClass('hide');
+    $('.js-not-available-pickup-text').addClass('hide');
 
     changeDeliveryElements(input);
     const submitButton = $('.js-product-submit');
@@ -1076,6 +1119,8 @@ const Product = (function () {
     const wrongQuantityText = $('.js-wrong-quantity');
     const wrongMinimumQuantityText = $('.js-wrong-min-quantity');
     const deliveryMethodInput = $('.js-delivery-method:checked');
+    const submitButton = $('.js-product-price-check');
+
 
     if (ev.type === 'keyup' || ev.type === 'input') {
       if ( !$('.js-dropdown-with-minimums') )
@@ -1127,6 +1172,7 @@ const Product = (function () {
       }
     }
 
+    submitButton.html('Check delivery price');
     toggleSubmitButton('enable');
   };
 
@@ -1243,6 +1289,7 @@ const Product = (function () {
         });
       }
     };
+
     const variants = getVariants();
     const foundVariant = variants.filter(function (variant) {
       return selectedVariant.indexOf(variant.text) > -1;
@@ -1265,8 +1312,10 @@ const Product = (function () {
 
       if (selectedVariant && isEnabled && !hasQuantityError) {
         toggleSubmitButton('show');
+        $('.js-not-available-text').addClass('hide');
+        $('.js-not-available-pickup-text').addClass('hide');
       } else {
-        availiabilityError();
+        availiabilityError(select.id);
       }
     }
 
@@ -1378,6 +1427,15 @@ const Product = (function () {
   const resetAddressInput = function (ev) {
     const input = ev.target;
     const value = input.value.trim();
+    $('.js-not-available-text').addClass('hide');
+    $('.js-not-available-delivery-text').addClass('hide');
+    $('.js-not-available-pickup-text').addClass('hide');
+    $('.js-delivery-method').prop('disabled', 0 );
+    $('.js-msg-availability' ).removeClass('not-available');
+    $('.js-current-price-unit').addClass('hide');
+
+    const submitButton = $('.js-product-price-check');
+    submitButton.html('Check delivery price');
 
     if (value.length < 6) {
       $('.js-address-latitude').val('');
@@ -1549,7 +1607,13 @@ const Product = (function () {
   };
 
   const hideAddToCart = function () {
-    $('.js-quantity-input').trigger('keyup');
+    const quantityInputs = $('.js-quantity-input#delivery-quantity');
+    if (quantityInputs.length === 1) {
+      const synteticEv = {
+        target: quantityInputs[0]
+      }
+      checkQuantityIncrement(synteticEv);
+    }
   };
 
   const startBundleObserver = function () {
@@ -1600,12 +1664,13 @@ const Product = (function () {
   const updatePickUpLocations = function () {
     const fakeButton = document.createElement('button');
     const dropdown = $('.js-product-pickup-variants');
-    dropdown.removeClass('hide')
+    dropdown.removeClass('hide');
     dropdown.html('<option value="" selected="selected" disabled="true">Loading...</option>');
     setTimeout(() => {
       dropdown[0].setAttribute('disabled', 1);
     }, 0)
     checkZipCode({ target: fakeButton });
+
   };
 
   return {

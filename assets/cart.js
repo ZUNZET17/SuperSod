@@ -240,13 +240,22 @@ const Cart = (function () {
     }
 
     const phoneMessage = $('.js-no-phone-message');
+    const invalidPhoneMessage = $('.js-invalid-phone-message');
     const phoneNumber = (document.querySelector('.js-phone').value).trim().replace(/\s{2,}/g, ' ');
-    if (phoneNumber === '') {
-      document.querySelector('.js-phone').focus();
-      phoneMessage.removeClass('hide');
-      return;
-    }
-    phoneMessage.addClass('hide');
+
+    if (regexPhoneNumber(phoneNumber) === false ) {
+          document.querySelector('.js-phone').focus();
+          if (phoneNumber === '' ) {
+            phoneMessage.removeClass('hide');
+            invalidPhoneMessage.addClass('hide');
+          } else {
+            invalidPhoneMessage.removeClass('hide');
+            phoneMessage.addClass('hide');
+          }
+          return;
+        }
+        phoneMessage.addClass('hide');
+        invalidPhoneMessage.addClass('hide');
     Utils.addToCartParameters([{parameter: 'phone', value: phoneNumber}]);
 
     const settings = {
@@ -492,15 +501,17 @@ const Cart = (function () {
     });
   };
 
+  const regexPhoneNumber = function (str) {
+     const regexPhoneNumber = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+     if (!str.match(regexPhoneNumber)) {
+       return false;
+     }
+
+     return true;
+   };
+
   const interceptCartSubmit = function (ev) {
     const deliveryType = $('.js-delivery-type:checked').val();
-
-    window.localStorage.setItem('delivery_type', deliveryType);
-    if (cartDeliveryMethod === 'delivery') {
-      window.localStorage.setItem('delivery_method', cartDeliveryMethod);
-      window.localStorage.setItem('delivery_address', cartDeliveryAddress);
-      window.localStorage.setItem('delivery_zipcode', cartZipCode);
-    }
 
     const button = $('.js-submit-button');
     const originalText = button.html();
@@ -515,13 +526,30 @@ const Cart = (function () {
 
     $('.js-update-cart-button').prop('disabled', true);
     const phoneMessage = $('.js-no-phone-message');
+    const invalidPhoneMessage = $('.js-invalid-phone-message');
     const phoneNumber = (document.querySelector('.js-phone').value).trim().replace(/\s{2,}/g, ' ');
-    if (phoneNumber === '') {
+
+    if (regexPhoneNumber(phoneNumber) === false ) {
       document.querySelector('.js-phone').focus();
-      phoneMessage.removeClass('hide');
+      if (phoneNumber === '' ) {
+        phoneMessage.removeClass('hide');
+        invalidPhoneMessage.addClass('hide');
+      } else {
+        invalidPhoneMessage.removeClass('hide');
+        phoneMessage.addClass('hide');
+      }
       return;
     }
     phoneMessage.addClass('hide');
+    invalidPhoneMessage.addClass('hide');
+
+    window.localStorage.setItem('delivery_type', deliveryType);
+    if (cartDeliveryMethod === 'delivery') {
+      window.localStorage.setItem('delivery_method', cartDeliveryMethod);
+      window.localStorage.setItem('delivery_address', cartDeliveryAddress);
+      window.localStorage.setItem('delivery_zipcode', cartZipCode);
+      window.localStorage.setItem('delivery_phone', phoneNumber);
+    }
 
     if (document.querySelector('.js-tail-datetime-field-1')) {
       if (! isDeliveryTypeChosen()) {

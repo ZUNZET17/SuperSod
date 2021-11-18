@@ -137,6 +137,11 @@
   {%- if settings.sentry_key -%}
     <script src="//browser.sentry-cdn.com/6.3.3/bundle.min.js"></script>
   {%- endif -%}
+
+  <!-- Searchspring -->
+  {% if settings.ss_enable %}
+  	{% render 'ss-script' %}
+  {% endif %}
 </head>
 
 {%- assign show_sidebar = true -%}
@@ -156,7 +161,7 @@
   {%- endif -%}
 {%- endif -%}
 
-<body id="{{ page_title | handle }}" class="{% if customer %}customer-logged-in {% endif %}template-{{ request.page_type | handle }}">
+<body id="{{ page_title | handle }}" class="{% if customer %}customer-logged-in {% endif %}template-{{ request.page_type | handle }}{% if settings.ss_enable and collection.handle and collection.handle == settings.ss_collection_handle %} ss-shop{% endif %}">
 
   <a class="in-page-link visually-hidden skip-link" href="#MainContent">{{ 'general.accessibility.skip_to_content' | t }}</a>
 
@@ -335,5 +340,10 @@
 <!-- **BEGIN** Hextom QAB Integration // Main Include - DO NOT MODIFY -->
     {% render 'hextom_qab_main', product: product, customer: customer %}
     <!-- **END** Hextom QAB Integration // Main Include - DO NOT MODIFY -->
+
+  <!-- Searchspring Intellisuggest Tracking -->
+  {% if settings.ss_enable %}
+  	{% render 'ss-intellisuggest' %}
+  {% endif %}
 </body>
 </html>
