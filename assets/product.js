@@ -1280,9 +1280,15 @@ const Product = (function () {
 
             if ( type == 'Sod' ) {
               if ( typeof(selectedMinimumQuantity) !== 'undefined' && typeof(selectedMinimumQuantity) !== null ){
-                $('.js-quantity-input-pickup').attr('min', selectedMinimumQuantity).attr('value', selectedMinimumQuantity).trigger('change');
-                $('.js-minimum-quantity-alert').removeClass('hide')
-                $('.js-minimum-quantity-alert-value').text(selectedMinimumQuantity);
+                if (typeof(selectedMinimumQuantity) === 'number'){
+                  $('.js-quantity-input-pickup').attr('min', selectedMinimumQuantity).attr('value', selectedMinimumQuantity).trigger('change');
+                  $('.js-minimum-quantity-alert').removeClass('hide')
+                  $('.js-minimum-quantity-alert-value').text(selectedMinimumQuantity);
+                } else {
+                  $('.js-quantity-input-pickup').attr('min', 10).attr('value', 10).trigger('change');
+                  $('.js-minimum-quantity-alert').removeClass('hide')
+                  $('.js-minimum-quantity-alert-value').text(10);
+                }
               }
             }
             return result.delivery_pickup_aviability[0].minimum_pickup;
