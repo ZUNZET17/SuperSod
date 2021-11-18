@@ -51,11 +51,14 @@ $desk: 1100px;
   margin-top: 30px;
   padding: 10px 11px;
 
-  a{
+  a, span{
     color: $color_primary;
     text-decoration: underline;
     cursor: pointer;
   }
+  span {
+     font-weight: 700;
+   }
 }
 
 .product-single__pallet-msg--unavailable {

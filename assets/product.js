@@ -927,6 +927,7 @@ const Product = (function () {
     dropdown.html('');
     chooseVariant('pickup');
     if (data != null && typeof data !== 'undefined') {
+      dropdown.addClass("js-dropdown-with-minimums");
       const options = data.reduce(function (acc, customLocation) {
         return (
           acc +
@@ -1260,12 +1261,12 @@ const Product = (function () {
   const selectPickupVariant = function (ev) {
     const select = ev.target;
     const selectedVariant = select.value;
-    
+
     // Pick the quantity from the option selected, this will have the minimum quantity for this zone
     if (select.classList.contains('js-product-pickup-variants')) {
       const zipcode = selectedVariant.match(/\s\d{5}/);
       const productString = '&products[]id=' + productData.id + '&products[]quantity=' + $('.js-product-quantity').val() + '&products[]type=' + productData.type + '&products[]name=' + productData.name;
-      const dataString = 'zipcode=' + zipcode[0] + productString + '&shop_domain=' + theme.routes.validation_tool_shop + '&customer_type=retail';
+      const dataString = 'zipcode=' + zipcode[0].trim() + productString + '&shop_domain=' + theme.routes.validation_tool_shop + '&customer_type=retail';
       const endpoint = 'check_products';
       if (select.classList.contains('js-dropdown-with-minimums') && selectedVariant.length > 0 ) {
         $.ajax({
@@ -1276,12 +1277,12 @@ const Product = (function () {
           success: function(result){
             const selectedMinimumQuantity = result.delivery_pickup_aviability[0].minimum_pickup;
             const type = result.delivery_pickup_aviability[0].type;
-            
+
             if ( type == 'Sod' ) {
               if ( typeof(selectedMinimumQuantity) !== 'undefined' && typeof(selectedMinimumQuantity) !== null ){
                 $('.js-quantity-input-pickup').attr('min', selectedMinimumQuantity).attr('value', selectedMinimumQuantity).trigger('change');
                 $('.js-minimum-quantity-alert').removeClass('hide')
-                $('.js-minimum-quantity-alert-value').text(selectedMinimumQuantity);       
+                $('.js-minimum-quantity-alert-value').text(selectedMinimumQuantity);
               }
             }
             return result.delivery_pickup_aviability[0].minimum_pickup;
