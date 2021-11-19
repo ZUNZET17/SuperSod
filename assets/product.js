@@ -1122,11 +1122,9 @@ const Product = (function () {
     const deliveryMethodInput = $('.js-delivery-method:checked');
     const submitButton = $('.js-product-price-check');
 
+
     if (ev.type === 'keyup' || ev.type === 'input') {
       hideSubmitButton();
-      if (value < minimum ) {
-        $('.js-quantity-input-pickup').val(minimum)
-      }
       if (checkPULocationsTimeout) {
         clearTimeout(checkPULocationsTimeout);
       }
@@ -1263,11 +1261,15 @@ const Product = (function () {
   const selectPickupVariant = function (ev) {
     const select = ev.target;
     const selectedVariant = select.value;
-    const zipcode = selectedVariant.match(/\d{5}/);
-    const productString = '&products[]id=' + productData.id + '&products[]quantity=' + $('.js-product-quantity').val() + '&products[]type=' + productData.type + '&products[]name=' + productData.name;
-    const dataString = 'zipcode=' + zipcode + productString + '&shop_domain=' + theme.routes.validation_tool_shop + '&customer_type=retail';
-    const endpoint = 'check_products';
-
+    
+    // Pick the quantity from the option selected, this will have the minimum quantity for this zone
+    if (select.classList.contains('js-product-pickup-variants') && selectedVariant !== '') {
+      const zipcode = selectedVariant.match(/\d{5}/);
+      const productString = '&products[]id=' + productData.id + '&products[]quantity=' + $('.js-product-quantity').val() + '&products[]type=' + productData.type + '&products[]name=' + productData.name;
+      const dataString = 'zipcode=' + zipcode + productString + '&shop_domain=' + theme.routes.validation_tool_shop + '&customer_type=retail';
+      const endpoint = 'check_products';
+      console.log(dataString);
+      if (select.classList.contains('js-dropdown-with-minimums') && selectedVariant.length > 0 ) {
         $.ajax({
           type: 'GET',
           url: theme.routes.validation_tool_url + endpoint,
@@ -1279,13 +1281,12 @@ const Product = (function () {
 
             if ( type == 'Sod' ) {
               if ( typeof(selectedMinimumQuantity) !== 'undefined' && typeof(selectedMinimumQuantity) !== null ){
-
                 if (typeof(selectedMinimumQuantity) === 'number'){
-                  $('.js-quantity-input-pickup').attr('min', selectedMinimumQuantity).val(selectedMinimumQuantity).trigger('change');
+                  $('.js-quantity-input-pickup').attr('min', selectedMinimumQuantity).attr('value', selectedMinimumQuantity).trigger('change');
                   $('.js-minimum-quantity-alert').removeClass('hide')
                   $('.js-minimum-quantity-alert-value').text(selectedMinimumQuantity);
                 } else {
-                  $('.js-quantity-input-pickup').attr('min', 10).val(10).trigger('change');
+                  $('.js-quantity-input-pickup').attr('min', 10).attr('value', 10).trigger('change');
                   $('.js-minimum-quantity-alert').removeClass('hide')
                   $('.js-minimum-quantity-alert-value').text(10);
                 }
@@ -1293,73 +1294,72 @@ const Product = (function () {
             }
             return result.delivery_pickup_aviability[0].minimum_pickup;
           }
-        }).done( function () {
-          const variants = getVariants();
-          const foundVariant = variants.filter(function (variant) {
-            return selectedVariant.indexOf(variant.text) > -1;
-          });
-          const hasQuantityError = !$('.js-wrong-quantity').hasClass('hide');
-          const selectedOption = select.options[select.selectedIndex];
+        });
+      }
+    };
 
-          if (selectedOption.disabled) {
-            toggleSubmitButton('disable');
-            return;
-          }
+    const variants = getVariants();
+    const foundVariant = variants.filter(function (variant) {
+      return selectedVariant.indexOf(variant.text) > -1;
+    });
+    const hasQuantityError = !$('.js-wrong-quantity').hasClass('hide');
+    const selectedOption = select.options[select.selectedIndex];
 
-          let fullValue = 0;
-          let unitPrice = 0;
-          if (select.id === 'pickup-select') {
-            let isEnabled = true;
-            if (typeof selectedOption.dataset.available !== 'undefined') {
-              isEnabled = (/true/i).test(selectedOption.dataset.available);
-            }
+    if (selectedOption.disabled) {
+      toggleSubmitButton('disable');
+      return;
+    }
 
-            if (selectedVariant && isEnabled && !hasQuantityError) {
-              toggleSubmitButton('show');
-              $('.js-not-available-text').addClass('hide');
-              $('.js-not-available-pickup-text').addClass('hide');
-            } else {
-              availiabilityError(select.id);
-            }
-          }
+    let fullValue = 0;
+    let unitPrice = 0;
+    if (select.id === 'pickup-select') {
+      let isEnabled = true;
+      if (typeof selectedOption.dataset.available !== 'undefined') {
+        isEnabled = (/true/i).test(selectedOption.dataset.available);
+      }
 
-          if (
-            typeof usesVariantToggle === 'undefined' &&
-            typeof usesRegularToggle === 'undefined' &&
-            typeof selectedOption.dataset.price !== 'undefined'
-          ) {
+      if (selectedVariant && isEnabled && !hasQuantityError) {
+        toggleSubmitButton('show');
+        $('.js-not-available-text').addClass('hide');
+        $('.js-not-available-pickup-text').addClass('hide');
+      } else {
+        availiabilityError(select.id);
+      }
+    }
 
-            fullValue = selectedOption.dataset.price * $('.js-product-quantity').val();
-            unitPrice = selectedOption.dataset.price * 1;
-          } else if (foundVariant.length > 0) {
-            fullValue = foundVariant[0].priceValue * $('.js-product-quantity').val();
-            unitPrice = foundVariant[0].priceValue * 1;
-            selectVariant(foundVariant[0]);
-          } else {
-            // If the select triggered is the pick up selector and there is no value do nothing
-            if (select.id === 'pickup-select' && !selectedVariant) {
-              return;
-            }
-            fullValue = $('.js-product-variants option:selected').data('price-val') * $('.js-product-quantity').val();
-            unitPrice = $('.js-product-variants option:selected').data('price-val') * 1;
-            chooseVariant('pickup');
-          }
-          if (!hasQuantityError) {
-            showProductPricing({
-              additional_miles_cost: 0,
-              fulfillment: 'pickup',
-              unit_price: unitPrice,
-              total_price: fullValue
-            });
-          }
+    if (
+      typeof usesVariantToggle === 'undefined' &&
+      typeof usesRegularToggle === 'undefined' &&
+      typeof selectedOption.dataset.price !== 'undefined'
+    ) {
+      fullValue = selectedOption.dataset.price * $('.js-product-quantity').val();
+      unitPrice = selectedOption.dataset.price * 1;
+    } else if (foundVariant.length > 0) {
+      fullValue = foundVariant[0].priceValue * $('.js-product-quantity').val();
+      unitPrice = foundVariant[0].priceValue * 1;
+      selectVariant(foundVariant[0]);
+    } else {
+      // If the select triggered is the pick up selector and there is no value do nothing
+      if (select.id === 'pickup-select' && !selectedVariant) {
+        return;
+      }
+      fullValue = $('.js-product-variants option:selected').data('price-val') * $('.js-product-quantity').val();
+      unitPrice = $('.js-product-variants option:selected').data('price-val') * 1;
+      chooseVariant('pickup');
+    }
+    if (!hasQuantityError) {
+      showProductPricing({
+        additional_miles_cost: 0,
+        fulfillment: 'pickup',
+        unit_price: unitPrice,
+        total_price: fullValue
+      });
+    }
 
-          const boldLinks = $('.js-product-form .bold-bundles-child-product__link');
-          if (boldLinks.length > 0) {
-            addBoldBundleParameters(selectedVariant);
-          }
-        })
-
-
+    const boldLinks = $('.js-product-form .bold-bundles-child-product__link');
+    if (boldLinks.length > 0) {
+      addBoldBundleParameters(selectedVariant);
+    }
   };
 
   const selectVariant = function (variant) {
