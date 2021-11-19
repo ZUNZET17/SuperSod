@@ -927,6 +927,7 @@ const Product = (function () {
     dropdown.html('');
     chooseVariant('pickup');
     if (data != null && typeof data !== 'undefined') {
+      dropdown.addClass('js-dropdown-with-minimums')
       const options = data.reduce(function (acc, customLocation) {
         return (
           acc +
@@ -979,7 +980,7 @@ const Product = (function () {
     }
     $('.js-custom-value').val(productObject.unitPrice / 100);
     priceElement.html(type + ' price: ' + Shopify.formatMoney(productObject.fullPrice, theme.moneyFormat));
-    priceElement.removeClass('hide');
+     priceElement.removeClass('hide');
   };
 
   const changeDeliveryForm = function (ev) {
@@ -1121,10 +1122,22 @@ const Product = (function () {
     const deliveryMethodInput = $('.js-delivery-method:checked');
     const submitButton = $('.js-product-price-check');
 
+    const unitPrice = parseFloat( $('.js-product-pickup-variants option:selected').data('price') );
+    let totalPrice = unitPrice * value ;
 
     if (ev.type === 'keyup' || ev.type === 'input') {
-      if ( !$('.js-dropdown-with-minimums') )
-      hideSubmitButton();
+      if ( $('.js-dropdown-with-minimums') ) {
+        showProductPricing({
+          additional_miles_cost: 0,
+          fulfillment: 'pickup',
+          unit_price: unitPrice,
+          total_price: totalPrice
+        });
+        console.log('God pleasee!');     
+      } else {
+        hideSubmitButton();
+      }
+      
       if (checkPULocationsTimeout) {
         clearTimeout(checkPULocationsTimeout);
       }
@@ -1260,33 +1273,47 @@ const Product = (function () {
   const selectPickupVariant = function (ev) {
     const select = ev.target;
     const selectedVariant = select.value;
-    
     // Pick the quantity from the option selected, this will have the minimum quantity for this zone
-    if (select.classList.contains('js-product-pickup-variants')) {
-      const zipcode = selectedVariant.match(/\s\d{5}/);
-      const productString = '&products[]id=' + productData.id + '&products[]quantity=' + $('.js-product-quantity').val() + '&products[]type=' + productData.type + '&products[]name=' + productData.name;
-      const dataString = 'zipcode=' + zipcode[0] + productString + '&shop_domain=' + theme.routes.validation_tool_shop + '&customer_type=retail';
-      const endpoint = 'check_products';
-      if (select.classList.contains('js-dropdown-with-minimums') && selectedVariant.length > 0 ) {
-        $.ajax({
-          type: 'GET',
-          url: theme.routes.validation_tool_url + endpoint,
-          data: dataString,
-          timeout: 3000,
-          success: function(result){
-            const selectedMinimumQuantity = result.delivery_pickup_aviability[0].minimum_pickup;
-            const type = result.delivery_pickup_aviability[0].type;
-            
-            if ( type == 'Sod' ) {
-              if ( typeof(selectedMinimumQuantity) !== 'undefined' && typeof(selectedMinimumQuantity) !== null ){
-                $('.js-quantity-input-pickup').attr('min', selectedMinimumQuantity).attr('value', selectedMinimumQuantity).trigger('change');
-                $('.js-minimum-quantity-alert').removeClass('hide')
-                $('.js-minimum-quantity-alert-value').text(selectedMinimumQuantity);       
-              }
-            }
-            return result.delivery_pickup_aviability[0].minimum_pickup;
+    const zipcode = selectedVariant.match(/(\d{5})$/);
+    if ( select.classList.contains('js-product-pickup-variants') ) {
+      if ( zipcode !== null ) {
+        console.log('zipcode not undefined')
+        const productString = '&products[]id=' + productData.id + '&products[]quantity=' + $('.js-product-quantity').val() + '&products[]type=' + productData.type + '&products[]name=' + productData.name;
+        const dataString = 'zipcode=' + zipcode[0] + productString + '&shop_domain=' + theme.routes.validation_tool_shop + '&customer_type=retail';
+        const endpoint = 'check_products';
+        if (select.classList.contains('js-dropdown-with-minimums') && selectedVariant.length > 0 ) {
+          console.log('dropdown change2')
+          $.ajax({
+            type: 'GET',
+            url: theme.routes.validation_tool_url + endpoint,
+            data: dataString,
+            timeout: 3000,
+            success: function(result){
+              const selectedMinimumQuantity = result.delivery_pickup_aviability[0].minimum_pickup;
+              const type = result.delivery_pickup_aviability[0].type;
+              
+              if ( type == 'Sod' ) {
+                if ( typeof(selectedMinimumQuantity) !== 'undefined' && typeof(selectedMinimumQuantity) !== null ){
+                  $('.js-quantity-input-pickup').attr('min', selectedMinimumQuantity).attr('value', selectedMinimumQuantity).trigger('change');
+                  $('.js-minimum-quantity-alert').removeClass('hide')
+                  $('.js-minimum-quantity-alert-value').text(selectedMinimumQuantity);  
+                  const unitPrice = $('.js-product-pickup-variants option:selected').data('price');
+                  const totalPrice = unitPrice * $('.js-product-quantity').val();
+                  showProductPricing({
+                    additional_miles_cost: 0,
+                    fulfillment: 'pickup',
+                    unit_price: unitPrice,
+                    total_price: totalPrice
+                  });   
                 }
-        });
+              }
+              return result.delivery_pickup_aviability[0].minimum_pickup;
+                  }
+          });
+        }
+      } else {
+        console.log('zipcode return valid value')
+        hideSubmitButton();
       }
     };
 
