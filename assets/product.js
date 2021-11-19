@@ -1124,13 +1124,12 @@ const Product = (function () {
 
 
     if (ev.type === 'keyup' || ev.type === 'input') {
-      if ( !$('.js-dropdown-with-minimums') )
       hideSubmitButton();
       if (checkPULocationsTimeout) {
         clearTimeout(checkPULocationsTimeout);
       }
       checkPULocationsTimeout = setTimeout(function () {
-        if ( input.classList.contains('js-quantity-input-pickup') && !$('.js-dropdown-with-minimums') ) {
+        if (input.classList.contains('js-quantity-input-pickup')) {
           updatePickUpLocations();
         }
       }, 300);
@@ -1139,6 +1138,7 @@ const Product = (function () {
     wrongQuantityText.addClass('hide');
     wrongMinimumQuantityText.addClass('hide');
     $('.js-not-available-text').addClass('hide');
+    $('.js-minimum-quantity-alert').addClass('hide');
 
     if (value < 0) {
       $('.js-product-quantity').val(0);
@@ -1261,13 +1261,14 @@ const Product = (function () {
   const selectPickupVariant = function (ev) {
     const select = ev.target;
     const selectedVariant = select.value;
-
+    
     // Pick the quantity from the option selected, this will have the minimum quantity for this zone
-    if (select.classList.contains('js-product-pickup-variants')) {
-      const zipcode = selectedVariant.match(/\s\d{5}/);
+    if (select.classList.contains('js-product-pickup-variants') && selectedVariant !== '') {
+      const zipcode = selectedVariant.match(/\d{5}/);
       const productString = '&products[]id=' + productData.id + '&products[]quantity=' + $('.js-product-quantity').val() + '&products[]type=' + productData.type + '&products[]name=' + productData.name;
-      const dataString = 'zipcode=' + zipcode[0].trim() + productString + '&shop_domain=' + theme.routes.validation_tool_shop + '&customer_type=retail';
+      const dataString = 'zipcode=' + zipcode + productString + '&shop_domain=' + theme.routes.validation_tool_shop + '&customer_type=retail';
       const endpoint = 'check_products';
+      console.log(dataString);
       if (select.classList.contains('js-dropdown-with-minimums') && selectedVariant.length > 0 ) {
         $.ajax({
           type: 'GET',
@@ -1292,7 +1293,7 @@ const Product = (function () {
               }
             }
             return result.delivery_pickup_aviability[0].minimum_pickup;
-                }
+          }
         });
       }
     };
