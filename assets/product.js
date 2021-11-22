@@ -1132,8 +1132,7 @@ const Product = (function () {
           fulfillment: 'pickup',
           unit_price: unitPrice,
           total_price: totalPrice
-        });
-        console.log('God pleasee!');     
+        });   
       } else {
         hideSubmitButton();
       }
@@ -1277,12 +1276,10 @@ const Product = (function () {
     const zipcode = selectedVariant.match(/(\d{5})$/);
     if ( select.classList.contains('js-product-pickup-variants') ) {
       if ( zipcode !== null ) {
-        console.log('zipcode not undefined')
         const productString = '&products[]id=' + productData.id + '&products[]quantity=' + $('.js-product-quantity').val() + '&products[]type=' + productData.type + '&products[]name=' + productData.name;
         const dataString = 'zipcode=' + zipcode[0] + productString + '&shop_domain=' + theme.routes.validation_tool_shop + '&customer_type=retail';
         const endpoint = 'check_products';
         if (select.classList.contains('js-dropdown-with-minimums') && selectedVariant.length > 0 ) {
-          console.log('dropdown change2')
           $.ajax({
             type: 'GET',
             url: theme.routes.validation_tool_url + endpoint,
@@ -1294,11 +1291,12 @@ const Product = (function () {
               
               if ( type == 'Sod' ) {
                 if ( typeof(selectedMinimumQuantity) !== 'undefined' && typeof(selectedMinimumQuantity) !== null ){
-                  $('.js-quantity-input-pickup').attr('min', selectedMinimumQuantity).attr('value', selectedMinimumQuantity).trigger('change');
+                  $('.js-quantity-input-pickup').attr('min', selectedMinimumQuantity);
                   $('.js-minimum-quantity-alert').removeClass('hide')
                   $('.js-minimum-quantity-alert-value').text(selectedMinimumQuantity);  
+                  document.getElementById('pickup-uantity').value = selectedMinimumQuantity;   
                   const unitPrice = $('.js-product-pickup-variants option:selected').data('price');
-                  const totalPrice = unitPrice * $('.js-product-quantity').val();
+                  const totalPrice = unitPrice * document.getElementById('pickup-uantity').value;
                   showProductPricing({
                     additional_miles_cost: 0,
                     fulfillment: 'pickup',
@@ -1312,7 +1310,6 @@ const Product = (function () {
           });
         }
       } else {
-        console.log('zipcode return valid value')
         hideSubmitButton();
       }
     };
