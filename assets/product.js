@@ -1313,6 +1313,7 @@ const Product = (function () {
                   document.getElementById('pickup-uantity').value = 10;            
                 }
               }
+              
               return result.delivery_pickup_aviability[0].minimum_pickup;
                   }
           });
