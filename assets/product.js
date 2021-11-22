@@ -927,7 +927,9 @@ const Product = (function () {
     dropdown.html('');
     chooseVariant('pickup');
     if (data != null && typeof data !== 'undefined') {
+
       dropdown.addClass('js-dropdown-with-minimums')
+
       const options = data.reduce(function (acc, customLocation) {
         return (
           acc +
@@ -1136,12 +1138,12 @@ const Product = (function () {
       } else {
         hideSubmitButton();
       }
-      
+
       if (checkPULocationsTimeout) {
         clearTimeout(checkPULocationsTimeout);
       }
       checkPULocationsTimeout = setTimeout(function () {
-        if ( input.classList.contains('js-quantity-input-pickup') && !$('.js-dropdown-with-minimums') ) {
+        if (input.classList.contains('js-quantity-input-pickup')) {
           updatePickUpLocations();
         }
       }, 300);
@@ -1150,6 +1152,7 @@ const Product = (function () {
     wrongQuantityText.addClass('hide');
     wrongMinimumQuantityText.addClass('hide');
     $('.js-not-available-text').addClass('hide');
+    $('.js-minimum-quantity-alert').addClass('hide');
 
     if (value < 0) {
       $('.js-product-quantity').val(0);
