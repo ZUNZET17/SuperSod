@@ -463,6 +463,7 @@
         {{ form | payment_button }}
         {% endif %}
       </div>
+      <p class="product-single__pallet-msg js-minimum-quantity-alert hide">{{ section.settings.sods_pallet_minimum_alert }}</p>
       {%- if section.settings.product_quantity_enable and use_check -%}
       <p class="product-single__pallet-msg product-single__pallet-msg--unavailable product-single__pallet-msg--wrong-quantity js-wrong-min-quantity hide">{{ 'layout.product.minimum_quantity' | t | replace: '%placeholder%', '<span class="js-min-number">500</span>' }}</p>
       <p class="product-single__pallet-msg product-single__pallet-msg--unavailable product-single__pallet-msg--wrong-quantity js-wrong-quantity hide">{{ 'layout.product.multiples_value' | t }} <span class="js-multiple-number">500</span></p>
@@ -766,6 +767,15 @@
         "es": "Enlace del botón"
       }
     },
+    {
+       "type": "textarea",
+       "id": "sods_pallet_minimum_alert",
+       "label": {
+         "en": "Minimum pickup message ",
+         "es": "mensaje de cantidad minima"
+       },
+       "default": "There is a mimum pickup amount of <span class='js-minimum-quantity-alert-value'></span> for this store."
+     },
     {
       "type": "header",
       "content": {
