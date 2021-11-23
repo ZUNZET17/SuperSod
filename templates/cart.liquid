@@ -205,7 +205,7 @@
                 {%- assign is_lawn_planted = true -%}
                 {%- assign is_lawn_answer = item.properties._lawn_planted -%}
               {%- endif -%}
-              <tr class="cart__row responsive-table__row">
+              <tr class="cart__row responsive-table__row js-line-item-row{{ forloop.index }}">
                 <td class="cart__table-cell--image small--text-center">
                   {% unless item.image == blank %}
                     {%- assign img_url = item.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
@@ -348,7 +348,7 @@
                         {%- endif -%}
                       {%- endunless -%}
                     {%- endif -%}
-                    <{{tag_name}}>{{ item.final_price | money }}</{{tag_name}}>
+                    <{{tag_name}} class="js-item-price-{{forloop.index}}">{{ item.final_price | money }}</{{tag_name}}>
                   {%- endif -%}
 
                   {% include 'product-unit-price', variant: item, available: item.variant.available %}
@@ -370,7 +370,7 @@
                     data-input-index="{{ forloop.index }}"
                     {% if item.properties._custom_increment %}step="{{item.properties._custom_increment}}"{% endif %}
                     min="{% if item.properties._custom_increment %}{{item.properties._custom_increment}}{% else %}0{% endif %}">
-                  <p class="cart__error-message cart__error-message--invalid-quantity js-invalid-quantity js-invalid-quantity-{{forloop.index}} hide">Please enter a valid quantity</p>
+                  <p class="cart__error-message cart__error-message--invalid-quantity js-invalid-quantity js-invalid-quantity-{{forloop.index}} hide">Please enter quantity that is a multiple of {{ item.properties._custom_increment }}</p>
                 </td>
                 <td id="js-line-price{{ forloop.index }}" data-line-price="{{ item.final_price | money_without_currency}}" data-label="{{ 'cart.label.total' | t }}" class="text-right cart__table-cell--line-price js-line-price">
                   {%- if item.properties._custom_price != blank -%}
