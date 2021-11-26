@@ -1,0 +1,9 @@
+.full-width-section {
+  width: 100%;
+  margin: 0 auto;
+  padding: 25px;
+}
+.byb-rec-section {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(1fr, max-content));
+}
