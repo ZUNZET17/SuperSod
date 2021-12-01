@@ -1,30 +1,56 @@
 {{ 'byb-rec-section.css' | asset_url | stylesheet_tag }}
 {% assign bigYellowBag = all_products['copy-of-soil-bulk-compost-br-delivered']%}
-<div class="full-width-section byb-rec-section">
-  <img src="{{ bigYellowBag.image.url }}" alt="{{ bigYellowBag.title }}" class="byb-rec-section__picture">
-  <div class="byb-rec-section__description">
-    {{ section.settings.description }}
+{% assign isThereSod = false %}
+{% for item in cart.items %}
+  {% if item.product.type == 'Sod' %}
+    {% assign isThereSod = true %}
+    {% break %}
+  {% endif %}
+{% endfor %}
+{% if isThereSod == true %}
+<div class="byb-rec-section js-byb-properties" data-properties='{{ cart.attributes }}'>
+  <h2 class="byb-rec-section-title">
+    {{ section.settings.title }}
+  </h2>
+  <div class="byb-rec-section-content">
+    <img src="{{ bigYellowBag | img_url: 'medium' }}" alt="{{ bigYellowBag.title }}" class="byb-rec-section__picture">
+    <div class="byb-rec-section__description">
+      <div class="description__prod-title">{{ bigYellowBag.title }}</div>
+      <span class="description__prod-price"><strike>{{ bigYellowBag.compare_at_price | money_with_currency }}</strike></span>
+      <span class="description__prod-price-compare">{{ bigYellowBag.price | money_with_currency }}</span>
+      <div class="description-text">
+        {{ section.settings.description }}
+      </div>
+      <div class="description-qty">
+        <span class="description-qty__text">Quantity</span>
+        <input type="number" class="description-qty__input form__input form__input--quantity js-byb-quantity" value="1">
+      </div>
+      <button data-id="{{ bigYellowBag.selected_or_first_available_variant.id }}" class="js-byb-add-to-cart byb-add-to-cart button button--primary button--outlined">
+        ADD TO ORDER
+      </button>
+    </div>
   </div>
-  <input type="number" class="byb-rec-section__qty">
+
 </div>
+{% endif %}
 
 {% schema %}
 {
   "name": "byb-rec-section",
   "tag": "section",
-  "class": "byb-rec-section-container",
+  "class": "full-width-section byb-rec-container",
   "settings": [
+  {
+    "type": "text",
+    "id": "title",
+    "label": "title",
+    "default": "RECOMMENDED"
+  },
     {
       "type": "text",
       "id": "description",
       "label": "Description",
       "default": "We recommend 1 BigYellowBag for every 500-1000 sqft of Sod"
-    },
-    {
-      "type": "text",
-      "id": "about_paragraph",
-      "label": "paragraph",
-      "default": "In we gave away over $50,000 in sod and Soil3 compost to local organizations. In keeping with these things, it is our pledge to care for the land and the environment in such a manner that customers and future generations will benefit."
     }
   ],
   "presets": [
