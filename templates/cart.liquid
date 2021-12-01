@@ -202,7 +202,6 @@
     {% if cart.item_count > 0 %}
       <h1 class="h2 cart-title">{{ 'cart.general.title' | t }}</h1>
       <form action="{{ routes.cart_url }}" method="post" novalidate class="cart form js-cart-form">
-<<<<<<< HEAD
 
         <table class="cart-table responsive-table table--no-border {% if isThereSod == true %} js-cart-table" {% endif %}>
           <h2 class="sr-only">{{ 'cart.cart_summary.products_header' | t }}</h2>
@@ -241,51 +240,6 @@
                              data-sizes="auto"
                              alt="{{ item.title | escape }}"
                              itemprop="image">
-=======
-        <div class="cart-content">
-          <table class="cart-table responsive-table table--no-border {% if isThereSod == true %} js-cart-table" {% endif %}>
-            <h2 class="sr-only">{{ 'cart.cart_summary.products_header' | t }}</h2>
-            <thead class="cart__row cart__header-labels small--hide">
-              <th class="text-left cart__table-cell--image">{{ 'cart.label.product' | t }}</th>
-              <th class="text-center cart__table-cell--meta"></th>
-              <th class="text-right cart__table-cell--price">{{ 'cart.label.price' | t }}</th>
-              <th class="text-center cart__table-cell--quantity">{{ 'cart.label.quantity' | t }}</th>
-              <th class="text-right cart__table-cell--line-price">{{ 'cart.label.total' | t }}</th>
-            </thead>
-            <tbody>
-              {%- assign subtotal = 0 -%}
-              {%- assign variant_title = '' -%}
-              {%- assign is_lawn_planted = false -%}
-              {%- assign is_lawn_answer = 'no' -%}
-              {% for item in cart.items %}
-                {%- if item.properties._lawn_planted != blank -%}
-                  {%- assign is_lawn_planted = true -%}
-                  {%- assign is_lawn_answer = item.properties._lawn_planted -%}
-                {%- endif -%}
-                <tr class="cart__row responsive-table__row">
-                  <td class="cart__table-cell--image small--text-center">
-                    {% unless item.image == blank %}
-                      {%- assign img_url = item.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
-                      {%- capture wrapper_id -%}CartImageWrapper--{{ item.image.id }}{%- endcapture -%}
-                      {%- capture img_id -%}CartImage--{{ item.image.id }}{%- endcapture -%}
-                      {% include 'image-style' with image: item.image, width: 720, height: 600, small_style: false, wrapper_id: wrapper_id, img_id: img_id %}
-                      <div id="{{ wrapper_id }}" class="cart__image-wrapper supports-js">
-                        <a class="cart__image-container" href="{{ item.url | within: collections.all }}" style="padding-top:{{ 1 | divided_by: item.image.aspect_ratio | times: 100}}%;">
-                          <img id="{{ img_id }}"
-                              class="cart__image lazyload"
-                              src="{{ item.image | img_url: '100x100' }}"
-                              data-src="{{ img_url }}"
-                              data-widths="[180, 230, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
-                              data-aspectratio="{{ item.image.aspect_ratio }}"
-                              data-sizes="auto"
-                              alt="{{ item.title | escape }}"
-                              itemprop="image">
-                        </a>
-                      </div>
-                    {% else %}
-                      <a class="supports-js" href="{{ item.url | within: collections.all }}">
-                        <img src="{{ item | img_url: 'grande' }}" alt="{{ item.title | escape }}">
->>>>>>> 3658004 (Add responsiveness to recommended section)
                       </a>
                     {% endunless %}
 
@@ -416,7 +370,6 @@
                       <del>{{ item.original_price | money }}</del>
                       <span class="visually-hidden">{{ 'products.product.sale_price' | t }}</span>
                       <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_price" data-item-key="{{item.key}}" style="display:none !important;"></span>
-<<<<<<< HEAD
                       <span class="js-item-price-{{forloop.index}}">{{ item.original_price | money }}</span><br>
                     {%- elsif item.product.tags contains 'BYB_DISCOUNT' -%}
                       {%- assign has_discount = false -%}
@@ -431,34 +384,6 @@
                             {%- assign tag_name = 'del' -%}
                             <span class="js-item-price-{{forloop.index}}">{{ discounted_price | money }}</span><br>
                           {%- endunless -%}
-=======
-                      {%- if item.properties._bold_bundles_price -%}
-                        {%- assign has_custom_pricing = true -%}
-                        <span>{{ item.original_price | money }}</span><br>
-                      {%- endif -%}
-                      <{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %} class="order-discount">{{ item.final_price | money }}</{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %}>
-                    {%- elsif item.variant.compare_at_price and item.variant.compare_at_price != item.final_price -%}
-                      <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
-                      <del>{{ item.variant.compare_at_price | money }}</del>
-                      <span class="visually-hidden">{{ 'products.product.sale_price' | t }}</span>
-                      <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_price" data-item-key="{{item.key}}" style="display:none !important;"></span>
-                      {%- if item.properties._bold_bundles_price -%}
-                        {%- assign has_custom_pricing = true -%}
-                        <span>{{ item.original_price | money }}</span><br>
-                      {%- endif -%}
-                      <{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %} class="order-discount">{{ item.final_price | money }}</{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %}>
-                    {%- else -%}
-                      {%- assign tag_name = 'span' -%}
-                      {%- if item.properties._bold_bundles_price -%}
-                        {%- assign has_custom_pricing = true -%}
-                        {%- assign tag_name = 'del' -%}
-                        <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_price" data-item-key="{{item.key}}" style="display:none !important;"></span>
-                        <span>{{ item.original_price | money }}</span><br>
-                      {%- elsif item.product.tags contains 'BYB_DISCOUNT' -%}
-                        {%- assign has_discount = false -%}
-                        {%- if item.variant.compare_at_price and item.variant.compare_at_price != item.final_price -%}
-                          {%- assign has_discount = true -%}
->>>>>>> 3658004 (Add responsiveness to recommended section)
                         {%- endif -%}
                         {%- unless has_discount -%}
                           {%- if contains_sod -%}
@@ -470,18 +395,14 @@
                             {%- endunless -%}
                           {%- endif -%}
                         {%- endunless -%}
-                      {%- endif -%}
+                      {%- endunless -%}
                       <{{tag_name}}>{{ item.final_price | money }}</{{tag_name}}>
                     {%- endif -%}
-<<<<<<< HEAD
                     <{{tag_name}} class="js-item-price-{{forloop.index}}">{{ item.final_price | money }}</{{tag_name}}>
                   {%- endif -%}
-=======
->>>>>>> 3658004 (Add responsiveness to recommended section)
 
                     {% include 'product-unit-price', variant: item, available: item.variant.available %}
 
-<<<<<<< HEAD
                   {%- if item.line_level_discount_allocations != blank -%}
                     <ul class="order-discount order-discount--title order-discount--list order-discount--cart-list" aria-label="{{ 'customer.order.discount' | t }}">
                       {%- for discount_allocation in item.line_level_discount_allocations -%}
@@ -530,16 +451,6 @@
                           {%- endunless -%}
                         {%- endif -%}
                       {%- endunless -%}
-=======
-                    {%- if item.line_level_discount_allocations != blank -%}
-                      <ul class="order-discount order-discount--title order-discount--list order-discount--cart-list" aria-label="{{ 'customer.order.discount' | t }}">
-                        {%- for discount_allocation in item.line_level_discount_allocations -%}
-                          <li class="order-discount__item">
-                            {%- include 'icon-saletag' -%}{{ discount_allocation.discount_application.title }} (-{{ discount_allocation.amount | money }})
-                          </li>
-                        {%- endfor -%}
-                      </ul>
->>>>>>> 3658004 (Add responsiveness to recommended section)
                     {%- endif -%}
                   </td>
                   <td data-label="{{ 'cart.label.quantity' | t }}" class="cart__table-cell--quantity">
@@ -591,7 +502,8 @@
                     {%- endif -%}
                   </td>
                 </tr>
-              {% endfor %}
+              {% endif %}
+          {% endfor %}
             </tbody>
           </table>
   {% comment %} START 311 {% endcomment %}
