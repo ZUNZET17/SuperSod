@@ -5,7 +5,6 @@
   padding: 25px 25px 50px;
 }
 .byb-rec-container {
-  background: #ededed;
   display: block;  
 }
 .byb-rec-section {
@@ -17,10 +16,17 @@
   border: 2px solid #cdcdcd;
   width: 100%;
   display: grid;
-  grid-template-columns: 150px 20% 1fr 150px;
+  grid-template-columns: 15% 20% 1fr 15%;
+  grid-template-rows: min-content 1fr;
   justify-items: center;
   align-items: center;
   margin: 0 auto;
+}
+.byb-rec-section-title {
+  display: none;
+}
+.byb-rec-section-title-sm {
+  display: block;
 }
 .byb-rec-section__picture {
   grid-column-start: 2;
@@ -56,4 +62,62 @@
 }
 .byb-add-to-cart {
   margin-top: 1rem;
+}
+.js-cart-table {
+  width: 100%;
+  float: none;
+}
+.cart__footer {
+  margin-top: 1.5rem;
+}
+@media screen and ( min-width: 999px ) {
+  .js-cart-table {
+    width: 70%;
+    float: left;
+    margin-right: 1rem;
+  }
+  .byb-rec-section-content {
+    background: transparent;
+    border: 2px solid #cdcdcd;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 25px 20% 1fr 25px;
+    grid-template-rows: min-content 1fr;
+    justify-items: center;
+    align-items: center;
+    margin: 0 auto;
+  }
+  .byb-rec-section-title {
+    width: 100%;
+    text-align: left;
+    margin: 0.25rem 0 0.75rem 0;
+    grid-column: 1/span 3;
+    font-size: 20px;
+    font-weight: 700;
+    padding: 0.5rem 1rem;
+    display: block;
+  }
+  .byb-rec-section-title-sm {
+    display: none;
+  }
+  .description__prod-title {
+    margin-bottom: .5rem;
+    font-size: 16px;
+  }
+  .description__prod-price, .description__prod-price-compare {
+    font-size: 14px;
+  }
+  .description-qty__input  {
+    padding: 0.25rem!important;
+  }
+  .byb-rec-section__picture {
+    align-self: flex-start;
+  }
+  .byb-rec-section__description {
+    padding: 0 0.5rem 1rem;
+  }
+  .byb-rec-container {
+    width: calc(30% - 1rem);
+    margin: 0 0 0 auto;
+  }
 }

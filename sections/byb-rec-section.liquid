@@ -1,18 +1,11 @@
-{{ 'byb-rec-section.css' | asset_url | stylesheet_tag }}
 {% assign bigYellowBag = all_products['copy-of-soil-bulk-compost-br-delivered']%}
-{% assign isThereSod = false %}
-{% for item in cart.items %}
-  {% if item.product.type == 'Sod' %}
-    {% assign isThereSod = true %}
-    {% break %}
-  {% endif %}
-{% endfor %}
-{% if isThereSod == true %}
-<div class="byb-rec-section js-byb-properties" data-properties='{{ cart.attributes }}'>
-  <h2 class="byb-rec-section-title">
+  <h2 class="byb-rec-section-title-sm">
     {{ section.settings.title }}
   </h2>
-  <div class="byb-rec-section-content">
+  <div class="byb-rec-section-content js-byb-properties" data-properties='{{ cart.attributes }}'>
+    <h2 class="byb-rec-section-title">
+      {{ section.settings.title }}
+    </h2>
     <img src="{{ bigYellowBag | img_url: 'medium' }}" alt="{{ bigYellowBag.title }}" class="byb-rec-section__picture">
     <div class="byb-rec-section__description">
       <div class="description__prod-title">{{ bigYellowBag.title }}</div>
@@ -31,14 +24,11 @@
     </div>
   </div>
 
-</div>
-{% endif %}
-
 {% schema %}
 {
   "name": "byb-rec-section",
   "tag": "section",
-  "class": "full-width-section byb-rec-container",
+  "class": "byb-rec-container",
   "settings": [
   {
     "type": "text",

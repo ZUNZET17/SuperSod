@@ -181,12 +181,26 @@
 {%- if pickup_stores != '' -%}
   {%- assign pickup_stores = pickup_stores | split: ';;' | uniq | join: ';;' -%}
 {%- endif -%}
+
+{% comment %} START 311 {% endcomment %}
+{% assign bigYellowBag = all_products['copy-of-soil-bulk-compost-br-delivered']%}
+{% assign isThereSod = false %}
+{% for item in cart.items %}
+  {% if item.product.type == 'Sod' %}
+    {% assign isThereSod = true %}
+    {% break %}
+  {% endif %}
+{% endfor %}
+{% if isThereSod == true %} {{ 'byb-rec-section.css' | asset_url | stylesheet_tag }} {% endif %}
+{% comment %} END 311 {% endcomment %}
+
 <div class="grid">
   <div class="grid__item">
     {% if cart.item_count > 0 %}
       <h1 class="h2 cart-title">{{ 'cart.general.title' | t }}</h1>
       <form action="{{ routes.cart_url }}" method="post" novalidate class="cart form js-cart-form">
-        <table class="cart-table responsive-table table--no-border">
+
+        <table class="cart-table responsive-table table--no-border {% if isThereSod == true %} js-cart-table" {% endif %}>
           <h2 class="sr-only">{{ 'cart.cart_summary.products_header' | t }}</h2>
           <thead class="cart__row cart__header-labels small--hide">
             <th class="text-left cart__table-cell--image">{{ 'cart.label.product' | t }}</th>
@@ -415,7 +429,11 @@
             {% endfor %}
           </tbody>
         </table>
-
+{% comment %} START 311 {% endcomment %}
+        {% if isThereSod == true %}
+          {% section 'byb-rec-section' %}
+        {% endif %}
+{% comment %} END 311 {% endcomment %}
         {%- if fulfillment_method == '' and has_custom_pricing == true -%}
           {%- if enable_date_selector == true and fulfillment_method == 'delivery' -%}
             {%- assign invalid_fulfillment = true -%}
