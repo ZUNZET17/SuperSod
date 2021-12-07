@@ -1134,7 +1134,7 @@ const Product = (function () {
           fulfillment: 'pickup',
           unit_price: unitPrice,
           total_price: totalPrice
-        });   
+        });
       } else {
         hideSubmitButton();
       }
@@ -1291,13 +1291,13 @@ const Product = (function () {
             success: function(result){
               const selectedMinimumQuantity = result.delivery_pickup_aviability[0].minimum_pickup;
               const type = result.delivery_pickup_aviability[0].type;
-              
+
               if ( type == 'Sod' ) {
                 if ( typeof(selectedMinimumQuantity) === 'number' && typeof(selectedMinimumQuantity) !== null ){
                   $('.js-quantity-input-pickup').attr('min', selectedMinimumQuantity);
                   $('.js-minimum-quantity-alert').removeClass('hide')
-                  $('.js-minimum-quantity-alert-value').text(selectedMinimumQuantity);  
-                  document.getElementById('pickup-uantity').value = selectedMinimumQuantity;   
+                  $('.js-minimum-quantity-alert-value').text(selectedMinimumQuantity);
+                  document.getElementById('pickup-uantity').value = selectedMinimumQuantity;
                   const unitPrice = $('.js-product-pickup-variants option:selected').data('price');
                   const totalPrice = unitPrice * document.getElementById('pickup-uantity').value;
                   showProductPricing({
