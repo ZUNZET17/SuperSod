@@ -1143,7 +1143,7 @@ const Product = (function () {
         clearTimeout(checkPULocationsTimeout);
       }
       checkPULocationsTimeout = setTimeout(function () {
-        if (input.classList.contains('js-quantity-input-pickup')) {
+        if (input.classList.contains('js-quantity-input-pickup') && !$('.js-dropdown-with-minimums') ) {
           updatePickUpLocations();
         }
       }, 300);
@@ -1293,7 +1293,7 @@ const Product = (function () {
               const type = result.delivery_pickup_aviability[0].type;
               
               if ( type == 'Sod' ) {
-                if ( typeof(selectedMinimumQuantity) === 'number' ){
+                if ( typeof(selectedMinimumQuantity) === 'number' && typeof(selectedMinimumQuantity) !== null ){
                   $('.js-quantity-input-pickup').attr('min', selectedMinimumQuantity);
                   $('.js-minimum-quantity-alert').removeClass('hide')
                   $('.js-minimum-quantity-alert-value').text(selectedMinimumQuantity);  
