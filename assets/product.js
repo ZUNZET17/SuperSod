@@ -1127,32 +1127,50 @@ const Product = (function () {
     const unitPrice = parseFloat( $('.js-product-pickup-variants option:selected').data('price') );
     let totalPrice = unitPrice * value ;
 
-    if (ev.type === 'keyup' || ev.type === 'input') {
-      if ( $('.js-dropdown-with-minimums') ) {
-        showProductPricing({
-          additional_miles_cost: 0,
-          fulfillment: 'pickup',
-          unit_price: unitPrice,
-          total_price: totalPrice
-        });
+    if ( $('.js-dropdown-with-minimums') ) {
+      if ( value % increment === 0 ) {
+        if ( value >= minimum ){
+          showProductPricing({
+            additional_miles_cost: 0,
+            fulfillment: 'pickup',
+            unit_price: unitPrice,
+            total_price: totalPrice
+          });
+          $('.js-minimum-quantity-alert').addClass('hide');
+          wrongQuantityText.addClass('hide');
+          toggleSubmitButton('show', 'js-product-submit');
+        } else {
+          $('.js-min-number').html(minimum);
+          $('.js-minimum-quantity-alert').removeClass('hide');
+          $('.js-product-quantity').val(minimum);
+          toggleSubmitButton('hide', 'js-product-submit'); 
+        }
       } else {
-        hideSubmitButton();
+        $('.js-multiple-number').html(minimum);
+        $('.js-minimum-quantity-alert').removeClass('hide');
+        wrongQuantityText.removeClass('hide');
+        toggleSubmitButton('hide', 'js-product-submit');
+        document.querySelector('js-wrong-quantity').classList.remove('hide');
+        console.log('wrong interval!')
       }
 
-      if (checkPULocationsTimeout) {
-        clearTimeout(checkPULocationsTimeout);
-      }
-      checkPULocationsTimeout = setTimeout(function () {
-        if (input.classList.contains('js-quantity-input-pickup') && !$('.js-dropdown-with-minimums') ) {
-          updatePickUpLocations();
-        }
-      }, 300);
+    } else {
+      hideSubmitButton();
     }
+
+    if (checkPULocationsTimeout) {
+      clearTimeout(checkPULocationsTimeout);
+    }
+    checkPULocationsTimeout = setTimeout(function () {
+      if (input.classList.contains('js-quantity-input-pickup') && !$('.js-dropdown-with-minimums') ) {
+        updatePickUpLocations();
+      }
+    }, 300);
 
     wrongQuantityText.addClass('hide');
     wrongMinimumQuantityText.addClass('hide');
     $('.js-not-available-text').addClass('hide');
-    $('.js-minimum-quantity-alert').addClass('hide');
+    //$('.js-minimum-quantity-alert').addClass('hide');
 
     if (value < 0) {
       $('.js-product-quantity').val(0);
@@ -1165,14 +1183,8 @@ const Product = (function () {
       toggleSubmitButton('disable');
       toggleSubmitButton('', 'js-product-price-check');
       return;
-    } else if (value % increment !== 0) {
-      $('.js-product-quantity').val(0);
-      $('.js-multiple-number').html(increment);
-      wrongQuantityText.removeClass('hide');
-      toggleSubmitButton('hide');
-      toggleSubmitButton('', 'js-product-price-check');
-      return;
     }
+
     toggleSubmitButton('show', 'js-product-price-check');
 
     $('.js-product-quantity').val(value);
