@@ -1306,8 +1306,14 @@ const Product = (function () {
                     unit_price: unitPrice,
                     total_price: totalPrice
                   });
+                } else {
+                  $('.js-quantity-input-pickup').attr('min', 10);
+                  $('.js-minimum-quantity-alert').removeClass('hide')
+                  $('.js-minimum-quantity-alert-value').text(10);
+                  document.getElementById('pickup-uantity').value = 10;
                 }
               }
+
               return result.delivery_pickup_aviability[0].minimum_pickup;
                   }
           });
