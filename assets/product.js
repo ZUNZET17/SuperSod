@@ -1170,7 +1170,7 @@ const Product = (function () {
         return;
       }
     }
-
+    submitButton.html('Check delivery price');
     toggleSubmitButton('enable');
   };
 
