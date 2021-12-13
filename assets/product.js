@@ -1121,7 +1121,7 @@ const Product = (function () {
     const wrongQuantityText = $('.js-wrong-quantity');
     const wrongMinimumQuantityText = $('.js-wrong-min-quantity');
     const deliveryMethodInput = $('.js-delivery-method:checked');
-
+    
     if (ev.type === 'keyup' || ev.type === 'input') {
       hideSubmitButton();
       if (checkPULocationsTimeout) {
@@ -1137,6 +1137,7 @@ const Product = (function () {
     wrongQuantityText.addClass('hide');
     wrongMinimumQuantityText.addClass('hide');
     $('.js-not-available-text').addClass('hide');
+
 
     if (value < 0) {
       $('.js-product-quantity').val(0);
@@ -1276,7 +1277,7 @@ const Product = (function () {
               const type = result.delivery_pickup_aviability[0].type;
               console.log(result);
               if ( type == 'Sod' ) {
-                if ( typeof(selectedMinimumQuantity) === 'number' && typeof(selectedMinimumQuantity) !== null ){
+                if ( typeof(selectedMinimumQuantity) !== 'undefined' && typeof(selectedMinimumQuantity) !== null ){
                   $('.js-quantity-input-pickup').attr('min', selectedMinimumQuantity);
                   $('.js-minimum-quantity-alert').removeClass('hide')
                   $('.js-minimum-quantity-alert-value').text(selectedMinimumQuantity);
