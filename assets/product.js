@@ -662,7 +662,7 @@ const Product = (function () {
             hideFormElements();
           }
 
-          $('.js-delivery-method').prop('disabled', 1 );
+          $('.js-delivery-method').addClass('not-available');
           $('.js-msg-availability' ).addClass('not-available');
           checkProductPricing(zipCode,button);
 
@@ -676,7 +676,6 @@ const Product = (function () {
             $(this).addClass('hide')
           }
 
-          $('.js-delivery-method').prop('disabled', 0 );
           $('.js-msg-availability' ).removeClass('not-available');
           checkProductPricing(zipCode,button);
 
@@ -833,7 +832,7 @@ const Product = (function () {
       button.html(originalText);
 
 
-      const deliveryIsDisabled = $('.js-delivery-method').prop('disabled');
+      const deliveryIsDisabled = $('.js-delivery-method').hasClass('not-available');
       if (!deliveryIsDisabled) {
         toggleSubmitButton('show');
         showButtonMessage(deliveryMethod);
@@ -1122,60 +1121,22 @@ const Product = (function () {
     const wrongQuantityText = $('.js-wrong-quantity');
     const wrongMinimumQuantityText = $('.js-wrong-min-quantity');
     const deliveryMethodInput = $('.js-delivery-method:checked');
-    const submitButton = $('.js-product-price-check');
 
-    const unitPrice = parseFloat( $('.js-product-pickup-variants option:selected').data('price') );
-    let totalPrice = unitPrice * value ;
-
-    if ( $('.js-dropdown-with-minimums') ) {
-      if ( value % increment === 0 ) {
-        if ( value >= minimum ){
-          showProductPricing({
-            additional_miles_cost: 0,
-            fulfillment: 'pickup',
-            unit_price: unitPrice,
-            total_price: totalPrice
-          });
-          $('.js-minimum-quantity-alert').addClass('hide');
-          wrongQuantityText.addClass('hide');
-          toggleSubmitButton('show', 'js-product-submit');
-        } else {
-          $('.js-min-number').html(minimum);
-          if (typeof isSod !== 'undefined' && isSod){
-            $('.js-minimum-quantity-alert').removeClass('hide');
-          }
-          $('.js-product-quantity').val(minimum);
-          toggleSubmitButton('hide', 'js-product-submit');
-        }
-      } else {
-        if (typeof isSod !== 'undefined' && isSod){
-          $('.js-multiple-number').html(increment);
-          $('.js-minimum-quantity-alert').removeClass('hide');
-        } else {
-          $('.js-multiple-number').html(minimum);
-        }
-        wrongQuantityText.removeClass('hide');
-        toggleSubmitButton('hide', 'js-product-submit');
-      }
-
-    } else {
+    if (ev.type === 'keyup' || ev.type === 'input') {
       hideSubmitButton();
-      wrongQuantityText.addClass('hide');
-      wrongMinimumQuantityText.addClass('hide');
-      $('.js-not-available-text').addClass('hide');
-    }
-
-    if (checkPULocationsTimeout) {
-      clearTimeout(checkPULocationsTimeout);
-    }
-    checkPULocationsTimeout = setTimeout(function () {
-      if (input.classList.contains('js-quantity-input-pickup') && !$('.js-dropdown-with-minimums') ) {
-        updatePickUpLocations();
+      if (checkPULocationsTimeout) {
+        clearTimeout(checkPULocationsTimeout);
       }
-    }, 300);
+      checkPULocationsTimeout = setTimeout(function () {
+        if (input.classList.contains('js-quantity-input-pickup')) {
+          updatePickUpLocations();
+        }
+      }, 300);
+    }
 
-
-    //$('.js-minimum-quantity-alert').addClass('hide');
+    wrongQuantityText.addClass('hide');
+    wrongMinimumQuantityText.addClass('hide');
+    $('.js-not-available-text').addClass('hide');
 
     if (value < 0) {
       $('.js-product-quantity').val(0);
@@ -1188,8 +1149,14 @@ const Product = (function () {
       toggleSubmitButton('disable');
       toggleSubmitButton('', 'js-product-price-check');
       return;
+    } else if (value % increment !== 0) {
+      $('.js-product-quantity').val(0);
+      $('.js-multiple-number').html(increment);
+      wrongQuantityText.removeClass('hide');
+      toggleSubmitButton('hide');
+      toggleSubmitButton('', 'js-product-price-check');
+      return;
     }
-
     toggleSubmitButton('show', 'js-product-price-check');
 
     $('.js-product-quantity').val(value);
@@ -1204,7 +1171,6 @@ const Product = (function () {
       }
     }
 
-    submitButton.html('Check delivery price');
     toggleSubmitButton('enable');
   };
 
@@ -1293,7 +1259,7 @@ const Product = (function () {
     const select = ev.target;
     const selectedVariant = select.value;
     // Pick the quantity from the option selected, this will have the minimum quantity for this zone
-    const zipcode = selectedVariant.match(/(\d{5})$/);
+  /*  const zipcode = selectedVariant.match(/(\d{5})$/);
     if ( select.classList.contains('js-product-pickup-variants') ) {
       if ( zipcode !== null ) {
         const productString = '&products[]id=' + productData.id + '&products[]quantity=' + $('.js-product-quantity').val() + '&products[]type=' + productData.type + '&products[]name=' + productData.name;
@@ -1308,7 +1274,7 @@ const Product = (function () {
             success: function(result){
               const selectedMinimumQuantity = result.delivery_pickup_aviability[0].minimum_pickup;
               const type = result.delivery_pickup_aviability[0].type;
-
+              console.log(result);
               if ( type == 'Sod' ) {
                 if ( typeof(selectedMinimumQuantity) === 'number' && typeof(selectedMinimumQuantity) !== null ){
                   $('.js-quantity-input-pickup').attr('min', selectedMinimumQuantity);
@@ -1339,7 +1305,7 @@ const Product = (function () {
         hideSubmitButton();
       }
     };
-
+*/
     const variants = getVariants();
     const foundVariant = variants.filter(function (variant) {
       return selectedVariant.indexOf(variant.text) > -1;
@@ -1480,7 +1446,6 @@ const Product = (function () {
     $('.js-not-available-text').addClass('hide');
     $('.js-not-available-delivery-text').addClass('hide');
     $('.js-not-available-pickup-text').addClass('hide');
-    $('.js-delivery-method').prop('disabled', 0 );
     $('.js-msg-availability' ).removeClass('not-available');
     $('.js-current-price-unit').addClass('hide');
 
