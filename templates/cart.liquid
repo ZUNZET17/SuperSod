@@ -199,241 +199,243 @@
     {% if cart.item_count > 0 %}
       <h1 class="h2 cart-title">{{ 'cart.general.title' | t }}</h1>
       <form action="{{ routes.cart_url }}" method="post" novalidate class="cart form js-cart-form">
-
-        <table class="cart-table responsive-table table--no-border {% if isThereSod == true %} js-cart-table" {% endif %}>
-          <h2 class="sr-only">{{ 'cart.cart_summary.products_header' | t }}</h2>
-          <thead class="cart__row cart__header-labels small--hide">
-            <th class="text-left cart__table-cell--image">{{ 'cart.label.product' | t }}</th>
-            <th class="text-center cart__table-cell--meta"></th>
-            <th class="text-right cart__table-cell--price">{{ 'cart.label.price' | t }}</th>
-            <th class="text-center cart__table-cell--quantity">{{ 'cart.label.quantity' | t }}</th>
-            <th class="text-right cart__table-cell--line-price">{{ 'cart.label.total' | t }}</th>
-          </thead>
-          <tbody>
-            {%- assign subtotal = 0 -%}
-            {%- assign variant_title = '' -%}
-            {%- assign is_lawn_planted = false -%}
-            {%- assign is_lawn_answer = 'no' -%}
-            {% for item in cart.items %}
-              {%- if item.properties._lawn_planted != blank -%}
-                {%- assign is_lawn_planted = true -%}
-                {%- assign is_lawn_answer = item.properties._lawn_planted -%}
-              {%- endif -%}
-              <tr class="cart__row responsive-table__row">
-                <td class="cart__table-cell--image small--text-center">
-                  {% unless item.image == blank %}
-                    {%- assign img_url = item.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
-                    {%- capture wrapper_id -%}CartImageWrapper--{{ item.image.id }}{%- endcapture -%}
-                    {%- capture img_id -%}CartImage--{{ item.image.id }}{%- endcapture -%}
-                    {% include 'image-style' with image: item.image, width: 720, height: 600, small_style: false, wrapper_id: wrapper_id, img_id: img_id %}
-                    <div id="{{ wrapper_id }}" class="cart__image-wrapper supports-js">
-                      <a class="cart__image-container" href="{{ item.url | within: collections.all }}" style="padding-top:{{ 1 | divided_by: item.image.aspect_ratio | times: 100}}%;">
-                        <img id="{{ img_id }}"
-                             class="cart__image lazyload"
-                             src="{{ item.image | img_url: '100x100' }}"
-                             data-src="{{ img_url }}"
-                             data-widths="[180, 230, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
-                             data-aspectratio="{{ item.image.aspect_ratio }}"
-                             data-sizes="auto"
-                             alt="{{ item.title | escape }}"
-                             itemprop="image">
+        <div class="cart-content">
+          <table class="cart-table responsive-table table--no-border {% if isThereSod == true %} js-cart-table" {% endif %}>
+            <h2 class="sr-only">{{ 'cart.cart_summary.products_header' | t }}</h2>
+            <thead class="cart__row cart__header-labels small--hide">
+              <th class="text-left cart__table-cell--image">{{ 'cart.label.product' | t }}</th>
+              <th class="text-center cart__table-cell--meta"></th>
+              <th class="text-right cart__table-cell--price">{{ 'cart.label.price' | t }}</th>
+              <th class="text-center cart__table-cell--quantity">{{ 'cart.label.quantity' | t }}</th>
+              <th class="text-right cart__table-cell--line-price">{{ 'cart.label.total' | t }}</th>
+            </thead>
+            <tbody>
+              {%- assign subtotal = 0 -%}
+              {%- assign variant_title = '' -%}
+              {%- assign is_lawn_planted = false -%}
+              {%- assign is_lawn_answer = 'no' -%}
+              {% for item in cart.items %}
+                {%- if item.properties._lawn_planted != blank -%}
+                  {%- assign is_lawn_planted = true -%}
+                  {%- assign is_lawn_answer = item.properties._lawn_planted -%}
+                {%- endif -%}
+                <tr class="cart__row responsive-table__row">
+                  <td class="cart__table-cell--image small--text-center">
+                    {% unless item.image == blank %}
+                      {%- assign img_url = item.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+                      {%- capture wrapper_id -%}CartImageWrapper--{{ item.image.id }}{%- endcapture -%}
+                      {%- capture img_id -%}CartImage--{{ item.image.id }}{%- endcapture -%}
+                      {% include 'image-style' with image: item.image, width: 720, height: 600, small_style: false, wrapper_id: wrapper_id, img_id: img_id %}
+                      <div id="{{ wrapper_id }}" class="cart__image-wrapper supports-js">
+                        <a class="cart__image-container" href="{{ item.url | within: collections.all }}" style="padding-top:{{ 1 | divided_by: item.image.aspect_ratio | times: 100}}%;">
+                          <img id="{{ img_id }}"
+                              class="cart__image lazyload"
+                              src="{{ item.image | img_url: '100x100' }}"
+                              data-src="{{ img_url }}"
+                              data-widths="[180, 230, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+                              data-aspectratio="{{ item.image.aspect_ratio }}"
+                              data-sizes="auto"
+                              alt="{{ item.title | escape }}"
+                              itemprop="image">
+                        </a>
+                      </div>
+                    {% else %}
+                      <a class="supports-js" href="{{ item.url | within: collections.all }}">
+                        <img src="{{ item | img_url: 'grande' }}" alt="{{ item.title | escape }}">
                       </a>
-                    </div>
-                  {% else %}
-                    <a class="supports-js" href="{{ item.url | within: collections.all }}">
-                      <img src="{{ item | img_url: 'grande' }}" alt="{{ item.title | escape }}">
-                    </a>
-                  {% endunless %}
-
-                  <noscript>
-                    <a href="{{ item.url | within: collections.all }}">
-                      <img class="cart__image" src="{{ item | img_url: 'grande' }}" alt="{{ item.title | escape }}">
-                    </a>
-                  </noscript>
-                </td>
-                <td class="cart__table-cell--meta text-center large-up--text-left">
-                  <p>
-                    <a href="{{ item.url }}" class="cart__product-title">{{ item.product.title }}</a>
-                    {% unless item.variant.title contains 'Default'
-                      or item.variant.title contains 'elivery'
-                      or item.variant.title contains 'ickup'
-                    %}
-                      <br><small>{{ item.variant.title }}</small>
                     {% endunless %}
-                    {%- unless pickup_address -%}
-                      {%- if item.properties._bold_bundles_price != blank -%}
-                        {%- assign pickup_address = cart.attributes.pickup_address -%}
-                        {%- if item.properties._method == 'pickup' -%}
+
+                    <noscript>
+                      <a href="{{ item.url | within: collections.all }}">
+                        <img class="cart__image" src="{{ item | img_url: 'grande' }}" alt="{{ item.title | escape }}">
+                      </a>
+                    </noscript>
+                  </td>
+                  <td class="cart__table-cell--meta text-center large-up--text-left">
+                    <p>
+                      <a href="{{ item.url }}" class="cart__product-title">{{ item.product.title }}</a>
+                      {% unless item.variant.title contains 'Default'
+                        or item.variant.title contains 'elivery'
+                        or item.variant.title contains 'ickup'
+                      %}
+                        <br><small>{{ item.variant.title }}</small>
+                      {% endunless %}
+                      {%- unless pickup_address -%}
+                        {%- if item.properties._bold_bundles_price != blank -%}
+                          {%- assign pickup_address = cart.attributes.pickup_address -%}
+                          {%- if item.properties._method == 'pickup' -%}
+                            {%- assign pickup_address = item.properties.pickup_location -%}
+                          {%- endif -%}
+                        {%- elsif item.properties._method == 'pickup' -%}
                           {%- assign pickup_address = item.properties.pickup_location -%}
                         {%- endif -%}
-                      {%- elsif item.properties._method == 'pickup' -%}
-                        {%- assign pickup_address = item.properties.pickup_location -%}
-                      {%- endif -%}
-                    {%- endunless -%}
-                    <br>
-                    {%- if item.properties._bold_bundle_price_rules_external_id != blank and variant_title == '' -%}
-                      {%- assign variant_title = item.variant.title | downcase -%}
-                    {%- endif -%}
-                    {%- assign possible_pickup = false -%}
-                    {%- if item.properties._bold_bundle_price_rules_external_id != blank -%}
-                      {%- if variant_title contains 'pickup' -%}
-                        {%- assign possible_pickup = true -%}
-                      {%- elsif fulfillment_method == 'pickup' -%}
-                        {%- assign possible_pickup = true -%}
-                      {%- endif -%}
-                    {%- endif -%}
-                    {%- if item.properties._bold_bundle_price_rules_external_id != blank and fulfillment_method == 'pickup' -%}
-                      {%- unless variant_title contains 'delivery' -%}
-                        <small class="cart__policies">{{ 'layout.product.pickup' | t }}:</small>
                       {%- endunless -%}
+                      <br>
+                      {%- if item.properties._bold_bundle_price_rules_external_id != blank and variant_title == '' -%}
+                        {%- assign variant_title = item.variant.title | downcase -%}
+                      {%- endif -%}
+                      {%- assign possible_pickup = false -%}
+                      {%- if item.properties._bold_bundle_price_rules_external_id != blank -%}
+                        {%- if variant_title contains 'pickup' -%}
+                          {%- assign possible_pickup = true -%}
+                        {%- elsif fulfillment_method == 'pickup' -%}
+                          {%- assign possible_pickup = true -%}
+                        {%- endif -%}
+                      {%- endif -%}
+                      {%- if item.properties._bold_bundle_price_rules_external_id != blank and fulfillment_method == 'pickup' -%}
+                        {%- unless variant_title contains 'delivery' -%}
+                          <small class="cart__policies">{{ 'layout.product.pickup' | t }}:</small>
+                        {%- endunless -%}
+                      {%- endif -%}
+                      {% if item.properties._method == 'pickup' %}
+                        <small class="cart__policies">{{ 'layout.product.pickup' | t }}: {{ item.properties.pickup_location }}</small>
+                      {%- elsif variant_title contains 'delivery' -%}{% elsif item.properties._method == blank and fulfillment_method == 'pickup' %}
+                        <small class="cart__policies">{{ pickup_address }}</small>
+                      {% endif %}
+                    </p>
+                    {%- assign is_removable = false -%}
+                    {%- if item.product.tags contains 'only-bundle' -%}
+                      {%- if item.properties._bold_bundles_price == blank -%}
+                        {%- assign is_removable = true -%}
+                      {%- endif -%}
+                    {%- elsif item.properties._added_from_bundle != blank -%}
+                      {%- if item.properties._bold_bundles_price == blank -%}
+                        {%- assign is_removable = true -%}
+                      {%- endif -%}
                     {%- endif -%}
-                    {% if item.properties._method == 'pickup' %}
-                      <small class="cart__policies">{{ 'layout.product.pickup' | t }}: {{ item.properties.pickup_location }}</small>
-                    {%- elsif variant_title contains 'delivery' -%}{% elsif item.properties._method == blank and fulfillment_method == 'pickup' %}
-                      <small class="cart__policies">{{ pickup_address }}</small>
-                    {% endif %}
-                  </p>
-                  {%- assign is_removable = false -%}
-                  {%- if item.product.tags contains 'only-bundle' -%}
-                    {%- if item.properties._bold_bundles_price == blank -%}
-                      {%- assign is_removable = true -%}
+                    {%- if is_removable == true -%}
+                      <span class="hide js-remove-bundle-from-cart">{{item.id}}</span>
                     {%- endif -%}
-                  {%- elsif item.properties._added_from_bundle != blank -%}
-                    {%- if item.properties._bold_bundles_price == blank -%}
-                      {%- assign is_removable = true -%}
-                    {%- endif -%}
-                  {%- endif -%}
-                  {%- if is_removable == true -%}
-                    <span class="hide js-remove-bundle-from-cart">{{item.id}}</span>
-                  {%- endif -%}
-                  <p class="txt--minor">
-                    <a href="{{ routes.cart_change_url }}?line={{ forloop.index }}&amp;quantity=0" class="cart__remove hide js-remove-link">{{ 'cart.general.remove' | t }}</a>
-                    <noscript>
-                      <a href="{{ routes.cart_change_url }}?line={{ forloop.index }}&amp;quantity=0" class="cart__remove">{{ 'cart.general.remove' | t }}</a>
-                    </noscript>
-                  </p>
-                </td>
-                <td class="cart__table-cell--price medium-up--text-right" data-label="{{ 'cart.label.price' | t }}">
-                  {%- if item.properties._custom_price != blank -%}
-                    {%- assign has_custom_pricing = true -%}
-                    {%- assign item_value = item.properties._custom_price | times: 100 -%}
-                    <span class="js-item-price-{{forloop.index}}">{{item_value | money}}</span>
-                    <input type="hidden" name="custom_values" class="js-item-custom-price" data-index="{{forloop.index}}" data-units="{{item.quantity}}" value="{{item.properties._custom_price}}">
-                  {%- elsif item.original_price != item.final_price -%}
-                    <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
-                    <del>{{ item.original_price | money }}</del>
-                    <span class="visually-hidden">{{ 'products.product.sale_price' | t }}</span>
-                    <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_price" data-item-key="{{item.key}}" style="display:none !important;"></span>
-                    {%- if item.properties._bold_bundles_price -%}
+                    <p class="txt--minor">
+                      <a href="{{ routes.cart_change_url }}?line={{ forloop.index }}&amp;quantity=0" class="cart__remove hide js-remove-link">{{ 'cart.general.remove' | t }}</a>
+                      <noscript>
+                        <a href="{{ routes.cart_change_url }}?line={{ forloop.index }}&amp;quantity=0" class="cart__remove">{{ 'cart.general.remove' | t }}</a>
+                      </noscript>
+                    </p>
+                  </td>
+                  <td class="cart__table-cell--price medium-up--text-right" data-label="{{ 'cart.label.price' | t }}">
+                    {%- if item.properties._custom_price != blank -%}
                       {%- assign has_custom_pricing = true -%}
-                      <span>{{ item.original_price | money }}</span><br>
-                    {%- endif -%}
-                    <{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %} class="order-discount">{{ item.final_price | money }}</{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %}>
-                  {%- elsif item.variant.compare_at_price and item.variant.compare_at_price != item.final_price -%}
-                    <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
-                    <del>{{ item.variant.compare_at_price | money }}</del>
-                    <span class="visually-hidden">{{ 'products.product.sale_price' | t }}</span>
-                    <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_price" data-item-key="{{item.key}}" style="display:none !important;"></span>
-                    {%- if item.properties._bold_bundles_price -%}
-                      {%- assign has_custom_pricing = true -%}
-                      <span>{{ item.original_price | money }}</span><br>
-                    {%- endif -%}
-                    <{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %} class="order-discount">{{ item.final_price | money }}</{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %}>
-                  {%- else -%}
-                    {%- assign tag_name = 'span' -%}
-                    {%- if item.properties._bold_bundles_price -%}
-                      {%- assign has_custom_pricing = true -%}
-                      {%- assign tag_name = 'del' -%}
+                      {%- assign item_value = item.properties._custom_price | times: 100 -%}
+                      <span class="js-item-price-{{forloop.index}}">{{item_value | money}}</span>
+                      <input type="hidden" name="custom_values" class="js-item-custom-price" data-index="{{forloop.index}}" data-units="{{item.quantity}}" value="{{item.properties._custom_price}}">
+                    {%- elsif item.original_price != item.final_price -%}
+                      <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
+                      <del>{{ item.original_price | money }}</del>
+                      <span class="visually-hidden">{{ 'products.product.sale_price' | t }}</span>
                       <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_price" data-item-key="{{item.key}}" style="display:none !important;"></span>
-                      <span>{{ item.original_price | money }}</span><br>
-                    {%- elsif item.product.tags contains 'BYB_DISCOUNT' -%}
-                      {%- assign has_discount = false -%}
-                      {%- if item.variant.compare_at_price and item.variant.compare_at_price != item.final_price -%}
-                        {%- assign has_discount = true -%}
+                      {%- if item.properties._bold_bundles_price -%}
+                        {%- assign has_custom_pricing = true -%}
+                        <span>{{ item.original_price | money }}</span><br>
                       {%- endif -%}
-                      {%- unless has_discount -%}
-                        {%- if contains_sod -%}
-                          {%- unless item.properties._bold_bundles_price -%}
-                            {%- assign discount_value = settings.byb_discount | times: item.quantity -%}
-                            {%- assign discounted_price = item.original_price | minus: settings.byb_discount -%}
-                            {%- assign tag_name = 'del' -%}
-                            <span>{{ discounted_price | money }}</span><br>
-                          {%- endunless -%}
-                        {%- endif -%}
-                      {%- endunless -%}
-                    {%- endif -%}
-                    <{{tag_name}}>{{ item.final_price | money }}</{{tag_name}}>
-                  {%- endif -%}
-
-                  {% include 'product-unit-price', variant: item, available: item.variant.available %}
-
-                  {%- if item.line_level_discount_allocations != blank -%}
-                    <ul class="order-discount order-discount--title order-discount--list order-discount--cart-list" aria-label="{{ 'customer.order.discount' | t }}">
-                      {%- for discount_allocation in item.line_level_discount_allocations -%}
-                        <li class="order-discount__item">
-                          {%- include 'icon-saletag' -%}{{ discount_allocation.discount_application.title }} (-{{ discount_allocation.amount | money }})
-                        </li>
-                      {%- endfor -%}
-                    </ul>
-                  {%- endif -%}
-                </td>
-                <td data-label="{{ 'cart.label.quantity' | t }}" class="cart__table-cell--quantity">
-                  <label class="visually-hidden" for="updates_{{ item.key }}">{{ 'cart.label.quantity' | t }}</label>
-                  <input class="quantity-selector form__input js-cart-quantity-selector js-cart-quantity-selector-{{forloop.index}}" type="number" name="updates[]"
-                    id="updates_{{ item.key }}" value="{{ item.quantity }}"
-                    {% if item.properties._custom_increment %}step="{{item.properties._custom_increment}}"{% endif %}
-                    readonly
-                    min="{% if item.properties._custom_increment %}{{item.properties._custom_increment}}{% else %}0{% endif %}">
-                  <p class="cart__error-message cart__error-message--invalid-quantity js-invalid-quantity js-invalid-quantity-{{forloop.index}} hide">Please enter a valid quantity</p>
-                </td>
-                <td data-label="{{ 'cart.label.total' | t }}" class="text-right cart__table-cell--line-price">
-                  {%- if item.properties._custom_price != blank -%}
-                    {%- assign item_value = item.properties._custom_price | times: 100 | times: item.quantity -%}
-                    {%- assign subtotal = subtotal | plus: item_value -%}
-                    {{item_value | money}}
-                  {%- elsif item.original_line_price != item.final_line_price -%}
-                    <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
-                    <del>{{ item.original_line_price | money }}</del>
-                    <span class="visually-hidden">{{ 'products.product.sale_price' | t }}</span>
-                    <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_total" data-item-key="{{item.key}}" style="display:none !important;"></span>
-                    <span class="order-discount"><b>{{ item.final_line_price | money }}</b></span>
-                    {%- assign subtotal = subtotal | plus: item.final_line_price -%}
-                  {%- else -%}
-                    {%- assign final_line_price = item.final_line_price -%}
-                    {%- if item.properties._bold_bundles_price -%}
-                      <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_total" data-item-key="{{item.key}}" style="display:none !important;"></span>
-                    {%- elsif item.product.tags contains 'BYB_DISCOUNT' -%}
-                      {%- assign has_discount = false -%}
-                      {%- if item.variant.compare_at_price and item.variant.compare_at_price != item.final_price -%}
-                        {%- assign has_discount = true -%}
+                      <{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %} class="order-discount">{{ item.final_price | money }}</{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %}>
+                    {%- elsif item.variant.compare_at_price and item.variant.compare_at_price != item.final_price -%}
+                      <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
+                      <del>{{ item.variant.compare_at_price | money }}</del>
+                      <span class="visually-hidden">{{ 'products.product.sale_price' | t }}</span>
+                      <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_price" data-item-key="{{item.key}}" style="display:none !important;"></span>
+                      {%- if item.properties._bold_bundles_price -%}
+                        {%- assign has_custom_pricing = true -%}
+                        <span>{{ item.original_price | money }}</span><br>
                       {%- endif -%}
-                      {%- unless has_discount -%}
-                        {%- if contains_sod -%}
-                          {%- unless item.properties._bold_bundles_price -%}
-                            {%- assign discount_value = settings.byb_discount | times: item.quantity -%}
-                            {%- assign final_line_price = item.final_line_price | minus: discount_value -%}
-                          {%- endunless -%}
-                        {%- endif -%}
-                      {%- endunless -%}
-                    {%- endif -%}
-                    {%- if item.properties._bold_bundles_price -%}
-                      {%- assign item_bundle_price = item.properties._bold_bundles_price | times: item.quantity -%}
-                      {%- assign subtotal = subtotal | plus: item_bundle_price -%}
+                      <{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %} class="order-discount">{{ item.final_price | money }}</{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %}>
                     {%- else -%}
-                      {%- assign subtotal = subtotal | plus: final_line_price -%}
+                      {%- assign tag_name = 'span' -%}
+                      {%- if item.properties._bold_bundles_price -%}
+                        {%- assign has_custom_pricing = true -%}
+                        {%- assign tag_name = 'del' -%}
+                        <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_price" data-item-key="{{item.key}}" style="display:none !important;"></span>
+                        <span>{{ item.original_price | money }}</span><br>
+                      {%- elsif item.product.tags contains 'BYB_DISCOUNT' -%}
+                        {%- assign has_discount = false -%}
+                        {%- if item.variant.compare_at_price and item.variant.compare_at_price != item.final_price -%}
+                          {%- assign has_discount = true -%}
+                        {%- endif -%}
+                        {%- unless has_discount -%}
+                          {%- if contains_sod -%}
+                            {%- unless item.properties._bold_bundles_price -%}
+                              {%- assign discount_value = settings.byb_discount | times: item.quantity -%}
+                              {%- assign discounted_price = item.original_price | minus: settings.byb_discount -%}
+                              {%- assign tag_name = 'del' -%}
+                              <span>{{ discounted_price | money }}</span><br>
+                            {%- endunless -%}
+                          {%- endif -%}
+                        {%- endunless -%}
+                      {%- endif -%}
+                      <{{tag_name}}>{{ item.final_price | money }}</{{tag_name}}>
                     {%- endif -%}
-                    <b>{{ final_line_price | money }}</b>
-                  {%- endif -%}
-                </td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-{% comment %} START 311 {% endcomment %}
-        {% if isThereSod == true %}
-          {% section 'byb-rec-section' %}
-        {% endif %}
-{% comment %} END 311 {% endcomment %}
+
+                    {% include 'product-unit-price', variant: item, available: item.variant.available %}
+
+                    {%- if item.line_level_discount_allocations != blank -%}
+                      <ul class="order-discount order-discount--title order-discount--list order-discount--cart-list" aria-label="{{ 'customer.order.discount' | t }}">
+                        {%- for discount_allocation in item.line_level_discount_allocations -%}
+                          <li class="order-discount__item">
+                            {%- include 'icon-saletag' -%}{{ discount_allocation.discount_application.title }} (-{{ discount_allocation.amount | money }})
+                          </li>
+                        {%- endfor -%}
+                      </ul>
+                    {%- endif -%}
+                  </td>
+                  <td data-label="{{ 'cart.label.quantity' | t }}" class="cart__table-cell--quantity">
+                    <label class="visually-hidden" for="updates_{{ item.key }}">{{ 'cart.label.quantity' | t }}</label>
+                    <input class="quantity-selector form__input js-cart-quantity-selector js-cart-quantity-selector-{{forloop.index}}" type="number" name="updates[]"
+                      id="updates_{{ item.key }}" value="{{ item.quantity }}"
+                      {% if item.properties._custom_increment %}step="{{item.properties._custom_increment}}"{% endif %}
+                      readonly
+                      min="{% if item.properties._custom_increment %}{{item.properties._custom_increment}}{% else %}0{% endif %}">
+                    <p class="cart__error-message cart__error-message--invalid-quantity js-invalid-quantity js-invalid-quantity-{{forloop.index}} hide">Please enter a valid quantity</p>
+                  </td>
+                  <td data-label="{{ 'cart.label.total' | t }}" class="text-right cart__table-cell--line-price">
+                    {%- if item.properties._custom_price != blank -%}
+                      {%- assign item_value = item.properties._custom_price | times: 100 | times: item.quantity -%}
+                      {%- assign subtotal = subtotal | plus: item_value -%}
+                      {{item_value | money}}
+                    {%- elsif item.original_line_price != item.final_line_price -%}
+                      <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
+                      <del>{{ item.original_line_price | money }}</del>
+                      <span class="visually-hidden">{{ 'products.product.sale_price' | t }}</span>
+                      <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_total" data-item-key="{{item.key}}" style="display:none !important;"></span>
+                      <span class="order-discount"><b>{{ item.final_line_price | money }}</b></span>
+                      {%- assign subtotal = subtotal | plus: item.final_line_price -%}
+                    {%- else -%}
+                      {%- assign final_line_price = item.final_line_price -%}
+                      {%- if item.properties._bold_bundles_price -%}
+                        <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_total" data-item-key="{{item.key}}" style="display:none !important;"></span>
+                      {%- elsif item.product.tags contains 'BYB_DISCOUNT' -%}
+                        {%- assign has_discount = false -%}
+                        {%- if item.variant.compare_at_price and item.variant.compare_at_price != item.final_price -%}
+                          {%- assign has_discount = true -%}
+                        {%- endif -%}
+                        {%- unless has_discount -%}
+                          {%- if contains_sod -%}
+                            {%- unless item.properties._bold_bundles_price -%}
+                              {%- assign discount_value = settings.byb_discount | times: item.quantity -%}
+                              {%- assign final_line_price = item.final_line_price | minus: discount_value -%}
+                            {%- endunless -%}
+                          {%- endif -%}
+                        {%- endunless -%}
+                      {%- endif -%}
+                      {%- if item.properties._bold_bundles_price -%}
+                        {%- assign item_bundle_price = item.properties._bold_bundles_price | times: item.quantity -%}
+                        {%- assign subtotal = subtotal | plus: item_bundle_price -%}
+                      {%- else -%}
+                        {%- assign subtotal = subtotal | plus: final_line_price -%}
+                      {%- endif -%}
+                      <b>{{ final_line_price | money }}</b>
+                    {%- endif -%}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+  {% comment %} START 311 {% endcomment %}
+          {% if isThereSod == true %}
+            {% section 'byb-rec-section' %}
+          {% endif %}
+  {% comment %} END 311 {% endcomment %}
+        </div>
+
         {%- if fulfillment_method == '' and has_custom_pricing == true -%}
           {%- if enable_date_selector == true and fulfillment_method == 'delivery' -%}
             {%- assign invalid_fulfillment = true -%}

@@ -4,6 +4,11 @@
   margin: 0 auto;
   padding: 25px 25px 50px;
 }
+.cart-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr;
+}
 .byb-rec-container {
   display: block;  
 }
@@ -63,7 +68,7 @@
 .byb-add-to-cart {
   margin-top: 1rem;
 }
-.js-cart-table {
+.cart-table {
   width: 100%;
   float: none;
 }
@@ -71,8 +76,13 @@
   margin-top: 1.5rem;
 }
 @media screen and ( min-width: 999px ) {
-  .js-cart-table {
-    width: 70%;
+  .cart-content {
+    display: grid;
+    grid-template-columns: 70% 30%;
+    grid-template-rows: 1fr;
+  }
+  .cart-table {
+    width: 100%;
     float: left;
     margin-right: 1rem;
   }
@@ -117,7 +127,8 @@
     padding: 0 0.5rem 1rem;
   }
   .byb-rec-container {
-    width: calc(30% - 1rem);
+    width: calc(100% - 1rem);
+    /*width: calc(30% - 1rem);*/
     margin: 0 0 0 auto;
   }
 }
