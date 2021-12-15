@@ -37,6 +37,7 @@ const Product = (function () {
       .on('change', '.js-product-variants', changeLabelPrice)
       .on('change', '.js-product-variant', selectMultivariant)
       .on('change keyup input', '.js-quantity-input', checkQuantityIncrement)
+      .on('change input', '.js-quantity-input-pickup', filteredRangePrice)
       .on('change keyup', '.js-autocomplete-address', hideAddToCart)
       .on('focus', '.js-autocomplete-address', geolocate)
       .on('keypress', '.js-product-form input', function (e) {
@@ -1122,23 +1123,53 @@ const Product = (function () {
     const wrongMinimumQuantityText = $('.js-wrong-min-quantity');
     const deliveryMethodInput = $('.js-delivery-method:checked');
     const submitButton = $('.js-product-price-check');
-
-    if (ev.type === 'keyup' || ev.type === 'input') {
-      hideSubmitButton();
-      if (checkPULocationsTimeout) {
-        clearTimeout(checkPULocationsTimeout);
-      }
-      checkPULocationsTimeout = setTimeout(function () {
-        if (input.classList.contains('js-quantity-input-pickup')) {
-          updatePickUpLocations();
+    
+    const unitPrice = parseFloat( $('.js-product-pickup-variants option:selected').data('price') );
+    let totalPrice = unitPrice * value ;
+    
+    if ( $('.js-dropdown-with-minimums') ) {
+      if ( value % increment === 0 ) {
+        if ( value >= minimum ){
+          $('.js-minimum-quantity-alert').addClass('hide');
+          wrongQuantityText.addClass('hide');
+          showProductPricing({
+            additional_miles_cost: 0,
+            fulfillment: 'pickup',
+            unit_price: unitPrice,
+            total_price: totalPrice
+          });
+          toggleSubmitButton('show', 'js-product-submit');
+        } else {
+          $('.js-min-number').html(minimum);
+          $('.js-minimum-quantity-alert').removeClass('hide');
+          $('.js-product-quantity').val(minimum);
+          toggleSubmitButton('hide', 'js-product-submit'); 
         }
-      }, 300);
+      } else {
+        $('.js-multiple-number').html(minimum);
+        $('.js-minimum-quantity-alert').removeClass('hide');
+        wrongQuantityText.removeClass('hide');
+        toggleSubmitButton('hide', 'js-product-submit');
+        document.querySelector('js-wrong-quantity').classList.remove('hide');
+      }
+
+    } else {
+      hideSubmitButton();
     }
+
+    if (checkPULocationsTimeout) {
+      clearTimeout(checkPULocationsTimeout);
+    }
+    checkPULocationsTimeout = setTimeout(function () {
+      if (input.classList.contains('js-quantity-input-pickup') && !$('.js-dropdown-with-minimums') ) {
+        updatePickUpLocations();
+      }
+    }, 300);
 
     wrongQuantityText.addClass('hide');
     wrongMinimumQuantityText.addClass('hide');
     $('.js-not-available-text').addClass('hide');
-
+    //$('.js-minimum-quantity-alert').addClass('hide');
 
     if (value < 0) {
       $('.js-product-quantity').val(0);
@@ -1151,14 +1182,8 @@ const Product = (function () {
       toggleSubmitButton('disable');
       toggleSubmitButton('', 'js-product-price-check');
       return;
-    } else if (value % increment !== 0) {
-      $('.js-product-quantity').val(0);
-      $('.js-multiple-number').html(increment);
-      wrongQuantityText.removeClass('hide');
-      toggleSubmitButton('hide');
-      toggleSubmitButton('', 'js-product-price-check');
-      return;
     }
+
     toggleSubmitButton('show', 'js-product-price-check');
 
     $('.js-product-quantity').val(value);
@@ -1172,6 +1197,7 @@ const Product = (function () {
         return;
       }
     }
+
     submitButton.html('Check delivery price');
     toggleSubmitButton('enable');
   };
@@ -1260,6 +1286,60 @@ const Product = (function () {
   const selectPickupVariant = function (ev) {
     const select = ev.target;
     const selectedVariant = select.value;
+
+    // Pick the quantity from the option selected, this will have the minimum quantity for this zone 307
+    const zipcode = selectedVariant.match(/(\d{5})$/);
+    if ( select.classList.contains('js-product-pickup-variants') ) {
+      if ( zipcode !== null ) {
+        const productString = '&products[]id=' + productData.id + '&products[]quantity=' + $('.js-product-quantity').val() + '&products[]type=' + productData.type + '&products[]name=' + productData.name;
+        const dataString = 'zipcode=' + zipcode[0] + productString + '&shop_domain=' + theme.routes.validation_tool_shop + '&customer_type=retail';
+        const endpoint = 'check_products';
+        if (select.classList.contains('js-dropdown-with-minimums') && selectedVariant.length > 0 ) {
+          $.ajax({
+            type: 'GET',
+            url: theme.routes.validation_tool_url + endpoint,
+            data: dataString,
+            timeout: 3000,
+            success: function(result){
+              const selectedMinimumQuantity = result.delivery_pickup_aviability[0].minimum_pickup;
+              const type = result.delivery_pickup_aviability[0].type;
+              const pricesArray = result.delivery_pickup_aviability[0].price_by_quantity_range;
+              if ( type == 'Sod' ) {
+                if ( typeof(selectedMinimumQuantity) === 'number' && typeof(selectedMinimumQuantity) !== null ){
+                  $('.js-quantity-input-pickup').attr('min', selectedMinimumQuantity);
+                  $('.js-minimum-quantity-alert').removeClass('hide')
+                  $('.js-minimum-quantity-alert-value').text(selectedMinimumQuantity);
+                  document.getElementById('pickup-uantity').value = selectedMinimumQuantity;
+                  $('.js-product-pickup-variants option:selected').attr('data-priceranges', JSON.stringify(pricesArray));
+
+                  const pickupQuantity = parseInt( document.getElementById('pickup-uantity').value );
+                  const priceRanges =  JSON.parse( $('.js-product-pickup-variants option:selected').attr('data-priceranges') );
+                  const unitPrice = pricesArray.filter( priceRange => priceRange.min < parseInt(pickupQuantity) && priceRange.max > parseInt(pickupQuantity) )[0].unit_price;
+                  //$('.js-product-pickup-variants option:selected').data('price');
+                  const totalPrice = unitPrice * pickupQuantity;
+                  showProductPricing({
+                    additional_miles_cost: 0,
+                    fulfillment: 'pickup',
+                    unit_price: unitPrice,
+                    total_price: totalPrice
+                  });
+                } else {
+                  $('.js-quantity-input-pickup').attr('min', 10);
+                  $('.js-minimum-quantity-alert').removeClass('hide')
+                  $('.js-minimum-quantity-alert-value').text(10); 
+                  document.getElementById('pickup-uantity').value = 10;            
+                }
+              }
+              
+              return result.delivery_pickup_aviability[0].minimum_pickup;
+                  }
+          });
+        }
+      } else {
+        hideSubmitButton();
+      }
+    };
+
     const variants = getVariants();
     const foundVariant = variants.filter(function (variant) {
       return selectedVariant.indexOf(variant.text) > -1;
@@ -1323,6 +1403,21 @@ const Product = (function () {
       addBoldBundleParameters(selectedVariant);
     }
   };
+
+  const filteredRangePrice = function (ev) {
+    let qty = ev.target.value;
+    if ( $('.js-product-pickup-variants option:selected').attr('data-priceranges') ) {
+      const priceRanges =  JSON.parse( $('.js-product-pickup-variants option:selected').attr('data-priceranges') );
+      const unitPrice = priceRanges.filter( priceRange => priceRange.min < parseInt(qty) && priceRange.max > parseInt(qty) )[0].unit_price;
+        const totalPrice = unitPrice * qty;
+        showProductPricing({
+          additional_miles_cost: 0,
+          fulfillment: 'pickup',
+          unit_price: unitPrice,
+          total_price: totalPrice
+        });
+    }
+  }
 
   const selectVariant = function (variant) {
     $('.js-not-available-text').addClass('hide');
