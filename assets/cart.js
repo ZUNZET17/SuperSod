@@ -168,11 +168,29 @@ const Cart = (function () {
     });
   };
 
+
+  const validationItems = function () {
+    var sodLawnValidation = false;
+
+    for (var i=0; i < cartItems.length; i++) {
+      if (cartItems[i].product_type && isLawnPlanted) {;
+        sodLawnValidation = true;
+      }
+    }
+
+    if (sodLawnValidation) {
+      $('.js-open-validation-modal').trigger('click');
+      $('.js-go-to-checkout').prop('disabled', 1);
+    }
+    return sodLawnValidation;
+  }
+
   const validateCheckout = function (ev) {
     removeInvalidBundleProducts(function () {
       validateCheckoutProcess(ev);
     });
   };
+
 
   const validateCheckoutProcess = function (ev) {
     $('.js-dates-invalid').addClass('hide');
@@ -263,6 +281,11 @@ const Cart = (function () {
       dates: dates,
       originalText: originalText
     };
+
+    if(validationItems()) {
+      validationItems();
+      e.preventDefault();
+    }
 
     if (document.querySelector('.js-open-soil3-modal')) {
       button.html(originalText);
@@ -735,6 +758,7 @@ const Cart = (function () {
     setEvents();
     showFixedPrices();
     showRemoveLinks();
+    validationItems();
 
     if (
       typeof cartDeliveryAttribute !== 'undefined' &&
@@ -774,6 +798,19 @@ const Cart = (function () {
         }
       }
     });
+    $('.js-open-validation-modal').magnificPopup({
+      type:'inline',
+      callbacks: {
+        close: function () {
+          $('.js-open-soil3-modal').removeClass('js-open-soil3-modal');
+        }
+      }
+    });
+    $('body').on( 'click', '.return-to-cart', function( e ) {
+        e.preventDefault();
+        $.magnificPopup.close();
+    });
+
   };
 
   return {

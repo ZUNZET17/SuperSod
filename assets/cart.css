@@ -454,3 +454,7 @@
     max-width: 500px;
   }
 }
+
+.invalid-subscription {
+  color: red;
+}

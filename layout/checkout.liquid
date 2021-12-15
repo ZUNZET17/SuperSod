@@ -366,14 +366,15 @@
             lowercasedLabel.indexOf('ick') > -1
           ) {
             hide = true;
-            console.log(deliveryType, lowercasedLabel.replace(/\s/g, ''), lowercasedDeliveryType, containsMethod, hide);
           } else if (!containsMethod) {
             hide = true;
           }
 
           const container = labels[i].parentNode.parentNode.parentNode;
           const input = container.getElementsByClassName('input-radio');
-          if (hide === true) {
+          const suscription_element = document.querySelectorAll("[id*='subscription']");
+          
+          if (hide === true && suscription_element.length === 0 || hide === true && typeof suscription_element == 'undefined') {
             container.classList.add('display-none');
           }
           input[0].checked = !hide;

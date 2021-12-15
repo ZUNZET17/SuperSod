@@ -716,6 +716,17 @@
     </div>
   </section>
 {%- endif -%}
+<a href="#validation-modal" class="hide js-open-validation-modal">Show soil3 modal</a>
+<section id="validation-modal" class="soil3-modal validation-modal mfp-hide">
+  <h2 class="soil3-modal__title text-center"></h2>
+  <div class="text-center">
+    <h3 class="soil3-modal__message invalid-subscription">{{ 'cart.error_validation.message' | t }}</h3>
+  </div>
+    <div class="text-center">
+      <button type="button" class="btn return-to-cart">{{ 'cart.error_validation.return' | t }}</button>
+    </div>
+  </div>
+</section>
 {%- if cart.item_count > 0 -%}
   <script>
     const isLawnPlanted = {{ is_lawn_planted }};
@@ -767,5 +778,6 @@
         product_type: {{product_type | json}}, product_id: {{item.product.id}},
         product_name: '{{item.product.title}}', product_image: '{{item.image | img_url: "100x100"}}'
       }{%- unless forloop.last -%},{%- endunless -%}{% endfor %}];
+
   </script>
 {%- endif -%}

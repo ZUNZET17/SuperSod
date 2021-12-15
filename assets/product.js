@@ -663,7 +663,7 @@ const Product = (function () {
             hideFormElements();
           }
 
-          $('.js-delivery-method').prop('disabled', 1 );
+          $('.js-delivery-method').addClass('not-available');
           $('.js-msg-availability' ).addClass('not-available');
           checkProductPricing(zipCode,button);
 
@@ -677,7 +677,6 @@ const Product = (function () {
             $(this).addClass('hide')
           }
 
-          $('.js-delivery-method').prop('disabled', 0 );
           $('.js-msg-availability' ).removeClass('not-available');
           checkProductPricing(zipCode,button);
 
@@ -834,7 +833,7 @@ const Product = (function () {
       button.html(originalText);
 
 
-      const deliveryIsDisabled = $('.js-delivery-method').prop('disabled');
+      const deliveryIsDisabled = $('.js-delivery-method').hasClass('not-available');
       if (!deliveryIsDisabled) {
         toggleSubmitButton('show');
         showButtonMessage(deliveryMethod);
@@ -1287,6 +1286,7 @@ const Product = (function () {
   const selectPickupVariant = function (ev) {
     const select = ev.target;
     const selectedVariant = select.value;
+
     // Pick the quantity from the option selected, this will have the minimum quantity for this zone 307
     const zipcode = selectedVariant.match(/(\d{5})$/);
     if ( select.classList.contains('js-product-pickup-variants') ) {
@@ -1495,7 +1495,6 @@ const Product = (function () {
     $('.js-not-available-text').addClass('hide');
     $('.js-not-available-delivery-text').addClass('hide');
     $('.js-not-available-pickup-text').addClass('hide');
-    $('.js-delivery-method').prop('disabled', 0 );
     $('.js-msg-availability' ).removeClass('not-available');
     $('.js-current-price-unit').addClass('hide');
 

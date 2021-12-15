@@ -287,17 +287,6 @@ button[class*="bold-ro__custombutton-"] + .btn--full {
   display: inline-flex;
 }
 
-.toggle-input:checked + .toggle-label {
-  &.not-available{
-    box-shadow: 0 0 0 2px red;
-    border-color: red;
-  }
-}
-
-.toggle-label.not-available {
-  border-color: red;
-}
-
 .lawn-planted-warning-hide {
   display: none;
 }

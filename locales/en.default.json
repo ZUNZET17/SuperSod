@@ -119,6 +119,10 @@
         "zero": ""
       },
       "empty": "You have no items in your cart"
+    },
+    "error_validation":{
+      "message": "Lawn Coach is a subscription plan and cannot be purchased with sod in the same transaction. Please remove sod from your cart and purchase items separately.",
+      "return": "Back to cart"
     }
   },
   "collections": {
