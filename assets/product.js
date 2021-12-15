@@ -1123,19 +1123,14 @@ const Product = (function () {
     const wrongMinimumQuantityText = $('.js-wrong-min-quantity');
     const deliveryMethodInput = $('.js-delivery-method:checked');
     const submitButton = $('.js-product-price-check');
-
+    /*
     const unitPrice = parseFloat( $('.js-product-pickup-variants option:selected').data('price') );
     let totalPrice = unitPrice * value ;
-
+    */
     if ( $('.js-dropdown-with-minimums') ) {
       if ( value % increment === 0 ) {
         if ( value >= minimum ){
-          showProductPricing({
-            additional_miles_cost: 0,
-            fulfillment: 'pickup',
-            unit_price: unitPrice,
-            total_price: totalPrice
-          });
+          filteredRangePrice(value);
           $('.js-minimum-quantity-alert').addClass('hide');
           wrongQuantityText.addClass('hide');
           toggleSubmitButton('show', 'js-product-submit');
@@ -1151,7 +1146,6 @@ const Product = (function () {
         wrongQuantityText.removeClass('hide');
         toggleSubmitButton('hide', 'js-product-submit');
         document.querySelector('js-wrong-quantity').classList.remove('hide');
-        console.log('wrong interval!')
       }
 
     } else {
@@ -1287,7 +1281,7 @@ const Product = (function () {
   const selectPickupVariant = function (ev) {
     const select = ev.target;
     const selectedVariant = select.value;
-    // Pick the quantity from the option selected, this will have the minimum quantity for this zone
+    // Pick the quantity from the option selected, this will have the minimum quantity for this zone 307
     const zipcode = selectedVariant.match(/(\d{5})$/);
     if ( select.classList.contains('js-product-pickup-variants') ) {
       if ( zipcode !== null ) {
@@ -1303,21 +1297,17 @@ const Product = (function () {
             success: function(result){
               const selectedMinimumQuantity = result.delivery_pickup_aviability[0].minimum_pickup;
               const type = result.delivery_pickup_aviability[0].type;
-
+              const pricesArray = result.delivery_pickup_aviability[0].price_by_quantity_range;
+              const pickupQuantity = document.getElementById('pickup-uantity').value;
+              console.log(pricesArray);
               if ( type == 'Sod' ) {
                 if ( typeof(selectedMinimumQuantity) === 'number' && typeof(selectedMinimumQuantity) !== null ){
                   $('.js-quantity-input-pickup').attr('min', selectedMinimumQuantity);
                   $('.js-minimum-quantity-alert').removeClass('hide')
                   $('.js-minimum-quantity-alert-value').text(selectedMinimumQuantity);
                   document.getElementById('pickup-uantity').value = selectedMinimumQuantity;
-                  const unitPrice = $('.js-product-pickup-variants option:selected').data('price');
-                  const totalPrice = unitPrice * document.getElementById('pickup-uantity').value;
-                  showProductPricing({
-                    additional_miles_cost: 0,
-                    fulfillment: 'pickup',
-                    unit_price: unitPrice,
-                    total_price: totalPrice
-                  });   
+                  $('.js-product-pickup-variants option:selected').attr('data-priceranges', JSON.stringify(pricesArray));
+                  filteredRangePrice(pickupQuantity);
                 } else {
                   $('.js-quantity-input-pickup').attr('min', 10);
                   $('.js-minimum-quantity-alert').removeClass('hide')
@@ -1398,6 +1388,20 @@ const Product = (function () {
       addBoldBundleParameters(selectedVariant);
     }
   };
+
+  const filteredRangePrice = function (qty) {
+    const priceRanges =  JSON.parse( $('.js-product-pickup-variants option:selected').attr('data-priceranges') );
+    const unitPrice = priceRanges.filter( priceRange => priceRange.min < parseInt(qty) && priceRange.max > parseInt(qty) )[0].unit_price;
+    console.log(unitPrice);
+    //$('.js-product-pickup-variants option:selected').data('price');
+    const totalPrice = unitPrice * qty;
+    showProductPricing({
+      additional_miles_cost: 0,
+      fulfillment: 'pickup',
+      unit_price: unitPrice,
+      total_price: totalPrice
+    });
+  }
 
   const selectVariant = function (variant) {
     $('.js-not-available-text').addClass('hide');
