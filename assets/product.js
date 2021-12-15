@@ -1121,6 +1121,7 @@ const Product = (function () {
     const wrongQuantityText = $('.js-wrong-quantity');
     const wrongMinimumQuantityText = $('.js-wrong-min-quantity');
     const deliveryMethodInput = $('.js-delivery-method:checked');
+    const submitButton = $('.js-product-price-check');
 
     if (ev.type === 'keyup' || ev.type === 'input') {
       hideSubmitButton();
@@ -1137,6 +1138,7 @@ const Product = (function () {
     wrongQuantityText.addClass('hide');
     wrongMinimumQuantityText.addClass('hide');
     $('.js-not-available-text').addClass('hide');
+
 
     if (value < 0) {
       $('.js-product-quantity').val(0);
@@ -1258,54 +1260,6 @@ const Product = (function () {
   const selectPickupVariant = function (ev) {
     const select = ev.target;
     const selectedVariant = select.value;
-    // Pick the quantity from the option selected, this will have the minimum quantity for this zone
-  /*  const zipcode = selectedVariant.match(/(\d{5})$/);
-    if ( select.classList.contains('js-product-pickup-variants') ) {
-      if ( zipcode !== null ) {
-        const productString = '&products[]id=' + productData.id + '&products[]quantity=' + $('.js-product-quantity').val() + '&products[]type=' + productData.type + '&products[]name=' + productData.name;
-        const dataString = 'zipcode=' + zipcode[0] + productString + '&shop_domain=' + theme.routes.validation_tool_shop + '&customer_type=retail';
-        const endpoint = 'check_products';
-        if (select.classList.contains('js-dropdown-with-minimums') && selectedVariant.length > 0 ) {
-          $.ajax({
-            type: 'GET',
-            url: theme.routes.validation_tool_url + endpoint,
-            data: dataString,
-            timeout: 3000,
-            success: function(result){
-              const selectedMinimumQuantity = result.delivery_pickup_aviability[0].minimum_pickup;
-              const type = result.delivery_pickup_aviability[0].type;
-              console.log(result);
-              if ( type == 'Sod' ) {
-                if ( typeof(selectedMinimumQuantity) === 'number' && typeof(selectedMinimumQuantity) !== null ){
-                  $('.js-quantity-input-pickup').attr('min', selectedMinimumQuantity);
-                  $('.js-minimum-quantity-alert').removeClass('hide')
-                  $('.js-minimum-quantity-alert-value').text(selectedMinimumQuantity);
-                  document.getElementById('pickup-uantity').value = selectedMinimumQuantity;
-                  const unitPrice = $('.js-product-pickup-variants option:selected').data('price');
-                  const totalPrice = unitPrice * document.getElementById('pickup-uantity').value;
-                  showProductPricing({
-                    additional_miles_cost: 0,
-                    fulfillment: 'pickup',
-                    unit_price: unitPrice,
-                    total_price: totalPrice
-                  });
-                } else {
-                  $('.js-quantity-input-pickup').attr('min', 10);
-                  $('.js-minimum-quantity-alert').removeClass('hide')
-                  $('.js-minimum-quantity-alert-value').text(10);
-                  document.getElementById('pickup-uantity').value = 10;
-                }
-              }
-
-              return result.delivery_pickup_aviability[0].minimum_pickup;
-                  }
-          });
-        }
-      } else {
-        hideSubmitButton();
-      }
-    };
-*/
     const variants = getVariants();
     const foundVariant = variants.filter(function (variant) {
       return selectedVariant.indexOf(variant.text) > -1;
