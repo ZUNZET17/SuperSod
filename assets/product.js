@@ -37,6 +37,7 @@ const Product = (function () {
       .on('change', '.js-product-variants', changeLabelPrice)
       .on('change', '.js-product-variant', selectMultivariant)
       .on('change keyup input', '.js-quantity-input', checkQuantityIncrement)
+      .on('change input', '.js-quantity-input-pickup', filteredRangePrice)
       .on('change keyup', '.js-autocomplete-address', hideAddToCart)
       .on('focus', '.js-autocomplete-address', geolocate)
       .on('keypress', '.js-product-form input', function (e) {
@@ -1123,16 +1124,21 @@ const Product = (function () {
     const wrongMinimumQuantityText = $('.js-wrong-min-quantity');
     const deliveryMethodInput = $('.js-delivery-method:checked');
     const submitButton = $('.js-product-price-check');
-    /*
+    
     const unitPrice = parseFloat( $('.js-product-pickup-variants option:selected').data('price') );
     let totalPrice = unitPrice * value ;
-    */
+    
     if ( $('.js-dropdown-with-minimums') ) {
       if ( value % increment === 0 ) {
         if ( value >= minimum ){
-          filteredRangePrice(value);
           $('.js-minimum-quantity-alert').addClass('hide');
           wrongQuantityText.addClass('hide');
+          showProductPricing({
+            additional_miles_cost: 0,
+            fulfillment: 'pickup',
+            unit_price: unitPrice,
+            total_price: totalPrice
+          });
           toggleSubmitButton('show', 'js-product-submit');
         } else {
           $('.js-min-number').html(minimum);
@@ -1298,8 +1304,6 @@ const Product = (function () {
               const selectedMinimumQuantity = result.delivery_pickup_aviability[0].minimum_pickup;
               const type = result.delivery_pickup_aviability[0].type;
               const pricesArray = result.delivery_pickup_aviability[0].price_by_quantity_range;
-              const pickupQuantity = document.getElementById('pickup-uantity').value;
-              console.log(pricesArray);
               if ( type == 'Sod' ) {
                 if ( typeof(selectedMinimumQuantity) === 'number' && typeof(selectedMinimumQuantity) !== null ){
                   $('.js-quantity-input-pickup').attr('min', selectedMinimumQuantity);
@@ -1307,7 +1311,18 @@ const Product = (function () {
                   $('.js-minimum-quantity-alert-value').text(selectedMinimumQuantity);
                   document.getElementById('pickup-uantity').value = selectedMinimumQuantity;
                   $('.js-product-pickup-variants option:selected').attr('data-priceranges', JSON.stringify(pricesArray));
-                  filteredRangePrice(pickupQuantity);
+
+                  const pickupQuantity = parseInt( document.getElementById('pickup-uantity').value );
+                  const priceRanges =  JSON.parse( $('.js-product-pickup-variants option:selected').attr('data-priceranges') );
+                  const unitPrice = pricesArray.filter( priceRange => priceRange.min < parseInt(pickupQuantity) && priceRange.max > parseInt(pickupQuantity) )[0].unit_price;
+                  //$('.js-product-pickup-variants option:selected').data('price');
+                  const totalPrice = unitPrice * pickupQuantity;
+                  showProductPricing({
+                    additional_miles_cost: 0,
+                    fulfillment: 'pickup',
+                    unit_price: unitPrice,
+                    total_price: totalPrice
+                  });
                 } else {
                   $('.js-quantity-input-pickup').attr('min', 10);
                   $('.js-minimum-quantity-alert').removeClass('hide')
@@ -1389,18 +1404,19 @@ const Product = (function () {
     }
   };
 
-  const filteredRangePrice = function (qty) {
-    const priceRanges =  JSON.parse( $('.js-product-pickup-variants option:selected').attr('data-priceranges') );
-    const unitPrice = priceRanges.filter( priceRange => priceRange.min < parseInt(qty) && priceRange.max > parseInt(qty) )[0].unit_price;
-    console.log(unitPrice);
-    //$('.js-product-pickup-variants option:selected').data('price');
-    const totalPrice = unitPrice * qty;
-    showProductPricing({
-      additional_miles_cost: 0,
-      fulfillment: 'pickup',
-      unit_price: unitPrice,
-      total_price: totalPrice
-    });
+  const filteredRangePrice = function (ev) {
+    let qty = ev.target.value;
+    if ( $('.js-product-pickup-variants option:selected').attr('data-priceranges') ) {
+      const priceRanges =  JSON.parse( $('.js-product-pickup-variants option:selected').attr('data-priceranges') );
+      const unitPrice = priceRanges.filter( priceRange => priceRange.min < parseInt(qty) && priceRange.max > parseInt(qty) )[0].unit_price;
+        const totalPrice = unitPrice * qty;
+        showProductPricing({
+          additional_miles_cost: 0,
+          fulfillment: 'pickup',
+          unit_price: unitPrice,
+          total_price: totalPrice
+        });
+    }
   }
 
   const selectVariant = function (variant) {
