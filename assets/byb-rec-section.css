@@ -128,7 +128,6 @@
   }
   .byb-rec-container {
     width: calc(100% - 1rem);
-    /*width: calc(30% - 1rem);*/
     margin: 0 0 0 auto;
   }
 }
