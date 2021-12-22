@@ -414,6 +414,37 @@ const Cart = (function () {
   const highlightUpdateButton = function (ev) {
     $('.js-update-cart-message').removeClass('hide');
   };
+//ticket SSOD-310
+  const updateTotals = function (ev) {
+    let input = ev.target;
+    let stepQuantity = parseFloat( input.getAttribute('step') );
+    let newQuantity = parseFloat(input.value);
+    const regex = /(\d*\,)*(\d*\.)*\d{2,}/g;
+    let index = input.dataset.inputIndex;
+    let price = parseFloat($('.js-item-price-' + index).text().match(regex)[0]);
+    let linePrice = document.querySelector('#js-line-price' + index);   
+    let linePriceTotal = Utils.formatMoneyWithPrecision(( newQuantity * price ).toFixed(2));
+    let dataItemPrice = newQuantity * price;
+    let linePrices = [...$('.js-line-price')].map(x => parseFloat(x.dataset.linePrice));
+    let subTotal = Utils.formatMoneyWithPrecision(linePrices.reduce((a, b) => a + b).toFixed(2));
+ 
+    if ( newQuantity % stepQuantity == 0 && input.hasAttribute('step') ) {
+      linePrice.setAttribute('data-line-price', dataItemPrice );
+      linePrice.innerHTML = linePriceTotal;
+      $('.js-cart-subtotal').text(subTotal);
+      $('.js-invalid-quantity-' + index).addClass('hide');
+      
+
+      jQuery.post('/cart/change.js', { quantity: newQuantity, line: index });
+
+    } else {
+      if ( input.hasAttribute('step') ) { 
+        $('.js-invalid-quantity-' + index).removeClass('hide');
+        document.querySelector('.js-go-to-checkout').disabled = true;
+       }  
+    }
+
+  };
 
   const showFixedPrices = function () {
     if (typeof cartItems === 'undefined') {
@@ -774,7 +805,8 @@ const Cart = (function () {
       .on('click', '.js-check-dates', searchAvailableDates)
       .on('change', '.js-delivery-type', resetCheckoutForm)
       .on('click', '.js-go-to-checkout', validateCheckout)
-      .on('change keyup input', '.js-cart-quantity-selector', highlightUpdateButton)
+      .on('change keyup input', '.js-cart-quantity-selector', highlightUpdateButton)     
+      .on('change keyup input', '.js-cart-quantity-selector', updateTotals)
       .on('submit', '.js-cart-form', interceptCartSubmit);
     for (let index = 0; index < 3; index++) {
       const fieldSelector = '.js-tail-datetime-field-' + (index + 1);
