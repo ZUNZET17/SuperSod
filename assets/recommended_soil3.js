@@ -20,7 +20,7 @@ const addRecommended = function (ev) {
    }, 1000)
 
 }
-
+/**asd */
 $(document).on('click', '.js-byb-add-to-cart', addRecommended);
 
 
