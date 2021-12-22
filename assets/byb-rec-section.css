@@ -10,6 +10,7 @@
   grid-template-rows: 1fr 1fr;
 }
 .byb-rec-container {
+  width: 100%;
   display: block;  
 }
 .byb-rec-section {
@@ -82,7 +83,7 @@
     grid-template-rows: 1fr;
   }
   .cart-table {
-    width: 100%;
+    width: 70%;
     float: left;
     margin-right: 1rem;
   }
@@ -127,7 +128,7 @@
     padding: 0 0.5rem 1rem;
   }
   .byb-rec-container {
-    width: calc(100% - 1rem);
+    width: calc(30% - 1rem);
     margin: 0 0 0 auto;
   }
 }
