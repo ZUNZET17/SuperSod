@@ -416,22 +416,6 @@
                       <del>{{ item.original_price | money }}</del>
                       <span class="visually-hidden">{{ 'products.product.sale_price' | t }}</span>
                       <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_price" data-item-key="{{item.key}}" style="display:none !important;"></span>
-<<<<<<< HEAD
-                      <span class="js-item-price-{{forloop.index}}">{{ item.original_price | money }}</span><br>
-                    {%- elsif item.product.tags contains 'BYB_DISCOUNT' -%}
-                      {%- assign has_discount = false -%}
-                      {%- if item.variant.compare_at_price and item.variant.compare_at_price != item.final_price -%}
-                        {%- assign has_discount = true -%}
-                      {%- endif -%}
-                      {%- unless has_discount -%}
-                        {%- if contains_sod -%}
-                          {%- unless item.properties._bold_bundles_price -%}
-                            {%- assign discount_value = settings.byb_discount | times: item.quantity -%}
-                            {%- assign discounted_price = item.original_price | minus: settings.byb_discount -%}
-                            {%- assign tag_name = 'del' -%}
-                            <span class="js-item-price-{{forloop.index}}">{{ discounted_price | money }}</span><br>
-                          {%- endunless -%}
-=======
                       {%- if item.properties._bold_bundles_price -%}
                         {%- assign has_custom_pricing = true -%}
                         <span>{{ item.original_price | money }}</span><br>
@@ -458,7 +442,6 @@
                         {%- assign has_discount = false -%}
                         {%- if item.variant.compare_at_price and item.variant.compare_at_price != item.final_price -%}
                           {%- assign has_discount = true -%}
->>>>>>> 3658004 (Add responsiveness to recommended section)
                         {%- endif -%}
                         {%- unless has_discount -%}
                           {%- if contains_sod -%}
@@ -473,64 +456,9 @@
                       {%- endif -%}
                       <{{tag_name}}>{{ item.final_price | money }}</{{tag_name}}>
                     {%- endif -%}
-<<<<<<< HEAD
-                    <{{tag_name}} class="js-item-price-{{forloop.index}}">{{ item.final_price | money }}</{{tag_name}}>
-                  {%- endif -%}
-=======
->>>>>>> 3658004 (Add responsiveness to recommended section)
 
                     {% include 'product-unit-price', variant: item, available: item.variant.available %}
 
-<<<<<<< HEAD
-                  {%- if item.line_level_discount_allocations != blank -%}
-                    <ul class="order-discount order-discount--title order-discount--list order-discount--cart-list" aria-label="{{ 'customer.order.discount' | t }}">
-                      {%- for discount_allocation in item.line_level_discount_allocations -%}
-                        <li class="order-discount__item">
-                          {%- include 'icon-saletag' -%}{{ discount_allocation.discount_application.title }} (-{{ discount_allocation.amount | money }})
-                        </li>
-                      {%- endfor -%}
-                    </ul>
-                  {%- endif -%}
-                </td>
-                <td data-label="{{ 'cart.label.quantity' | t }}" class="cart__table-cell--quantity">
-                  <label class="visually-hidden" for="updates_{{ item.key }}">{{ 'cart.label.quantity' | t }}</label>
-                  <input class="quantity-selector form__input js-cart-quantity-selector js-cart-quantity-selector-{{forloop.index}}" type="number" name="updates[]"
-                    id="updates_{{ item.key }}" value="{{ item.quantity }}"
-                    data-input-index="{{ forloop.index }}"
-                    {% if item.properties._custom_increment %}step="{{item.properties._custom_increment}}"{% endif %}
-                    min="{% if item.properties._custom_increment %}{{item.properties._custom_increment}}{% else %}0{% endif %}">
-                  <p class="cart__error-message cart__error-message--invalid-quantity js-invalid-quantity js-invalid-quantity-{{forloop.index}} hide">Please enter quantity that is a multiple of {{ item.properties._custom_increment }}</p>
-                </td>
-                <td id="js-line-price{{ forloop.index }}" data-line-price="{{ item.final_price | money_without_currency}}" data-label="{{ 'cart.label.total' | t }}" class="text-right cart__table-cell--line-price js-line-price">
-                  {%- if item.properties._custom_price != blank -%}
-                    {%- assign item_value = item.properties._custom_price | times: 100 | times: item.quantity -%}
-                    {%- assign subtotal = subtotal | plus: item_value -%}
-                    {{item_value | money}}
-                  {%- elsif item.original_line_price != item.final_line_price -%}
-                    <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
-                    <del>{{ item.original_line_price | money }}</del>
-                    <span class="visually-hidden">{{ 'products.product.sale_price' | t }}</span>
-                    <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_total" data-item-key="{{item.key}}" style="display:none !important;"></span>
-                    <span class="order-discount"><b>{{ item.final_line_price | money }}</b></span>
-                    {%- assign subtotal = subtotal | plus: item.final_line_price -%}
-                  {%- else -%}
-                    {%- assign final_line_price = item.final_line_price -%}
-                    {%- if item.properties._bold_bundles_price -%}
-                      <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_total" data-item-key="{{item.key}}" style="display:none !important;"></span>
-                    {%- elsif item.product.tags contains 'BYB_DISCOUNT' -%}
-                      {%- assign has_discount = false -%}
-                      {%- if item.variant.compare_at_price and item.variant.compare_at_price != item.final_price -%}
-                        {%- assign has_discount = true -%}
-                      {%- endif -%}
-                      {%- unless has_discount -%}
-                        {%- if contains_sod -%}
-                          {%- unless item.properties._bold_bundles_price -%}
-                            {%- assign discount_value = settings.byb_discount | times: item.quantity -%}
-                            {%- assign final_line_price = item.final_line_price | minus: discount_value -%}
-                          {%- endunless -%}
-                        {%- endif -%}
-                      {%- endunless -%}
-=======
                     {%- if item.line_level_discount_allocations != blank -%}
                       <ul class="order-discount order-discount--title order-discount--list order-discount--cart-list" aria-label="{{ 'customer.order.discount' | t }}">
                         {%- for discount_allocation in item.line_level_discount_allocations -%}
@@ -539,7 +467,6 @@
                           </li>
                         {%- endfor -%}
                       </ul>
->>>>>>> 3658004 (Add responsiveness to recommended section)
                     {%- endif -%}
                   </td>
                   <td data-label="{{ 'cart.label.quantity' | t }}" class="cart__table-cell--quantity">
