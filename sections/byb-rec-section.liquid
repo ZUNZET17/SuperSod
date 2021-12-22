@@ -1,4 +1,17 @@
 {% assign bigYellowBag = all_products['copy-of-soil-bulk-compost-br-delivered']%}
+{% assign miniCube = all_products['soil3-mini-cube']%}
+{% assign totalSod = 0 %}
+{% assign recommendedProduct = "" %}
+{% for item in cart.items %}
+  {% if item.product.type == 'Sod' %}
+    {% assign totalSod = totalSod | plus: item.quantity %}
+  {% endif %}
+{% endfor %}
+{% if totalSod > 500 %}
+  {% assign recommendedProduct = bigYellowBag %}
+{% else %}
+  {% assign recommendedProduct = miniCube %}
+{% endif %}
   <h2 class="byb-rec-section-title-sm">
     {{ section.settings.title }}
   </h2>
@@ -6,11 +19,12 @@
     <h2 class="byb-rec-section-title">
       {{ section.settings.title }}
     </h2>
-    <img src="{{ bigYellowBag | img_url: 'medium' }}" alt="{{ bigYellowBag.title }}" class="byb-rec-section__picture">
+    <span> {{ Sod }} </span> 
+    <img src="{{ recommendedProduct | img_url: 'medium' }}" alt="{{ recommendedProduct.title }}" class="byb-rec-section__picture">
     <div class="byb-rec-section__description">
-      <div class="description__prod-title">{{ bigYellowBag.title }}</div>
-      <span class="description__prod-price"><strike>{{ bigYellowBag.compare_at_price | money_with_currency }}</strike></span>
-      <span class="description__prod-price-compare">{{ bigYellowBag.price | money_with_currency }}</span>
+      <div class="description__prod-title">{{ recommendedProduct.title }}</div>
+      <span class="description__prod-price"><strike>{{ recommendedProduct.compare_at_price | money_with_currency }}</strike></span>
+      <span class="description__prod-price-compare">{{ recommendedProduct.price | money_with_currency }}</span>
       <div class="description-text">
         {{ section.settings.description }}
       </div>
@@ -18,7 +32,9 @@
         <span class="description-qty__text">Quantity</span>
         <input type="number" class="description-qty__input form__input form__input--quantity js-byb-quantity" value="1">
       </div>
-      <button data-id="{{ bigYellowBag.selected_or_first_available_variant.id }}" class="js-byb-add-to-cart byb-add-to-cart button button--primary button--outlined">
+      <input type="number" value="" class="hide totalSquareFeet">
+      <iput class="hide js-minicube" value="{{ all_products["soil3-mini-cube"].id }}"></iput>
+      <button data-id="{{ recommendedProduct.selected_or_first_available_variant.id }}" class="js-byb-add-to-cart byb-add-to-cart button button--primary button--outlined">
         ADD TO ORDER
       </button>
     </div>
