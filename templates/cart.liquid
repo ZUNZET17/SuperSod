@@ -202,46 +202,6 @@
     {% if cart.item_count > 0 %}
       <h1 class="h2 cart-title">{{ 'cart.general.title' | t }}</h1>
       <form action="{{ routes.cart_url }}" method="post" novalidate class="cart form js-cart-form">
-<<<<<<< HEAD
-
-        <table class="cart-table responsive-table table--no-border {% if isThereSod == true %} js-cart-table" {% endif %}>
-          <h2 class="sr-only">{{ 'cart.cart_summary.products_header' | t }}</h2>
-          <thead class="cart__row cart__header-labels small--hide">
-            <th class="text-left cart__table-cell--image">{{ 'cart.label.product' | t }}</th>
-            <th class="text-center cart__table-cell--meta"></th>
-            <th class="text-right cart__table-cell--price">{{ 'cart.label.price' | t }}</th>
-            <th class="text-center cart__table-cell--quantity">{{ 'cart.label.quantity' | t }}</th>
-            <th class="text-right cart__table-cell--line-price">{{ 'cart.label.total' | t }}</th>
-          </thead>
-          <tbody>
-            {%- assign subtotal = 0 -%}
-            {%- assign variant_title = '' -%}
-            {%- assign is_lawn_planted = false -%}
-            {%- assign is_lawn_answer = 'no' -%}
-            {% for item in cart.items %}
-              {%- if item.properties._lawn_planted != blank -%}
-                {%- assign is_lawn_planted = true -%}
-                {%- assign is_lawn_answer = item.properties._lawn_planted -%}
-              {%- endif -%}
-              <tr class="cart__row responsive-table__row js-line-item-row{{ forloop.index }}">
-                <td class="cart__table-cell--image small--text-center">
-                  {% unless item.image == blank %}
-                    {%- assign img_url = item.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
-                    {%- capture wrapper_id -%}CartImageWrapper--{{ item.image.id }}{%- endcapture -%}
-                    {%- capture img_id -%}CartImage--{{ item.image.id }}{%- endcapture -%}
-                    {% include 'image-style' with image: item.image, width: 720, height: 600, small_style: false, wrapper_id: wrapper_id, img_id: img_id %}
-                    <div id="{{ wrapper_id }}" class="cart__image-wrapper supports-js">
-                      <a class="cart__image-container" href="{{ item.url | within: collections.all }}" style="padding-top:{{ 1 | divided_by: item.image.aspect_ratio | times: 100}}%;">
-                        <img id="{{ img_id }}"
-                             class="cart__image lazyload"
-                             src="{{ item.image | img_url: '100x100' }}"
-                             data-src="{{ img_url }}"
-                             data-widths="[180, 230, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
-                             data-aspectratio="{{ item.image.aspect_ratio }}"
-                             data-sizes="auto"
-                             alt="{{ item.title | escape }}"
-                             itemprop="image">
-=======
         <div class="cart-content">
           <table class="cart-table responsive-table table--no-border {% if isThereSod == true %} js-cart-table" {% endif %}>
             <h2 class="sr-only">{{ 'cart.cart_summary.products_header' | t }}</h2>
@@ -285,7 +245,6 @@
                     {% else %}
                       <a class="supports-js" href="{{ item.url | within: collections.all }}">
                         <img src="{{ item | img_url: 'grande' }}" alt="{{ item.title | escape }}">
->>>>>>> 3658004 (Add responsiveness to recommended section)
                       </a>
                     {% endunless %}
 
@@ -347,66 +306,18 @@
                         {%- assign is_removable = true -%}
                       {%- endif -%}
                     {%- endif -%}
-                    {%- if item.properties._bold_bundle_price_rules_external_id != blank and fulfillment_method == 'pickup' -%}
-                      {%- unless variant_title contains 'delivery' -%}
-                        <small class="cart__policies">{{ 'layout.product.pickup' | t }}:</small>
-                      {%- endunless -%}
+                    {%- if is_removable == true -%}
+                      <span class="hide js-remove-bundle-from-cart">{{item.id}}</span>
                     {%- endif -%}
-                    {% if item.properties._method == 'pickup' %}
-                      <small class="cart__policies">{{ 'layout.product.pickup' | t }}: {{ item.properties.pickup_location }}</small>
-                    {%- elsif variant_title contains 'delivery' -%}{% elsif item.properties._method == blank and fulfillment_method == 'pickup' %}
-                      <small class="cart__policies">{{ pickup_address }}</small>
-                    {% endif %}
-                  </p>
-                  {%- assign is_removable = false -%}
-                  {%- if item.product.tags contains 'only-bundle' -%}
-                    {%- if item.properties._bold_bundles_price == blank -%}
-                      {%- assign is_removable = true -%}
-                    {%- endif -%}
-                  {%- elsif item.properties._added_from_bundle != blank -%}
-                    {%- if item.properties._bold_bundles_price == blank -%}
-                      {%- assign is_removable = true -%}
-                    {%- endif -%}
-                  {%- endif -%}
-                  {%- if is_removable == true -%}
-                    <span class="hide js-remove-bundle-from-cart">{{item.id}}</span>
-                  {%- endif -%}
-                  <p class="txt--minor">
-                    <a href="{{ routes.cart_change_url }}?line={{ forloop.index }}&amp;quantity=0" class="cart__remove hide js-remove-link">{{ 'cart.general.remove' | t }}</a>
-                    <noscript>
-                      <a href="{{ routes.cart_change_url }}?line={{ forloop.index }}&amp;quantity=0" class="cart__remove">{{ 'cart.general.remove' | t }}</a>
-                    </noscript>
-                  </p>
-                </td>
-                <td class="cart__table-cell--price medium-up--text-right" data-label="{{ 'cart.label.price' | t }}">
-                  {%- if item.properties._custom_price != blank -%}
-                    {%- assign has_custom_pricing = true -%}
-                    {%- assign item_value = item.properties._custom_price | times: 100 -%}
-                    <span class="js-item-price-{{forloop.index}}">{{item_value | money}}</span>
-                    <input type="hidden" name="custom_values" class="js-item-custom-price" data-index="{{forloop.index}}" data-units="{{item.quantity}}" value="{{item.properties._custom_price}}">
-                  {%- elsif item.original_price != item.final_price -%}
-                    <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
-                    <del>{{ item.original_price | money }}</del>
-                    <span class="visually-hidden">{{ 'products.product.sale_price' | t }}</span>
-                    <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_price" data-item-key="{{item.key}}" style="display:none !important;"></span>
-                    {%- if item.properties._bold_bundles_price -%}
-                      {%- assign has_custom_pricing = true -%}
-                      <span class="js-item-price-{{forloop.index}}">{{ item.original_price | money }}</span><br>
-                    {%- endif -%}
-                    <{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %} >{{ item.final_price | money }}</{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %}>
-                  {%- elsif item.variant.compare_at_price and item.variant.compare_at_price != item.final_price -%}
-                    <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
-                    <del>{{ item.variant.compare_at_price | money }}</del>
-                    <span class="visually-hidden">{{ 'products.product.sale_price' | t }}</span>
-                    <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_price" data-item-key="{{item.key}}" style="display:none !important;"></span>
-                    {%- if item.properties._bold_bundles_price -%}
-                      {%- assign has_custom_pricing = true -%}
-                      <span class="js-item-price-{{forloop.index}}">{{ item.original_price | money }}</span><br>
-                    {%- endif -%}
-                    <{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %} >{{ item.final_price | money }}</{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %}>
-                  {%- else -%}
-                    {%- assign tag_name = 'span' -%}
-                    {%- if item.properties._bold_bundles_price -%}
+                    <p class="txt--minor">
+                      <a href="{{ routes.cart_change_url }}?line={{ forloop.index }}&amp;quantity=0" class="cart__remove hide js-remove-link">{{ 'cart.general.remove' | t }}</a>
+                      <noscript>
+                        <a href="{{ routes.cart_change_url }}?line={{ forloop.index }}&amp;quantity=0" class="cart__remove">{{ 'cart.general.remove' | t }}</a>
+                      </noscript>
+                    </p>
+                  </td>
+                  <td class="cart__table-cell--price medium-up--text-right" data-label="{{ 'cart.label.price' | t }}">
+                    {%- if item.properties._custom_price != blank -%}
                       {%- assign has_custom_pricing = true -%}
                       {%- assign item_value = item.properties._custom_price | times: 100 -%}
                       <span class="js-item-price-{{forloop.index}}">{{item_value | money}}</span>
@@ -525,7 +436,7 @@
           {% if isThereSod == true %}
             {% section 'byb-rec-section' %}
           {% endif %}
-  {% comment %} END-311 {% endcomment %}
+  {% comment %} END 311 {% endcomment %}
         </div>
 
         {%- if fulfillment_method == '' and has_custom_pricing == true -%}
@@ -828,17 +739,6 @@
     </div>
   </section>
 {%- endif -%}
-<a href="#validation-modal" class="hide js-open-validation-modal">Show soil3 modal</a>
-<section id="validation-modal" class="soil3-modal validation-modal mfp-hide">
-  <h2 class="soil3-modal__title text-center"></h2>
-  <div class="text-center">
-    <h3 class="soil3-modal__message invalid-subscription">{{ 'cart.error_validation.message' | t }}</h3>
-  </div>
-    <div class="text-center">
-      <button type="button" class="btn return-to-cart">{{ 'cart.error_validation.return' | t }}</button>
-    </div>
-  </div>
-</section>
 {%- if cart.item_count > 0 -%}
   <script>
     const isLawnPlanted = {{ is_lawn_planted }};
@@ -890,6 +790,5 @@
         product_type: {{product_type | json}}, product_id: {{item.product.id}},
         product_name: '{{item.product.title}}', product_image: '{{item.image | img_url: "100x100"}}'
       }{%- unless forloop.last -%},{%- endunless -%}{% endfor %}];
-
   </script>
 {%- endif -%}
