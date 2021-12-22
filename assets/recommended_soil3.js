@@ -15,9 +15,9 @@ const addRecommended = function (ev) {
       }
     ]
   })
-  setTimeout(function() {
-    location.reload()
-  }, 1000)
+   setTimeout(function() {
+     location.reload()
+   }, 1000)
 
 }
 

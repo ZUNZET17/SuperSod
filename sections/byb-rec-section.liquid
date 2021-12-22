@@ -2,15 +2,25 @@
 {% assign miniCube = all_products['soil3-mini-cube']%}
 {% assign totalSod = 0 %}
 {% assign recommendedProduct = "" %}
+{% assign description = "" %}
+{% assign deliveryMethod = "" %}
+{% assign variantBasedOnDeliveryMethod = "" %}
+
 {% for item in cart.items %}
   {% if item.product.type == 'Sod' %}
     {% assign totalSod = totalSod | plus: item.quantity %}
+    {% assign deliveryMethod = item.properties.delivery_method %}
   {% endif %}
 {% endfor %}
-{% if totalSod > 500 %}
+{% if totalSod >= 500 %}
   {% assign recommendedProduct = bigYellowBag %}
 {% else %}
   {% assign recommendedProduct = miniCube %}
+{% endif %}
+{% if deliveryMethod == 'pickup' %}
+  {% assign variantBasedOnDeliveryMethod = 0 %}
+{% else %}
+  {% assign variantBasedOnDeliveryMethod = 1 %}
 {% endif %}
   <h2 class="byb-rec-section-title-sm">
     {{ section.settings.title }}
@@ -23,9 +33,14 @@
     <img src="{{ recommendedProduct | img_url: 'medium' }}" alt="{{ recommendedProduct.title }}" class="byb-rec-section__picture">
     <div class="byb-rec-section__description">
       <div class="description__prod-title">{{ recommendedProduct.title }}</div>
-      <span class="description__prod-price"><strike>{{ recommendedProduct.compare_at_price | money_with_currency }}</strike></span>
-      <span class="description__prod-price-compare">{{ recommendedProduct.price | money_with_currency }}</span>
+      <span class="description__prod-price-compare"><strike>{{ recommendedProduct.compare_at_price | money_with_currency }}</strike></span>
+      <span class="description__prod-price">{{ recommendedProduct.price | money_with_currency }}</span>
       <div class="description-text">
+        {% if totalSod >= 500 %}
+          {{ section.settings.description-BigYellowBag }}
+        {% else %}
+          {{ section.settings.description-minicube }}
+        {% endif %}
         {{ section.settings.description }}
       </div>
       <div class="description-qty">
@@ -34,7 +49,7 @@
       </div>
       <input type="number" value="" class="hide totalSquareFeet">
       <iput class="hide js-minicube" value="{{ all_products["soil3-mini-cube"].id }}"></iput>
-      <button data-id="{{ recommendedProduct.selected_or_first_available_variant.id }}" class="js-byb-add-to-cart byb-add-to-cart button button--primary button--outlined">
+      <button data-id="{{ recommendedProduct.variants[variantBasedOnDeliveryMethod].id }}" class="js-byb-add-to-cart byb-add-to-cart button button--primary button--outlined">
         ADD TO ORDER
       </button>
     </div>
@@ -52,12 +67,18 @@
     "label": "title",
     "default": "RECOMMENDED"
   },
-    {
-      "type": "text",
-      "id": "description",
-      "label": "Description",
-      "default": "We recommend 1 BigYellowBag for every 500-1000 sqft of Sod"
-    }
+  {
+    "type": "text",
+    "id": "description-BigYellowBag",
+    "label": "Description",
+    "default": "We recommend 1 BigYellowBag for every 500-1000 sqft of Sod"
+  },
+  {
+    "type": "text",
+    "id": "description-minicube",
+    "label": "Description",
+    "default": "We recommend 1 Mini Cube for every 40 sq. ft. of Sod."
+  }
   ],
   "presets": [
     {
