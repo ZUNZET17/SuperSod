@@ -790,7 +790,6 @@ const Cart = (function () {
     const btn = ev.target;
     const removeLink = btn.getAttribute('href');
     let lineIndex = btn.getAttribute('data-index');
-    console.log(removeLink);
     let recommendedProductId = $('.js-byb-add-to-cart').data('id');
     let currentLineItemSodQty = document.querySelector('.js-cart-quantity-selector-' + lineIndex).value;
     let totalSod = document.querySelector('.js-totalSod').value;
