@@ -15,12 +15,14 @@ const addRecommended = function (ev) {
       }
     ]
   })
+  window.localStorage.setItem('recommendedProduct', recommendedProductId);
+  
    setTimeout(function() {
      location.reload()
    }, 1000)
 
 }
-/**asd */
+
 $(document).on('click', '.js-byb-add-to-cart', addRecommended);
 
 

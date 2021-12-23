@@ -4,7 +4,7 @@
 {% assign recommendedProduct = "" %}
 {% assign description = "" %}
 {% assign deliveryMethod = "" %}
-{% assign variantBasedOnDeliveryMethod = "" %}
+{% assign variantBasedOnDeliveryMethod = null %}
 
 {% for item in cart.items %}
   {% if item.product.type == 'Sod' %}
@@ -12,16 +12,19 @@
     {% assign deliveryMethod = item.properties.delivery_method %}
   {% endif %}
 {% endfor %}
+
 {% if totalSod >= 500 %}
   {% assign recommendedProduct = bigYellowBag %}
 {% else %}
   {% assign recommendedProduct = miniCube %}
 {% endif %}
+
 {% if deliveryMethod == 'pickup' %}
-  {% assign variantBasedOnDeliveryMethod = 0 %}
-{% else %}
   {% assign variantBasedOnDeliveryMethod = 1 %}
+{% else %}
+  {% assign variantBasedOnDeliveryMethod = 0 %}
 {% endif %}
+
   <h2 class="byb-rec-section-title-sm">
     {{ section.settings.title }}
   </h2>

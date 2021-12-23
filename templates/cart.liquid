@@ -194,7 +194,7 @@
   {% assign isThereSod = true %}
 {% endif %}
 {% if isThereSod == true %} {{ 'byb-rec-section.css' | asset_url | stylesheet_tag }} {% endif %}
-<inpu class="js-totalSod hiden" value="{{ totalSod }}"></inpu>
+<input class="js-totalSod hide" value="{{ totalSod }}"></input>
 {% comment %} END 311 {% endcomment %}
 
 <div class="grid">
@@ -309,7 +309,7 @@
                     <span class="hide js-remove-bundle-from-cart">{{item.id}}</span>
                   {%- endif -%}
                   <p class="txt--minor">
-                    <a href="{{ routes.cart_change_url }}?line={{ forloop.index }}&amp;quantity=0" class="cart__remove hide js-remove-link">{{ 'cart.general.remove' | t }}</a>
+                    <a href="{{ routes.cart_change_url }}?line={{ forloop.index }}&amp;quantity=0" class="cart__remove hide js-remove-link" data-line-id="{{ item.id }}" data-index="{{ forloop.index }}">{{ 'cart.general.remove' | t }}</a>
                     <noscript>
                       <a href="{{ routes.cart_change_url }}?line={{ forloop.index }}&amp;quantity=0" class="cart__remove">{{ 'cart.general.remove' | t }}</a>
                     </noscript>
