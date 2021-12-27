@@ -419,9 +419,9 @@ const Cart = (function () {
     let input = ev.target;
     let stepQuantity = parseFloat( input.getAttribute('step') );
     let newQuantity = parseFloat(input.value);
-    const regex = /(\d*\,)*(\d*\.)*\d{2,}/g;
     let index = input.dataset.inputIndex;
-    let price = parseFloat($('.js-item-price-' + index).text().match(regex)[0]);
+    let price = Utils.formatMoneyWithPrecision( parseInt(document.querySelector('.js-item-price-' + index).getAttribute('value')) ).split('$')[1];
+    console.log(price)
     let linePrice = document.querySelector('#js-line-price' + index);   
     let linePriceTotal = Utils.formatMoneyWithPrecision(( newQuantity * price ).toFixed(2));
     let dataItemPrice = newQuantity * price;

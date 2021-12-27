@@ -16,14 +16,23 @@ const addRecommended = function (ev) {
     ]
   })
   window.localStorage.setItem('recommendedProduct', recommendedProductId);
-  
+
    setTimeout(function() {
-     location.reload()
+     location.reload();
    }, 1000)
 
 }
 
-$(document).on('click', '.js-byb-add-to-cart', addRecommended);
+const updateRecommendedProductPrice = function (ev) {
+  const input = ev.target;
+  const qty = input.value;
+  const price = parseInt( document.querySelector('.js-recommended-product-price').getAttribute('value') );
+  let total = price * qty;
+
+  $('.js-recommended-product-price').text(Utils.formatMoneyWithPrecision(total) + ' USD');
+}
+
+$(document).on('click', '.js-byb-add-to-cart', addRecommended).on('change keyup input', '.js-byb-quantity', updateRecommendedProductPrice);
 
 
 
