@@ -319,7 +319,7 @@
                   {%- if item.properties._custom_price != blank -%}
                     {%- assign has_custom_pricing = true -%}
                     {%- assign item_value = item.properties._custom_price | times: 100 -%}
-                    <span class="js-item-price-{{forloop.index}}" value="{{ iten_value }}">{{item_value | money}}</span>
+                    <span class="js-item-price-{{forloop.index}}" value="{{ item_value }}">{{item_value | money}}</span>
                     <input type="hidden" name="custom_values" class="js-item-custom-price" data-index="{{forloop.index}}" data-units="{{item.quantity}}" value="{{item.properties._custom_price}}">
                   {%- elsif item.original_price != item.final_price -%}
                     <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>

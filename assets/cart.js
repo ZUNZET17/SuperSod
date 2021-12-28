@@ -421,13 +421,15 @@ const Cart = (function () {
     let newQuantity = parseFloat(input.value);
     let index = input.dataset.inputIndex;
     let price = Utils.formatMoneyWithPrecision( parseInt(document.querySelector('.js-item-price-' + index).getAttribute('value')) ).split('$')[1];
-    console.log(price)
     let linePrice = document.querySelector('#js-line-price' + index);   
     let linePriceTotal = Utils.formatMoneyWithPrecision(( newQuantity * price ).toFixed(2));
     let dataItemPrice = newQuantity * price;
     let linePrices = [...$('.js-line-price')].map(x => parseFloat(x.dataset.linePrice));
     let subTotal = Utils.formatMoneyWithPrecision(linePrices.reduce((a, b) => a + b).toFixed(2));
- 
+    
+    document.querySelector('.js-submit-button').removeAttribute('disabled');
+    console.log($('.js-submit-button'))
+
     if ( newQuantity % stepQuantity == 0 && input.hasAttribute('step') ) {
       linePrice.setAttribute('data-line-price', dataItemPrice );
       linePrice.innerHTML = linePriceTotal;
@@ -462,7 +464,7 @@ const Cart = (function () {
       ) {
         const unitPrice = Utils.formatMoneyWithPrecision(
           element.properties._custom_price * 100,
-          3
+          2
         );
         $('.js-item-price-' + (i+1)).html(unitPrice);
       }
@@ -569,7 +571,7 @@ const Cart = (function () {
 
     const button = $('.js-submit-button');
     const originalText = button.html();
-
+    
     button.html('Checking ...');
 
     const form = ev.target;
@@ -584,6 +586,7 @@ const Cart = (function () {
     const phoneNumber = (document.querySelector('.js-phone').value).trim().replace(/\s{2,}/g, ' ');
 
     if (regexPhoneNumber(phoneNumber) === false ) {
+      button.html(originalText);
       document.querySelector('.js-phone').focus();
       if (phoneNumber === '' ) {
         phoneMessage.removeClass('hide');
@@ -796,25 +799,28 @@ const Cart = (function () {
     let currentTotalSod = totalSod - currentLineItemSodQty;
     let lineId = parseInt(btn.getAttribute('data-line-id'));
 
-    if ( currentTotalSod <= 0 && $('.js-byb-add-to-cart') ) {
-      const data = { updates: {
-          [recommendedProductId]: 0,
-          [lineId]: 0
+    if ( totalSod > 0 ) {
+      if ( currentTotalSod <= 0 && $('.js-byb-add-to-cart') ) {
+        const data = { updates: {
+            [recommendedProductId]: 0,
+            [lineId]: 0
+          }
         }
+        console.log(data);
+        jQuery.ajax({
+          type: 'POST',
+          url: '/cart/update.js',
+          data: data,
+          dataType: 'json',
+          success: function() { 
+            location.reload();
+          }
+        });
       }
-      console.log(data);
-      jQuery.ajax({
-        type: 'POST',
-        url: '/cart/update.js',
-        data: data,
-        dataType: 'json',
-        success: function() { 
-          location.reload();
-        }
-      });
-    } else {
+    }  else {
       window.location.href = removeLink;
     }
+
   }
 
   const init = function () {
