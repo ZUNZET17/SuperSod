@@ -427,8 +427,9 @@ const Cart = (function () {
     let linePrices = [...$('.js-line-price')].map(x => parseFloat(x.dataset.linePrice));
     let subTotal = Utils.formatMoneyWithPrecision(linePrices.reduce((a, b) => a + b).toFixed(2));
     
-    document.querySelector('.js-submit-button').removeAttribute('disabled');
-    console.log($('.js-submit-button'))
+    if ( document.querySelector('.js-submit-button') ) {
+      document.querySelector('.js-submit-button').removeAttribute('disabled');
+    }
 
     if ( newQuantity % stepQuantity == 0 && input.hasAttribute('step') ) {
       linePrice.setAttribute('data-line-price', dataItemPrice );
@@ -806,7 +807,6 @@ const Cart = (function () {
             [lineId]: 0
           }
         }
-        console.log(data);
         jQuery.ajax({
           type: 'POST',
           url: '/cart/update.js',
