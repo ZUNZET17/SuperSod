@@ -330,7 +330,7 @@
                       {%- assign has_custom_pricing = true -%}
                       <span class="js-item-price-{{forloop.index}}" value="{{ item.original_price }}">{{ item.original_price | money }}</span><br>
                     {%- endif -%}
-                    <{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %} >{{ item.final_price | money }}</{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %}>
+                    <{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %} class="js-item-price-{{forloop.index}}" value="{{ item.final_price }}">{{ item.final_price | money }}</{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %}>
                   {%- elsif item.variant.compare_at_price and item.variant.compare_at_price != item.final_price -%}
                     <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
                     <del>{{ item.variant.compare_at_price | money }}</del>
@@ -340,7 +340,7 @@
                       {%- assign has_custom_pricing = true -%}
                       <span class="js-item-price-{{forloop.index}}" value="{{ item.original_price }}">{{ item.original_price | money }}</span><br>
                     {%- endif -%}
-                    <{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %} >{{ item.final_price | money }}</{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %}>
+                    <{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %} class="js-item-price-{{forloop.index}}" value="{{ item.final_price }}">{{ item.final_price | money }}</{% if item.properties._bold_bundles_price %}del{% else %}span{% endif %}>
                   {%- else -%}
                     {%- assign tag_name = 'span' -%}
                     {%- if item.properties._bold_bundles_price -%}
