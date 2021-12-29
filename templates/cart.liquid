@@ -309,7 +309,7 @@
                     <span class="hide js-remove-bundle-from-cart">{{item.id}}</span>
                   {%- endif -%}
                   <p class="txt--minor">
-                    <a href="{{ routes.cart_change_url }}?line={{ forloop.index }}&amp;quantity=0" class="cart__remove hide js-remove-link" data-line-id="{{ item.id }}" data-index="{{ forloop.index }}" {% if item.product.type == 'Sod'%}type="Sod"{% endif %}>{{ 'cart.general.remove' | t }}</a>
+                    <a href="{{ routes.cart_change_url }}?line={{ forloop.index }}&amp;quantity=0" class="cart__remove hide js-remove-link" data-line-id="{{ item.id }}" data-index="{{ forloop.index }}">{{ 'cart.general.remove' | t }}</a>
                     <noscript>
                       <a href="{{ routes.cart_change_url }}?line={{ forloop.index }}&amp;quantity=0" class="cart__remove">{{ 'cart.general.remove' | t }}</a>
                     </noscript>
