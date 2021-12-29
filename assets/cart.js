@@ -419,15 +419,18 @@ const Cart = (function () {
     let input = ev.target;
     let stepQuantity = parseFloat( input.getAttribute('step') );
     let newQuantity = parseFloat(input.value);
-    const regex = /(\d*\,)*(\d*\.)*\d{2,}/g;
     let index = input.dataset.inputIndex;
-    let price = parseFloat($('.js-item-price-' + index).text().match(regex)[0]);
+    let price = Utils.formatMoneyWithPrecision( parseInt(document.querySelector('.js-item-price-' + index).getAttribute('value')) ).split('$')[1];
     let linePrice = document.querySelector('#js-line-price' + index);   
     let linePriceTotal = Utils.formatMoneyWithPrecision(( newQuantity * price ).toFixed(2));
     let dataItemPrice = newQuantity * price;
     let linePrices = [...$('.js-line-price')].map(x => parseFloat(x.dataset.linePrice));
     let subTotal = Utils.formatMoneyWithPrecision(linePrices.reduce((a, b) => a + b).toFixed(2));
- 
+    
+    if ( document.querySelector('.js-submit-button') ) {
+      document.querySelector('.js-submit-button').removeAttribute('disabled');
+    }
+
     if ( newQuantity % stepQuantity == 0 && input.hasAttribute('step') ) {
       linePrice.setAttribute('data-line-price', dataItemPrice );
       linePrice.innerHTML = linePriceTotal;
@@ -462,7 +465,7 @@ const Cart = (function () {
       ) {
         const unitPrice = Utils.formatMoneyWithPrecision(
           element.properties._custom_price * 100,
-          3
+          2
         );
         $('.js-item-price-' + (i+1)).html(unitPrice);
       }
@@ -569,7 +572,7 @@ const Cart = (function () {
 
     const button = $('.js-submit-button');
     const originalText = button.html();
-
+    
     button.html('Checking ...');
 
     const form = ev.target;
@@ -584,6 +587,7 @@ const Cart = (function () {
     const phoneNumber = (document.querySelector('.js-phone').value).trim().replace(/\s{2,}/g, ' ');
 
     if (regexPhoneNumber(phoneNumber) === false ) {
+      button.html(originalText);
       document.querySelector('.js-phone').focus();
       if (phoneNumber === '' ) {
         phoneMessage.removeClass('hide');
@@ -785,12 +789,45 @@ const Cart = (function () {
     Utils.addToCartParameters('delivery_method', deliveryMethod);
   };
 
+  const checkForSod = function(ev) {
+    ev.preventDefault();
+    const btn = ev.target;
+    const removeLink = btn.getAttribute('href');
+    let lineIndex = btn.getAttribute('data-index');
+    let recommendedProductId = $('.js-byb-add-to-cart').data('id');
+    let currentLineItemSodQty = document.querySelector('.js-cart-quantity-selector-' + lineIndex).value;
+    let totalSod = document.querySelector('.js-totalSod').value;
+    let currentTotalSod = totalSod - currentLineItemSodQty;
+    let lineId = parseInt(btn.getAttribute('data-line-id'));
+
+    if ( totalSod > 0 ) {
+      if ( currentTotalSod <= 0 && $('.js-byb-add-to-cart') ) {
+        const data = { updates: {
+            [recommendedProductId]: 0,
+            [lineId]: 0
+          }
+        }
+        jQuery.ajax({
+          type: 'POST',
+          url: '/cart/update.js',
+          data: data,
+          dataType: 'json',
+          success: function() { 
+            location.reload();
+          }
+        });
+      }
+    }  else {
+      window.location.href = removeLink;
+    }
+
+  }
+
   const init = function () {
     setEvents();
     showFixedPrices();
     showRemoveLinks();
     validationItems();
-
     if (
       typeof cartDeliveryAttribute !== 'undefined' &&
       cartDeliveryAttribute !== '' &&
@@ -807,7 +844,8 @@ const Cart = (function () {
       .on('click', '.js-go-to-checkout', validateCheckout)
       .on('change keyup input', '.js-cart-quantity-selector', highlightUpdateButton)     
       .on('change keyup input', '.js-cart-quantity-selector', updateTotals)
-      .on('submit', '.js-cart-form', interceptCartSubmit);
+      .on('submit', '.js-cart-form', interceptCartSubmit)
+      .on('click', '.js-remove-link', checkForSod)
     for (let index = 0; index < 3; index++) {
       const fieldSelector = '.js-tail-datetime-field-' + (index + 1);
       $(document).on('click', fieldSelector, function () {

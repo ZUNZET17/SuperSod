@@ -310,6 +310,7 @@
     <script src="{{ 'zebra_datepicker.min.js' | asset_url }}" defer></script>
     <script src="{{ 'jquery.magnific-popup.min.js' | asset_url }}" defer></script>
     <script src="{{ 'cart.js' | asset_url }}" defer crossorigin></script>
+    <script src="{{ 'recommended_soil3.js' | asset_url }}" defer></script>
   {%- endif -%}
 
   {%- if template.name == 'product' -%}
@@ -345,5 +346,6 @@
   {% if settings.ss_enable %}
   	{% render 'ss-intellisuggest' %}
   {% endif %}
+  
 </body>
 </html>
