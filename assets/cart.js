@@ -793,10 +793,6 @@ const Cart = (function () {
     ev.preventDefault();
     const btn = ev.target;
     const removeLink = btn.getAttribute('href');
-    let lineItemType = "";
-    if ( btn.hasAttribute('type') ) {
-      lineItemType = btn.getAttribute('type');
-    }
     let lineIndex = btn.getAttribute('data-index');
     let recommendedProductId = $('.js-byb-add-to-cart').data('id');
     let currentLineItemSodQty = document.querySelector('.js-cart-quantity-selector-' + lineIndex).value;
@@ -804,8 +800,7 @@ const Cart = (function () {
     let currentTotalSod = totalSod - currentLineItemSodQty;
     let lineId = parseInt(btn.getAttribute('data-line-id'));
 
-    if ( totalSod > 0 && lineItemType == 'Sod' ) {
-      console.log('entered if')
+    if ( totalSod > 0 ) {
       if ( currentTotalSod <= 0 && $('.js-byb-add-to-cart') ) {
         const data = { updates: {
             [recommendedProductId]: 0,
