@@ -1308,11 +1308,12 @@ const Product = (function () {
                   $('.js-minimum-quantity-alert').removeClass('hide')
                   $('.js-minimum-quantity-alert-value').text(selectedMinimumQuantity);
                   document.getElementById('pickup-uantity').value = selectedMinimumQuantity;
+                  $('.js-product-quantity').attr('value', selectedMinimumQuantity);
                   $('.js-product-pickup-variants option:selected').attr('data-priceranges', JSON.stringify(pricesArray));
 
                   const pickupQuantity = parseInt( document.getElementById('pickup-uantity').value );
                   const priceRanges =  JSON.parse( $('.js-product-pickup-variants option:selected').attr('data-priceranges') );
-                  const unitPrice = pricesArray.filter( priceRange => priceRange.min < parseInt(pickupQuantity) && priceRange.max > parseInt(pickupQuantity) )[0].unit_price;
+                  const unitPrice = pricesArray.filter( priceRange => priceRange.min <= parseInt(pickupQuantity) && priceRange.max >= parseInt(pickupQuantity) )[0].unit_price;
                   const totalPrice = unitPrice * pickupQuantity;
 
                   showProductPricing({
