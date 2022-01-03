@@ -1,11 +1,11 @@
-{% assign bigYellowBag = all_products[section.settings.soil3_product_500_more]%}
-{% assign miniCube = all_products[section.settings.soil3_product_500_less]%}
+{% assign recommended500plus = section.settings.soil3_product_500_more%}
+{% assign recommended500less = section.settings.soil3_product_500_less%}
 {% assign totalSod = 0 %}
 {% assign recommendedProduct = "" %}
 {% assign description = "" %}
 {% assign deliveryMethod = "" %}
 {% assign variantBasedOnDeliveryMethod = null %}
-
+{% comment %} nice {% endcomment %}
 {% for item in cart.items %}
   {% if item.product.type == 'Sod' %}
     {% assign totalSod = totalSod | plus: item.quantity %}
@@ -14,15 +14,15 @@
 {% endfor %}
 
 {% if totalSod >= 500 %}
-  {% assign recommendedProduct = bigYellowBag %}
+  {% assign recommendedProduct = recommended500plus %}
 {% else %}
-  {% assign recommendedProduct = miniCube %}
+  {% assign recommendedProduct = recommended500less %}
 {% endif %}
 
-{% if deliveryMethod == 'pickup' %}
-  {% assign variantBasedOnDeliveryMethod = 1 %}
-{% else %}
+{% if deliveryMethod == 'delivery' %}
   {% assign variantBasedOnDeliveryMethod = 0 %}
+{% else %}
+  {% assign variantBasedOnDeliveryMethod = 1 %}
 {% endif %}
 
   <h2 class="byb-rec-section-title-sm">

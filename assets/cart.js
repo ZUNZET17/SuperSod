@@ -443,6 +443,8 @@ const Cart = (function () {
    linePrice.setAttribute('value', dataLinePrice );
    let linePrices = [...$('.js-line-price')].map(x => parseFloat( x.getAttribute('value') ) );
    let subTotal = linePrices.reduce((a, b) => a + b);
+   console.log(stepQuantity)
+
    if ( document.querySelector('.js-submit-button') ) {
      document.querySelector('.js-submit-button').removeAttribute('disabled');
    }
@@ -849,8 +851,9 @@ const Cart = (function () {
       }
     }  else {
       window.location.href = removeLink;
+      return;
     }
-
+    window.location.href = removeLink;
   }
 
   const init = function () {
