@@ -287,20 +287,9 @@ const Cart = (function () {
       e.preventDefault();
     }
 
-    if (document.querySelector('.js-open-soil3-modal')) {
-      button.html(originalText);
-      showSoil3Modal(function () {
-        sendOrderData(settings);
-      });
-    } else {
-      sendOrderData(settings);
-    }
-  };
+    sendOrderData(settings);
 
-  const showSoil3Modal = function (callback) {
-    $('.js-open-soil3-modal').trigger('click');
-    $('.js-soil3-continue-to-checkout').on('click', callback);
-  }
+  };
 
   const processDates = function (settings) {
     const ajaxData = {
@@ -345,60 +334,84 @@ const Cart = (function () {
   }
 
   const sendOrderData = function (settings) {
-    const cartItemsString = getCartItemsString();
-    const cartAttributes = getCartAttributesElementsValue();
-    const deliveryType = $('.js-delivery-type:checked').val();
-    const deliveryTypeText = $('.js-delivery-type:checked + span').html();
-    const note = $('.js-cart-note').val();
-    const phoneNumber = (document.querySelector('.js-phone').value).trim().replace(/\s{2,}/g, ' ');
-    let pickupZip = '';
-    if (deliveryType === 'pickup') {
-      const found = Utils.extractZip(cartPickupAddress);
-      if (found !== null && found.length > 0) {
-        pickupZip = '&zipcode=' + found;
-      }
-    }
-
-    const discountCode = $('.js-discount-code').val();
-    const ajaxData =
-      'delivery_type=' + deliveryType +
-      '&shop_domain=' + theme.routes.validation_tool_shop +
-      '&note=' + note +
-      '&customer_address=' + (cartDeliveryMethod === 'delivery' ? 'Delivery address:' + cartDeliveryAddress : 'Pick up in: ' + cartPickupAddress) +
-      '&schedule_dates=' + (settings.dates.join(',')) +
-      (discountCode ? '&discount_code=' + discountCode : '') +
-      '&' + cartAttributes + pickupZip +
-      (typeof isLawnAnswer !== 'undefined' ? '&lawn_planted=' + isLawnAnswer : '') +
-      '&' + cartItemsString;
-
-    window.localStorage.setItem('delivery_type', deliveryType);
-    if (cartDeliveryMethod === 'delivery') {
-      window.localStorage.setItem('delivery_method', cartDeliveryMethod);
-      window.localStorage.setItem('delivery_address', cartDeliveryAddress);
-      window.localStorage.setItem('delivery_zipcode', cartZipCode);
-      window.localStorage.setItem('delivery_phone', phoneNumber);
-    }
-
-    const ajax = $.ajax({
+    $.ajax({
       type: 'GET',
-      url: theme.routes.validation_tool_url + 'draft_orders',
-      data: ajaxData.replace(/#/g, '%23'),
-      timeout: 3000
-    });
+      url: '/cart.js',
+      success: function(response) {
+        let updatedCart = JSON.parse(response);
+        let newPrices = Array.prototype.map.call( $('.js-line-price'), x => parseFloat(x.innerHTML.split('$')[1].replace(',', '')) );
+        for ( let i = 0 ; i < updatedCart.items.length ; i++ ) {
+          let newQty = updatedCart.items[i].quantity;
+          // let newPrice = updatedCart.items[item].
+          cartItems[i].quantity = newQty;
+          cartItems[i].price = newPrices[i];
+        }
+        const cartItemsString = cartItems.reduce(function (acc, item) {
+          return acc + (acc === '' ? '' : '&') +
+            'products[]variant_id=' + item.variant_id +
+            '&products[]quantity=' + item.quantity +
+            '&products[]price=' + (item.price / item.quantity) +
+            (typeof item.full_price !== 'undefined' ? '&products[]full_price=' + item.full_price : '') +
+            '&products[]product_id=' + item.product_id +
+            (item.product_type.toLowerCase() === 'sod' ? '&products[]product_name=' + item.product_name : '') +
+            (item.product_type.toLowerCase() === 'sod' ? '&products[]product_image=' + item.product_image : '') +
+            '&products[]product_type=' + item.product_type +
+            '&products[]pickup_location=' + (typeof item.properties.pickup_location !== 'undefined' ? item.properties.pickup_location : '')
+        }, '');
+        const cartAttributes = getCartAttributesElementsValue();
+        const deliveryType = $('.js-delivery-type:checked').val();
+        const deliveryTypeText = $('.js-delivery-type:checked + span').html();
+        const note = $('.js-cart-note').val();
+        const phoneNumber = (document.querySelector('.js-phone').value).trim().replace(/\s{2,}/g, ' ');
+        let pickupZip = '';
+        if (deliveryType === 'pickup') {
+          const found = Utils.extractZip(cartPickupAddress);
+          if (found !== null && found.length > 0) {
+            pickupZip = '&zipcode=' + found;
+          }
+        }
 
-    ajax.done(function (data) {
-      if (data.draft_order) {
-        setTimeout(function () {
-          window.location.href = data.draft_order;
-        }, 2000);
-        return;
+        const discountCode = $('.js-discount-code').val();
+        const ajaxData =
+          'delivery_type=' + deliveryType +
+          '&shop_domain=' + theme.routes.validation_tool_shop +
+          '&note=' + note +
+          '&customer_address=' + (cartDeliveryMethod === 'delivery' ? 'Delivery address:' + cartDeliveryAddress : 'Pick up in: ' + cartPickupAddress) +
+          '&schedule_dates=' + (settings.dates.join(',')) +
+          (discountCode ? '&discount_code=' + discountCode : '') +
+          '&' + cartAttributes + pickupZip +
+          (typeof isLawnAnswer !== 'undefined' ? '&lawn_planted=' + isLawnAnswer : '') +
+          '&' + cartItemsString;
+
+        window.localStorage.setItem('delivery_type', deliveryType);
+        if (cartDeliveryMethod === 'delivery') {
+          window.localStorage.setItem('delivery_method', cartDeliveryMethod);
+          window.localStorage.setItem('delivery_address', cartDeliveryAddress);
+          window.localStorage.setItem('delivery_zipcode', cartZipCode);
+          window.localStorage.setItem('delivery_phone', phoneNumber);
+        }
+        const ajax = $.ajax({
+          type: 'GET',
+          url: theme.routes.validation_tool_url + 'draft_orders',
+          data: ajaxData.replace(/#/g, '%23'),
+          timeout: 3000
+        });
+
+        ajax.done(function (data) {
+          if (data.draft_order) {
+            setTimeout(function () {
+              window.location.href = data.draft_order;
+            }, 2000);
+            return;
+          }
+
+          settings.button.html(settings.originalText);
+          $('.js-no-response').removeClass('hide');
+        }).fail(function () {
+          $('.js-no-response').removeClass('hide');
+          settings.button.html(settings.originalText);
+        });
       }
-
-      settings.button.html(settings.originalText);
-      $('.js-no-response').removeClass('hide');
-    }).fail(function () {
-      $('.js-no-response').removeClass('hide');
-      settings.button.html(settings.originalText);
     });
   };
 
@@ -414,36 +427,49 @@ const Cart = (function () {
   const highlightUpdateButton = function (ev) {
     $('.js-update-cart-message').removeClass('hide');
   };
-//ticket SSOD-310
+  //ticket SSOD-310
   const updateTotals = function (ev) {
-    let input = ev.target;
-    let stepQuantity = parseFloat( input.getAttribute('step') );
-    let newQuantity = parseFloat(input.value);
-    const regex = /(\d*\,)*(\d*\.)*\d{2,}/g;
-    let index = input.dataset.inputIndex;
-    let price = parseFloat($('.js-item-price-' + index).text().match(regex)[0]);
-    let linePrice = document.querySelector('#js-line-price' + index);   
-    let linePriceTotal = Utils.formatMoneyWithPrecision(( newQuantity * price ).toFixed(2));
-    let dataItemPrice = newQuantity * price;
-    let linePrices = [...$('.js-line-price')].map(x => parseFloat(x.dataset.linePrice));
-    let subTotal = Utils.formatMoneyWithPrecision(linePrices.reduce((a, b) => a + b).toFixed(2));
- 
-    if ( newQuantity % stepQuantity == 0 && input.hasAttribute('step') ) {
-      linePrice.setAttribute('data-line-price', dataItemPrice );
-      linePrice.innerHTML = linePriceTotal;
-      $('.js-cart-subtotal').text(subTotal);
-      $('.js-invalid-quantity-' + index).addClass('hide');
-      
-
-      jQuery.post('/cart/change.js', { quantity: newQuantity, line: index });
-
-    } else {
-      if ( input.hasAttribute('step') ) { 
-        $('.js-invalid-quantity-' + index).removeClass('hide');
-        document.querySelector('.js-go-to-checkout').disabled = true;
-       }  
+   let input = ev.target;
+   let stepQuantity = parseFloat( input.getAttribute('step') );
+   let newQuantity = parseFloat(input.value);
+   let index = input.dataset.inputIndex;
+   let lineID = parseInt(input.getAttribute('id'));
+   let removeLink = document.querySelector('.js-remove-link' + index ).getAttribute('href');
+   let price = parseFloat(document.querySelector('.js-item-price-' + index).getAttribute('value'));
+   let linePrice = document.querySelector('#js-line-price' + index);
+   let linePriceTotal = Utils.formatMoneyWithPrecision(( newQuantity * price ));
+   let dataLinePrice = newQuantity * price;
+   linePrice.setAttribute('value', dataLinePrice );
+   let linePrices = [...$('.js-line-price')].map(x => parseFloat( x.getAttribute('value') ) );
+   let subTotal = linePrices.reduce((a, b) => a + b);
+   if ( document.querySelector('.js-submit-button') ) {
+     document.querySelector('.js-submit-button').removeAttribute('disabled');
+   }
+   if ( newQuantity % stepQuantity == 0 && input.hasAttribute('step') ) {
+     linePrice.innerHTML = linePriceTotal;
+     $('.js-cart-subtotal').text(Utils.formatMoneyWithPrecision(subTotal, 2));
+     document.querySelector('.js-cart-subtotal').setAttribute('data-value', subTotal);
+     $('.js-invalid-quantity-' + index).addClass('hide');
+     if ( newQuantity <= 0 ) {
+       window.location.href = removeLink;
+     } else {
+       let data = { updates: {
+           [lineID]: newQuantity,
+         }
+       }
+       jQuery.ajax({
+         type: 'POST',
+         url: '/cart/update.js',
+         data: data,
+         dataType: 'json'
+       });
     }
-
+   } else {
+     if ( input.hasAttribute('step') ) {
+       $('.js-invalid-quantity-' + index).removeClass('hide');
+       document.querySelector('.js-go-to-checkout').disabled = true;
+      }
+   }
   };
 
   const showFixedPrices = function () {
@@ -462,7 +488,7 @@ const Cart = (function () {
       ) {
         const unitPrice = Utils.formatMoneyWithPrecision(
           element.properties._custom_price * 100,
-          3
+          2
         );
         $('.js-item-price-' + (i+1)).html(unitPrice);
       }
@@ -584,6 +610,7 @@ const Cart = (function () {
     const phoneNumber = (document.querySelector('.js-phone').value).trim().replace(/\s{2,}/g, ' ');
 
     if (regexPhoneNumber(phoneNumber) === false ) {
+      button.html(originalText);
       document.querySelector('.js-phone').focus();
       if (phoneNumber === '' ) {
         phoneMessage.removeClass('hide');
@@ -785,12 +812,49 @@ const Cart = (function () {
     Utils.addToCartParameters('delivery_method', deliveryMethod);
   };
 
+  const checkForSod = function(ev) {
+    ev.preventDefault();
+    const btn = ev.target;
+    const removeLink = btn.getAttribute('href');
+    let lineItemType = "";
+    if ( btn.hasAttribute('type') ) {
+      lineItemType = btn.getAttribute('type');
+    }
+    let lineIndex = btn.getAttribute('data-index');
+    let recommendedProductId = $('.js-byb-add-to-cart').data('id');
+    let currentLineItemSodQty = document.querySelector('.js-cart-quantity-selector-' + lineIndex).value;
+    let totalSod = document.querySelector('.js-totalSod').value;
+    let currentTotalSod = totalSod - currentLineItemSodQty;
+    let lineId = parseInt(btn.getAttribute('data-line-id'));
+
+    if ( totalSod > 0 && lineItemType == 'Sod' ) {
+      if ( currentTotalSod <= 0 && $('.js-byb-add-to-cart') ) {
+        const data = { updates: {
+            [recommendedProductId]: 0,
+            [lineId]: 0
+          }
+        }
+        jQuery.ajax({
+          type: 'POST',
+          url: '/cart/update.js',
+          data: data,
+          dataType: 'json',
+          success: function() {
+            location.reload();
+          }
+        });
+      }
+    }  else {
+      window.location.href = removeLink;
+    }
+
+  }
+
   const init = function () {
     setEvents();
     showFixedPrices();
     showRemoveLinks();
     validationItems();
-
     if (
       typeof cartDeliveryAttribute !== 'undefined' &&
       cartDeliveryAttribute !== '' &&
@@ -805,9 +869,10 @@ const Cart = (function () {
       .on('click', '.js-check-dates', searchAvailableDates)
       .on('change', '.js-delivery-type', resetCheckoutForm)
       .on('click', '.js-go-to-checkout', validateCheckout)
-      .on('change keyup input', '.js-cart-quantity-selector', highlightUpdateButton)     
+      .on('change keyup input', '.js-cart-quantity-selector', highlightUpdateButton)
       .on('change keyup input', '.js-cart-quantity-selector', updateTotals)
-      .on('submit', '.js-cart-form', interceptCartSubmit);
+      .on('submit', '.js-cart-form', interceptCartSubmit)
+      .on('click', '.js-remove-link', checkForSod)
     for (let index = 0; index < 3; index++) {
       const fieldSelector = '.js-tail-datetime-field-' + (index + 1);
       $(document).on('click', fieldSelector, function () {
