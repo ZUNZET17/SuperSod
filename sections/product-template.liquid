@@ -371,6 +371,7 @@
               {%- if uses_normal_toggle == false and use_variant_toggle == false -%}
                 <input type="hidden" name="properties[_custom_price]" value="0" class="js-custom-value">
                 <input type="hidden" name="properties[_custom_increment]" value="0" class="js-increment-value">
+                <input type="hidden" name="properties[_minimum_pickup_quantity]" value="0" class="js-minimum-pickup-quantity">
               {%- endif -%}
               {%- if uses_normal_toggle == true or use_variant_toggle == true -%}
                 {%- assign min_delivery_quantity = 1 -%}

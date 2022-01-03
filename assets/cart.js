@@ -431,6 +431,7 @@ const Cart = (function () {
   const updateTotals = function (ev) {
    let input = ev.target;
    let stepQuantity = parseFloat( input.getAttribute('step') );
+   let minimumQuantity = parseInt(input.getAttribute('min'));
    let newQuantity = parseFloat(input.value);
    let index = input.dataset.inputIndex;
    let lineID = parseInt(input.getAttribute('id'));
@@ -445,30 +446,32 @@ const Cart = (function () {
    if ( document.querySelector('.js-submit-button') ) {
      document.querySelector('.js-submit-button').removeAttribute('disabled');
    }
-   if ( newQuantity % stepQuantity == 0 && input.hasAttribute('step') ) {
-     linePrice.innerHTML = linePriceTotal;
-     $('.js-cart-subtotal').text(Utils.formatMoneyWithPrecision(subTotal, 2));
-     document.querySelector('.js-cart-subtotal').setAttribute('data-value', subTotal);
-     $('.js-invalid-quantity-' + index).addClass('hide');
-     if ( newQuantity <= 0 ) {
-       window.location.href = removeLink;
-     } else {
-       let data = { updates: {
-           [lineID]: newQuantity,
-         }
-       }
-       jQuery.ajax({
-         type: 'POST',
-         url: '/cart/update.js',
-         data: data,
-         dataType: 'json'
-       });
-    }
-   } else {
-     if ( input.hasAttribute('step') ) {
-       $('.js-invalid-quantity-' + index).removeClass('hide');
-       document.querySelector('.js-go-to-checkout').disabled = true;
+   if ( newQuantity % stepQuantity == 0 && newQuantity >= minimumQuantity) {
+    linePrice.innerHTML = linePriceTotal;
+    $('.js-cart-subtotal').text(Utils.formatMoneyWithPrecision(subTotal, 2));
+    document.querySelector('.js-cart-subtotal').setAttribute('data-value', subTotal);
+    $('.js-invalid-quantity-' + index).addClass('hide');
+    $('.js-invalid-minimum-quantity-' + index).addClass('hide');
+    if ( newQuantity <= 0 ) {
+      window.location.href = removeLink;
+    } else {
+      let data = { updates: {
+          [lineID]: newQuantity,
+        }
       }
+      jQuery.ajax({
+        type: 'POST',
+        url: '/cart/update.js',
+        data: data,
+        dataType: 'json'
+      });
+    }
+   } else if ( newQuantity < minimumQuantity ) {
+      $('.js-invalid-minimum-quantity-' + index).removeClass('hide');
+      document.querySelector('.js-go-to-checkout').disabled = true;
+   } else if ( newQuantity % stepQuantity != 0 ) {
+    $('.js-invalid-quantity-' + index).removeClass('hide');
+    document.querySelector('.js-go-to-checkout').disabled = true;
    }
   };
 

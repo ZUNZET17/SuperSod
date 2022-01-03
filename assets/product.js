@@ -256,6 +256,7 @@ const Product = (function () {
 
     const deliveryMethod = $('.js-delivery-method:checked').val();
     const quantity = $('.js-quantity-input-' + deliveryMethod).val();
+    const minimumPickup = parseInt($('#pickup-uantity').attr('min'));
     const properties = {
       _method: deliveryMethod,
       _address: deliveryMethod === 'delivery' ? $('.js-customer-address').val() : $('.js-product-pickup-variants').val(),
@@ -266,6 +267,7 @@ const Product = (function () {
       properties._zip = $('.js-zip-code').val();
     } else if (deliveryMethod === 'pickup') {
       properties.pickup_location = $('.js-product-pickup-variants').val()
+      properties.minimum_pickup = minimumPickup;
     }
 
     const cartQuantities = {};
@@ -1308,6 +1310,9 @@ const Product = (function () {
                   $('.js-minimum-quantity-alert').removeClass('hide')
                   $('.js-minimum-quantity-alert-value').text(selectedMinimumQuantity);
                   document.getElementById('pickup-uantity').value = selectedMinimumQuantity;
+                  //minimum_quantity property SSOD-338
+                  document.querySelector('.js-minimum-pickup-quantity').value = selectedMinimumQuantity;
+
                   $('.js-product-quantity').attr('value', selectedMinimumQuantity);
                   $('.js-product-pickup-variants option:selected').attr('data-priceranges', JSON.stringify(pricesArray));
 
