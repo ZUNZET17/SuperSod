@@ -427,13 +427,24 @@ const Cart = (function () {
   const highlightUpdateButton = function (ev) {
     $('.js-update-cart-message').removeClass('hide');
   };
+
+  const triggerCustom = (el, eventName, data) => {
+    let event;
+    if (window.CustomEvent && typeof window.CustomEvent === 'function') {
+      event = new CustomEvent(eventName, { detail: data });
+    } else {
+      event = document.createEvent('CustomEvent');
+      event.initCustomEvent(eventName, true, true, data);
+    }
+    el.dispatchEvent(event);
+  };
   //ticket SSOD-310
   const updateTotals = function (ev) {
    let input = ev.target;
    let stepQuantity = parseFloat( input.getAttribute('step') );
    let minimumQuantity = parseInt(input.getAttribute('min'));
    let newQuantity = parseFloat(input.value);
-   let index = input.dataset.inputIndex;
+   let index = input.getAttribute('data-index');
    let lineID = parseInt(input.getAttribute('id'));
    let removeLink = document.querySelector('.js-remove-link' + index ).getAttribute('href');
    let price = parseFloat(document.querySelector('.js-item-price-' + index).getAttribute('value'));
@@ -473,7 +484,11 @@ const Cart = (function () {
      }    
    } else {
      if ( newQuantity <= 0 ) {
-       window.location.href = removeLink;
+       console.log('updateTotals quantity 0')
+      //  window.location.href = removeLink;
+      const evt = new Event("click");
+      document.querySelector('.js-remove-link' + index ).addEventListener('click', checkForSod);
+      document.querySelector('.js-remove-link' + index ).dispatchEvent(evt);
      }
      $('.js-invalid-quantity-' + index).addClass('hide');
      $('.js-invalid-minimum-quantity-' + index).removeClass('hide');
@@ -827,23 +842,34 @@ const Cart = (function () {
     const btn = ev.target;
     const removeLink = btn.getAttribute('href');
     let lineItemType = "";
-    if ( btn.hasAttribute('type') ) {
-      lineItemType = btn.getAttribute('type');
+    if ( btn.hasAttribute('prodType') ) {
+      lineItemType = btn.getAttribute('prodType');
     }
     let lineIndex = btn.getAttribute('data-index');
     let recommendedProductId = $('.js-byb-add-to-cart').data('id');
-    let currentLineItemSodQty = document.querySelector('.js-cart-quantity-selector-' + lineIndex).value;
-    let totalSod = document.querySelector('.js-totalSod').value;
+    let currentLineItemSodQty = parseInt(document.querySelector('.js-cart-quantity-selector-' + lineIndex).getAttribute('value'));
+    let totalSod = parseInt(document.querySelector('.js-totalSod').value);
     let currentTotalSod = totalSod - currentLineItemSodQty;
-    let lineId = parseInt(btn.getAttribute('data-line-id'));
-
+    let lineId = btn.getAttribute('data-line-id');
+    console.log('totalSod')
+    console.log(totalSod)
+    console.log('currentLineItemSodQty')
+    console.log(currentLineItemSodQty)
+    console.log('currentTotalSod')
+    console.log(currentTotalSod)
+    console.log('lineItemType')
+    console.log(lineItemType)
     if ( totalSod > 0 && lineItemType == 'Sod' ) {
+      console.log('entered if')
       if ( currentTotalSod <= 0 && $('.js-byb-add-to-cart') ) {
+        console.log('curent Total SOd 0')
         const data = { updates: {
             [recommendedProductId]: 0,
             [lineId]: 0
           }
         }
+        console.log('Ajax data')
+        console.log(data)
         jQuery.ajax({
           type: 'POST',
           url: '/cart/update.js',
@@ -854,10 +880,10 @@ const Cart = (function () {
           }
         });
       }
-    }  else {
-      window.location.href = removeLink;
-      return;
-    }
+    }  //else {
+    //   window.location.href = removeLink;
+    //   return;
+    // }
     window.location.href = removeLink;
   }
 

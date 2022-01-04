@@ -309,7 +309,7 @@
                     <span class="hide js-remove-bundle-from-cart">{{item.id}}</span>
                   {%- endif -%}
                   <p class="txt--minor">
-                    <a href="{{ routes.cart_change_url }}?line={{ forloop.index }}&amp;quantity=0" class="cart__remove hide js-remove-link js-remove-link{{ forloop.index }}" data-line-id="{{ item.id }}" data-index="{{ forloop.index }}" {% if item.product.type == 'Sod'%}type="Sod"{% endif %}>{{ 'cart.general.remove' | t }}</a>
+                    <a href="{{ routes.cart_change_url }}?line={{ forloop.index }}&amp;quantity=0" class="cart__remove hide js-remove-link js-remove-link{{ forloop.index }}" data-line-id="{{ item.id }}" data-index="{{ forloop.index }}" {% if item.product.type == 'Sod'%}prodType="Sod"{% endif %}>{{ 'cart.general.remove' | t }}</a>
                     <noscript>
                       <a href="{{ routes.cart_change_url }}?line={{ forloop.index }}&amp;quantity=0" class="cart__remove">{{ 'cart.general.remove' | t }}</a>
                     </noscript>
@@ -381,11 +381,12 @@
                 </td>
                 <td data-label="{{ 'cart.label.quantity' | t }}" class="cart__table-cell--quantity">
                   <label class="visually-hidden" for="updates_{{ item.key }}">{{ 'cart.label.quantity' | t }}</label>
-                  <input class="quantity-selector form__input js-cart-quantity-selector js-cart-quantity-selector-{{forloop.index}}" type="number" name="updates[]"
+                  <input class="quantity-selector form__input js-cart-quantity-selector js-cart-quantity-selector-{{forloop.index}}" href="{{ routes.cart_change_url }}?line={{ forloop.index }}&amp;quantity=0" type="number" name="updates[]"
                     id="{{ item.id }}" value="{{ item.quantity }}"
-                    data-input-index="{{ forloop.index }}"
+                    data-index="{{ forloop.index }}"
                     {% if item.properties._custom_increment %}step="{{item.properties._custom_increment}}"{% else %} step="1" {% endif %}
-                    min="{% if item.properties._minimum_pickup_quantity %}{{item.properties._minimum_pickup_quantity}}{% else %}0{% endif %}">
+                    min="{% if item.product.type == 'Sod' %}{% if item.properties._minimum_pickup_quantity != '0' %}{{item.properties._minimum_pickup_quantity}}{% else %}500{% endif %}{% else %}0{% endif %}" {% if item.product.type == 'Sod'%}prodType="Sod"{% endif %}>
+   
                   <p class="cart__error-message cart__error-message--invalid-quantity js-invalid-quantity js-invalid-quantity-{{forloop.index}} hide">Please enter quantity that is a multiple of {% if item.properties._custom_increment %} {{ item.properties._custom_increment }} {% else %} 1 {% endif %}</p>
                   <p class="cart__error-message cart__error-message--invalid-quantity js-invalid-quantity js-invalid-minimum-quantity-{{forloop.index}} hide">There is a minimum quantity of  {% if item.properties._minimum_pickup_quantity %} {{ item.properties._minimum_pickup_quantity }} {% else %} 1 {% endif %}</p>
                 </td>
