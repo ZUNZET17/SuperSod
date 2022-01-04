@@ -1151,6 +1151,9 @@ const Product = (function () {
         wrongQuantityText.addClass('hide');
         $('.js-min-number').html(minimum);
         $('.js-minimum-quantity-alert').removeClass('hide');
+        setTimeout(function () {
+          input.value = minimum;
+        }, 100);
         $('.js-product-quantity').val(minimum);
         toggleSubmitButton('hide', 'js-product-submit');
       }

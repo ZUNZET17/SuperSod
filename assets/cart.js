@@ -440,6 +440,12 @@ const Cart = (function () {
   };
   //ticket SSOD-310
   const updateTotals = function (ev) {
+    const code = ev.keyCode || ev.which;
+    if (code == 13) {
+      ev.preventDefault();
+      console.log('nope')
+      return false;
+    }
    let input = ev.target;
    let stepQuantity = parseFloat( input.getAttribute('step') );
    let minimumQuantity = parseInt(input.getAttribute('min'));
