@@ -1130,9 +1130,9 @@ const Product = (function () {
     let totalPrice = unitPrice * value ;
 
     if ( $('.js-dropdown-with-minimums') ) {
-      if ( value % increment === 0 ) {
-        if ( value >= minimum ){
-          $('.js-minimum-quantity-alert').addClass('hide');
+
+      if ( value >= minimum ) {
+        if ( value % increment == 0 ) {
           wrongQuantityText.addClass('hide');
           showProductPricing({
             additional_miles_cost: 0,
@@ -1142,15 +1142,16 @@ const Product = (function () {
           });
           toggleSubmitButton('show', 'js-product-submit');
         } else {
-          $('.js-min-number').html(minimum);
+          $('.js-multiple-number').html('10');
           $('.js-minimum-quantity-alert').removeClass('hide');
-          $('.js-product-quantity').val(minimum);
+          wrongQuantityText.removeClass('hide');
           toggleSubmitButton('hide', 'js-product-submit');
         }
       } else {
-        $('.js-multiple-number').html('10');
+        wrongQuantityText.addClass('hide');
+        $('.js-min-number').html(minimum);
         $('.js-minimum-quantity-alert').removeClass('hide');
-        wrongQuantityText.removeClass('hide');
+        $('.js-product-quantity').val(minimum);
         toggleSubmitButton('hide', 'js-product-submit');
       }
 
