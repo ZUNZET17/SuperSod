@@ -443,7 +443,6 @@ const Cart = (function () {
     const code = ev.keyCode || ev.which;
     if (code == 13) {
       ev.preventDefault();
-      console.log('nope')
       return false;
     }
    let input = ev.target;
@@ -490,7 +489,6 @@ const Cart = (function () {
      }    
    } else {
      if ( newQuantity <= 0 ) {
-       console.log('updateTotals quantity 0')
       //  window.location.href = removeLink;
       const evt = new Event("click");
       document.querySelector('.js-remove-link' + index ).addEventListener('click', checkForSod);
@@ -857,25 +855,13 @@ const Cart = (function () {
     let totalSod = parseInt(document.querySelector('.js-totalSod').value);
     let currentTotalSod = totalSod - currentLineItemSodQty;
     let lineId = btn.getAttribute('data-line-id');
-    console.log('totalSod')
-    console.log(totalSod)
-    console.log('currentLineItemSodQty')
-    console.log(currentLineItemSodQty)
-    console.log('currentTotalSod')
-    console.log(currentTotalSod)
-    console.log('lineItemType')
-    console.log(lineItemType)
     if ( totalSod > 0 && lineItemType == 'Sod' ) {
-      console.log('entered if')
       if ( currentTotalSod <= 0 && $('.js-byb-add-to-cart') ) {
-        console.log('curent Total SOd 0')
         const data = { updates: {
             [recommendedProductId]: 0,
             [lineId]: 0
           }
         }
-        console.log('Ajax data')
-        console.log(data)
         jQuery.ajax({
           type: 'POST',
           url: '/cart/update.js',
