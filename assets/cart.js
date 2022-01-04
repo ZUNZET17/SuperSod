@@ -443,38 +443,43 @@ const Cart = (function () {
    linePrice.setAttribute('value', dataLinePrice );
    let linePrices = [...$('.js-line-price')].map(x => parseFloat( x.getAttribute('value') ) );
    let subTotal = linePrices.reduce((a, b) => a + b);
-   console.log(stepQuantity)
 
    if ( document.querySelector('.js-submit-button') ) {
      document.querySelector('.js-submit-button').removeAttribute('disabled');
    }
-   if ( newQuantity % stepQuantity == 0 && newQuantity >= minimumQuantity) {
-    linePrice.innerHTML = linePriceTotal;
-    $('.js-cart-subtotal').text(Utils.formatMoneyWithPrecision(subTotal, 2));
-    document.querySelector('.js-cart-subtotal').setAttribute('data-value', subTotal);
-    $('.js-invalid-quantity-' + index).addClass('hide');
-    $('.js-invalid-minimum-quantity-' + index).addClass('hide');
-    if ( newQuantity <= 0 ) {
-      window.location.href = removeLink;
-    } else {
-      let data = { updates: {
-          [lineID]: newQuantity,
-        }
-      }
-      jQuery.ajax({
-        type: 'POST',
-        url: '/cart/update.js',
-        data: data,
-        dataType: 'json'
-      });
-    }
-   } else if ( newQuantity < minimumQuantity ) {
-      $('.js-invalid-minimum-quantity-' + index).removeClass('hide');
-      document.querySelector('.js-go-to-checkout').disabled = true;
-   } else if ( newQuantity % stepQuantity != 0 ) {
-    $('.js-invalid-quantity-' + index).removeClass('hide');
-    document.querySelector('.js-go-to-checkout').disabled = true;
+
+   if ( newQuantity >= minimumQuantity && newQuantity != 0 ) {
+     if ( newQuantity % stepQuantity == 0 ) {
+       linePrice.innerHTML = linePriceTotal;
+       $('.js-cart-subtotal').text(Utils.formatMoneyWithPrecision(subTotal, 2));
+       document.querySelector('.js-cart-subtotal').setAttribute('data-value', subTotal);
+       $('.js-invalid-quantity-' + index).addClass('hide');
+       $('.js-invalid-minimum-quantity-' + index).addClass('hide');
+
+       let data = { updates: {
+           [lineID]: newQuantity,
+         }
+       }
+       jQuery.ajax({
+         type: 'POST',
+         url: '/cart/update.js',
+         data: data,
+         dataType: 'json'
+       });
+     } else {
+      $('.js-invalid-minimum-quantity-' + index).addClass('hide');
+      $('.js-invalid-quantity-' + index).removeClass('hide');
+      document.querySelector('.js-go-to-checkout').disabled = true;   
+     }    
+   } else {
+     if ( newQuantity <= 0 ) {
+       window.location.href = removeLink;
+     }
+     $('.js-invalid-quantity-' + index).addClass('hide');
+     $('.js-invalid-minimum-quantity-' + index).removeClass('hide');
+     document.querySelector('.js-go-to-checkout').disabled = true;
    }
+
   };
 
   const showFixedPrices = function () {
