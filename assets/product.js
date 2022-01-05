@@ -256,6 +256,7 @@ const Product = (function () {
 
     const deliveryMethod = $('.js-delivery-method:checked').val();
     const quantity = $('.js-quantity-input-' + deliveryMethod).val();
+    const minimumPickup = parseInt($('#pickup-uantity').attr('min'));
     const properties = {
       _method: deliveryMethod,
       _address: deliveryMethod === 'delivery' ? $('.js-customer-address').val() : $('.js-product-pickup-variants').val(),
@@ -266,6 +267,7 @@ const Product = (function () {
       properties._zip = $('.js-zip-code').val();
     } else if (deliveryMethod === 'pickup') {
       properties.pickup_location = $('.js-product-pickup-variants').val()
+      properties.minimum_pickup = minimumPickup;
     }
 
     const cartQuantities = {};
@@ -1128,9 +1130,9 @@ const Product = (function () {
     let totalPrice = unitPrice * value ;
 
     if ( $('.js-dropdown-with-minimums') ) {
-      if ( value % increment === 0 ) {
-        if ( value >= minimum ){
-          $('.js-minimum-quantity-alert').addClass('hide');
+
+      if ( value >= minimum ) {
+        if ( value % increment == 0 ) {
           wrongQuantityText.addClass('hide');
           showProductPricing({
             additional_miles_cost: 0,
@@ -1140,15 +1142,19 @@ const Product = (function () {
           });
           toggleSubmitButton('show', 'js-product-submit');
         } else {
-          $('.js-min-number').html(minimum);
+          $('.js-multiple-number').html('10');
           $('.js-minimum-quantity-alert').removeClass('hide');
-          $('.js-product-quantity').val(minimum);
+          wrongQuantityText.removeClass('hide');
           toggleSubmitButton('hide', 'js-product-submit');
         }
       } else {
-        $('.js-multiple-number').html('10');
+        wrongQuantityText.addClass('hide');
+        $('.js-min-number').html(minimum);
         $('.js-minimum-quantity-alert').removeClass('hide');
-        wrongQuantityText.removeClass('hide');
+        setTimeout(function () {
+          input.value = minimum;
+        }, 100);
+        $('.js-product-quantity').val(minimum);
         toggleSubmitButton('hide', 'js-product-submit');
       }
 
@@ -1308,6 +1314,9 @@ const Product = (function () {
                   $('.js-minimum-quantity-alert').removeClass('hide')
                   $('.js-minimum-quantity-alert-value').text(selectedMinimumQuantity);
                   document.getElementById('pickup-uantity').value = selectedMinimumQuantity;
+                  //minimum_quantity property SSOD-338
+                  document.querySelector('.js-minimum-pickup-quantity').value = selectedMinimumQuantity;
+
                   $('.js-product-quantity').attr('value', selectedMinimumQuantity);
                   $('.js-product-pickup-variants option:selected').attr('data-priceranges', JSON.stringify(pricesArray));
 
